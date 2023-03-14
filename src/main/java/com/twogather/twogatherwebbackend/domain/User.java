@@ -15,9 +15,8 @@ public abstract class User {
     @Column(name="user_id")
     private Long id;
 
-    private String loginId;
+    private String email;
     private String loginPw;
     private String name;
     private String phone;
-    private String email;
 }

@@ -17,6 +17,5 @@ public class Consumer extends User{
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviewList = new ArrayList<>();
 
-    private Double averageReviewScore;
 
 }
