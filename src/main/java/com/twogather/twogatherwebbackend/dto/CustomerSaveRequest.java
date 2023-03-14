@@ -8,6 +8,5 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class CustomerSaveRequest extends UserSave{
 }
