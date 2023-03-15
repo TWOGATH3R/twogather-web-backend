@@ -3,6 +3,8 @@ package com.twogather.twogatherwebbackend.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,4 +21,5 @@ public class StoreOwner extends User{
 
     private String businessNumber;
     private String businessName;
+    private LocalDate businessStartDate;
 }
