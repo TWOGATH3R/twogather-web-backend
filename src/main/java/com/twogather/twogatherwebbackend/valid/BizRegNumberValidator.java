@@ -1,22 +1,37 @@
 package com.twogather.twogatherwebbackend.valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.PostConstruct;
+import java.util.Collections;
+import java.util.Objects;
 
+
+@Slf4j
 @Component
-public class BizRegNumberValidator{
-    private static final String API_URL = "https://api.odcloud.kr/api/nts-businessman/v1/validate";
-    private static final String SERVICE_KEY = "SabGDv9Xeo/2NOeWJkp/XxZu4if9/dwIhFWQiPvSGc8b9inh2SGBHtxpTRheIjznYul8sQdB7UYAO4qf6o0nlw==";
-    private static final String TOTAL_URL = API_URL + "?serviceKey=" + SERVICE_KEY;
-    public static boolean validateBizRegNumber(String bizRegNumber, String bizStartDate, String bizName) throws JSONException {
+public class BizRegNumberValidator {
+    private final String url;
+    private final String key;
+    private final String totalUrl;
+
+    public BizRegNumberValidator(@Value("${api.validate.url}") String url,
+                                 @Value("${api.validate.service.key}") String key) {
+        Objects.requireNonNull(url, "url must not be null");
+        Objects.requireNonNull(key, "key must not be null");
+        this.url = url;
+        this.key = key;
+        this.totalUrl = this.url + "?serviceKey=" + this.key;
+    }
+
+    public boolean validateBizRegNumber(String bizRegNumber, String bizStartDate, String bizName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -24,34 +39,42 @@ public class BizRegNumberValidator{
         String requestJson = makeJsonString(bizRegNumber, bizStartDate, bizName);
 
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-        ResponseEntity<String> response = restTemplate.exchange(TOTAL_URL, HttpMethod.POST, entity, String.class);
-        String responseBody = response.getBody();
-        return isValid(responseBody);
-
-    }
-    private static boolean isValid(String response) throws JSONException {
-        JSONObject jsonResponse = new JSONObject(response);
-        JSONArray dataArray = jsonResponse.getJSONArray("data");
-        JSONObject dataObject = dataArray.getJSONObject(0);
-        String valid = dataObject.getString("valid");
-        return valid.equals("01");
-    }
-    private static String makeJsonString(String b_no, String start_dt, String p_nm) {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        JSONObject businessObject = new JSONObject();
-
         try {
-            businessObject.put("b_no", b_no);
-            businessObject.put("start_dt", start_dt);
-            businessObject.put("p_nm", p_nm);
-
-            jsonArray.put(businessObject);
-            jsonObject.put("businesses", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            ResponseEntity<String> response = restTemplate.exchange(totalUrl, HttpMethod.POST, entity, String.class);
+            String responseBody = response.getBody();
+            return isValid(responseBody);
+        } catch (HttpServerErrorException e) {
+            throw new RuntimeException("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
         }
+    }
 
+    private boolean isValid(String response) {
+        try {
+            JSONObject jsonResponse = new JSONObject(response);
+            JSONArray dataArray = jsonResponse.optJSONArray("data");
+            if (dataArray == null || dataArray.length()==0) {
+                return false;
+            }
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            String valid = dataObject.optString("valid");
+            return "01".equals(valid);
+        } catch (JSONException e) {
+            throw new RuntimeException("Failed to create response json", e);
+        }
+    }
+
+    private String makeJsonString(String bizRegNumber, String bizStartDate, String bizName) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
+                    new JSONObject()
+                            .put("b_no", bizRegNumber)
+                            .put("start_dt", bizStartDate)
+                            .put("p_nm", bizName)
+            )));
+        } catch (JSONException e) {
+            throw new RuntimeException("Failed to create request json", e);
+        }
         return jsonObject.toString();
     }
 }
