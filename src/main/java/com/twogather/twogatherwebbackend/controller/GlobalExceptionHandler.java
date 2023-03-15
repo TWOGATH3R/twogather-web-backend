@@ -19,20 +19,6 @@ import java.io.IOException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(JSONException.class)
-    public ResponseEntity<String> handleJsonException(JSONException e, HttpServletRequest request) {
-        String body = "";
-        try {
-            body = request.getInputStream().toString();
-        } catch (IOException ex) {
-            log.error("Error reading request body: " + ex.getMessage(), ex);
-        }
-        log.error("JSONException occurred while parsing JSON data: " + e.getMessage() + "\n" + "JSON data: " + body, e);
-
-        log.error("JSONException occurred: " + e.getMessage(), e);
-        return new ResponseEntity<>("JSON error occurred: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
         // 그 외의 예외 발생 시 처리할 로직을 작성합니다.

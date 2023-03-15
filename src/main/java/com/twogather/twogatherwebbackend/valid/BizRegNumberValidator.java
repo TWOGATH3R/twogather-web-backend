@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -44,7 +43,8 @@ public class BizRegNumberValidator {
             String responseBody = response.getBody();
             return isValid(responseBody);
         } catch (HttpServerErrorException e) {
-            throw new RuntimeException("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
+            log.error("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
+            return false;
         }
     }
 
@@ -59,7 +59,8 @@ public class BizRegNumberValidator {
             String valid = dataObject.optString("valid");
             return "01".equals(valid);
         } catch (JSONException e) {
-            throw new RuntimeException("Failed to create response json", e);
+            log.error("Failed to validate business registration number: " + e.getMessage(), e);
+            return false;
         }
     }
 
@@ -73,7 +74,8 @@ public class BizRegNumberValidator {
                             .put("p_nm", bizName)
             )));
         } catch (JSONException e) {
-            throw new RuntimeException("Failed to create request json", e);
+            log.error("Failed to validate business registration number: " + e.getMessage(), e);
+            return null;
         }
         return jsonObject.toString();
     }
