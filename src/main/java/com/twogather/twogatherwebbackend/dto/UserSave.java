@@ -1,6 +1,8 @@
 package com.twogather.twogatherwebbackend.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
@@ -10,6 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public abstract class UserSave {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")

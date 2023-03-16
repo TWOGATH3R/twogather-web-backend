@@ -1,5 +1,7 @@
 package com.twogather.twogatherwebbackend.valid;
 
+import com.twogather.twogatherwebbackend.exception.SystemException;
+import com.twogather.twogatherwebbackend.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +32,7 @@ public class BizRegNumberValidator {
         this.totalUrl = this.url + "?serviceKey=" + this.key;
     }
 
-    public boolean validateBizRegNumber(String bizRegNumber, String bizStartDate, String bizName) {
+    public boolean validateBizRegNumber(final String bizRegNumber, final String bizStartDate, final String bizName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,11 +46,11 @@ public class BizRegNumberValidator {
             return isValid(responseBody);
         } catch (HttpServerErrorException e) {
             log.error("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
-            return false;
+            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
     }
 
-    private boolean isValid(String response) {
+    private boolean isValid(final String response) {
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONArray dataArray = jsonResponse.optJSONArray("data");
@@ -60,11 +62,11 @@ public class BizRegNumberValidator {
             return "01".equals(valid);
         } catch (JSONException e) {
             log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            return false;
+            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
     }
 
-    private String makeJsonString(String bizRegNumber, String bizStartDate, String bizName) {
+    private String makeJsonString(final String bizRegNumber, final String bizStartDate, final String bizName) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
@@ -75,7 +77,7 @@ public class BizRegNumberValidator {
             )));
         } catch (JSONException e) {
             log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            return null;
+            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
         return jsonObject.toString();
     }

@@ -7,7 +7,7 @@ build/
 /src/main/resources/application.properties
 /src/main/resources/application-dev.properties
 /src/main/resources/application-prod.properties
-/src/test/java/com/twogather/twogatherwebbackend/SystemTest.java
+/src/test/java/com/twogather/twogatherwebbackend/BizRegNumberValidatorTest.java
 
 ### STS ###
 .apt_generated
