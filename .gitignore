@@ -4,9 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-/application.properties
-/application-dev.properties
-/application-prod.properties
+/src/main/resources/application.properties
+/src/main/resources/application-dev.properties
+/src/main/resources/application-prod.properties
 /src/test/java/com/twogather/twogatherwebbackend/SystemTest.java
 
 ### STS ###
