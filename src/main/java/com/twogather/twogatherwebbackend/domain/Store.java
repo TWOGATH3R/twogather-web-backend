@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.domain;
 
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class Store {
     @Id
     @GeneratedValue
     @Column(name ="store_id")
-    private Long id;
+    private Long storeId;
 
     @ManyToOne
     private StoreOwner owner;

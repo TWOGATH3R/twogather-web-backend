@@ -1,7 +1,5 @@
 package com.twogather.twogatherwebbackend.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +14,7 @@ public class Consumer extends User{
     @Id
     @GeneratedValue
     @Column(name="consumer_id")
-    private Long id;
+    private Long consumerId;
 
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviewList = new ArrayList<>();

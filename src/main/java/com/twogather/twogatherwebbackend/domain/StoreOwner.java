@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class StoreOwner extends User{
     @Id
     @GeneratedValue
     @Column(name ="store_owner_id")
-    private Long id;
+    private Long storeOwnerId;
 
     @OneToMany(mappedBy = "owner")
     private List<Store> storeList = new ArrayList<>();

@@ -12,7 +12,7 @@ public class BusinessHour {
     @Id
     @GeneratedValue
     @Column(name="business_hour_id")
-    private Long id;
+    private Long businessHourId;
 
     @ManyToOne
     private Store store;

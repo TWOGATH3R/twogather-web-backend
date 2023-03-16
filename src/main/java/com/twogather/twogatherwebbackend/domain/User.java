@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,7 @@ public abstract class User {
     @Id
     @GeneratedValue
     @Column(name="user_id")
-    private Long id;
+    private Long userId;
 
     private String email;
     private String loginPw;

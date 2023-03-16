@@ -10,7 +10,7 @@ public class Image {
     @Id
     @GeneratedValue
     @Column(name ="image_id")
-    private Long id;
+    private Long imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
