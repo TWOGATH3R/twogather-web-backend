@@ -11,11 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class Consumer extends User{
-    @Id
-    @GeneratedValue
-    @Column(name="consumer_id")
-    private Long consumerId;
-
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviewList = new ArrayList<>();
 

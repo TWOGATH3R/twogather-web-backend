@@ -27,7 +27,7 @@ public class ConsumerService {
         validateDuplicateEmail(request.getEmail());
         Consumer consumer = new Consumer(request.getEmail(), request.getPassword(), request.getName(), request.getPhone());
         Consumer storedConsumer = consumerRepository.save(consumer);
-        return new ConsumerSaveResponse(storedConsumer.getConsumerId());
+        return new ConsumerSaveResponse(storedConsumer.getUserId());
     }
     private void validateDuplicateEmail(final String email){
         if (consumerRepository.existsByEmail(email)) {

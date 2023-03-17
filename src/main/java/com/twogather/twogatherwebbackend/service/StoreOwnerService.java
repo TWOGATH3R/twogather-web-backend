@@ -26,13 +26,13 @@ public class StoreOwnerService {
         StoreOwner owner = new StoreOwner(request.getEmail(), request.getPassword(), request.getName(), request.getPhone(),
                 request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()));
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
-        return new StoreOwnerSaveResponse(storedOwner.getStoreOwnerId());
+        return new StoreOwnerSaveResponse(storedOwner.getUserId());
     }
 
     private LocalDate stringToLocalDate(String date){
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
-    private void validateDuplicateEmail(final String email){
+    public void validateDuplicateEmail(final String email){
         if (storeOwnerRepository.existsByEmail(email)) {
             throw new UserException(UserException.UserErrorCode.DUPLICATE_EMAIL);
         }

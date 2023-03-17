@@ -12,11 +12,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class StoreOwner extends User{
-    @Id
-    @GeneratedValue
-    @Column(name ="store_owner_id")
-    private Long storeOwnerId;
-
     @OneToMany(mappedBy = "owner")
     private List<Store> storeList = new ArrayList<>();
 
