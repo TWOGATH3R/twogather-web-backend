@@ -11,7 +11,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class StoreOwner extends User{
+@DiscriminatorValue("store_owner")
+public class StoreOwner extends Member {
     @OneToMany(mappedBy = "owner")
     private List<Store> storeList = new ArrayList<>();
 

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 public class Image {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="image_id")
     private Long imageId;
 

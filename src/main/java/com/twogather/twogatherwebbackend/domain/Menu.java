@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 public class Menu {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="menu_id")
     private Long menuId;
     private String name;

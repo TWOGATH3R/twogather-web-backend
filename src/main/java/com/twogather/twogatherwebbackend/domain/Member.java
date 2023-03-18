@@ -5,24 +5,23 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@Inheritance(strategy = TABLE_PER_CLASS)
-public abstract class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Member {
     @Id
-    @GeneratedValue
-    @Column(name="user_id")
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="member_id")
+    private Long memberId;
 
     private String email;
     private String loginPw;
     private String name;
     private String phone;
 
-    public User(String email, String loginPw, String name, String phone) {
+    public Member(String email, String loginPw, String name, String phone) {
         this.email = email;
         this.loginPw = loginPw;
         this.name = name;

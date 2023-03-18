@@ -3,7 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveResponse;
-import com.twogather.twogatherwebbackend.exception.UserException;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class StoreOwnerService {
         StoreOwner owner = new StoreOwner(request.getEmail(), request.getPassword(), request.getName(), request.getPhone(),
                 request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()));
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
-        return new StoreOwnerSaveResponse(storedOwner.getUserId());
+        return new StoreOwnerSaveResponse(storedOwner.getMemberId());
     }
 
     private LocalDate stringToLocalDate(String date){
@@ -34,7 +34,7 @@ public class StoreOwnerService {
     }
     public void validateDuplicateEmail(final String email){
         if (storeOwnerRepository.existsByEmail(email)) {
-            throw new UserException(UserException.UserErrorCode.DUPLICATE_EMAIL);
+            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
         }
     }
 }

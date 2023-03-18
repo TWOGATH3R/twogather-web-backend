@@ -10,7 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Consumer extends User{
+@DiscriminatorValue("consumer")
+public class Consumer extends Member {
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviewList = new ArrayList<>();
 

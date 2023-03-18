@@ -20,10 +20,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Consumer consumer1 = new Consumer("consumer@naber.com", "123", "홍길동손님", "010-1234-1234");
-        StoreOwner owner1 = new StoreOwner("owner@naver.com", "123",
-                "김순순사장", "010-1111-1111",
-                "홍길동", "0000000000", LocalDate.now());
+        Consumer consumer1 = new Consumer("consumer@naber.com", "asd!123", "홍길동손님", "01012341234");
+        StoreOwner owner1 = new StoreOwner("owner@naver.com", "asd!123",
+                "김순순사장", "01011111111",
+                "김순순", "0000000000", LocalDate.now());
         consumerRepository.save(consumer1);
         storeOwnerRepository.save(owner1);
     }

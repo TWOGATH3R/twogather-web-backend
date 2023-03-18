@@ -2,16 +2,14 @@ package com.twogather.twogatherwebbackend;
 
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.exception.UserException;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,14 +48,14 @@ public class StoreOwnerServiceTest {
         Assertions.assertTrue(true);
     }
     @Test
-    public void save_DuplicateEmail_ShouldThrowUserException() {
+    public void save_DuplicateEmail_ShouldThrowMemberException() {
         // given
         final StoreOwnerSaveRequest request = returnRequest();
         //when
         when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
         // when
-        Assertions.assertThrows(UserException.class, () -> storeOwnerService.save(request));
+        Assertions.assertThrows(MemberException.class, () -> storeOwnerService.save(request));
     }
     private StoreOwnerSaveRequest returnRequest(){
         return new StoreOwnerSaveRequest(

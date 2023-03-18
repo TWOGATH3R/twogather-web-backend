@@ -38,14 +38,15 @@ public class AcceptanceTest {
                 .build();
         setRequestSpecification(spec);
     }
+
     ExtractableResponse<Response> saveOwner(final StoreOwnerSaveRequest ownerSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("storeOwner/save", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("owner/save", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(ownerSaveRequest)
-                .when().post("/api/owner")
+                .when().post("/api/owners")
                 .then().log().all().extract();
     }
 }

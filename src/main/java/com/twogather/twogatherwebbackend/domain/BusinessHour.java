@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Getter
 public class BusinessHour {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="business_hour_id")
     private Long businessHourId;
 

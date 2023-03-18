@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class Store {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="store_id")
     private Long storeId;
 

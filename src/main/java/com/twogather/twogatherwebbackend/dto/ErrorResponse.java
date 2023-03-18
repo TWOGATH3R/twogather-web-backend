@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.dto;
 
-import com.twogather.twogatherwebbackend.exception.UserException;
-import jdk.jshell.spi.ExecutionControl;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public class ErrorResponse {
@@ -15,7 +14,7 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public static ErrorResponse of(final UserException exception){
+    public static ErrorResponse of(final MemberException exception){
         return new ErrorResponse(exception.getMessage());
     }
     public static ErrorResponse of(final RuntimeException exception) {

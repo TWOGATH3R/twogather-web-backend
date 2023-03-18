@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.valid;
 
-import com.twogather.twogatherwebbackend.exception.SystemException;
-import com.twogather.twogatherwebbackend.exception.UserException;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +45,7 @@ public class BizRegNumberValidator {
             return isValid(responseBody);
         } catch (HttpServerErrorException e) {
             log.error("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
-            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
+            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
     }
 
@@ -62,7 +61,7 @@ public class BizRegNumberValidator {
             return "01".equals(valid);
         } catch (JSONException e) {
             log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
+            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
     }
 
@@ -77,7 +76,7 @@ public class BizRegNumberValidator {
             )));
         } catch (JSONException e) {
             log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            throw new UserException(UserException.UserErrorCode.BIZ_REG_NUMBER_VALIDATION);
+            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
         return jsonObject.toString();
     }
