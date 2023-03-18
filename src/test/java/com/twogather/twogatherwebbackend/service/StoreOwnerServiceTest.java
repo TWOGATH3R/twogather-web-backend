@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;

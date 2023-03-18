@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
@@ -13,11 +13,16 @@ import org.springframework.http.MediaType;
 import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
-
 public class AuthControllerTest extends AcceptanceTest{
+    private static final String EMAIL = "asd@naver.com";
+    private static final String PASSWORD = "asd@asd@@123";
+    private static final String NAME = "루터";
+    private static final String PHONE = "01012341234";
+    private static final String BUSINESS_NAME = "루터";
+    private static final String BUSINESS_NUMBER = "0000000000";
+    private static final String BUSINESS_START_DATE = "20200101";
 
-    private final String EMAIL = "asd@naver.com";
-    private final String PASSWORD = "asd@asd@@123";
+
     @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok를 응답한다.")
     @Test
     void login() {
@@ -59,12 +64,7 @@ public class AuthControllerTest extends AcceptanceTest{
 
     private StoreOwnerSaveRequest returnOwnerRequest(){
         return new StoreOwnerSaveRequest(
-                EMAIL,PASSWORD,
-                "김사업",
-                "01012341234",
-                "0000000000",
-                "김사업이름",
-                "20200101"
+                EMAIL,PASSWORD,NAME, PHONE,BUSINESS_NUMBER,BUSINESS_NAME,BUSINESS_START_DATE
         );
     }
 }

@@ -27,7 +27,8 @@ public class GlobalExceptionHandler{
         }
     }
 
-    private void log(HttpServletRequest request, Exception e){
+    private void log(HttpServletRequest request, SystemException e){
+        log.error("error code: {}", e.getErrorCode());
         log.error("An error occurred while processing the request", e);
         log.error("Request URL: {}", request.getRequestURL());
         log.error("Request method: {}", request.getMethod());

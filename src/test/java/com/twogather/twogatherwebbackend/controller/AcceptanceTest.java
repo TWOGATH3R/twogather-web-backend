@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
 import io.restassured.RestAssured;
