@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.LoginRequest;
 import com.twogather.twogatherwebbackend.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,6 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<Void> login(@RequestBody @Valid final LoginRequest loginRequest) {
         authService.login(loginRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
     }
 }

@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.twogather'
@@ -12,6 +13,10 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExtensions
+}
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -21,7 +26,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'junit:junit:4.13.1'
+    compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -33,8 +39,60 @@ dependencies {
 	implementation 'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.5.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// .adoc 파일에서 빌드, 스니펫 생성을 자동으로 구성되기 위해 추가하는 의존성
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	// restdocs에서 MockMvc를 사용할 때 사용하는 의존성
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
+
+// 스니펫이 위치할 경로를 지정한다
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	useJUnitPlatform()
+	// 스니펫 디렉터리를 출력으로 추가하도록 테스트 작업
+	outputs.dir snippetsDir
+	// Jenkins에서 빌드할때에는 JPA구성이 되어있지 않아 빌드시에는 제외하도록 설정
+	filter {
+		excludeTestsMatching "com.ae.stagram.domain.**.dao.*"
+	}
+}
+
+// ext에서 정의한 경로에 스니펫을 넣어준뒤 테스트를 진행한다
+asciidoctor {
+	configurations "asciidoctorExtensions"
+	inputs.dir snippetsDir
+	dependsOn test
+}
+// 기존에 존재하는 docs를 삭제한다
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+// build시 생성된 html문서를 static/docs에 copy하기 위한 테스크
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+//bootJar는 실행가능한 jar을 빌드하는데 사용하며, Jar로 빌드가 되면서 실제 배포시 생성된 명세 html파일의 경로를 찾아 BOOT-INF/classes/static/docs 맵핑
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+}
+
+// build시 copyDocument 테스크를 실행한다
+build {
+	dependsOn copyDocument
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }

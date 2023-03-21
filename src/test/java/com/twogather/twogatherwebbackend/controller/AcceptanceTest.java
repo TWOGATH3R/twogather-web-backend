@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.UTF8EncodingFilter;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -34,6 +35,7 @@ public class AcceptanceTest {
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         RestAssured.port = port;
         RequestSpecification spec = new RequestSpecBuilder()
+                .addFilter(new UTF8EncodingFilter())
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
         setRequestSpecification(spec);
@@ -42,7 +44,7 @@ public class AcceptanceTest {
     ExtractableResponse<Response> saveOwner(final StoreOwnerSaveRequest ownerSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
-                .accept("application/json")
+                .accept("application/json; charset=UTF-8")
                 .filter(document("owner/save", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(ownerSaveRequest)

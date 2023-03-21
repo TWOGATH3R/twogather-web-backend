@@ -54,7 +54,7 @@ public class AuthControllerTest extends AcceptanceTest{
     private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
-                .accept("application/json")
+                .accept("application/json; charset=UTF-8")
                 .filter(document("owner/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)

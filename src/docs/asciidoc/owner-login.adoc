@@ -1,0 +1,28 @@
+== Login API
+
+=== Request
+
+[source,http]
+----
+POST /api/login/token HTTP/1.1
+Accept: application/json; charset=UTF-8
+Content-Type: application/json; charset=UTF-8
+Host: localhost:53873
+Content-Length: 65
+
+{
+    "email": "asd@naver.com",
+    "password": "asd@asd@@123"
+}
+----
+
+=== Response
+
+[source,http]
+----
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Mon, 20 Mar 2023 10:47:46 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+----

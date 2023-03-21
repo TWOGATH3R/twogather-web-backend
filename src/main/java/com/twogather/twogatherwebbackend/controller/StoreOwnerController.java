@@ -1,9 +1,11 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveResponse;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +24,9 @@ public class StoreOwnerController {
     @PostMapping
     public ResponseEntity<Void> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
         StoreOwnerSaveResponse memberSaveResponse = storeOwnerService.save(storeOwnerSaveRequest);
-        return ResponseEntity
-                .created(URI.create("/api/owner/" + memberSaveResponse.getId()))
-                .build();
+
+        return ResponseEntity.created(URI.create("/api/owner/" + memberSaveResponse.getId()))
+                .contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
     }
 
     @GetMapping
@@ -34,6 +36,6 @@ public class StoreOwnerController {
             @Email(message = "올바른 이메일 형식이 아닙니다.")
             final String email) {
         storeOwnerService.validateDuplicateEmail(email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
     }
 }
