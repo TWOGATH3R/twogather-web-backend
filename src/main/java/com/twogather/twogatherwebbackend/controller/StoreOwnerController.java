@@ -25,8 +25,7 @@ public class StoreOwnerController {
     public ResponseEntity<Void> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
         StoreOwnerSaveResponse memberSaveResponse = storeOwnerService.save(storeOwnerSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/owner/" + memberSaveResponse.getId()))
-                .contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
+        return ResponseEntity.created(URI.create("/api/owner/" + memberSaveResponse.getId())).build();
     }
 
     @GetMapping
@@ -36,6 +35,6 @@ public class StoreOwnerController {
             @Email(message = "올바른 이메일 형식이 아닙니다.")
             final String email) {
         storeOwnerService.validateDuplicateEmail(email);
-        return ResponseEntity.ok().contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.UTF8EncodingFilter;
 import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
@@ -35,7 +33,6 @@ public class AcceptanceTest {
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         RestAssured.port = port;
         RequestSpecification spec = new RequestSpecBuilder()
-                .addFilter(new UTF8EncodingFilter())
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
         setRequestSpecification(spec);

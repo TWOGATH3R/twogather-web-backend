@@ -20,6 +20,6 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<Void> login(@RequestBody @Valid final LoginRequest loginRequest) {
         authService.login(loginRequest);
-        return ResponseEntity.ok().contentType(MediaType.valueOf("application/json; charset=UTF-8")).build();
+        return ResponseEntity.ok().build();
     }
 }

@@ -17,7 +17,7 @@ public class MemberExceptionHandler {
     public ResponseEntity<ErrorResponse> memberException(HttpServletRequest request, MemberException e) {
         log(request,e);
         ErrorResponse errorResponse = ErrorResponse.of(e);
-        return ResponseEntity.badRequest().contentType(MediaType.valueOf("application/json; charset=UTF-8")).body(errorResponse);
+        return ResponseEntity.badRequest().body(errorResponse);
     }
     private void log(HttpServletRequest request, MemberException e){
         log.error("errorCode: {}", e.getErrorCode());
