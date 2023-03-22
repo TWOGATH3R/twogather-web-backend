@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class StoreSaveResponse {
     private Long id;
 }
