@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.dto;
+package com.twogather.twogatherwebbackend.dto.businesshour;
 
 import java.time.LocalTime;
 

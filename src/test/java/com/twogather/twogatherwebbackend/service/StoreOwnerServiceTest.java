@@ -1,13 +1,13 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -34,6 +34,7 @@ public class StoreOwnerServiceTest {
         storeOwnerService = new StoreOwnerService(storeOwnerRepository, validator);
     }
     @Test
+    @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final StoreOwnerSaveRequest request = returnRequest();
@@ -48,6 +49,7 @@ public class StoreOwnerServiceTest {
         Assertions.assertTrue(true);
     }
     @Test
+    @DisplayName("save: 중복되는 이메일로 두번 가입했을때 예외가 터진다")
     public void save_DuplicateEmail_ShouldThrowMemberException() {
         // given
         final StoreOwnerSaveRequest request = returnRequest();

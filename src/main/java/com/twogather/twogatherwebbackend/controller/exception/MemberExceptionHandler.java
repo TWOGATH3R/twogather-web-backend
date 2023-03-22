@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.controller;
+package com.twogather.twogatherwebbackend.controller.exception;
 
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;

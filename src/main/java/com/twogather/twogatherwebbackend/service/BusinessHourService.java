@@ -2,10 +2,10 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.BusinessHourSaveResponse;
-import com.twogather.twogatherwebbackend.dto.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.BusinessHourUpdateResponse;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveResponse;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;

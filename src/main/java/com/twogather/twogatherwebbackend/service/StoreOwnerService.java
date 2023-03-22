@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;

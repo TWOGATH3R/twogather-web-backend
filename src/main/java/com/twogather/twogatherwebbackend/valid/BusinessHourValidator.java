@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.valid;
 
-import com.twogather.twogatherwebbackend.dto.StartTimeBeforeEndTime;
+import com.twogather.twogatherwebbackend.dto.businesshour.StartTimeBeforeEndTime;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

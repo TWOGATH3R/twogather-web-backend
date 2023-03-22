@@ -1,11 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
-import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.StoreOwnerSaveResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveResponse;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,11 +1,11 @@
-package com.twogather.twogatherwebbackend.dto;
+package com.twogather.twogatherwebbackend.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoreOwnerSaveResponse {

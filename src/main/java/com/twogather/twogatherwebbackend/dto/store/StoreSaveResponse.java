@@ -1,12 +1,13 @@
-package com.twogather.twogatherwebbackend.dto;
+package com.twogather.twogatherwebbackend.dto.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConsumerSaveResponse {
+public class StoreSaveResponse {
     private Long id;
 }

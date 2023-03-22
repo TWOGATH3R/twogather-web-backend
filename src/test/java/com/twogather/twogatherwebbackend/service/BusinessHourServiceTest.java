@@ -2,10 +2,10 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.BusinessHourSaveResponse;
-import com.twogather.twogatherwebbackend.dto.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.BusinessHourUpdateResponse;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveResponse;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

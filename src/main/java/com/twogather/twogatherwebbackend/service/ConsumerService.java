@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.dto.ConsumerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.ConsumerSaveResponse;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;

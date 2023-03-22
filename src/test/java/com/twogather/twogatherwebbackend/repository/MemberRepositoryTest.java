@@ -21,7 +21,7 @@ class MemberRepositoryTest extends RepositoryTest {
     private final Member MEMBER = returnMember();
 
     @Test
-    @DisplayName("저장된 멤버를 이메일을 통해 찾아올 수 있다.")
+    @DisplayName("find: 저장된 멤버를 이메일을 통해 찾아올 수 있다.")
     void findByEmail() {
         // given
         Member expected = memberRepository.save(MEMBER);

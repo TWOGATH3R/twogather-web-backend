@@ -1,7 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.*;
-import com.twogather.twogatherwebbackend.service.StoreOwnerService;
+import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
+import com.twogather.twogatherwebbackend.dto.store.StoreSaveResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.store.StoreUpdateResponse;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

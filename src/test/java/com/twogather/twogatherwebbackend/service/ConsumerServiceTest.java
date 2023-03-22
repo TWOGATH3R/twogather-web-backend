@@ -1,12 +1,12 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.dto.ConsumerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,6 +30,7 @@ public class ConsumerServiceTest {
     }
 
     @Test
+    @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final ConsumerSaveRequest request = returnRequest();
@@ -44,6 +45,7 @@ public class ConsumerServiceTest {
         Assertions.assertTrue(true);
     }
     @Test
+    @DisplayName("save: 중복된 이메일로 저장요청이 왔을때 예외를 반환한다")
     public void save_DuplicateEmail_ShouldThrowMemberException() {
         // given
         final ConsumerSaveRequest request = returnRequest();
