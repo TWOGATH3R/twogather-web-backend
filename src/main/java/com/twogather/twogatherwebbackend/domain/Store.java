@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,7 @@ public class Store {
     private Long storeId;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private StoreOwner owner;
 
     @OneToMany(mappedBy = "store")
@@ -30,6 +32,7 @@ public class Store {
     private List<Menu> menuList = new ArrayList<>();
 
     @OneToOne
+    @JoinColumn(name = "category_id")
     private Category category;
     private String name;
     private String address;
@@ -37,6 +40,12 @@ public class Store {
 
 
     public Store(String name, String address, String phone){
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+    }
+    public Store(Long id, String name, String address, String phone){
+        this.storeId = id;
         this.name=name;
         this.address=address;
         this.phone=phone;

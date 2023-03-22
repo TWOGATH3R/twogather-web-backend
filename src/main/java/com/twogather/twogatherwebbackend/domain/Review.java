@@ -13,6 +13,7 @@ public class Review {
     private Long reviewId;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private Consumer reviewer;
 
     //이거 string으로 해도되는건가
