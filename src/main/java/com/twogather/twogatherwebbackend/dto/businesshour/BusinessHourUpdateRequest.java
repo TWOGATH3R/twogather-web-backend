@@ -10,11 +10,18 @@ import java.time.LocalTime;
 @Getter
 @AllArgsConstructor
 public class BusinessHourUpdateRequest implements StartTimeBeforeEndTime {
-    @NotNull(message = "storeId는 필수 입력 항목입니다.")
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private Long storeId;
 
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalTime startTime;
+
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalTime endTime;
+
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private DayOfWeek dayOfWeek;
+
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private boolean isOpen;
 }

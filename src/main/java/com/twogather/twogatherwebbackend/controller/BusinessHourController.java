@@ -20,7 +20,7 @@ public class BusinessHourController {
     private final BusinessHourService businessHourService;
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Validated @Valid final BusinessHourSaveRequest businessHourSaveRequest) {
+    public ResponseEntity<Void> save(@RequestBody @Valid final BusinessHourSaveRequest businessHourSaveRequest) {
         BusinessHourSaveResponse businessHourSaveResponse = businessHourService.save(businessHourSaveRequest);
 
         return ResponseEntity.created(URI.create("/api/business-hour/" + businessHourSaveResponse.getId())).build();

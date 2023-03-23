@@ -5,14 +5,35 @@ import com.twogather.twogatherwebbackend.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler{
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName;
+            String errorMessage = error.getDefaultMessage();
+
+            if (error instanceof FieldError) {
+                fieldName = ((FieldError) error).getField();
+            } else {
+                fieldName = error.getObjectName();
+            }
+            errors.put(fieldName, errorMessage);
+        });
+
+        return ResponseEntity.badRequest().body(errors);
+    }
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<ErrorResponse> systemException(HttpServletRequest request,SystemException e) {
         log(request,e);

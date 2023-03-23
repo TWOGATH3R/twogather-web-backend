@@ -14,7 +14,9 @@ public class BusinessHourException extends RuntimeException{
         public String getMessage(){ return message; }
     }
     private final BusinessHourErrorCode errorCode;
+
     public BusinessHourException(BusinessHourErrorCode errorCode){
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
     public BusinessHourErrorCode getErrorCode(){

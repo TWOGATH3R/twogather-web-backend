@@ -15,6 +15,7 @@ public class SystemException extends RuntimeException{
     }
     private final SystemErrorCode errorCode;
     public SystemException(SystemErrorCode errorCode){
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
     public SystemErrorCode getErrorCode(){
