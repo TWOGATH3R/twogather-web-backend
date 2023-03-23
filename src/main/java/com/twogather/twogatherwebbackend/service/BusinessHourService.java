@@ -3,9 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
@@ -33,20 +31,18 @@ public class BusinessHourService {
         }
         return businessHours;
     }
-    public BusinessHourSaveResponse save(@Valid @RequestBody BusinessHourSaveRequest request){
+    public void save(@Valid @RequestBody BusinessHourSaveRequest request){
         validateDuplicateDayOfWeek(request.getStoreId(), request.getDayOfWeek());
         Store store = findByStoreIdReturnStore(request.getStoreId());
         BusinessHour businessHour = new BusinessHour(store,request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.isOpen());
-        BusinessHour savedBusinessHour = businessHourRepository.save(businessHour);
-        return new BusinessHourSaveResponse(savedBusinessHour.getBusinessHourId());
+        businessHourRepository.save(businessHour);
     }
-    public BusinessHourUpdateResponse update(Long id, @Valid @RequestBody BusinessHourUpdateRequest request){
+    public void update(Long id, @Valid @RequestBody BusinessHourUpdateRequest request){
         BusinessHour businessHour = findBusinessHour(id);
         businessHour.updateEndTime(request.getEndTime());
         businessHour.updateStartTime(request.getStartTime());
         businessHour.updateDayOfWeek(request.getDayOfWeek());
         businessHour.updateIsClosed(request.isOpen());
-        return new BusinessHourUpdateResponse(businessHour.getBusinessHourId());
     }
     public void delete(Long businessHourId){
         validateBusinessHourId(businessHourId);
@@ -71,11 +67,6 @@ public class BusinessHourService {
         businessHour.orElseThrow(
                 () -> new BusinessHourException(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID)
         );
-        return businessHour.get();
-    }
-    private BusinessHour findByStoreIdAndDayOfWeek(Long storeId, DayOfWeek dayOfWeek){
-        Optional<BusinessHour> businessHour = businessHourRepository.findByStoreStoreIdAndDayOfWeek(storeId, dayOfWeek);
-        businessHour.orElseThrow(()-> new BusinessHourException(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID));
         return businessHour.get();
     }
     private void validateDuplicateDayOfWeek(Long storeId, DayOfWeek dayOfWeek) {

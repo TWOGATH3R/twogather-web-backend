@@ -1,13 +1,10 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateResponse;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,15 +18,14 @@ public class BusinessHourController {
 
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid final BusinessHourSaveRequest businessHourSaveRequest) {
-        BusinessHourSaveResponse businessHourSaveResponse = businessHourService.save(businessHourSaveRequest);
-
-        return ResponseEntity.created(URI.create("/api/business-hour/" + businessHourSaveResponse.getId())).build();
+        businessHourService.save(businessHourSaveRequest);
+        return ResponseEntity.created(URI.create("/api/business-hour/")).build();
     }
     @PutMapping("/{businessHourId}")
     public ResponseEntity<Void> update(@PathVariable Long businessHourId, @RequestBody @Valid BusinessHourUpdateRequest businessHourUpdateRequest) {
-        BusinessHourUpdateResponse businessHourUpdateResponse = businessHourService.update(businessHourId, businessHourUpdateRequest);
+        businessHourService.update(businessHourId, businessHourUpdateRequest);
 
-        return ResponseEntity.created(URI.create("/api/stores/" + businessHourUpdateResponse.getId())).build();
+        return ResponseEntity.created(URI.create("/api/stores/" )).build();
     }
 
     @DeleteMapping("/{businessHourId}")

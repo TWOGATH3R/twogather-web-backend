@@ -1,9 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreUpdateResponse;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +17,15 @@ public class StoreController {
     private final StoreService storeService;
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
-        StoreSaveResponse storeSaveResponse = storeService.save(storeSaveRequest);
+        storeService.save(storeSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/stores/" + storeSaveResponse.getId())).build();
+        return ResponseEntity.created(URI.create("/api/stores/")).build();
     }
     @PutMapping("/{storeId}")
     public ResponseEntity<Void> update(@PathVariable Long storeId, @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
-        StoreUpdateResponse storeUpdateResponse = storeService.update(storeId, storeUpdateRequest);
+        storeService.update(storeId, storeUpdateRequest);
 
-        return ResponseEntity.created(URI.create("/api/stores/" + storeUpdateResponse.getId())).build();
+        return ResponseEntity.created(URI.create("/api/stores/")).build();
     }
 
     @DeleteMapping("/{storeId}")

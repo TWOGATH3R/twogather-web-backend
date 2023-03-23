@@ -2,7 +2,6 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
@@ -20,13 +19,12 @@ public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
 
-    public StoreOwnerSaveResponse save(final StoreOwnerSaveRequest request){
+    public void save(final StoreOwnerSaveRequest request){
         validateDuplicateEmail(request.getEmail());
         validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
         StoreOwner owner = new StoreOwner(request.getEmail(), request.getPassword(), request.getName(), request.getPhone(),
                 request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()));
-        StoreOwner storedOwner = storeOwnerRepository.save(owner);
-        return new StoreOwnerSaveResponse(storedOwner.getMemberId());
+        storeOwnerRepository.save(owner);
     }
 
     private LocalDate stringToLocalDate(String date){

@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveResponse;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,9 @@ public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
     @PostMapping
     public ResponseEntity<Void> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
-        StoreOwnerSaveResponse memberSaveResponse = storeOwnerService.save(storeOwnerSaveRequest);
+        storeOwnerService.save(storeOwnerSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/owner/" + memberSaveResponse.getId())).build();
+        return ResponseEntity.created(URI.create("/api/owners/")).build();
     }
 
     @GetMapping

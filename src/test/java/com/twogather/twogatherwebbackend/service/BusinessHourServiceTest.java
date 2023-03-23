@@ -3,9 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
@@ -24,8 +22,7 @@ import java.util.Optional;
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)//Mock 객체 생성, 초기화
 public class BusinessHourServiceTest {
@@ -46,19 +43,18 @@ public class BusinessHourServiceTest {
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_WhenValidRequest_ShouldResponse() {
         // given
-
+        final Long ID = 1L;
         final BusinessHour businessHour = returnBusinessHour();
-        when(storeRepository.findById(any(Long.class))).thenReturn(Optional.of(new Store()));
+        when(storeRepository.findById(ID)).thenReturn(Optional.of(new Store()));
         when(businessHourRepository.save(any(BusinessHour.class))).thenReturn(businessHour);
         BusinessHourSaveRequest request = returnBusinessHourSaveRequest();
         when(businessHourRepository.findByStoreStoreIdAndDayOfWeek(request.getStoreId(), request.getDayOfWeek()))
                 .thenReturn(Optional.empty());
         // when
-        BusinessHourSaveResponse response = businessHourService.save(request);
         // then
-        assertNotNull(response);
-        assertNotNull(response.getId());
+        assertDoesNotThrow(() -> businessHourService.save(request));
     }
+
 
     @Test
     @DisplayName("save: 저장하는 과정에서 <가게 ID + 요일> 에 해당하는 객체가 발견되어 예외가 터진다")
@@ -104,14 +100,14 @@ public class BusinessHourServiceTest {
     public void update_WhenNoSuchBusinessHour_ShouldReturnException(){
         //given
         final Long ID = 1l;
-        when(businessHourRepository.findByStoreStoreIdAndDayOfWeek(ID, any(DayOfWeek.class))).thenReturn(Optional.empty());
+        when(businessHourRepository.findById(ID)).thenReturn(Optional.empty());
         BusinessHourUpdateRequest request = returnBusinessHourUpdateRequest();
         //when
         BusinessHourException exception = assertThrows(BusinessHourException.class, () -> {
             businessHourService.update(ID, request);
         });
         //then
-        assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID, exception.getErrorCode());
+        assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID, exception.getErrorCode());
     }
     @Test
     @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
@@ -122,8 +118,8 @@ public class BusinessHourServiceTest {
         when(businessHourRepository.findById(ID)).thenReturn(Optional.of(originBusinessHour));
         BusinessHourUpdateRequest request = returnBusinessHourUpdateRequest();
         //when
-        BusinessHourUpdateResponse response = businessHourService.update(ID, request);
-        BusinessHour updatedBusinessHour = businessHourRepository.findById(response.getId()).get();
+        businessHourService.update(ID, request);
+        BusinessHour updatedBusinessHour = businessHourRepository.findById(ID).get();
         //then
         assertEquals(updatedBusinessHour.getEndTime(), request.getEndTime());
         assertEquals(updatedBusinessHour.getStartTime(), request.getStartTime());
