@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,12 +28,14 @@ public class StoreOwnerServiceTest {
     private StoreOwnerRepository storeOwnerRepository;
     @Mock
     private BizRegNumberValidator validator;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     private StoreOwnerService storeOwnerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, validator);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository, validator, passwordEncoder);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
@@ -43,7 +47,7 @@ public class StoreOwnerServiceTest {
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
         // when
-        storeOwnerService.save(request);
+        storeOwnerService.join(request);
 
         // then
         Assertions.assertTrue(true);
@@ -57,7 +61,7 @@ public class StoreOwnerServiceTest {
         when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
         // when
-        Assertions.assertThrows(MemberException.class, () -> storeOwnerService.save(request));
+        Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }
     private StoreOwnerSaveRequest returnRequest(){
         return new StoreOwnerSaveRequest(
@@ -72,7 +76,8 @@ public class StoreOwnerServiceTest {
     }
     private StoreOwner requestToEntity(StoreOwnerSaveRequest request){
         return new StoreOwner(request.getEmail(), request.getPassword(), request.getName(), request.getPhone(),
-                request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()));
+                request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()),
+                AuthenticationType.OWNER, true);
     }
     private LocalDate stringToLocalDate(String date){
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));

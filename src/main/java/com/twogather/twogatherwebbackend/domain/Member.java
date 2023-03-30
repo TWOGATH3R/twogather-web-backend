@@ -20,11 +20,17 @@ public class Member {
     private String loginPw;
     private String name;
     private String phone;
+    private boolean isActive;
 
-    public Member(String email, String loginPw, String name, String phone) {
+    @Enumerated(EnumType.STRING)
+    private AuthenticationType authenticationType;
+
+    public Member(String email, String loginPw, String name, String phone, AuthenticationType authenticationType, boolean isActive) {
         this.email = email;
         this.loginPw = loginPw;
         this.name = name;
         this.phone = phone;
+        this.authenticationType = authenticationType;
+        this.isActive = isActive;
     }
 }

@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.dto.businesshour;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.twogather.twogatherwebbackend.valid.StartBeforeEnd;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

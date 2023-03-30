@@ -2,7 +2,6 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,7 @@ import org.springframework.http.MediaType;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.INVALID_TIME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -47,7 +47,7 @@ public class BusinessHourControllerTest extends AcceptanceTest{
                 .when().post("/api/business-hour")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value()) // 예외가 발생하면 BAD_REQUEST(400) 상태 코드가 반환되어야 합니다.
-                .body("message", equalTo(BusinessHourException.BusinessHourErrorCode.INVALID_TIME.getMessage()));
+                .body("message", equalTo(INVALID_TIME.getMessage()));
     }
     @Test
     @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
@@ -85,7 +85,7 @@ public class BusinessHourControllerTest extends AcceptanceTest{
                 .when().put("/api/business-hour/" + id)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value()) // 예외가 발생하면 BAD_REQUEST(400) 상태 코드가 반환되어야 합니다.
-                .body("message", equalTo(BusinessHourException.BusinessHourErrorCode.INVALID_TIME.getMessage()));
+                .body("message", equalTo(INVALID_TIME.getMessage()));
     }
 
     @Test

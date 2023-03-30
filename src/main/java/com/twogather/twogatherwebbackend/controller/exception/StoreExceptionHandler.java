@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.controller.exception;
 
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

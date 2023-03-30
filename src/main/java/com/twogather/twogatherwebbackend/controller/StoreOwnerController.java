@@ -1,13 +1,16 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerInfoResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -18,9 +21,10 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
-    @PostMapping
+
+    @PostMapping()
     public ResponseEntity<Void> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
-        storeOwnerService.save(storeOwnerSaveRequest);
+        storeOwnerService.join(storeOwnerSaveRequest);
 
         return ResponseEntity.created(URI.create("/api/owners/")).build();
     }
@@ -33,5 +37,10 @@ public class StoreOwnerController {
             final String email) {
         storeOwnerService.validateDuplicateEmail(email);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<StoreOwnerInfoResponse> getOwnerInfo(@PathVariable @Email String email){
+        return ResponseEntity.ok(storeOwnerService.getMemberWithAuthorities(email));
     }
 }

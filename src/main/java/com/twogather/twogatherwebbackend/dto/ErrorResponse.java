@@ -1,10 +1,11 @@
 package com.twogather.twogatherwebbackend.dto;
 
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
-import com.twogather.twogatherwebbackend.exception.MemberException;
-import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
     private String message;
 
@@ -23,6 +24,10 @@ public class ErrorResponse {
     public static ErrorResponse of(final MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return new ErrorResponse(message);
+    }
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
     }
 
     public String getMessage() {

@@ -1,18 +1,16 @@
 package com.twogather.twogatherwebbackend.repository;
 
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {
-    public static final String EMAIL = "pobi@email.com";
-    public static final String PASSWORD = "test1234!!!";
-    public static final String NAME = "루터";
-    public static final String PHONE = "01012341234";
 
 
     @Autowired
@@ -27,7 +25,7 @@ class MemberRepositoryTest extends RepositoryTest {
         Member expected = memberRepository.save(MEMBER);
 
         // when
-        Member findMember = memberRepository.findByEmail(EMAIL)
+        Member findMember = memberRepository.findByEmail(MEMBER_EMAIL)
                 .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_EMAIL));
 
         // then
@@ -41,12 +39,12 @@ class MemberRepositoryTest extends RepositoryTest {
         memberRepository.save(MEMBER);
 
         // when
-        boolean actual = memberRepository.existsByEmail(EMAIL);
+        boolean actual = memberRepository.existsByEmail(MEMBER_EMAIL);
 
         // then
         assertThat(actual).isTrue();
     }
     private Member returnMember(){
-        return new Member(EMAIL, PASSWORD,NAME, PHONE);
+        return new Member(MEMBER_EMAIL, MEMBER_PASSWORD,MEMBER_NAME, MEMBER_PHONE, AuthenticationType.OWNER, true);
     }
 }

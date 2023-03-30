@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -20,13 +22,15 @@ import static org.mockito.Mockito.when;
 public class ConsumerServiceTest {
     @Mock
     private ConsumerRepository consumerRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private ConsumerService consumerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        consumerService = new ConsumerService(consumerRepository);
+        consumerService = new ConsumerService(consumerRepository, passwordEncoder);
     }
 
     @Test
@@ -39,7 +43,7 @@ public class ConsumerServiceTest {
         when(consumerRepository.save(any(Consumer.class))).thenReturn(consumer);
 
         // when
-        consumerService.save(request);
+        consumerService.join(request);
 
         // then
         Assertions.assertTrue(true);
@@ -53,10 +57,10 @@ public class ConsumerServiceTest {
         when(consumerRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
         // when
-        Assertions.assertThrows(MemberException.class, () -> consumerService.save(request));
+        Assertions.assertThrows(MemberException.class, () -> consumerService.join(request));
     }
     private Consumer requestToEntity(ConsumerSaveRequest request){
-        return new Consumer(request.getEmail(), request.getPassword(), request.getName(), request.getPhone());
+        return new Consumer(request.getEmail(), request.getPassword(), request.getName(), request.getPhone(), AuthenticationType.CONSUMER, true);
     }
     private ConsumerSaveRequest returnRequest(){
         return new ConsumerSaveRequest(

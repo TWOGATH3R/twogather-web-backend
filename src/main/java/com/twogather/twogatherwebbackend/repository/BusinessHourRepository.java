@@ -2,7 +2,6 @@ package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.DayOfWeek;
 import java.util.List;
