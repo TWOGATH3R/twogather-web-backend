@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerInfoResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -28,30 +28,29 @@ public class StoreOwnerService {
     private final BizRegNumberValidator validator;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(final StoreOwnerSaveRequest request){
+    public StoreOwnerResponse join(final StoreOwnerSaveRequest request){
         validateDuplicateEmail(request.getEmail());
         validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
         StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(), request.getPhone(),
                 request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()), AuthenticationType.OWNER,true);
-        storeOwnerRepository.save(owner);
+        StoreOwner storedOwner = storeOwnerRepository.save(owner);
+        return toStoreOwnerResponse(storedOwner);
     }
 
     @Transactional(readOnly = true)
-    public StoreOwnerInfoResponse getMemberWithAuthorities(String email){
+    public StoreOwnerResponse getMemberWithAuthorities(String email){
         StoreOwner owner = findMemberByEmailOrElseThrow(email);
 
-        return new StoreOwnerInfoResponse(owner.getName(), owner.getEmail(), owner.getPhone(),
-                owner.getBusinessNumber(), owner.getBusinessName(), owner.getBusinessStartDate());
+        return toStoreOwnerResponse(owner);
     }
+
     @Transactional(readOnly = true)
-    public StoreOwnerInfoResponse getMemberWithAuthorities(){
+    public StoreOwnerResponse getMemberWithAuthorities(){
         Optional<StoreOwner> optionalOwner = SecurityUtils.getCurrentUsername().flatMap(storeOwnerRepository::findByEmail);
         optionalOwner.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
         StoreOwner owner = optionalOwner.get();
-        return new StoreOwnerInfoResponse(owner.getName(), owner.getEmail(), owner.getPhone(),
-                owner.getBusinessNumber(), owner.getBusinessName(), owner.getBusinessStartDate());
+        return toStoreOwnerResponse(owner);
     }
-
 
     private LocalDate stringToLocalDate(String date){
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -63,5 +62,9 @@ public class StoreOwnerService {
         if (storeOwnerRepository.existsByEmail(email)) {
             throw new MemberException(DUPLICATE_EMAIL);
         }
+    }
+    private StoreOwnerResponse toStoreOwnerResponse(StoreOwner owner){
+        return new StoreOwnerResponse(owner.getMemberId(), owner.getName(), owner.getEmail(), owner.getPhone(),
+                owner.getBusinessNumber(), owner.getBusinessName(), owner.getBusinessStartDate());
     }
 }

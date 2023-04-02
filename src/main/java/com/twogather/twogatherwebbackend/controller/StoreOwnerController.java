@@ -1,20 +1,21 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerInfoResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/owners")
@@ -23,24 +24,26 @@ public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
 
     @PostMapping()
-    public ResponseEntity<Void> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
-        storeOwnerService.join(storeOwnerSaveRequest);
+    public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
+        StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/owners/")).build();
-    }
-
-    @GetMapping
-    public ResponseEntity<Void> validateEmail(
-            @RequestParam
-            @NotBlank(message = "비어있는 항목을 입력해주세요.")
-            @Email(message = "올바른 이메일 형식이 아닙니다.")
-            final String email) {
-        storeOwnerService.validateDuplicateEmail(email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<StoreOwnerInfoResponse> getOwnerInfo(@PathVariable @Email String email){
-        return ResponseEntity.ok(storeOwnerService.getMemberWithAuthorities(email));
+    @PreAuthorize("hasAnyRole('OWNER')")
+    public ResponseEntity<Response> getOwnerInfo(@PathVariable @Email String email){
+        StoreOwnerResponse data = storeOwnerService.getMemberWithAuthorities(email);
+
+        return ResponseEntity.ok(new Response(data));
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    private static class Response {
+        private StoreOwnerResponse data;
+    }
+
+
 }

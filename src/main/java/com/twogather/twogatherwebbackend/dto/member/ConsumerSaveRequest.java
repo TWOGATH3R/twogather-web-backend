@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ConsumerSaveRequest extends MemberSave {
+public class ConsumerSaveRequest extends MemberSaveRequest {
     public ConsumerSaveRequest(String email, String password, String name, String phone) {
         super(email, password, name, phone);
     }

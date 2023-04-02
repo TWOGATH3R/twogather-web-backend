@@ -69,8 +69,8 @@ public class SecurityConfig {
                 .antMatchers("/api/logout").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/owners").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/consumers").permitAll()
-                .antMatchers("/api/owners/**").hasRole(OWNER.authority())
-                .antMatchers("/api/consumers/**").hasRole(CONSUMER.authority())
+                .antMatchers("/api/owners/**").hasRole(OWNER.name())
+                .antMatchers("/api/consumers/**").hasRole(CONSUMER.name())
                 // jwtFilter를 적용했던 jwtSecurityConfig 클래스도 적용
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider, jwtAuthenticationEntryPoint));

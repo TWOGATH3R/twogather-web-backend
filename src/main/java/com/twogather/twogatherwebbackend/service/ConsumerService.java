@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerInfoResponse;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
@@ -23,27 +23,29 @@ public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(final ConsumerSaveRequest request){
+    public ConsumerResponse join(final ConsumerSaveRequest request){
         validateDuplicateEmail(request.getEmail());
         Consumer consumer
                 = new Consumer(request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), request.getPhone(), AuthenticationType.CONSUMER, true);
-        consumerRepository.save(consumer);
+        Consumer storedConsumer = consumerRepository.save(consumer);
+
+        return toConsumerResponse(storedConsumer);
     }
 
     @Transactional(readOnly = true)
-    public ConsumerInfoResponse getMemberWithAuthorities(final String email){
+    public ConsumerResponse getMemberWithAuthorities(final String email) {
         Consumer consumer = findMemberByEmailOrElseThrow(email);
 
-        return new ConsumerInfoResponse(consumer.getName(), consumer.getEmail(), consumer.getPhone());
+        return toConsumerResponse(consumer);
     }
     @Transactional(readOnly = true)
-    public ConsumerInfoResponse getMemberWithAuthorities(){
+    public ConsumerResponse getMemberWithAuthorities(){
         Optional<Consumer> optionalConsumer = SecurityUtils.getCurrentUsername().flatMap(consumerRepository::findByEmail);
         optionalConsumer.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
         Consumer consumer = optionalConsumer.get();
 
-        return new ConsumerInfoResponse(consumer.getName(), consumer.getEmail(), consumer.getPhone());
+        return toConsumerResponse(consumer);
     }
 
     private Consumer findMemberByEmailOrElseThrow(final String email){
@@ -53,5 +55,8 @@ public class ConsumerService {
         if (consumerRepository.existsByEmail(email)) {
             throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
         }
+    }
+    private ConsumerResponse toConsumerResponse(Consumer consumer){
+        return new ConsumerResponse(consumer.getMemberId(), consumer.getName(), consumer.getEmail(), consumer.getPhone());
     }
 }

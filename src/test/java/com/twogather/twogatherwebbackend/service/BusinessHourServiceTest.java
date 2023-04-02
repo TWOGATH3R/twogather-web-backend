@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
@@ -88,7 +89,7 @@ public class BusinessHourServiceTest {
         final Long ID = 1l;
         when(businessHourRepository.findByStoreStoreId(ID)).thenReturn(result);
         //when
-        List<BusinessHour> list = businessHourService.findBusinessHoursByStoreId(ID);
+        List<BusinessHourResponse> list = businessHourService.findBusinessHoursByStoreId(ID);
         //then
         assertEquals(list.get(0), result.get(0));
     }

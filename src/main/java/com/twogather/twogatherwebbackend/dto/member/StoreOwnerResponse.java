@@ -8,16 +8,15 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
-public class StoreOwnerInfoResponse extends MemberInfo{
+public class StoreOwnerResponse extends MemberResponse {
     String businessName;
-
     String businessNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate businessStartDate;
 
-    public StoreOwnerInfoResponse(String name, String email, String phone, String businessNumber, String businessName, LocalDate businessStartDate){
-        super(name,email,phone);
+    public StoreOwnerResponse(Long id, String name, String email, String phone, String businessNumber, String businessName, LocalDate businessStartDate){
+        super(id, name,email,phone);
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;

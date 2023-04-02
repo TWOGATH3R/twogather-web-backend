@@ -1,16 +1,19 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.member.ConsumerInfoResponse;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/consumers")
@@ -19,15 +22,24 @@ public class ConsumerController {
     private final ConsumerService consumerService;
 
     @PostMapping()
-    public ResponseEntity<Void> join(@RequestBody @Valid final ConsumerSaveRequest consumerSaveRequest) {
-        consumerService.join(consumerSaveRequest);
+    public ResponseEntity<Response> join(@RequestBody @Valid final ConsumerSaveRequest consumerSaveRequest) {
+        ConsumerResponse data = consumerService.join(consumerSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/consumers/")).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
     @GetMapping("/{email}")
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    public ResponseEntity<ConsumerInfoResponse> getConsumerInfo(@PathVariable @Email String email) {
-        return ResponseEntity.ok(consumerService.getMemberWithAuthorities(email));
+    public ResponseEntity<Response> getConsumerInfo(@PathVariable @Email String email) {
+        ConsumerResponse data = consumerService.getMemberWithAuthorities(email);
+        return ResponseEntity.ok(new Response(data));
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    private class Response {
+        private ConsumerResponse data;
+
     }
 }

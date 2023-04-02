@@ -1,9 +1,15 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
 import com.twogather.twogatherwebbackend.service.StoreService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,16 +22,16 @@ import java.net.URI;
 public class StoreController {
     private final StoreService storeService;
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
-        storeService.save(storeSaveRequest);
+    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
+        StoreResponse data = storeService.save(storeSaveRequest);
 
-        return ResponseEntity.created(URI.create("/api/stores/")).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
     @PutMapping("/{storeId}")
-    public ResponseEntity<Void> update(@PathVariable Long storeId, @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
-        storeService.update(storeId, storeUpdateRequest);
+    public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
+        StoreResponse data = storeService.update(storeId, storeUpdateRequest);
 
-        return ResponseEntity.created(URI.create("/api/stores/")).build();
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
     @DeleteMapping("/{storeId}")
@@ -33,5 +39,12 @@ public class StoreController {
         storeService.delete(storeId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    private static class Response {
+        private StoreResponse data;
     }
 }

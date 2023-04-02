@@ -117,6 +117,12 @@ public class AuthControllerTest extends AcceptanceTest{
                 .body("message", equalTo(UNAUTHORIZED.getMessage()));
     }
 
+    @DisplayName("로그인 시 memberId를 반환한다")
+    @Test
+    void afterLoginThenReturnMemberId(){
+
+    }
+
     private ExtractableResponse<Response> returnLoginOwner() {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -155,7 +161,7 @@ public class AuthControllerTest extends AcceptanceTest{
     ExtractableResponse<Response> saveOwner(final StoreOwnerSaveRequest ownerSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
-                .accept("application/json; charset=UTF-8")
+                .accept("application/json; charset=UTF-8")//클라 -> 서버에게 요청하는 데이터가 json이라는 것을 명시하는 것
                 .filter(document("owner/save", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(ownerSaveRequest)
@@ -176,7 +182,6 @@ public class AuthControllerTest extends AcceptanceTest{
         LoginRequest loginRequest = new LoginRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD);
         ExtractableResponse<Response> response = RestAssured
                 .given(getRequestSpecification()).log().all()
-                .accept("application/json; charset=UTF-8")
                 .filter(document("consumer/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
@@ -188,7 +193,6 @@ public class AuthControllerTest extends AcceptanceTest{
         LoginRequest loginRequest = OWNER_LOGIN_REQUEST;
         ExtractableResponse<Response> response = RestAssured
                 .given(getRequestSpecification()).log().all()
-                .accept("application/json; charset=UTF-8")
                 .filter(document("owner/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)

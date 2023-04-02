@@ -1,16 +1,15 @@
-package com.twogather.twogatherwebbackend.dto.member;
+package com.twogather.twogatherwebbackend.dto.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
-public abstract class MemberInfo {
-    private String email;
-
+public class StoreResponse {
+    private Long id;
     private String name;
-
+    private String address;
     private String phone;
 }

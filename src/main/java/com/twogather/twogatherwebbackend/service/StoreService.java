@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.StoreException;
@@ -15,10 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreService {
     private final StoreRepository storeRepository;
 
-    public void save(final StoreSaveRequest request){
+    public StoreResponse save(final StoreSaveRequest request){
         validateDuplicateName(request.getName());
         Store store = new Store(request.getName(), request.getAddress(), request.getPhone());
-        storeRepository.save(store);
+        Store savedStore = storeRepository.save(store);
+        return toStoreResponse(savedStore);
     }
 
     public void delete(Long storeId) {
@@ -26,7 +28,7 @@ public class StoreService {
         storeRepository.delete(store);
     }
 
-    public void update(final Long storeId, final StoreUpdateRequest request) {
+    public StoreResponse update(final Long storeId, final StoreUpdateRequest request) {
         Store store = findStore(storeId);
         if (request.getName() != null && !request.getName().isEmpty() && !request.getName().equals(store.getName())) {
             validateDuplicateName(request.getName());
@@ -35,6 +37,7 @@ public class StoreService {
         store.updateAddress(request.getAddress());
         store.updatePhone(request.getPhone());
 
+        return toStoreResponse(store);
     }
 
     private void validateDuplicateName(String name){
@@ -44,5 +47,8 @@ public class StoreService {
     }
     private Store findStore(Long storeId){
         return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreException.StoreErrorCode.STORE_NOT_FOUND));
+    }
+    private StoreResponse toStoreResponse(Store store) {
+        return new StoreResponse(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
     }
 }
