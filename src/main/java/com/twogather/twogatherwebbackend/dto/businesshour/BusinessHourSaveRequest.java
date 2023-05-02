@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.businesshour;
 
-import com.twogather.twogatherwebbackend.valid.StartBeforeEnd;
+import com.twogather.twogatherwebbackend.dto.valid.StartBeforeEnd;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;

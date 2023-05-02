@@ -7,7 +7,7 @@ import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
-import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
+import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

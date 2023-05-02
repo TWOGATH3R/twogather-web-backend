@@ -42,7 +42,7 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 토큰 발급
-        String token = tokenProvider.createToken(authentication);
+        String token = tokenProvider.createToken(authentication, findMember);
         return new TokenAndId(token, findMember.getMemberId());
     }
 
@@ -59,7 +59,7 @@ public class AuthService {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public class TokenAndId{
+    public static class TokenAndId{
         private String token;
         private Long id;
     }

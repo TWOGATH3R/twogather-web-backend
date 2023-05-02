@@ -79,4 +79,7 @@ public class TestConstants {
                     DateTimeFormatter.ofPattern("yyyyMMdd")),
                     com.twogather.twogatherwebbackend.domain.AuthenticationType.OWNER, true);
 
+    public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
+            new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
+
 }

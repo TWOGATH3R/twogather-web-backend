@@ -38,12 +38,14 @@ public class AuthServiceTest {
     private TokenProvider tokenProvider;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     private AuthService authService;
     static final String token = "token";
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(memberRepository, passwordEncoder, tokenProvider);
+        authService = new AuthService(memberRepository, passwordEncoder, tokenProvider, userDetailsService);
     }
 
     @Test
@@ -66,7 +68,7 @@ public class AuthServiceTest {
         //given
         LoginRequest loginRequest = OWNER_LOGIN_REQUEST;
         when(memberRepository.findByEmail(OWNER_EMAIL)).thenReturn(Optional.of(STORE_OWNER));
-        when(tokenProvider.createToken(any(Authentication.class))).thenReturn(token);
+        when(tokenProvider.createToken(any(), any())).thenReturn(token);
         when(passwordEncoder.matches(any(String.class), any(String.class))).thenReturn(true);
 
         //when

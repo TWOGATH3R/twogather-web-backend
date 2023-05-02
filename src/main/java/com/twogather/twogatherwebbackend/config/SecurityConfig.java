@@ -36,6 +36,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
+    @Bean
+    public JwtSecurityConfig jwtSecurityConfig() {
+        return new JwtSecurityConfig(tokenProvider, jwtAuthenticationEntryPoint);
+    }
     public SecurityConfig(
             TokenProvider tokenProvider,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
@@ -81,9 +85,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/consumers").permitAll()
                 .antMatchers("/api/owners/**").hasRole(OWNER.name())
                 .antMatchers("/api/consumers/**").hasRole(CONSUMER.name())
+                .antMatchers("/api/business-hour/**").permitAll()
                 // jwtFilter를 적용했던 jwtSecurityConfig 클래스도 적용
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider, jwtAuthenticationEntryPoint));
+                .apply(jwtSecurityConfig());
 
         return http.build();
     }
