@@ -148,18 +148,18 @@ public class BusinessHourServiceTest {
         assertDoesNotThrow(() -> businessHourService.delete(ID));
     }
     private BusinessHourSaveRequest returnBusinessHourSaveRequest(){
-        return new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN);
+        return new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
     }
     private BusinessHourUpdateRequest returnBusinessHourUpdateRequest(){
-        return new BusinessHourUpdateRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN);
+        return new BusinessHourUpdateRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, true, BREAK_START_TIME, BREAK_END_TIME);
     }
     private BusinessHour returnBusinessHour(){
-        return new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN);
+        return new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
     }
     private List<BusinessHour> returnBusinessHourList(){
         List<BusinessHour> list = new ArrayList<>();
-        list.add(new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN));
-        list.add(new BusinessHour(ANOTHER_STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN));
+        list.add(new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null));
+        list.add(new BusinessHour(ANOTHER_STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null));
         return list;
     }
 }

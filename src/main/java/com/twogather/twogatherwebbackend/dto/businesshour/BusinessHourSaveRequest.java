@@ -29,4 +29,17 @@ public class BusinessHourSaveRequest implements StartTimeBeforeEndTime {
 
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private boolean isOpen;
+
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    private boolean hasBreakTime;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    private LocalTime breakStartTime;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    private LocalTime breakEndTime;
+
+
 }

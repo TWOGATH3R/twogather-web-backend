@@ -1,12 +1,10 @@
-package com.twogather.twogatherwebbackend.controller;
+package com.twogather.twogatherwebbackend.acceptance;
 
-import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.controller.ControllerTest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.repository.StoreRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -16,35 +14,33 @@ import static com.twogather.twogatherwebbackend.exception.BusinessHourException.
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class BusinessHourControllerTest extends AcceptanceTest{
-
-    @Autowired
-    private StoreRepository storeRepository;
+public class BusinessHourControllerTest extends ControllerTest {
 
     @Test
-    @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void save_WhenValidRequest_ShouldResponse(){
-        final BusinessHourSaveRequest request = returnBusinessHourSaveRequest();
+    @DisplayName("save: 유효한 businessHour 요청이 왔을때 businessHour 정보를 반환한다")
+    public void WhenValidRequest_ShouldResponse(){
+        //then
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
-                .filter(document("business-hour/save", getRequestPreprocessor(), getResponsePreprocessor()))
+                .header(AUTH, token)
+                .filter(document("business-hours/save", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/api/business-hour")
+                .body(returnSaveBusinessHour(storeId))
+                .when().post("/api/business-hours")
                 .then().log().all().extract();
     }
     @Test
     @DisplayName("save: 영업시작시간이 영업마감 시간보다 늦으면 예외를 발생시킨다")
-    public void save_InvalidTime_Exception(){
-        final BusinessHourSaveRequest request = returnInvalidBusinessHourSaveRequest();
+    public void save_WhenInvalidTime_shouldException(){
+        final BusinessHourSaveRequest request = INVALID_BUSINESS_HOUR_SAVE_REQUEST;
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
-                .filter(document("business-hour/save-exception", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("business-hours/save-exception", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/api/business-hour")
+                .when().post("/api/business-hours")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value()) // 예외가 발생하면 BAD_REQUEST(400) 상태 코드가 반환되어야 합니다.
                 .body("message", equalTo(INVALID_TIME.getMessage()));
@@ -53,17 +49,17 @@ public class BusinessHourControllerTest extends AcceptanceTest{
     @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void update_WhenValidRequest_ShouldResponse() {
         //given
-        final Long id = 1l;
+        final Long id = storeId;
         //when
         BusinessHourSaveRequest request = saveStoreAndBusinessHour();
         //then
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
-                .filter(document("business-hour/update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("business-hours/update", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().put("/api/business-hour/" + id)
+                .when().put("/api/business-hours/" + id)
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -72,17 +68,17 @@ public class BusinessHourControllerTest extends AcceptanceTest{
     @DisplayName("update: 영업시작시간이 영업마감 시간보다 늦으면 예외를 발생시킨다")
     public void update_InvalidTime_Exception(){
         //given
-        final Long id = 1l;
+        final Long id = storeId;
         //when
         BusinessHourSaveRequest request = saveStoreAndBusinessHour();
         //then
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
-                .filter(document("business-hour/update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("business-hours/update", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().put("/api/business-hour/" + id)
+                .when().put("/api/business-hours/" + id)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value()) // 예외가 발생하면 BAD_REQUEST(400) 상태 코드가 반환되어야 합니다.
                 .body("message", equalTo(INVALID_TIME.getMessage()));
@@ -99,40 +95,32 @@ public class BusinessHourControllerTest extends AcceptanceTest{
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
-                .filter(document("business-hour/update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("business-hours/update", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().delete("/api/business-hour/" + id)
+                .when().delete("/api/business-hours/" + id)
                 .then().log().all();
 
     }
     private BusinessHourSaveRequest saveStoreAndBusinessHour(){
-        Long storeId = saveStore();
-        final BusinessHourSaveRequest request = returnInvalidBusinessHourSaveRequest(storeId);
-        saveBusinessHour();
+        ownerSave();
+        String token = ownerLoginReturnToken();
+        Long storeId = storeSave(token);
+        final BusinessHourSaveRequest request = returnSaveBusinessHour(storeId);
+        saveBusinessHour(request);
         return request;
     }
 
-    private Long saveStore(){
-        return storeRepository.save(new Store()).getStoreId();
-    }
-    private void saveBusinessHour(){
-        BusinessHourSaveRequest request = returnBusinessHourSaveRequest();
+    private void saveBusinessHour(final BusinessHourSaveRequest request){
         RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")
                  .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/api/business-hour")
+                .when().post("/api/business-hours")
                 .then().log().all().extract();
     }
-    private BusinessHourSaveRequest returnBusinessHourSaveRequest(){
-        return new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN);
-    }
-    private BusinessHourSaveRequest returnInvalidBusinessHourSaveRequest(Long storeId){
-        return new BusinessHourSaveRequest(storeId, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN);
-    }
-    private BusinessHourSaveRequest returnInvalidBusinessHourSaveRequest(){
-        return new BusinessHourSaveRequest(STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN);
+    private static BusinessHourSaveRequest returnSaveBusinessHour(Long storeId){
+        return new BusinessHourSaveRequest(storeId, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
     }
 }

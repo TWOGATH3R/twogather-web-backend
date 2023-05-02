@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import java.net.URI;
 public class StoreController {
     private final StoreService storeService;
     @PostMapping
+    @PreAuthorize("hasAnyRole('OWNER')")
     public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
         StoreResponse data = storeService.save(storeSaveRequest);
 
@@ -44,7 +46,7 @@ public class StoreController {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    private static class Response {
+    public static class Response {
         private StoreResponse data;
     }
 }

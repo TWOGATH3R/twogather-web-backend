@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,14 @@ public class Member {
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }
+    public Member(Long id, String email, String loginPw, String name, String phone, AuthenticationType authenticationType, boolean isActive) {
+        this.memberId = id;
+        this.email = email;
+        this.loginPw = loginPw;
+        this.name = name;
+        this.phone = phone;
+        this.authenticationType = authenticationType;
+        this.isActive = isActive;
+    }
+
 }

@@ -1,12 +1,27 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.auth.TokenProvider;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.PASSWORD_MISMATCH;
 
 
 @Service
@@ -14,22 +29,38 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
     private final MemberRepository memberRepository;
-    // todo AccessToken이 담긴 Dto를 반환
-    @Transactional(readOnly = true)
-    public void login(LoginRequest loginRequest) {
-        Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
+    private final PasswordEncoder passwordEncoder;
+    private final TokenProvider tokenProvider;
 
-        validatePassword(findMember, loginRequest.getPassword());
+    @Transactional(readOnly = true)
+    public TokenAndId login(LoginRequest loginRequest) {
+        Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
+        validatePassword(findMember.getLoginPw(), loginRequest.getPassword());
+
+        // 인증 처리
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 토큰 발급
+        String token = tokenProvider.createToken(authentication);
+        return new TokenAndId(token, findMember.getMemberId());
     }
 
     private Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberException.MemberErrorCode.NO_SUCH_EMAIL));
+                .orElseThrow(() -> new MemberException(NO_SUCH_EMAIL));
     }
 
-    private void validatePassword(Member findMember, String password) {
-        if (!findMember.getLoginPw().equals(password)) {
-            throw new MemberException(MemberException.MemberErrorCode.PASSWORD_MISMATCH);
+    private void validatePassword(String findMemberPassword, String rawPassword) {
+        if (!passwordEncoder.matches(rawPassword, findMemberPassword)) {
+            throw new MemberException(PASSWORD_MISMATCH);
         }
+    }
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class TokenAndId{
+        private String token;
+        private Long id;
     }
 }

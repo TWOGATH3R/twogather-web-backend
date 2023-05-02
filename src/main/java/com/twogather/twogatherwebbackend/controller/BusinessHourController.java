@@ -3,7 +3,6 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,10 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
-@RequestMapping("/api/business-hour")
+@RequestMapping("/api/business-hours")
 @RequiredArgsConstructor
 public class BusinessHourController {
     private final BusinessHourService businessHourService;

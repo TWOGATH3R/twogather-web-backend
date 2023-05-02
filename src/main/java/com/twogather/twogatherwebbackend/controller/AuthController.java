@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.service.AuthService;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.CustomUserDetailsService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
@@ -36,19 +37,14 @@ import java.net.URI;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthService authService;
 
     @PostMapping("/login/token")
     public ResponseEntity<LoginResponse> authorize(@Valid @RequestBody LoginRequest loginRequest){
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+        AuthService.TokenAndId tokenAndId = authService.login(loginRequest);
+        String jwt = tokenAndId.getToken();
+        Long memberId = tokenAndId.getId();
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.createToken(authentication);
-        Long memberId = ((CustomUser)authentication.getPrincipal()).getMemberId();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 

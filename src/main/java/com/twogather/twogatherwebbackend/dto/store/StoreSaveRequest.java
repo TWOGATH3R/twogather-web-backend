@@ -1,11 +1,15 @@
 package com.twogather.twogatherwebbackend.dto.store;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class StoreSaveRequest {
 
     @NotBlank(message = "비어있는 항목을 입력해주세요.")

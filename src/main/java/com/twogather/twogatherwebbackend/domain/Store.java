@@ -39,6 +39,14 @@ public class Store {
     private String phone;
 
 
+    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone){
+        this.owner = owner;
+        this.businessHourList = businessHourList;
+        this.menuList = menuList;
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+    }
     public Store(String name, String address, String phone){
         this.name=name;
         this.address=address;

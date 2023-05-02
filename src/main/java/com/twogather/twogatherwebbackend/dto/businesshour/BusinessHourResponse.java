@@ -16,5 +16,9 @@ public class BusinessHourResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private DayOfWeek dayOfWeek;
-    private boolean isOpen;
+    private Boolean isOpen;
+    private Boolean hasBreakTime;
+    private LocalTime breakStartTime;
+    private LocalTime breakEndTime;
+
 }

@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,6 @@ public class StoreOwner extends Member {
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;
     }
+
+
 }

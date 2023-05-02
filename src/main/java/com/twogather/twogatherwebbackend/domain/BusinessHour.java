@@ -23,40 +23,56 @@ public class BusinessHour {
     private LocalTime startTime;
     private LocalTime endTime;
     private DayOfWeek dayOfWeek;
-    private boolean isOpen;
+    private Boolean isOpen;
+    private Boolean hasBreakTime;
+    private LocalTime breakStartTime;
+    private LocalTime breakEndTime;
 
-    public void updateStartTime(LocalTime startTime){
-        if(startTime!=null && !startTime.equals(this.startTime)){
+    public void update(LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
+                       Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
+        if(startTime!=null){
             this.startTime = startTime;
         }
-    }
-    public void updateEndTime(LocalTime endTime){
-        if(endTime!=null && !endTime.equals(this.endTime)){
+        if(endTime!=null){
             this.endTime = endTime;
         }
-    }
-    public void updateDayOfWeek(DayOfWeek dayOfWeek){
-        if(dayOfWeek!=null && !dayOfWeek.equals(this.dayOfWeek)){
+        if(dayOfWeek!=null){
             this.dayOfWeek = dayOfWeek;
         }
-    }
-    public void updateIsClosed(boolean isClosed){
-        if(isClosed != this.isOpen){
-            this.isOpen = isClosed;
+        if(breakStartTime!=null){
+            this.breakStartTime = breakStartTime;
         }
+        if(breakEndTime!=null){
+            this.breakEndTime = breakEndTime;
+        }
+        if(isOpen!=null){
+            this.isOpen = isOpen;
+        }
+        if(hasBreakTime!=null){
+            this.hasBreakTime = hasBreakTime;
+        }
+
     }
-    public BusinessHour(Long id, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, boolean isOpen){
+    public BusinessHour(Long id, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
+                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
         this.businessHourId = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.dayOfWeek = dayOfWeek;
         this.isOpen = isOpen;
+        this.hasBreakTime = hasBreakTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
     }
-    public BusinessHour(Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, boolean isOpen){
+    public BusinessHour(Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
+                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
         this.store = store;
         this.startTime = startTime;
         this.endTime = endTime;
         this.dayOfWeek = dayOfWeek;
         this.isOpen = isOpen;
+        this.hasBreakTime = hasBreakTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
     }
 }

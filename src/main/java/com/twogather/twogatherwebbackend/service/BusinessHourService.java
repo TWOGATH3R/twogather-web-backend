@@ -39,19 +39,20 @@ public class BusinessHourService {
         return responses;
     }
 
-    public BusinessHourResponse save(@Valid @RequestBody BusinessHourSaveRequest request){
+    public BusinessHourResponse save(BusinessHourSaveRequest request){
         validateDuplicateDayOfWeek(request.getStoreId(), request.getDayOfWeek());
         Store store = findByStoreIdReturnStore(request.getStoreId());
-        BusinessHour businessHour = new BusinessHour(store,request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.isOpen());
+        BusinessHour businessHour = new BusinessHour(store,request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.isOpen(),
+                request.isHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
         BusinessHour savedBusinessHour = businessHourRepository.save(businessHour);
         return toBusinessHourResponse(savedBusinessHour);
     }
+
+
     public BusinessHourResponse update(Long id, @Valid @RequestBody BusinessHourUpdateRequest request){
         BusinessHour businessHour = findBusinessHour(id);
-        businessHour.updateEndTime(request.getEndTime());
-        businessHour.updateStartTime(request.getStartTime());
-        businessHour.updateDayOfWeek(request.getDayOfWeek());
-        businessHour.updateIsClosed(request.isOpen());
+        businessHour.update(request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.getIsOpen(),
+                request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
 
         return toBusinessHourResponse(businessHour);
     }
@@ -85,7 +86,8 @@ public class BusinessHourService {
     }
     private BusinessHourResponse toBusinessHourResponse(BusinessHour businessHour){
         return new BusinessHourResponse(businessHour.getBusinessHourId(), businessHour.getStore().getStoreId(),
-                businessHour.getStartTime(), businessHour.getEndTime(), businessHour.getDayOfWeek(), businessHour.isOpen());
+                businessHour.getStartTime(), businessHour.getEndTime(), businessHour.getDayOfWeek(), businessHour.getIsOpen(),
+                businessHour.getHasBreakTime(), businessHour.getBreakStartTime(), businessHour.getBreakEndTime());
 
     }
 }
