@@ -18,6 +18,8 @@
 
 ### 문서
 
+#### wiki
+- https://github.com/Flre-fly/twogather-web-backend/wiki
 #### 기능명세서
 - https://www.notion.so/85e28c236dd344f6814d02246d59774b?v=3f357303b02143e3bfc3c6fce2f64ad6
 
