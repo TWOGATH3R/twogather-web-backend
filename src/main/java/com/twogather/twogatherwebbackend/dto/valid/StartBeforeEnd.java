@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.valid;
+package com.twogather.twogatherwebbackend.dto.valid;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;

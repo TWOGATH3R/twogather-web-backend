@@ -16,7 +16,7 @@ public class StoreOwnerResponse extends MemberResponse {
     private LocalDate businessStartDate;
 
     public StoreOwnerResponse(Long id, String name, String email, String phone, String businessNumber, String businessName, LocalDate businessStartDate){
-        super(id, name,email,phone);
+        super(id, email,name,phone);
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;

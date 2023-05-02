@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.valid;
+package com.twogather.twogatherwebbackend.dto.valid;
 
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;

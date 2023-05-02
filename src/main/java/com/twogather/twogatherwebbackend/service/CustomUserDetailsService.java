@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(member -> createUser(member))
                 .orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
     }
-    private CustomUser createUser(Member member){
+    public CustomUser createUser(Member member){
         if (!member.isActive()){
             throw new MemberException(MEMBER_NOT_ACTIVE);
         }

@@ -1,5 +1,8 @@
 package com.twogather.twogatherwebbackend.auth;
 
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,11 +15,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,10 +42,19 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
     // authentication(권한정보)를 사용한 token 생성 메서드
-    public String createToken(Authentication authentication){
-        String authorities = authentication.getAuthorities().stream()
+    public String createToken(Authentication authentication, Member user){
+        List<String> authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining("."));
+                .collect(Collectors.toList());
+
+        // 사용자가 owner인 경우 OWNER 권한을 추가
+        if (user.getAuthenticationType().equals(AuthenticationType.OWNER)) {
+            authorities.add("ROLE_OWNER");
+        }
+        else if(user.getAuthenticationType().equals(AuthenticationType.CONSUMER)){
+            authorities.add("ROLE_CONSUMER");
+        }
+
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.validTime);
         return Jwts.builder()
@@ -62,12 +73,22 @@ public class TokenProvider implements InitializingBean {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        Collection<? extends GrantedAuthority> authorities = null;
+        String authoritiesString = claims.get(AUTHORITIES_KEY).toString();
+        authoritiesString = subSquareBrackets(authoritiesString);
+
+        if (StringUtils.hasText(authoritiesString)) {
+            authorities = Arrays.stream(authoritiesString.split(","))
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        } else {
+            authorities = Collections.singletonList(new SimpleGrantedAuthority(AuthenticationType.ANONYMOUS.authority()));
+        }
         User principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+    private String subSquareBrackets(String origin){
+        return origin.substring(1, origin.length() - 1);
     }
 
     // 토큰 파싱 후 발생하는 exception catch, 문제있으면 false
