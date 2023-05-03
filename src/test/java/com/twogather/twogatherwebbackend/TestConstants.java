@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
@@ -59,6 +60,8 @@ public class TestConstants {
 
     public static final String AUTH = "Authorization";
 
+    public static final Long BUSINESS_HOUR_ID = 1l;
+
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
     public static final ConsumerSaveRequest CONSUMER_SAVE_REQUEST = new ConsumerSaveRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME, CONSUMER_PHONE);
@@ -81,5 +84,8 @@ public class TestConstants {
 
     public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
+
+    public static final BusinessHourResponse BUSINESS_HOUR_SAVE_RESPONSE =
+            new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
 }

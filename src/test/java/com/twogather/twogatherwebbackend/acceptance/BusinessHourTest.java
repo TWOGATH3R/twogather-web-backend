@@ -1,21 +1,12 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.controller.ControllerTest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
-import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.INVALID_TIME;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class BusinessHourControllerTest extends ControllerTest {
+public class BusinessHourTest extends ControllerTest {
 
+    /*
     @Test
     @DisplayName("save: 유효한 businessHour 요청이 왔을때 businessHour 정보를 반환한다")
     public void WhenValidRequest_ShouldResponse(){
@@ -122,5 +113,5 @@ public class BusinessHourControllerTest extends ControllerTest {
     }
     private static BusinessHourSaveRequest returnSaveBusinessHour(Long storeId){
         return new BusinessHourSaveRequest(storeId, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
-    }
+    }*/
 }

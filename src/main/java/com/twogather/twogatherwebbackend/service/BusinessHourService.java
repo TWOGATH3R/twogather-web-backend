@@ -42,8 +42,8 @@ public class BusinessHourService {
     public BusinessHourResponse save(BusinessHourSaveRequest request){
         validateDuplicateDayOfWeek(request.getStoreId(), request.getDayOfWeek());
         Store store = findByStoreIdReturnStore(request.getStoreId());
-        BusinessHour businessHour = new BusinessHour(store,request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.isOpen(),
-                request.isHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
+        BusinessHour businessHour = new BusinessHour(store,request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.getIsOpen(),
+                request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
         BusinessHour savedBusinessHour = businessHourRepository.save(businessHour);
         return toBusinessHourResponse(savedBusinessHour);
     }
