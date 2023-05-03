@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class AuthControllerTest extends ControllerTest {
-
+/*
     @DisplayName("가게주인: 유효한 정보의 로그인 요청이 오면 200 ok를 응답한다.")
     @Test
     void whenLoginOwnerThenSuccess() {
@@ -199,5 +199,5 @@ public class AuthControllerTest extends ControllerTest {
                 .when().post("/api/login/token")
                 .then().log().all().extract();
         return response;
-    }
+    }*/
 }

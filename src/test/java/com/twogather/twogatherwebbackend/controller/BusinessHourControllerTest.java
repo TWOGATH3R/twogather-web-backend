@@ -23,11 +23,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,9 +53,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BusinessHourController.class)
 @AutoConfigureRestDocs
+@Import(JwtSecurityConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class BusinessHourControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    @MockBean
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @MockBean
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
+    @MockBean
+    private AccessDeniedHandler accessDeniedHandler;
 
     //없으면 businessHourService 의존성 없다는 error가 뜸
     @MockBean
@@ -60,20 +93,25 @@ public class BusinessHourControllerTest {
     @MockBean
     private AuthService authService;
 
+
     @Test
+    @WithMockUser(username = "testuser",  password="securityPassword", roles = "OWNER")
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void WhenValidRequest_ThenResponse() throws Exception {
         //given
-        String token = "FA6EWZ0qLACEZWOr9QqxwdDygf";
-        when(authService.login(any())).thenReturn(new AuthService.TokenAndId(token, 1l));
-        when(tokenProvider.validateToken(token)).thenReturn(true);
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBuYXZlci5jb20iLCJhdXRoIjpbIlJPTEVfT1dORVIiXSwiZXhwIjoxNjgzMDMyMzU1fQ.bWToCbwIryW0pn8vag3TEzB_p_SXSsvCZ1NlqzNkjlU";
+
+        when(businessHourService.save(any())).thenReturn(BUSINESS_HOUR_SAVE_RESPONSE);
         //when
         //then
-        mockMvc.perform(post("/api/business-hour")
+        mockMvc.perform(post("/api/business-hours")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
-                        .content(objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(BUSINESS_HOUR_SAVE_REQUEST)))
-                .andExpect(status().isOk())
+                        .characterEncoding("UTF-8")
+                        .content(objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(new BusinessHourSaveRequest(
+                                1l, LocalTime.MIN, LocalTime.MAX, DayOfWeek.FRIDAY, true,false, null,null)
+                        )))
+                .andExpect(status().isCreated())
                 .andDo(document("business-hour/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -85,7 +123,7 @@ public class BusinessHourControllerTest {
                                 fieldWithPath("hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
                                 fieldWithPath("breakStartTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("breakTime의 시작 시간").optional(),
                                 fieldWithPath("breakEndTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("breakTime이 끝나는 시간").optional(),
-                                fieldWithPath("open").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+                                fieldWithPath("isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
                         ),
                         responseFields(
                                 fieldWithPath("data.businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
@@ -96,7 +134,7 @@ public class BusinessHourControllerTest {
                                 fieldWithPath("data.hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
                                 fieldWithPath("data.breakStartTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("breakTime의 시작 시간").optional(),
                                 fieldWithPath("data.breakEndTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("breakTime이 끝나는 시간").optional(),
-                                fieldWithPath("data.open").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+                                fieldWithPath("data.isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
 
                         )
                 ));

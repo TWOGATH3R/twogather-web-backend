@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ public class BusinessHourController {
     private final BusinessHourService businessHourService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('OWNER')")
     public ResponseEntity<Response> save(@RequestBody @Valid final BusinessHourSaveRequest businessHourSaveRequest) {
         BusinessHourResponse data = businessHourService.save(businessHourSaveRequest);
 

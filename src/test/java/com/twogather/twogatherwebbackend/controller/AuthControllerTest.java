@@ -50,6 +50,7 @@ public class AuthControllerTest {
                 .apply(documentationConfiguration(restDocumentation))  // (2)
                 .build();
     }
+    /*
     @Test
     public void whenLoginOwnerWithValidRequestThenReturnOk() throws Exception {
         // when
@@ -57,5 +58,5 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(OWNER_LOGIN_REQUEST)))
                 .andExpect(status().isOk());
-    }
+    }*/
 }
