@@ -47,70 +47,37 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest(BusinessHourController.class)
 @AutoConfigureRestDocs
-@Import(JwtSecurityConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class BusinessHourControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+@WebMvcTest(BusinessHourController.class)
+public class BusinessHourControllerTest extends ControllerTest{
 
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-
-    @MockBean
-    private UserDetailsService userDetailsService;
-
-    @MockBean
-    private AuthenticationEntryPoint authenticationEntryPoint;
-
-    @MockBean
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
-
-    @MockBean
-    private AuthenticationFailureHandler authenticationFailureHandler;
-
-    @MockBean
-    private AccessDeniedHandler accessDeniedHandler;
-
-    //없으면 businessHourService 의존성 없다는 error가 뜸
     @MockBean
     private BusinessHourService businessHourService;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //없으면 jwtfilter에 의존성 없다는 error가 뜸
-    @MockBean
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    @MockBean
-    private TokenProvider tokenProvider;
-
-    @MockBean
-    private AuthService authService;
-
-
     @Test
-    @WithMockUser(username = "testuser",  password="securityPassword", roles = "OWNER")
-    @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void WhenValidRequest_ThenResponse() throws Exception {
+    @WithMockUser(roles = "OWNER")
+    @DisplayName("영업시간 정보를 저장했을때 201 반환")
+    public void WhenSaveBusinessHour_Then201Status() throws Exception {
         //given
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBuYXZlci5jb20iLCJhdXRoIjpbIlJPTEVfT1dORVIiXSwiZXhwIjoxNjgzMDMyMzU1fQ.bWToCbwIryW0pn8vag3TEzB_p_SXSsvCZ1NlqzNkjlU";
-
         when(businessHourService.save(any())).thenReturn(BUSINESS_HOUR_SAVE_RESPONSE);
         //when
         //then
         mockMvc.perform(post("/api/business-hours")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token)
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(new BusinessHourSaveRequest(
-                                1l, LocalTime.MIN, LocalTime.MAX, DayOfWeek.FRIDAY, true,false, null,null)
-                        )))
+                        .with(csrf())
+                        .content(
+                                objectMapper
+                                .registerModule(new JavaTimeModule())
+                                .writeValueAsString(BUSINESS_HOUR_SAVE_REQUEST))
+                )
                 .andExpect(status().isCreated())
                 .andDo(document("business-hour/save",
                         getDocumentRequest(),
@@ -138,6 +105,5 @@ public class BusinessHourControllerTest {
 
                         )
                 ));
-
     }
 }

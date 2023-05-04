@@ -26,14 +26,14 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'junit:junit:4.13.1'
-    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation 'junit:junit:4.13.2'
+    implementation 'org.projectlombok:lombok:1.18.26'
     compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation group: 'org.json', name: 'json', version: '20090211'
+	implementation group: 'org.json', name: 'json', version: '20230227'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 	implementation 'io.rest-assured:rest-assured:4.4.0'
@@ -48,9 +48,9 @@ dependencies {
 	// restdocs에서 MockMvc를 사용할 때 사용하는 의존성
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	// jwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
