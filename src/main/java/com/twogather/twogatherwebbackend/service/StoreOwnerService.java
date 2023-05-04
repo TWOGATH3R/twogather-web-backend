@@ -35,6 +35,7 @@ public class StoreOwnerService {
                 request.getBusinessNumber(), request.getBusinessName(), stringToLocalDate(request.getBusinessStartDate()), AuthenticationType.OWNER,true);
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
         return toStoreOwnerResponse(storedOwner);
+        
     }
 
     @Transactional(readOnly = true)
