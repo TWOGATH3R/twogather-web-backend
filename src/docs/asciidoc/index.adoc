@@ -23,7 +23,7 @@ operation::business-hours/save/[snippets='http-request,request-fields,http-respo
 operation::business-hours/update/[snippets='http-request,request-fields,http-response,response-fields']
 
 
-== Stores API
+== Store API
 
 === Save
 operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
@@ -36,6 +36,12 @@ operation::store/get-list/[snippets='http-request,http-response,response-fields'
 
 === Get-My-List
 operation::store/get-my-list/[snippets='http-request,http-response,response-fields']
+
+=== Delete
+operation::store/delete/[snippets='http-request,http-response']
+
+=== Update
+operation::store/update/[snippets='http-request,request-fields,http-response,response-fields']
 
 
 
