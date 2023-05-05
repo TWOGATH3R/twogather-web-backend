@@ -75,7 +75,7 @@ public class StoreController {
     public ResponseEntity<Void> delete(@PathVariable Long storeId) {
         storeService.delete(storeId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

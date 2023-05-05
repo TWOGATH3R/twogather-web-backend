@@ -20,8 +20,11 @@ import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumen
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static groovy.util.FactoryBuilderSupport.OWNER;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,6 +38,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StoreControllerTest extends ControllerTest{
     @MockBean
     private StoreService storeService;
+
+    @Test
+    public void update() throws Exception {
+        //given
+        when(storeService.update(anyLong(), any())).thenReturn(STORE_RESPONSE);
+        //when
+        //then
+        mockMvc.perform(put("/api/stores/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .content(
+                                objectMapper
+                                        .registerModule(new JavaTimeModule())
+                                        .writeValueAsString(STORE_UPDATE_REQUEST))
+                )
+                .andExpect(status().isOk())
+                .andDo(document("store/update",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호")
+
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("가게 삭제")
+    public void deleteStore() throws Exception {
+        //given
+        doNothing().when(storeService).delete(anyLong());
+        //when
+        //then
+        mockMvc.perform(delete("/api/stores/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                )
+                .andExpect(status().isOk())
+                .andDo(document("store/delete",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                        )
+                );
+
+    }
 
     @Test
     @DisplayName("나의가게조회")

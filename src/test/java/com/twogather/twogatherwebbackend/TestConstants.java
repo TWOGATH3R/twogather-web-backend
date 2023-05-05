@@ -8,10 +8,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequ
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoresResponse;
+import com.twogather.twogatherwebbackend.dto.store.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -105,6 +102,9 @@ public class TestConstants {
 
     public static final StoreSaveRequest STORE_REQUEST =
             new StoreSaveRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final StoreUpdateRequest STORE_UPDATE_REQUEST =
+            new StoreUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+
     public static final ArrayList STORES_RESPONSE_LIST =
             new ArrayList<StoresResponse>(){{
                 add(STORES_RESPONSE);
