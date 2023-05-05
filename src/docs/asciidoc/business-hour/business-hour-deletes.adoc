@@ -1,0 +1,24 @@
+= Business Hours API
+
+== Delete Business Hours [DELETE]
+
+DELETE /api/business-hours
+
+A request to delete one business hour per day of the week
+Must include information for all 7 days of the week
+
+=== Request
+
+.Request Example
+include::{snippets}/business-hours/delete/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/business-hours/delete/request-fields.adoc[]
+
+=== Response
+
+.Response Example
+include::{snippets}/business-hours/delete/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/business-hours/delete/response-fields.adoc[]
