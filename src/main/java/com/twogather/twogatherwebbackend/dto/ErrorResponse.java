@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
     private String message;
+    private static final String SERVER_ERROR_MESSAGE = "일시적으로 접속이 원활하지 않습니다. 잠시 후 다시 이용해 주시기 바랍니다.";
 
     public ErrorResponse() {
 
@@ -19,6 +20,9 @@ public class ErrorResponse {
 
     public static ErrorResponse of(final RuntimeException exception) {
         return new ErrorResponse(exception.getMessage());
+    }
+    public static ErrorResponse internalServerError(){
+        return new ErrorResponse(SERVER_ERROR_MESSAGE);
     }
 
     public static ErrorResponse of(final MethodArgumentNotValidException exception) {
