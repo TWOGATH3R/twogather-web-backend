@@ -49,7 +49,7 @@ public class BusinessHourService {
     }
 
 
-    public BusinessHourResponse update(Long id, @Valid @RequestBody BusinessHourUpdateRequest request){
+    public BusinessHourResponse update(Long id, BusinessHourUpdateRequest request){
         BusinessHour businessHour = findBusinessHour(id);
         businessHour.update(request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.getIsOpen(),
                 request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
