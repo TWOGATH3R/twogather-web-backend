@@ -1,4 +1,4 @@
-= TwoGather API SPEC DOCS
+= TwoGather API Spec Docs
 api spec 문서
 :doctype: book
 :icons: font
@@ -8,94 +8,38 @@ api spec 문서
 :sectlinks:
 
 
-== Business Hours API
-=== Update
-
-PUT /api/business-hours
-
-A request to update one business hour per day of the week
-
-==== Request
-
-.Request Example
-include::{snippets}/business-hours/update/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/business-hours/update/request-fields.adoc[]
-
-==== Response
-
-.Response Example
-include::{snippets}/business-hours/update/http-response.adoc[]
-
-.Response Fields
-include::{snippets}/business-hours/update/response-fields.adoc[]
-
-=== Create
-
-POST /api/business-hours
-
-A request to create one business hour per day of the week
-
-==== Request
-
-.Request Example
-include::{snippets}/business-hours/save/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/business-hours/save/request-fields.adoc[]
-
-==== Response
-
-.Response Example
-include::{snippets}/business-hours/save/http-response.adoc[]
-
-.Response Fields
-include::{snippets}/business-hours/save/response-fields.adoc[]
-
-=== Delete
-
-DELETE /api/business-hours
-
-A request to delete one business hour per day of the week
-Must include information for all 7 days of the week
-
-==== Request
-
-.Request Example
-include::{snippets}/business-hours/delete/http-request.adoc[]
-
-.Request Fields
-include::{snippets}/business-hours/delete/request-fields.adoc[]
-
-==== Response
-
-.Response Example
-include::{snippets}/business-hours/delete/http-response.adoc[]
-
+== BusinessHour API
 
 === Get
+operation::business-hours/get/[snippets='http-request,http-response,response-fields']
 
-GET /api/{storeId}/business-hours
+=== Delete
+operation::business-hours/delete/[snippets='http-request,request-fields,http-response']
 
-A request to get one business hour per day of the week
+=== Save
+operation::business-hours/save/[snippets='http-request,request-fields,http-response,response-fields']
 
-==== Request
+=== Update
+operation::business-hours/update/[snippets='http-request,request-fields,http-response,response-fields']
 
-.Request Example
-include::{snippets}/business-hours/get/http-request.adoc[]
 
-.Request Fields
-include::{snippets}/business-hours/get/request-fields.adoc[]
+== Stores API
 
-==== Response
+=== Save
+operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
 
-.Response Example
-include::{snippets}/business-hours/get/http-response.adoc[]
+=== Get-One
+operation::store/get-one/[snippets='http-request,http-response,response-fields']
 
-.Response Fields
-include::{snippets}/business-hours/get/response-fields.adoc[]
+=== Get-List
+operation::store/get-list/[snippets='http-request,http-response,response-fields']
 
-// Add the following line to make the page title clickable
+=== Get-My-List
+operation::store/get-my-list/[snippets='http-request,http-response,response-fields']
+
+
+
+
+
 :linkattrs:
 :bookmarks:

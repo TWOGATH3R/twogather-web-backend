@@ -8,7 +8,10 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequ
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
+import com.twogather.twogatherwebbackend.dto.store.StoresResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -93,6 +96,27 @@ public class TestConstants {
     public static final BusinessHourResponse BUSINESS_HOUR_RESPONSE =
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
+    public static final StoreResponse STORE_RESPONSE =
+            new StoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final StoresResponse STORES_RESPONSE =
+            new StoresResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",4.2);
+    public static final MyStoreResponse MY_STORES_RESPONSE =
+            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",false, "자격미달");
+
+    public static final StoreSaveRequest STORE_REQUEST =
+            new StoreSaveRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final ArrayList STORES_RESPONSE_LIST =
+            new ArrayList<StoresResponse>(){{
+                add(STORES_RESPONSE);
+                add(STORES_RESPONSE);
+                add(STORES_RESPONSE);
+            }};
+    public static final ArrayList MY_STORES_RESPONSE_LIST =
+            new ArrayList<MyStoreResponse>(){{
+                add(MY_STORES_RESPONSE);
+                add(MY_STORES_RESPONSE);
+                add(MY_STORES_RESPONSE);
+            }};
     public static final ArrayList BUSINESS_HOUR_RESPONSE_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);

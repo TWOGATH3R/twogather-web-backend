@@ -43,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
                 "김순순", "0000000000", LocalDate.now(), AuthenticationType.OWNER, true);
         consumer = consumerRepository.save(consumer1);
         owner = storeOwnerRepository.save(owner1);
-        Store store1 = new Store(owner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222");
+        Store store1 = new Store(owner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", true, "");
         store = storeRepository.save(store1);
 
 
