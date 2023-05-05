@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.docs;
 
 import org.springframework.restdocs.snippet.Attributes;
 

@@ -1,0 +1,101 @@
+= TwoGather API SPEC DOCS
+api spec 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+
+== Business Hours API
+=== Update
+
+PUT /api/business-hours
+
+A request to update one business hour per day of the week
+
+==== Request
+
+.Request Example
+include::{snippets}/business-hours/update/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/business-hours/update/request-fields.adoc[]
+
+==== Response
+
+.Response Example
+include::{snippets}/business-hours/update/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/business-hours/update/response-fields.adoc[]
+
+=== Create
+
+POST /api/business-hours
+
+A request to create one business hour per day of the week
+
+==== Request
+
+.Request Example
+include::{snippets}/business-hours/save/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/business-hours/save/request-fields.adoc[]
+
+==== Response
+
+.Response Example
+include::{snippets}/business-hours/save/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/business-hours/save/response-fields.adoc[]
+
+=== Delete
+
+DELETE /api/business-hours
+
+A request to delete one business hour per day of the week
+Must include information for all 7 days of the week
+
+==== Request
+
+.Request Example
+include::{snippets}/business-hours/delete/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/business-hours/delete/request-fields.adoc[]
+
+==== Response
+
+.Response Example
+include::{snippets}/business-hours/delete/http-response.adoc[]
+
+
+=== Get
+
+GET /api/{storeId}/business-hours
+
+A request to get one business hour per day of the week
+
+==== Request
+
+.Request Example
+include::{snippets}/business-hours/get/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/business-hours/get/request-fields.adoc[]
+
+==== Response
+
+.Response Example
+include::{snippets}/business-hours/get/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/business-hours/get/response-fields.adoc[]
+
+// Add the following line to make the page title clickable
+:linkattrs:
+:bookmarks:

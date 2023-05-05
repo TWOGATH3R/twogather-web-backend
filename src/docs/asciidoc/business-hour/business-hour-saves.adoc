@@ -1,6 +1,6 @@
 = Business Hours API
 
-== Create Business Hour [POST]
+== Create Business Hours [POST]
 
 POST /api/business-hours
 

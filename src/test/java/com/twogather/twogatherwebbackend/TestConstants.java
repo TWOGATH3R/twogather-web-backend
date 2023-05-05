@@ -1,9 +1,10 @@
 package com.twogather.twogatherwebbackend;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
@@ -16,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TestConstants {
     public static final PasswordEncoder passwordEncoded = new BCryptPasswordEncoder();
@@ -87,19 +87,47 @@ public class TestConstants {
     public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
-    public static final BusinessHourResponse BUSINESS_HOUR_SAVE_RESPONSE =
+    public static final BusinessHourUpdateRequest BUSINESS_HOUR_UPDATE_REQUEST =
+            new BusinessHourUpdateRequest(STORE_ID, BUSINESS_HOUR_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
+
+    public static final BusinessHourResponse BUSINESS_HOUR_RESPONSE =
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
-    public static final ArrayList BUSINESS_HOUR_SAVE_RESPONSE_LIST =
+    public static final ArrayList BUSINESS_HOUR_RESPONSE_LIST =
             new ArrayList<BusinessHourResponse>(){{
-                add(BUSINESS_HOUR_SAVE_RESPONSE);
-                add(BUSINESS_HOUR_SAVE_RESPONSE);
-                add(BUSINESS_HOUR_SAVE_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
     }};
+    public static final ArrayList BUSINESS_HOUR_UPDATE_REQUEST_LIST =
+            new ArrayList<BusinessHourUpdateRequest>(){{
+                add(BUSINESS_HOUR_UPDATE_REQUEST);
+                add(BUSINESS_HOUR_UPDATE_REQUEST);
+            }};
     public static final ArrayList BUSINESS_HOUR_SAVE_REQUEST_LIST =
             new ArrayList<BusinessHourSaveRequest>(){{
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
             }};
+    public static final ArrayList BUSINESS_HOUR_RESPONSE_7_LIST =
+            new ArrayList<BusinessHourResponse>(){{
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+                add(BUSINESS_HOUR_RESPONSE);
+            }};
+    public static final ArrayList ID_LIST =
+            new ArrayList<Long>(){
+                {
+                    add(1l);
+                    add(2l);
+                    add(3l);
+                }
+            };
+    public static final BusinessHourIdList BUSINESS_HOUR_ID_LIST =
+            new BusinessHourIdList(ID_LIST);
 }

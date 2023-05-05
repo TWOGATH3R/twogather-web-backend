@@ -445,52 +445,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_create_business_hour_post">Create Business Hour [POST]</h2>
+<h2 id="_delete_business_hours_delete">Delete Business Hours [DELETE]</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>POST /api/business-hours</p>
+<p>DELETE /api/business-hours</p>
 </div>
 <div class="paragraph">
-<p>A request to create one business hour per day of the week</p>
+<p>A request to delete one business hour per day of the week
+Must include information for all 7 days of the week</p>
 </div>
 <div class="sect2">
 <h3 id="_request">Request</h3>
 <div class="listingblock">
 <div class="title">Request Example</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/business-hours?_csrf=1a6037a3-fd6b-4cad-99d0-d3c1f564d0b7 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/business-hours?_csrf=2f464156-0d6d-4315-bd98-2502c58eb274 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 605
+Content-Length: 38
 Host: docs.api.com
 
-[ {
-  "storeId" : 1,
-  "startTime" : "11:30",
-  "endTime" : "20:00",
-  "dayOfWeek" : "MONDAY",
-  "isOpen" : true,
-  "hasBreakTime" : false,
-  "breakStartTime" : null,
-  "breakEndTime" : null
-}, {
-  "storeId" : 1,
-  "startTime" : "11:30",
-  "endTime" : "20:00",
-  "dayOfWeek" : "MONDAY",
-  "isOpen" : true,
-  "hasBreakTime" : false,
-  "breakStartTime" : null,
-  "breakEndTime" : null
-}, {
-  "storeId" : 1,
-  "startTime" : "11:30",
-  "endTime" : "20:00",
-  "dayOfWeek" : "MONDAY",
-  "isOpen" : true,
-  "hasBreakTime" : false,
-  "breakStartTime" : null,
-  "breakEndTime" : null
-} ]</code></pre>
+{
+  "businessHourId" : [ 1, 2, 3 ]
+}</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -513,60 +489,11 @@ Host: docs.api.com
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].dayOfWeek</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The day of week.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].hasBreakTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].breakStartTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].breakEndTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].isOpen</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 장사여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the 영업시간정보, 숫자로이루어져있다</p></td>
 </tr>
 </tbody>
 </table>
@@ -576,129 +503,13 @@ Host: docs.api.com
 <div class="listingblock">
 <div class="title">Response Example</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Content-Type: application/json
-Content-Length: 757
-
-{
-  "data" : [ {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  } ]
-}</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Response Fields</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].businessHourId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the businessHour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].dayOfWeek</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The day of week</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].hasBreakTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].breakStartTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].breakEndTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].isOpen</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 장사여부</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<div class="title">Response Fields</div>
+<p>Unresolved directive in business-hour-deletes.adoc - include::C:\Users\User\IdeaProjects\twogather-web-backend\twogather-web-backend\build\generated-snippets/business-hours/delete/response-fields.adoc[]</p>
+</div>
 </div>
 </div>
 </div>
@@ -706,7 +517,7 @@ Content-Length: 757
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-05-05 12:29:19 +0900
+Last updated 2023-05-05 14:44:17 +0900
 </div>
 </div>
 </body>

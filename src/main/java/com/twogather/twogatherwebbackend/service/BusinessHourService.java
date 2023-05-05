@@ -27,9 +27,14 @@ public class BusinessHourService {
     private final BusinessHourRepository businessHourRepository;
     private final StoreRepository storeRepository;
 
-    public List<BusinessHourResponse> saveList(List<BusinessHourSaveRequest> requestList){
+    public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveRequest> requestList){
         //TODO: 구현
         return new ArrayList<>();
+    }
+    public void deleteList(List<Long> businessHourIdList){
+        for (Long id: businessHourIdList){
+            delete(id);
+        }
     }
 
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
@@ -54,8 +59,15 @@ public class BusinessHourService {
     }
 
 
-    public BusinessHourResponse update(Long id, BusinessHourUpdateRequest request){
-        BusinessHour businessHour = findBusinessHour(id);
+    public List<BusinessHourResponse> updateList(List<BusinessHourUpdateRequest> requestList){
+        ArrayList<BusinessHourResponse> responseList = new ArrayList<>();
+        for (BusinessHourUpdateRequest request: requestList){
+            responseList.add(update(request));
+        }
+        return responseList;
+    }
+    public BusinessHourResponse update(BusinessHourUpdateRequest request){
+        BusinessHour businessHour = findBusinessHour(request.getBusinessHourId());
         businessHour.update(request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.getIsOpen(),
                 request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
 
