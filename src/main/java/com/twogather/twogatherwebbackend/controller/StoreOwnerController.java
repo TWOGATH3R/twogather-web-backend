@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
@@ -38,12 +39,6 @@ public class StoreOwnerController {
         return ResponseEntity.ok(new Response(data));
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    private static class Response {
-        private StoreOwnerResponse data;
-    }
 
 
 }

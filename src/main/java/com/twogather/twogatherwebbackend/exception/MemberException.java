@@ -1,6 +1,8 @@
 package com.twogather.twogatherwebbackend.exception;
 
-public class MemberException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+
+public class MemberException extends ClientException{
 
     public enum MemberErrorCode {
         DUPLICATE_EMAIL("이메일이 중복됩니다"),
@@ -15,11 +17,19 @@ public class MemberException extends RuntimeException{
         }
         public String getMessage(){ return message; }
     }
+    private final HttpStatus status;
     private final MemberErrorCode errorCode;
+    public MemberException(MemberErrorCode errorCode, HttpStatus status){
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+        this.status = status;
+    }
     public MemberException(MemberErrorCode errorCode){
         super(errorCode.getMessage());
         this.errorCode = errorCode;
+        this.status = HttpStatus.BAD_REQUEST;
     }
+    public HttpStatus getStatus() {return status;}
     public MemberErrorCode getErrorCode(){
         return errorCode;
     }

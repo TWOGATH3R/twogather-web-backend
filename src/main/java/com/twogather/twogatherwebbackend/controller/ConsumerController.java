@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
@@ -35,11 +36,4 @@ public class ConsumerController {
         return ResponseEntity.ok(new Response(data));
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    private class Response {
-        private ConsumerResponse data;
-
-    }
 }

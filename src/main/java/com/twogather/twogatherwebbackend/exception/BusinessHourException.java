@@ -1,6 +1,8 @@
 package com.twogather.twogatherwebbackend.exception;
 
-public class BusinessHourException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+
+public class BusinessHourException extends ClientException{
     public enum BusinessHourErrorCode {
         NO_SUCH_BUSINESS_HOUR_BY_STORE_ID("해당 가게의 영업시간 정보가 없습니다"),
         NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID("해당 영업시간 정보는 존재하지 않습니다"),
@@ -14,11 +16,21 @@ public class BusinessHourException extends RuntimeException{
         public String getMessage(){ return message; }
     }
     private final BusinessHourErrorCode errorCode;
+    private final HttpStatus status;
 
+    public BusinessHourException(BusinessHourErrorCode errorCode, HttpStatus status){
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+        this.status = status;
+
+    }
     public BusinessHourException(BusinessHourErrorCode errorCode){
         super(errorCode.getMessage());
         this.errorCode = errorCode;
+        this.status = HttpStatus.BAD_REQUEST;
+
     }
+    public HttpStatus getStatus() {return status;}
     public BusinessHourErrorCode getErrorCode(){
         return errorCode;
     }
