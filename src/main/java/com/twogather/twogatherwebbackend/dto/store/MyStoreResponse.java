@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StoreResponse {
+public class MyStoreResponse {
     private Long storeId;
     private String name;
     private String address;
-    private String phone;
+    private Boolean isApproved;
+    private String reasonForRejection;
 }
