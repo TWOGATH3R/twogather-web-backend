@@ -27,6 +27,11 @@ public class BusinessHourService {
     private final BusinessHourRepository businessHourRepository;
     private final StoreRepository storeRepository;
 
+    public List<BusinessHourResponse> saveList(List<BusinessHourSaveRequest> requestList){
+        //TODO: 구현
+        return new ArrayList<>();
+    }
+
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
         List<BusinessHour> businessHours = businessHourRepository.findByStoreStoreId(storeId);
         if (businessHours.isEmpty()) {

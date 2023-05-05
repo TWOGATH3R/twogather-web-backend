@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/business-hours")
@@ -21,8 +22,8 @@ public class BusinessHourController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('OWNER')")
-    public ResponseEntity<Response> save(@RequestBody @Valid final BusinessHourSaveRequest businessHourSaveRequest) {
-        BusinessHourResponse data = businessHourService.save(businessHourSaveRequest);
+    public ResponseEntity<Response> save(@RequestBody @Valid final List<BusinessHourSaveRequest> businessHourSaveRequestList) {
+        List<BusinessHourResponse> data = businessHourService.saveList(businessHourSaveRequestList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }

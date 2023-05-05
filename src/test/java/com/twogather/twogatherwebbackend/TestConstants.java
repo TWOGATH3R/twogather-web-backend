@@ -15,6 +15,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestConstants {
     public static final PasswordEncoder passwordEncoded = new BCryptPasswordEncoder();
@@ -88,4 +90,16 @@ public class TestConstants {
     public static final BusinessHourResponse BUSINESS_HOUR_SAVE_RESPONSE =
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
+    public static final ArrayList BUSINESS_HOUR_SAVE_RESPONSE_LIST =
+            new ArrayList<BusinessHourResponse>(){{
+                add(BUSINESS_HOUR_SAVE_RESPONSE);
+                add(BUSINESS_HOUR_SAVE_RESPONSE);
+                add(BUSINESS_HOUR_SAVE_RESPONSE);
+    }};
+    public static final ArrayList BUSINESS_HOUR_SAVE_REQUEST_LIST =
+            new ArrayList<BusinessHourSaveRequest>(){{
+                add(BUSINESS_HOUR_SAVE_REQUEST);
+                add(BUSINESS_HOUR_SAVE_REQUEST);
+                add(BUSINESS_HOUR_SAVE_REQUEST);
+            }};
 }
