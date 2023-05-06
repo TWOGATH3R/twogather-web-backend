@@ -1,13 +1,16 @@
 package com.twogather.twogatherwebbackend;
 
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class TestConstants {
@@ -41,7 +43,7 @@ public class TestConstants {
     public static final String OWNER_PHONE = "01012341234";
     public static final String OWNER_BUSINESS_NAME = "루터";
     public static final String OWNER_BUSINESS_NUMBER = "0000000000";
-    public static final String OWNER_BUSINESS_START_DATE = "20200101";
+    public static final LocalDate OWNER_BUSINESS_START_DATE = LocalDate.now();
 
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
@@ -63,13 +65,15 @@ public class TestConstants {
     public static final String AUTH = "Authorization";
 
     public static final Long BUSINESS_HOUR_ID = 1l;
+    public static final Member MEMBER =
+            new Member(1l, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.OWNER,true);
 
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
-    public static final ConsumerSaveRequest CONSUMER_SAVE_REQUEST = new ConsumerSaveRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME, CONSUMER_PHONE);
-    public static final StoreOwnerSaveRequest OWNER_SAVE_REQUEST =
-            new StoreOwnerSaveRequest(
-                OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME, OWNER_PHONE,
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
+            new StoreOwnerSaveUpdateRequest(
+                OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
 
@@ -79,9 +83,8 @@ public class TestConstants {
     public static final StoreSaveRequest STORE_SAVE_REQUEST =
             new StoreSaveRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE);
     public static final StoreOwner STORE_OWNER =
-            new StoreOwner(OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME, OWNER_PHONE,
-                    OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, LocalDate.parse(OWNER_BUSINESS_START_DATE,
-                    DateTimeFormatter.ofPattern("yyyyMMdd")),
+            new StoreOwner(OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME,
+                    OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE,
                     com.twogather.twogatherwebbackend.domain.AuthenticationType.OWNER, true);
 
     public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
@@ -104,6 +107,11 @@ public class TestConstants {
             new StoreSaveRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
     public static final StoreUpdateRequest STORE_UPDATE_REQUEST =
             new StoreUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+
+    public static final StoreOwnerSaveUpdateRequest STORE_OWNER_REQUEST =
+            new StoreOwnerSaveUpdateRequest("sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
+    public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
+            new StoreOwnerResponse(1l, "사업자이름", "ifd@naebr.com", "0000000000", "비즈니스이름", LocalDate.now());
 
     public static final ArrayList STORES_RESPONSE_LIST =
             new ArrayList<StoresResponse>(){{

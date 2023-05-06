@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.STORE_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -64,7 +66,7 @@ public class StoreService {
         }
     }
     private Store findStore(Long storeId){
-        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreException.StoreErrorCode.STORE_NOT_FOUND));
+        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(STORE_NOT_FOUND));
     }
     private StoreResponse toStoreResponse(Store store) {
         return new StoreResponse(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
