@@ -2,11 +2,8 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,7 @@ public class ConsumerController {
     private final ConsumerService consumerService;
 
     @PostMapping()
-    public ResponseEntity<Response> join(@RequestBody @Valid final ConsumerSaveRequest consumerSaveRequest) {
+    public ResponseEntity<Response> join(@RequestBody @Valid final ConsumerSaveUpdateRequest consumerSaveRequest) {
         ConsumerResponse data = consumerService.join(consumerSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));

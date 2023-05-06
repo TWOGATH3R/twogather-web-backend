@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
@@ -21,10 +22,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -45,14 +45,13 @@ public class BusinessHourControllerTest extends ControllerTest{
         mockMvc.perform(put("/api/business-hours")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
                                         .writeValueAsString(BUSINESS_HOUR_UPDATE_REQUEST_LIST))
                 )
                 .andExpect(status().isOk())
-                .andDo(document("business-hours/update",
+                .andDo(document("business-hour/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -90,15 +89,17 @@ public class BusinessHourControllerTest extends ControllerTest{
                 .thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(get("/api/1/business-hours")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/{storeId}/business-hours",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                 )
                 .andExpect(status().isOk())
-                .andDo(document("business-hours/get",
+                .andDo(document("business-hour/get",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 id")
+                        ),
                         responseFields(
                                 fieldWithPath("data[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
@@ -125,14 +126,13 @@ public class BusinessHourControllerTest extends ControllerTest{
         mockMvc.perform(delete("/api/business-hours")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
                                         .writeValueAsString(BUSINESS_HOUR_ID_LIST))
                 )
                 .andExpect(status().isOk())
-                .andDo(document("business-hours/delete",
+                .andDo(document("business-hour/delete",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -149,19 +149,21 @@ public class BusinessHourControllerTest extends ControllerTest{
         when(businessHourService.saveList(any(), any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(post("/api/1/business-hours")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/{storeId}/business-hours",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
                                         .writeValueAsString(BUSINESS_HOUR_SAVE_REQUEST_LIST))
                 )
                 .andExpect(status().isCreated())
-                .andDo(document("business-hours/save",
+                .andDo(document("business-hour/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
                                 fieldWithPath("[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),

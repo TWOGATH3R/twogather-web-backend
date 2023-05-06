@@ -76,6 +76,9 @@ asciidoctor {
 	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test
+	sources {
+		include('*.adoc')
+	}
 }
 // 기존에 존재하는 docs를 삭제한다
 asciidoctor.doFirst {

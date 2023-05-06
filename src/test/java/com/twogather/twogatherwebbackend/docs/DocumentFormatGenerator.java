@@ -17,5 +17,14 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getRatingFormat() {
         return key("format").value("소수점 첫째짜리까지만. 0~5점 사이");
     }
+    static Attributes.Attribute getPasswordFormat() {
+        return key("format").value("비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로");
+    }
+    static Attributes.Attribute getDateFormat() {
+        return key("format").value("yyyy-MM-dd");
+    }
+    static Attributes.Attribute getBusinessNumberFormat() {
+        return key("format").value("숫자 10자리여야한다");
+    }
 
 }

@@ -9,16 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.PASSWORD_MISMATCH;
@@ -35,7 +31,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public TokenAndId login(LoginRequest loginRequest) {
         Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
-        validatePassword(findMember.getLoginPw(), loginRequest.getPassword());
+        validatePassword(findMember.getPassword(), loginRequest.getPassword());
 
         // 인증 처리
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
