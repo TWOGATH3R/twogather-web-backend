@@ -84,6 +84,21 @@ operation::image/save/[snippets='http-request,http-response,response-fields']
 operation::image/delete/[snippets='http-request,path-parameters,http-response']
 
 
+== Review API
+
+=== Get-My-Review-List
+operation::review/getMyReviewInfos/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+
+=== Save
+operation::review/save/[snippets='http-request,http-response,response-fields']
+
+=== Update
+operation::review/update/[snippets='http-request,http-response,response-fields']
+
+=== Delete
+operation::review/delete/[snippets='http-request,path-parameters,http-response']
+
+
 
 :linkattrs:
 :bookmarks:
