@@ -3,6 +3,8 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,17 +21,30 @@ import javax.validation.constraints.Email;
 public class ConsumerController {
     private final ConsumerService consumerService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final ConsumerSaveUpdateRequest consumerSaveRequest) {
         ConsumerResponse data = consumerService.join(consumerSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
-    @GetMapping("/{email}")
+    @PutMapping
+    public ResponseEntity<Response> updateConsumerInfo(@RequestBody @Valid final ConsumerSaveUpdateRequest consumerSaveUpdateRequest){
+        ConsumerResponse data = consumerService.update(consumerSaveUpdateRequest);
+
+        return ResponseEntity.ok(new Response(data));
+    }
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Response> leave(@PathVariable Long memberId) {
+        consumerService.delete(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/{memberId}")
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    public ResponseEntity<Response> getConsumerInfo(@PathVariable @Email String email) {
-        ConsumerResponse data = consumerService.getMemberWithAuthorities(email);
+    public ResponseEntity<Response> getConsumerInfo(@PathVariable @Email final Long memberId) {
+        ConsumerResponse data = consumerService.getMemberWithAuthorities(memberId);
         return ResponseEntity.ok(new Response(data));
     }
 

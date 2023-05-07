@@ -23,6 +23,13 @@ public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public void delete(final Long memberId){
+        //TODO:구현
+    }
+    public ConsumerResponse update(final ConsumerSaveUpdateRequest request){
+        //TODO: 구현
+        return new ConsumerResponse();
+    }
     public ConsumerResponse join(final ConsumerSaveUpdateRequest request){
         validateDuplicateEmail(request.getEmail());
         Consumer consumer
@@ -38,6 +45,12 @@ public class ConsumerService {
         Consumer consumer = findMemberByEmailOrElseThrow(email);
 
         return toConsumerResponse(consumer);
+    }
+    @Transactional(readOnly = true)
+    public ConsumerResponse getMemberWithAuthorities(final Long memberId) {
+        //TODO: 구현
+
+        return new ConsumerResponse();
     }
     @Transactional(readOnly = true)
     public ConsumerResponse getMemberWithAuthorities(){

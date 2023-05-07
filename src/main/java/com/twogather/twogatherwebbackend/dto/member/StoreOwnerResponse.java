@@ -15,8 +15,8 @@ public class StoreOwnerResponse extends MemberResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate businessStartDate;
 
-    public StoreOwnerResponse(Long id, String name, String email, String businessNumber, String businessName, LocalDate businessStartDate){
-        super(id, email,name);
+    public StoreOwnerResponse(Long memberId, String name, String email, String businessNumber, String businessName, LocalDate businessStartDate){
+        super(memberId, email,name);
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;

@@ -7,10 +7,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,9 +65,11 @@ public class TestConstants {
     public static final Member MEMBER =
             new Member(1l, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.OWNER,true);
 
+    public static final ConsumerResponse CONSUMER_RESPONSE
+            = new ConsumerResponse(1l, "김멍치","sda@naer.com");
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
-    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(
                 OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
