@@ -26,5 +26,8 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getBusinessNumberFormat() {
         return key("format").value("숫자 10자리여야한다");
     }
+    static Attributes.Attribute getScoreFormat() {
+        return key("format").value("숫자 0~5 사이의 소수점 한자리 형태");
+    }
 
 }
