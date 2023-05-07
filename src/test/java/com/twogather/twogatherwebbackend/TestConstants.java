@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
@@ -26,6 +27,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestConstants {
@@ -108,12 +110,15 @@ public class TestConstants {
 
     public static final StoreResponse STORE_RESPONSE =
             new StoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final ArrayList KEYWORD_LIST =
+            new ArrayList<>(){{
+                add("분위기좋은");
+                add("사진찍기좋은");
+                add("저렴한");
+            }};
     public static final StoresResponse STORES_RESPONSE =
-            new StoresResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",4.2);
-    public static final MyStoreResponse MY_STORES_RESPONSE =
-            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",false, "자격미달");
-
-    public static final StoreSaveRequest STORE_REQUEST =
+            new StoresResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",4.2,KEYWORD_LIST, "imageurl1");
+   public static final StoreSaveRequest STORE_REQUEST =
             new StoreSaveRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
     public static final StoreUpdateRequest STORE_UPDATE_REQUEST =
             new StoreUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
@@ -122,14 +127,18 @@ public class TestConstants {
             new StoreOwnerSaveUpdateRequest("sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
     public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
             new StoreOwnerResponse(1l, "사업자이름", "ifd@naebr.com", "0000000000", "비즈니스이름", LocalDate.now());
-    public static final String DATE = "2020-02-02";
+    public static final LocalDate DATE = LocalDate.parse("2020-02-02");
+    public static final MyStoreResponse MY_STORES_RESPONSE =
+            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",
+                    "063-231-4990",false, "자격미달", DATE, "url1");
+
     public static final Page<MyReviewInfoResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
             new MyReviewInfoResponse(1L,  "Good product", 4.5, LocalDate.of(2022, 1, 1), "imageurl", "김가네삼겹살", "서울시 어쩌고 어쩌고", "김은지"),
             new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDate.of(2022, 1, 3), "imageurl2", "레스토랑1", "경기도 어쩌고 어쩌고", "박은지"),
             new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDate.of(2022, 1, 5), "imageurl3", "김밥집1", "전주시 어쩌고 어쩌고", "김지은")
     ));
     public static final ReviewResponse REVIEW_RESPONSE =
-            new ReviewResponse(1L, 1L,"너무 맛있어요~!" , 3.2, LocalDate.parse(DATE));
+            new ReviewResponse(1L, 1L,"너무 맛있어요~!" , 3.2, DATE);
     public static final ReviewSaveRequest REVIEW_SAVE_REQUEST =
             new ReviewSaveRequest(1l,1l,"진짜맛있어요!", 1.2);
     public static final ReviewUpdateRequest REVIEW_UPDATE_REQUEST =
@@ -148,6 +157,12 @@ public class TestConstants {
                     }});
     public static final ImageResponse IMAGE_RESPONSE =
             new ImageResponse(1l, "www.maver/ssd/c");
+    public static final ArrayList CATEGORY_RESPONSE_LIST =
+            new ArrayList<CategoryResponse>(){{
+                add(new CategoryResponse(1l,"양식"));
+                add(new CategoryResponse(2l,"일식"));
+                add(new CategoryResponse(3l,"분식"));
+            }};
     public static final ArrayList IMAGE_RESPONSE_LIST =
             new ArrayList<ImageResponse>(){{
                 add(IMAGE_RESPONSE);
@@ -160,6 +175,33 @@ public class TestConstants {
                 add(STORES_RESPONSE);
                 add(STORES_RESPONSE);
             }};
+
+    public static final TopStoreInfoPreviewResponse STORES_TOP10_PREVIEW_RESPONSE = new TopStoreInfoPreviewResponse(
+            Arrays.asList(
+                    new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),
+                    new TopStoreInfoResponse("store2", 4.2, "456 Oak Ave.", "url2"),
+                    new TopStoreInfoResponse("store3", 4.0, "789 Elm St.", "url3")
+            ),
+            Arrays.asList(
+                    new TopStoreInfoResponse("store11", 4.8, "123 Main St.", "url11"),
+                    new TopStoreInfoResponse("store12", 4.6, "456 Oak Ave.", "url12"),
+                    new TopStoreInfoResponse("store13", 4.4, "789 Elm St.", "url13")
+         )
+    );
+
+    public static final List<TopStoreInfoResponse> STORES_TOP10_RESPONSE_LIST =
+            Arrays.asList(
+                    new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),
+                    new TopStoreInfoResponse("store2", 4.2, "456 Oak Ave.", "url2"),
+                    new TopStoreInfoResponse("store3", 3.0, "789 Elm St.", "url3"),
+                    new TopStoreInfoResponse("store4", 3.5, "123 Main St.", "url1"),
+                    new TopStoreInfoResponse("store5", 3.2, "456 Oak Ave.", "url2"),
+                    new TopStoreInfoResponse("store6", 3.0, "789 Elm St.", "url3"),
+                    new TopStoreInfoResponse("store7", 3.5, "123 Main St.", "url1"),
+                    new TopStoreInfoResponse("store8", 2.2, "456 Oak Ave.", "url2"),
+                    new TopStoreInfoResponse("store9", 1.0, "789 Elm St.", "url3")
+            );
+
     public static final ArrayList MY_STORES_RESPONSE_LIST =
             new ArrayList<MyStoreResponse>(){{
                 add(MY_STORES_RESPONSE);

@@ -2,10 +2,7 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +45,13 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
+    @GetMapping("/keyword")
+    public ResponseEntity<Response> getKeywordList() {
+        List<String> data = storeService.getKeyword();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
     @GetMapping("/my")
     public ResponseEntity<Response> getMyStoreInfo(
             @RequestParam(value = "owner-id") Long storeOwnerId,
@@ -59,14 +63,28 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping
+    @GetMapping("/top-preview")
+    public ResponseEntity<Response> getStoreTopPreviewInfos() {
+        TopStoreInfoPreviewResponse data = storeService.getStoresTop10Preview();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+    @GetMapping("/top/{type}")
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable String type) {
+        List<TopStoreInfoResponse> data = storeService.getStoresTop10(type);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
+    @GetMapping("/search")
     public ResponseEntity<Response> getStoreInfos(  @RequestParam(value = "category", required = false) String categoryName,
                                                     @RequestParam(value = "search", required = false) String keyword,
                                                     @RequestParam(value = "limit", defaultValue = "10") int limit,
                                                     @RequestParam(value = "offset", defaultValue = "0") int offset,
                                                     @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-                                                    @RequestParam(value = "order", defaultValue = "asc") String order) {
-        List<StoreResponse> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order);
+                                                    @RequestParam(value = "order", defaultValue = "asc") String order,
+                                                    @RequestParam(value = "location", required = false) String location) {
+        List<StoresResponse> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order, location);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

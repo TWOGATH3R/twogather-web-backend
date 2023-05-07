@@ -1,10 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +26,20 @@ public class StoreService {
         Store savedStore = storeRepository.save(store);
         return toStoreResponse(savedStore);
     }
+    public List<String> getKeyword(){
+        //TODO: 구현
+        return null;
+    }
+    public TopStoreInfoPreviewResponse getStoresTop10Preview(){
+        //TODO: 구현
+
+        return null;
+    }
+    public List<TopStoreInfoResponse> getStoresTop10(String type){
+        //TODO: 구현
+
+        return null;
+    }
 
     public void delete(Long storeId) {
         Store store = findStore(storeId);
@@ -46,8 +57,8 @@ public class StoreService {
 
         return toStoreResponse(store);
     }
-    public List<StoreResponse> getStores(
-          String categoryName, String keyword, int limit, int offset, String orderBy, String order){
+    public List<StoresResponse> getStores(
+          String categoryName, String keyword, int limit, int offset, String orderBy, String order, String location){
         //TODO: 구현
         return new ArrayList<>();
     }

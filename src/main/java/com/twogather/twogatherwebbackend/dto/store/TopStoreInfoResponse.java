@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoresResponse {
-    private Long storeId;
-    private String name;
+public class TopStoreInfoResponse {
+    private String storeName;
+    private Double score;
     private String address;
-    private Double rating;
-    private ArrayList<String> keywordList = new ArrayList<>();
     private String storeImageUrl;
 }
