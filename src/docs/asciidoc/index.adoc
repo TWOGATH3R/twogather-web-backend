@@ -72,6 +72,17 @@ operation::consumer/update/[snippets='http-request,request-fields,http-response,
 === Delete
 operation::consumer/delete/[snippets='http-request,path-parameters,http-response']
 
+== Image API
+
+=== Get
+operation::image/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Save
+operation::image/save/[snippets='http-request,http-response,response-fields']
+
+=== Delete
+operation::image/delete/[snippets='http-request,path-parameters,http-response']
+
 
 
 :linkattrs:

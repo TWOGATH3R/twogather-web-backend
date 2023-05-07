@@ -7,8 +7,11 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
+import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.dto.store.*;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,6 +19,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestConstants {
     public static final PasswordEncoder passwordEncoded = new BCryptPasswordEncoder();
@@ -112,6 +116,26 @@ public class TestConstants {
     public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
             new StoreOwnerResponse(1l, "사업자이름", "ifd@naebr.com", "0000000000", "비즈니스이름", LocalDate.now());
 
+    public static final MockMultipartFile IMAGE1
+            = new MockMultipartFile("images", "image1.jpg", "image/jpeg", "test data".getBytes());
+    public static final MockMultipartFile IMAGE2
+            = new MockMultipartFile("imagesSDA", "imageS2.jpg", "image/jpeg", "test data".getBytes());
+
+    public static final ImageIdList IMAGE_ID_LIST =
+            new ImageIdList(
+                    new ArrayList<>(){{
+                        add(1l);
+                        add(2l);
+                        add(3l);
+            }});
+    public static final ImageResponse IMAGE_RESPONSE =
+            new ImageResponse(1l, "www.maver/ssd/c");
+    public static final ArrayList IMAGE_RESPONSE_LIST =
+            new ArrayList<ImageResponse>(){{
+                add(IMAGE_RESPONSE);
+                add(IMAGE_RESPONSE);
+                add(IMAGE_RESPONSE);
+            }};
     public static final ArrayList STORES_RESPONSE_LIST =
             new ArrayList<StoresResponse>(){{
                 add(STORES_RESPONSE);
