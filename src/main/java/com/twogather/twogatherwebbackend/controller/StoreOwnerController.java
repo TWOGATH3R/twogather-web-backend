@@ -35,6 +35,7 @@ public class StoreOwnerController {
 
         return ResponseEntity.ok(new Response(data));
     }
+
     @PutMapping
     @PreAuthorize("hasAnyRole('OWNER')")
     public ResponseEntity<Response> updateOwnerInfo(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest){

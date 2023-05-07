@@ -58,6 +58,19 @@ operation::owner/update/[snippets='http-request,request-fields,http-response,res
 === Delete
 operation::owner/delete/[snippets='http-request,path-parameters,http-response']
 
+== Consumer API
+
+=== Get
+operation::consumer/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Save
+operation::consumer/save/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Update
+operation::consumer/update/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Delete
+operation::consumer/delete/[snippets='http-request,path-parameters,http-response']
 
 
 
