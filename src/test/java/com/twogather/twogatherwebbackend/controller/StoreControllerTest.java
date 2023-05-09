@@ -96,7 +96,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("나의가게조회")
     public void getMyStoreInfo() throws Exception {
         //given
-        when(storeService.getStoresByOwner(anyLong(), anyInt(), anyInt())).thenReturn(MY_STORES_RESPONSE_LIST);
+        when(storeService.getStoresByOwner(anyLong(), anyInt(), anyInt())).thenReturn(MY_STORES_RESPONSE_PAGE);
         //when
         //then
         mockMvc.perform(get("/api/stores/my?owner-id=1&limit=1&offset=2")
@@ -120,8 +120,14 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 URL"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data[].isApproved").type(JsonFieldType.BOOLEAN).description("관리자에 의해 가게가 승인됐는지의 여부"),
-                                fieldWithPath("data[].reasonForRejection").type(JsonFieldType.STRING).description("가게가 승인되지 않은 이유")
-                        )
+                                fieldWithPath("data[].reasonForRejection").type(JsonFieldType.STRING).description("가게가 승인되지 않은 이유"),
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
+                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
+                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
+                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재페이지가 몇번인지")
+
+                                )
                 ));
 
     }

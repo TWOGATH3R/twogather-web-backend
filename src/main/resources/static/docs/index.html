@@ -448,6 +448,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_login_api">Login API</a>
+<ul class="sectlevel2">
+<li><a href="#_post">Post</a></li>
+</ul>
+</li>
 <li><a href="#_businesshour_api">BusinessHour API</a>
 <ul class="sectlevel2">
 <li><a href="#_get">Get</a></li>
@@ -510,6 +515,114 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
+<h2 id="_login_api"><a class="link" href="#_login_api">Login API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_post"><a class="link" href="#_post">Post</a></h3>
+<div class="sect3">
+<h4 id="_post_http_request"><a class="link" href="#_post_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/login/token HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 63
+Host: docs.api.com
+
+{
+  "email" : "asd@naerb.cm",
+  "password" : "password123"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_post_request_fields"><a class="link" href="#_post_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인에 필요한 이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인에 필요한 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_post_http_response"><a class="link" href="#_post_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Authorization: Bearer token1
+Content-Type: application/json
+Content-Length: 43
+
+{
+  "data" : {
+    "memberId" : 1
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_post_response_fields"><a class="link" href="#_post_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인한 회원의 고유 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_businesshour_api"><a class="link" href="#_businesshour_api">BusinessHour API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -525,8 +638,26 @@ Host: docs.api.com</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_request_parameters"><a class="link" href="#_get_request_parameters">Request parameters</a></h4>
-
+<h4 id="_get_path_parameters"><a class="link" href="#_get_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/{storeId}/business-hours</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_get_http_response"><a class="link" href="#_get_http_response">HTTP response</a></h4>
@@ -758,8 +889,26 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_request_parameters"><a class="link" href="#_save_request_parameters">Request parameters</a></h4>
-
+<h4 id="_save_path_parameters"><a class="link" href="#_save_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/{storeId}/business-hours</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_save_request_fields"><a class="link" href="#_save_request_fields">Request fields</a></h4>
@@ -1375,8 +1524,26 @@ Host: docs.api.com</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_one_request_parameters"><a class="link" href="#_get_one_request_parameters">Request parameters</a></h4>
-
+<h4 id="_get_one_path_parameters"><a class="link" href="#_get_one_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/stores/{storeId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_get_one_http_response"><a class="link" href="#_get_one_http_response">HTTP response</a></h4>
@@ -2009,7 +2176,7 @@ Host: docs.api.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 892
+Content-Length: 996
 
 {
   "data" : [ {
@@ -2039,7 +2206,12 @@ Content-Length: 892
     "reasonForRejection" : "자격미달",
     "requestDate" : "2020-02-02",
     "storeImageUrl" : "url1"
-  } ]
+  } ],
+  "currentPage" : 1,
+  "totalPages" : 1,
+  "totalElements" : 3,
+  "last" : true,
+  "first" : true
 }</code></pre>
 </div>
 </div>
@@ -2120,6 +2292,41 @@ Content-Length: 892
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게가 승인되지 않은 이유</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 리뷰의 총 페이지 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 리뷰의 총 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>first</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">첫 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentPage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재페이지가 몇번인지</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2137,8 +2344,26 @@ Host: docs.api.com</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete_2_request_parameters"><a class="link" href="#_delete_2_request_parameters">Request parameters</a></h4>
-
+<h4 id="_delete_2_path_parameters"><a class="link" href="#_delete_2_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/stores/{storeId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_delete_2_http_response"><a class="link" href="#_delete_2_http_response">HTTP response</a></h4>
@@ -2294,7 +2519,7 @@ Content-Length: 160
 <h4 id="_get_2_http_request"><a class="link" href="#_get_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=77746364-56f0-4d02-8e2d-4486027d9cb2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=31e22c8c-dc92-47ff-891f-1b6ca9e94ec7 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -2337,7 +2562,7 @@ Content-Length: 231
     "name" : "사업자이름",
     "businessName" : "비즈니스이름",
     "businessNumber" : "0000000000",
-    "businessStartDate" : "2023-05-07"
+    "businessStartDate" : "2023-05-09"
   }
 }</code></pre>
 </div>
@@ -2415,7 +2640,7 @@ Content-Length: 231
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=0a3bfb05-379a-44b0-a447-1166df0932dd HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=a1af80eb-3347-4085-bb53-67ed087dc9da HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 196
 Host: docs.api.com
@@ -2426,7 +2651,7 @@ Host: docs.api.com
   "name" : "사업자이름",
   "businessNumber" : "0000000000",
   "businessName" : "이름",
-  "businessStartDate" : "2023-05-07"
+  "businessStartDate" : "2023-05-09"
 }</code></pre>
 </div>
 </div>
@@ -2511,7 +2736,7 @@ Content-Length: 231
     "name" : "사업자이름",
     "businessName" : "비즈니스이름",
     "businessNumber" : "0000000000",
-    "businessStartDate" : "2023-05-07"
+    "businessStartDate" : "2023-05-09"
   }
 }</code></pre>
 </div>
@@ -2589,7 +2814,7 @@ Content-Length: 231
 <h4 id="_update_3_http_request"><a class="link" href="#_update_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/owners?_csrf=ad2cc17e-b32c-41e2-a443-fcac74d5f541 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/owners?_csrf=0da89e2e-d463-45a9-9553-2dc2a8df2263 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 196
 Host: docs.api.com
@@ -2600,7 +2825,7 @@ Host: docs.api.com
   "name" : "사업자이름",
   "businessNumber" : "0000000000",
   "businessName" : "이름",
-  "businessStartDate" : "2023-05-07"
+  "businessStartDate" : "2023-05-09"
 }</code></pre>
 </div>
 </div>
@@ -2685,7 +2910,7 @@ Content-Length: 231
     "name" : "사업자이름",
     "businessName" : "비즈니스이름",
     "businessNumber" : "0000000000",
-    "businessStartDate" : "2023-05-07"
+    "businessStartDate" : "2023-05-09"
   }
 }</code></pre>
 </div>
@@ -2763,7 +2988,7 @@ Content-Length: 231
 <h4 id="_delete_3_http_request"><a class="link" href="#_delete_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/owners/1?_csrf=44783ce9-97da-43ec-92f2-56350a90e405 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/owners/1?_csrf=8392c027-7923-4349-8025-19a961a61dd8 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -2915,7 +3140,7 @@ Content-Length: 101
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=760346b3-f851-4cee-98af-9a22bea8197b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=5c8c82d7-81e3-4770-a762-518e8c91dd58 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -3041,7 +3266,7 @@ Content-Length: 101
 <h4 id="_update_4_http_request"><a class="link" href="#_update_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers?_csrf=437dcec5-e7ad-41fe-b357-9ce6597c6a56 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers?_csrf=626c2ad2-c1ba-4170-9c55-d94669bd2b0a HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -3324,7 +3549,7 @@ Host: docs.api.com
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=_csrf
 
-1df618aa-d58a-4abf-b66d-bb25ae2a8945
+ef7a1601-e0e9-4a76-932e-b8e72263b1fe
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=images; filename=image1.jpg
 Content-Type: image/jpeg
@@ -3416,28 +3641,6 @@ Host: docs.api.com
 }</code></pre>
 </div>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_delete_5_path_parameters"><a class="link" href="#_delete_5_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/stores/{storeId}/images</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="_delete_5_http_response"><a class="link" href="#_delete_5_http_response">HTTP response</a></h4>
@@ -3560,8 +3763,8 @@ Content-Length: 1198
     } ],
     "pageable" : "INSTANCE",
     "totalPages" : 1,
-    "last" : true,
     "totalElements" : 3,
+    "last" : true,
     "size" : 3,
     "number" : 0,
     "sort" : {
@@ -3761,7 +3964,7 @@ Content-Length: 1198
 <h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/reviews?_csrf=c09d1b42-2a8b-457e-87cb-ba62d4e9676e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/reviews?_csrf=739b801a-acc4-4853-9d32-994bbeb56992 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -3860,7 +4063,7 @@ Content-Length: 163
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/reviews?_csrf=0596ae50-3147-4b1f-a553-d56b5b813baa HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/reviews?_csrf=752ff56a-28aa-4911-970e-078fbbe2f935 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -3959,7 +4162,7 @@ Content-Length: 163
 <h4 id="_delete_6_http_request"><a class="link" href="#_delete_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/reviews/1?_csrf=fd7c62bc-f69f-4f36-9135-2d7dbc09da55 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/reviews/1?_csrf=470e0dc8-a36f-4ff3-bfaa-b44281c3e3b5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4080,7 +4283,7 @@ Content-Length: 181
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-05-07 14:09:09 +0900
+Last updated 2023-05-09 13:58:53 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

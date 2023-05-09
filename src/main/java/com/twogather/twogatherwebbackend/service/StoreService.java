@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,9 +63,9 @@ public class StoreService {
         //TODO: 구현
         return new ArrayList<>();
     }
-    public List<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Integer limit, Integer offset){
+    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Integer limit, Integer offset){
         //TODO: 구현
-        return new ArrayList<>();
+        return null;
     }
     public StoreResponse getStore(Long storeId){
         Store store = findStore(storeId);

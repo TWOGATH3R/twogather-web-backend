@@ -17,6 +17,7 @@ import com.twogather.twogatherwebbackend.dto.review.ReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveRequest;
 import com.twogather.twogatherwebbackend.dto.review.ReviewUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
+import com.twogather.twogatherwebbackend.service.AuthService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockMultipartFile;
@@ -147,7 +148,10 @@ public class TestConstants {
             = new MockMultipartFile("images", "image1.jpg", "image/jpeg", "test data".getBytes());
     public static final MockMultipartFile IMAGE2
             = new MockMultipartFile("imagesSDA", "imageS2.jpg", "image/jpeg", "test data".getBytes());
-
+    public static final LoginRequest LOGIN_REQUEST
+            = new LoginRequest("asd@naerb.cm", "password123");
+    public static final AuthService.TokenAndId TOKEN_AND_ID
+            = new AuthService.TokenAndId("token1",1l);
     public static final ImageIdList IMAGE_ID_LIST =
             new ImageIdList(
                     new ArrayList<>(){{
@@ -201,13 +205,12 @@ public class TestConstants {
                     new TopStoreInfoResponse("store8", 2.2, "456 Oak Ave.", "url2"),
                     new TopStoreInfoResponse("store9", 1.0, "789 Elm St.", "url3")
             );
+    public static final Page<MyStoreResponse> MY_STORES_RESPONSE_PAGE = new PageImpl<>(List.of(
+            MY_STORES_RESPONSE,
+            MY_STORES_RESPONSE,
+            MY_STORES_RESPONSE
+    ));
 
-    public static final ArrayList MY_STORES_RESPONSE_LIST =
-            new ArrayList<MyStoreResponse>(){{
-                add(MY_STORES_RESPONSE);
-                add(MY_STORES_RESPONSE);
-                add(MY_STORES_RESPONSE);
-            }};
     public static final ArrayList BUSINESS_HOUR_RESPONSE_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);

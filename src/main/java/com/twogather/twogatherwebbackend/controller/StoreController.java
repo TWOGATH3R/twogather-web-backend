@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.store.*;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,9 +60,9 @@ public class StoreController {
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "offset", required = false) Integer offset
     ) {
-        List<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, limit, offset);
+        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, limit, offset);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
     @GetMapping("/top-preview")
