@@ -1,0 +1,121 @@
+= TwoGather API Spec Docs
+api spec 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== Login API
+
+=== Post
+operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
+
+== BusinessHour API
+
+=== Get
+operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Delete
+operation::business-hour/delete/[snippets='http-request,request-fields,http-response']
+
+=== Save
+operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
+=== Update
+operation::business-hour/update/[snippets='http-request,request-fields,http-response,response-fields']
+
+
+== Store API
+
+=== Save
+operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Get-One
+operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Get-Keyword
+operation::store/get-keyword/[snippets='http-request,http-response,response-fields']
+
+=== Get-List-Default
+operation::store/get-list-default/[snippets='http-request,http-response,response-fields']
+
+=== Get-List-Default-Detail
+operation::store/get-list-default-detail/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Get-List-Search
+operation::store/get-list-search/[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== Get-My-List
+operation::store/get-my-list/[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== Delete
+operation::store/delete/[snippets='http-request,path-parameters,http-response']
+
+=== Update
+operation::store/update/[snippets='http-request,request-fields,http-response,response-fields']
+
+
+== Store-Owner API
+
+=== Get
+operation::owner/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Save
+operation::owner/save/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Update
+operation::owner/update/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Delete
+operation::owner/delete/[snippets='http-request,path-parameters,http-response']
+
+== Consumer API
+
+=== Get
+operation::consumer/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Save
+operation::consumer/save/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Update
+operation::consumer/update/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Delete
+operation::consumer/delete/[snippets='http-request,path-parameters,http-response']
+
+== Image API
+
+=== Get
+operation::image/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Save
+operation::image/save/[snippets='http-request,http-response,response-fields']
+
+=== Delete
+operation::image/delete/[snippets='http-request,http-response']
+
+
+== Review API
+
+=== Get-My-Review-List
+operation::review/getMyReviewInfos/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+
+=== Save
+operation::review/save/[snippets='http-request,http-response,response-fields']
+
+=== Update
+operation::review/update/[snippets='http-request,http-response,response-fields']
+
+=== Delete
+operation::review/delete/[snippets='http-request,path-parameters,http-response']
+
+== Category API
+
+=== Get
+operation::category/get/[snippets='http-request,http-response,response-fields']
+
+
+:linkattrs:
+:bookmarks:

@@ -2,11 +2,8 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +21,36 @@ import javax.validation.constraints.Email;
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
 
-    @PostMapping()
-    public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveRequest storeOwnerSaveRequest) {
-        StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveRequest);
+    @PostMapping
+    public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest) {
+        StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/{memberId}")
     @PreAuthorize("hasAnyRole('OWNER')")
-    public ResponseEntity<Response> getOwnerInfo(@PathVariable @Email String email){
-        StoreOwnerResponse data = storeOwnerService.getMemberWithAuthorities(email);
+    public ResponseEntity<Response> getOwnerInfo(@PathVariable Long memberId){
+        StoreOwnerResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
 
         return ResponseEntity.ok(new Response(data));
     }
+
+    @PutMapping
+    @PreAuthorize("hasAnyRole('OWNER')")
+    public ResponseEntity<Response> updateOwnerInfo(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest){
+        StoreOwnerResponse data = storeOwnerService.update(storeOwnerSaveUpdateRequest);
+
+        return ResponseEntity.ok(new Response(data));
+    }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Response> leave(@PathVariable Long memberId) {
+        storeOwnerService.delete(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
 
 

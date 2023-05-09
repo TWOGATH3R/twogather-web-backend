@@ -15,7 +15,7 @@ public class Consumer extends Member {
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviewList = new ArrayList<>();
 
-    public Consumer(String email, String loginPw, String name, String phone, AuthenticationType authenticationType, boolean isActive) {
-        super(email, loginPw, name, phone, authenticationType, isActive);
+    public Consumer(String email, String loginPw, String name, AuthenticationType authenticationType, boolean isActive) {
+        super(email, loginPw, name, authenticationType, isActive);
     }
 }

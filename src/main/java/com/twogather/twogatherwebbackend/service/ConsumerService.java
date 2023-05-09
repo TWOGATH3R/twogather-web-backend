@@ -3,7 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -23,11 +23,18 @@ public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ConsumerResponse join(final ConsumerSaveRequest request){
+    public void delete(final Long memberId){
+        //TODO:구현
+    }
+    public ConsumerResponse update(final ConsumerSaveUpdateRequest request){
+        //TODO: 구현
+        return new ConsumerResponse();
+    }
+    public ConsumerResponse join(final ConsumerSaveUpdateRequest request){
         validateDuplicateEmail(request.getEmail());
         Consumer consumer
                 = new Consumer(request.getEmail(), passwordEncoder.encode(request.getPassword()),
-                request.getName(), request.getPhone(), AuthenticationType.CONSUMER, true);
+                request.getName(), AuthenticationType.CONSUMER, true);
         Consumer storedConsumer = consumerRepository.save(consumer);
 
         return toConsumerResponse(storedConsumer);
@@ -38,6 +45,12 @@ public class ConsumerService {
         Consumer consumer = findMemberByEmailOrElseThrow(email);
 
         return toConsumerResponse(consumer);
+    }
+    @Transactional(readOnly = true)
+    public ConsumerResponse getMemberWithAuthorities(final Long memberId) {
+        //TODO: 구현
+
+        return new ConsumerResponse();
     }
     @Transactional(readOnly = true)
     public ConsumerResponse getMemberWithAuthorities(){
@@ -57,6 +70,6 @@ public class ConsumerService {
         }
     }
     private ConsumerResponse toConsumerResponse(Consumer consumer){
-        return new ConsumerResponse(consumer.getMemberId(), consumer.getName(), consumer.getEmail(), consumer.getPhone());
+        return new ConsumerResponse(consumer.getMemberId(), consumer.getName(), consumer.getEmail());
     }
 }

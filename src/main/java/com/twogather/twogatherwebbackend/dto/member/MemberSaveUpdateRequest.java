@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public abstract class MemberSaveRequest {
+public abstract class MemberSaveUpdateRequest {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
@@ -23,9 +23,5 @@ public abstract class MemberSaveRequest {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     @Pattern(regexp = "^[가-힣a-zA-Z]+$",  message = "이름은 한글 혹은 영어로만 입력해주세요.")
     private String name;
-
-    @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    @Pattern(regexp = "^01([0|1|6|7|8|9])(\\d{3}|\\d{4})(\\d{4})$", message = "핸드폰 번호는 010, 011, 016, 017, 018, 019로 시작하는 10~11자리 번호입니다.")
-    private String phone;
 
 }

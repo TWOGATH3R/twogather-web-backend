@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class StoreResponse {
-    private Long id;
+    private Long storeId;
     private String name;
     private String address;
     private String phone;
