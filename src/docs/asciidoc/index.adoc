@@ -7,17 +7,21 @@ api spec 문서
 :toclevels: 2
 :sectlinks:
 
+== Login API
+
+=== Post
+operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
 == BusinessHour API
 
 === Get
-operation::business-hour/get/[snippets='http-request,request-parameters,http-response,response-fields']
+operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Delete
 operation::business-hour/delete/[snippets='http-request,request-fields,http-response']
 
 === Save
-operation::business-hour/save/[snippets='http-request,request-parameters,request-fields,http-response,response-fields']
+operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === Update
 operation::business-hour/update/[snippets='http-request,request-fields,http-response,response-fields']
@@ -29,7 +33,7 @@ operation::business-hour/update/[snippets='http-request,request-fields,http-resp
 operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Get-One
-operation::store/get-one/[snippets='http-request,request-parameters,http-response,response-fields']
+operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Get-Keyword
 operation::store/get-keyword/[snippets='http-request,http-response,response-fields']
@@ -47,7 +51,7 @@ operation::store/get-list-search/[snippets='http-request,request-parameters,http
 operation::store/get-my-list/[snippets='http-request,request-parameters,http-response,response-fields']
 
 === Delete
-operation::store/delete/[snippets='http-request,request-parameters,http-response']
+operation::store/delete/[snippets='http-request,path-parameters,http-response']
 
 === Update
 operation::store/update/[snippets='http-request,request-fields,http-response,response-fields']
@@ -90,7 +94,7 @@ operation::image/get/[snippets='http-request,path-parameters,http-response,respo
 operation::image/save/[snippets='http-request,http-response,response-fields']
 
 === Delete
-operation::image/delete/[snippets='http-request,path-parameters,http-response']
+operation::image/delete/[snippets='http-request,http-response']
 
 
 == Review API

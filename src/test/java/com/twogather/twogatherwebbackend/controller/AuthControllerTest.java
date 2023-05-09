@@ -1,62 +1,69 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import static com.twogather.twogatherwebbackend.TestConstants.OWNER_LOGIN_REQUEST;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twogather.twogatherwebbackend.auth.TokenProvider;
-import com.twogather.twogatherwebbackend.controller.AuthController;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.auth.JwtFilter;
 import com.twogather.twogatherwebbackend.service.AuthService;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class}) // (1)
-public class AuthControllerTest {
+import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
+import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.startsWith;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-    @Autowired
-    private WebApplicationContext context;
+@AutoConfigureRestDocs
+@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(AuthController.class)
+public class AuthControllerTest extends ControllerTest{
 
-    private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))  // (2)
-                .build();
-    }
-    /*
     @Test
-    public void whenLoginOwnerWithValidRequestThenReturnOk() throws Exception {
-        // when
+    public void login() throws Exception {
+        //given
+        when(authService.login(any())).thenReturn(TOKEN_AND_ID);
+        //when
         mockMvc.perform(post("/api/login/token")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(OWNER_LOGIN_REQUEST)))
-                .andExpect(status().isOk());
-    }*/
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .registerModule(new JavaTimeModule())
+                                        .writeValueAsString(LOGIN_REQUEST))
+                )
+                .andExpect(status().isOk())
+                .andExpect(header().exists(JwtFilter.AUTHORIZATION_HEADER))
+                .andExpect(header().string(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + TOKEN_AND_ID.getToken()))
+                .andDo(document("auth/login",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("로그인에 필요한 이메일"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인에 필요한 비밀번호").attributes(getPasswordFormat())
+                          ),
+                        responseFields(
+                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("로그인한 회원의 고유 id")
+                        )
+                        ));
+
+    }
+
+
 }
