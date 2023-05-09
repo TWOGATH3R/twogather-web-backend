@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.twogather.twogatherwebbackend.dto.email.Token;
 import com.twogather.twogatherwebbackend.exception.EmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class EmailService {
     // Create a rate limiter that allows 1 request per 5 minutes
     private static final RateLimiter rateLimiter = RateLimiter.create(0.0033);
 
-    public String sendEmail(String to) {
+    public Token sendEmail(String to) {
         checkRateLimiter();
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -38,7 +39,7 @@ public class EmailService {
 
         send(message);
 
-        return token;
+        return new Token(token);
     }
     private void send(SimpleMailMessage message){
         try {

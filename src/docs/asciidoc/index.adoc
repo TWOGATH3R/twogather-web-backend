@@ -12,6 +12,10 @@ api spec 문서
 === Post
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
+== Email API
+=== Post
+operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
+
 == BusinessHour API
 
 === Get
