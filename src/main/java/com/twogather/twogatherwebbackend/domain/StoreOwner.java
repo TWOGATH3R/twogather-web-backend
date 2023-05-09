@@ -21,8 +21,8 @@ public class StoreOwner extends Member {
     private String businessName;
     private LocalDate businessStartDate;
 
-    public StoreOwner(String email, String loginPw, String name, String phone, String businessNumber, String businessName, LocalDate businessStartDate, AuthenticationType authenticationType, boolean isActive) {
-        super(email, loginPw, name, phone, authenticationType, isActive);
+    public StoreOwner(String email, String loginPw, String name, String businessNumber, String businessName, LocalDate businessStartDate, AuthenticationType authenticationType, boolean isActive) {
+        super(email, loginPw, name, authenticationType, isActive);
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;

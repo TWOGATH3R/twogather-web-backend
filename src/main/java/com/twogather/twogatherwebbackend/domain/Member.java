@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,28 +17,25 @@ public class Member {
     private Long memberId;
 
     private String email;
-    private String loginPw;
+    private String password;
     private String name;
-    private String phone;
     private boolean isActive;
 
     @Enumerated(EnumType.STRING)
     private AuthenticationType authenticationType;
 
-    public Member(String email, String loginPw, String name, String phone, AuthenticationType authenticationType, boolean isActive) {
+    public Member(String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
         this.email = email;
-        this.loginPw = loginPw;
+        this.password = password;
         this.name = name;
-        this.phone = phone;
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }
-    public Member(Long id, String email, String loginPw, String name, String phone, AuthenticationType authenticationType, boolean isActive) {
+    public Member(Long id, String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
         this.memberId = id;
         this.email = email;
-        this.loginPw = loginPw;
+        this.password = password;
         this.name = name;
-        this.phone = phone;
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }

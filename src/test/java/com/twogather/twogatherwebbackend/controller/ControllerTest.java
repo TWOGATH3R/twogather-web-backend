@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.auth.JwtAuthenticationEntryPoint;
 import com.twogather.twogatherwebbackend.auth.TokenProvider;
 import com.twogather.twogatherwebbackend.service.AuthService;
@@ -17,7 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.test.web.servlet.MockMvc;
 
 
-
+// controller unit test for api docs
 public class ControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -48,4 +49,6 @@ public class ControllerTest {
 
     @MockBean
     protected AuthService authService;
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
 }

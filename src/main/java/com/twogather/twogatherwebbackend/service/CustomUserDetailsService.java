@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
         grantedAuthorityList.add(new SimpleGrantedAuthority(member.getAuthenticationType().authority()));
-        return new CustomUser(member.getMemberId(), member.getEmail(), member.getName(), member.getPhone(),
-                member.getEmail(), member.getLoginPw(), grantedAuthorityList);
+        return new CustomUser(member.getMemberId(), member.getEmail(), member.getName(),
+                member.getEmail(), member.getPassword(), grantedAuthorityList);
     }
 }

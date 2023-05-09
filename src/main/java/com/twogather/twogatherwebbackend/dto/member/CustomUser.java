@@ -11,14 +11,12 @@ public class CustomUser extends User {
     private Long memberId;
     private String email;
     private String name;
-    private String phone;
 
-    public CustomUser(Long memberId, String email, String name, String phone,
+    public CustomUser(Long memberId, String email, String name,
                       String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.memberId = memberId;
         this.email = email;
         this.name = name;
-        this.phone = phone;
     }
 }

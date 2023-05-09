@@ -16,8 +16,6 @@ class MemberRepositoryTest extends RepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private final Member MEMBER = returnMember();
-
     @Test
     @DisplayName("find: 저장된 멤버를 이메일을 통해 찾아올 수 있다.")
     void findByEmail() {
@@ -43,8 +41,5 @@ class MemberRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(actual).isTrue();
-    }
-    private Member returnMember(){
-        return new Member(MEMBER_EMAIL, MEMBER_PASSWORD,MEMBER_NAME, MEMBER_PHONE, AuthenticationType.OWNER, true);
     }
 }
