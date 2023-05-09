@@ -1,24 +1,8 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.controller.ControllerTest;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveRequest;
-import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveRequest;
-import io.restassured.RestAssured;
-import io.restassured.http.Header;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
-import static com.twogather.twogatherwebbackend.exception.AuthException.AuthExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.AuthException.AuthExceptionErrorCode.UNAUTHORIZED;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class AuthControllerTest extends ControllerTest {
@@ -158,7 +142,7 @@ public class AuthControllerTest extends ControllerTest {
 
         return response.header(AUTH);
     }
-    ExtractableResponse<Response> saveOwner(final StoreOwnerSaveRequest ownerSaveRequest) {
+    ExtractableResponse<Response> saveOwner(final StoreOwnerSaveUpdateRequest ownerSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")//클라 -> 서버에게 요청하는 데이터가 json이라는 것을 명시하는 것
@@ -168,7 +152,7 @@ public class AuthControllerTest extends ControllerTest {
                 .when().post("/api/owners")
                 .then().log().all().extract();
     }
-    ExtractableResponse<Response> saveConsumer(final ConsumerSaveRequest consumerSaveRequest) {
+    ExtractableResponse<Response> saveConsumer(final ConsumerSaveUpdateRequest consumerSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json; charset=UTF-8")

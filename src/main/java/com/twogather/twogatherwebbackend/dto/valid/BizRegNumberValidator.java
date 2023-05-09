@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -31,7 +33,7 @@ public class BizRegNumberValidator {
         this.totalUrl = this.url + "?serviceKey=" + this.key;
     }
 
-    public boolean validateBizRegNumber(final String bizRegNumber, final String bizStartDate, final String bizName) {
+    public boolean validateBizRegNumber(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -65,13 +67,13 @@ public class BizRegNumberValidator {
         }
     }
 
-    private String makeJsonString(final String bizRegNumber, final String bizStartDate, final String bizName) {
+    private String makeJsonString(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
                     new JSONObject()
                             .put("b_no", bizRegNumber)
-                            .put("start_dt", bizStartDate)
+                            .put("start_dt", localDateToString(bizStartDate))
                             .put("p_nm", bizName)
             )));
         } catch (JSONException e) {
@@ -79,5 +81,9 @@ public class BizRegNumberValidator {
             throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
         }
         return jsonObject.toString();
+    }
+    public String localDateToString(LocalDate date) {
+        //api에서 요청하는 형식이 yyyyMMdd임
+        return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 }
