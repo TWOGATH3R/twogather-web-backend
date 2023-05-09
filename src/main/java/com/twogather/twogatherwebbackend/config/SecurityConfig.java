@@ -83,6 +83,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/api/login/token").permitAll()
                 .antMatchers("/api/logout").permitAll()
+                .antMatchers("/api/mail/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/owners").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/consumers").permitAll()
                 .antMatchers("/api/owners/**").hasRole(OWNER.name())
