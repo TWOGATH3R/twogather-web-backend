@@ -25,7 +25,7 @@ public class JwtFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private static TokenProvider tokenProvider;
     private static final List<String> loginUrl = Arrays.asList("/api/consumers", "/api/owners");
-    public static final List<String> permitUrl = Arrays.asList("/error", "/api/login/token", "/api/logout");
+    public static final List<String> permitUrl = Arrays.asList("/error", "/api/login/token", "/api/logout", "/api/mail");
 
     public JwtFilter(TokenProvider tokenProvider, JwtAuthenticationEntryPoint authenticationEntryPoint){
         this.tokenProvider = tokenProvider;
