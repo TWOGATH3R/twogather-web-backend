@@ -11,5 +11,4 @@ public abstract class MemberResponse {
     private Long memberId;
     private String email;
     private String name;
-    private String phone;
 }
