@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.twogather.twogatherwebbackend.controller.EmailController;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
@@ -9,6 +10,8 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
+import com.twogather.twogatherwebbackend.dto.email.Token;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
@@ -161,6 +164,10 @@ public class TestConstants {
                     }});
     public static final ImageResponse IMAGE_RESPONSE =
             new ImageResponse(1l, "www.maver/ssd/c");
+    public static final String VALID_EMAIL = "firefly_0@naver.com";
+    public static final String INVALID_EMAIL = "firefASDly_0@naver.com";
+    public static final Token TOKEN = new Token("asVVaa");
+    public static final EmailRequest EMAIL_REQUEST = new EmailRequest(VALID_EMAIL);
     public static final ArrayList CATEGORY_RESPONSE_LIST =
             new ArrayList<CategoryResponse>(){{
                 add(new CategoryResponse(1l,"양식"));

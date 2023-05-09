@@ -18,7 +18,7 @@ public class EmailServiceTest {
     @Test
     public void sendEmail(){
         String email = "firefly_0@naver.com";
-        String token = emailService.sendEmail(email);
+        String token = emailService.sendEmail(email).getToken();
         Assertions.assertNotNull(token);
         System.out.println("token is: " + token);
     }
