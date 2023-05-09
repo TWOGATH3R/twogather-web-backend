@@ -38,7 +38,7 @@ public class ConsumerControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("소비자 탈퇴")
-    public void leave() throws Exception {
+    public void leave_WhenConsumerLeave_Then200Ok() throws Exception {
         //given
         doNothing().when(consumerService).delete(anyLong());
         //when
@@ -65,7 +65,7 @@ public class ConsumerControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("소비자 정보 조회")
-    public void getConsumerInfo() throws Exception {
+    public void getConsumerInfo_WhenGetConsumerInfo_Then200Ok() throws Exception {
         //given
         when(consumerService.getMemberWithAuthorities(anyLong())).thenReturn(CONSUMER_RESPONSE);
         //when
@@ -97,7 +97,7 @@ public class ConsumerControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("소비자 정보 변경")
-    public void update() throws Exception {
+    public void update_WhenConsumerInfoChange_Then200Ok() throws Exception {
         //given
         when(consumerService.update(any())).thenReturn(CONSUMER_RESPONSE);
         //when
@@ -132,7 +132,7 @@ public class ConsumerControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("소비자 가입")
-    public void join() throws Exception {
+    public void join_WhenConsumerJoin_Then201() throws Exception {
         //given
         when(consumerService.join(any())).thenReturn(CONSUMER_RESPONSE);
         //when

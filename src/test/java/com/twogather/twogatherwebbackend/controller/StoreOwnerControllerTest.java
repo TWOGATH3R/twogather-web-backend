@@ -38,7 +38,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게주인탈퇴")
-    public void leave() throws Exception {
+    public void leave_WhenOwnerLeave_Then200Ok() throws Exception {
         //given
         doNothing().when(storeOwnerService).delete(anyLong());
         //when
@@ -60,7 +60,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게주인정보조회")
-    public void getOwnerInfo() throws Exception {
+    public void getOwnerInfo_WhenGetOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
         when(storeOwnerService.getMemberWithAuthorities(anyLong())).thenReturn(STORE_OWNER_RESPONSE);
         //when
@@ -93,7 +93,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게주인정보업데이트")
-    public void updateOwnerInfo() throws Exception {
+    public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
         when(storeOwnerService.update(any())).thenReturn(STORE_OWNER_RESPONSE);
         //when
@@ -136,7 +136,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게주인등록")
-    public void join() throws Exception {
+    public void join_WhenOwnerSave_ThenReturnOwnerInfo() throws Exception {
         //given
         when(storeOwnerService.join(any())).thenReturn(STORE_OWNER_RESPONSE);
         //when

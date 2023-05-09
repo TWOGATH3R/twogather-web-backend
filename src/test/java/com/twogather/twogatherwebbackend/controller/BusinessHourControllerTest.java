@@ -36,8 +36,8 @@ public class BusinessHourControllerTest extends ControllerTest{
     private BusinessHourService businessHourService;
 
     @Test
-    @DisplayName("영업시간 정보 여러개에 대해 저장을 요청했을때 변경된 정보 반환")
-    public void WhenUpdateBusinessHours_ThenReturnInfo() throws Exception {
+    @DisplayName("영업시간 정보 여러개에 대해 업데이트를 요청했을때 변경된 정보 반환")
+    public void updateList_WhenUpdateBusinessHours_ThenReturnInfo() throws Exception {
         //given
         when(businessHourService.updateList(any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
@@ -83,7 +83,7 @@ public class BusinessHourControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("영업시간 정보 storeId로 전체 (7건) 조회")
-    public void WhenGetBusinessHourInfo_ThenReturn7Info() throws Exception {
+    public void getBusinessHourInfo_WhenGetBusinessHourInfo_ThenReturn7Info() throws Exception {
         //given
         when(businessHourService.findBusinessHoursByStoreId(any()))
                 .thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
@@ -118,7 +118,7 @@ public class BusinessHourControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("영업시간 정보 한번에 여러건 삭제 시 200 반환")
-    public void WhenDeleteBusinessHours_Then200Status() throws Exception {
+    public void deleteList_WhenDeleteBusinessHours_Then200Status() throws Exception {
         //given
         doNothing().when(businessHourService).deleteList(any());
         //when
@@ -144,7 +144,7 @@ public class BusinessHourControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("영업시간 정보 여러개에 대해 저장을 요청했을때 요청한정보 + id 정보 반환")
-    public void WhenSaveBusinessHours_Then201Status() throws Exception {
+    public void saveList_WhenSaveBusinessHours_Then201Status() throws Exception {
         //given
         when(businessHourService.saveList(any(), any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when

@@ -37,7 +37,7 @@ public class ReviewControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("내가 작성한 리뷰 목록")
-    public void getMyReviewInfos() throws Exception {
+    public void getMyReviewInfos_WhenGetMyReviews_ThenReturnReviewInfos() throws Exception {
         //given
         when(reviewService.getMyReviewInfos(anyLong(), any(),any(),anyInt(), anyInt())).thenReturn(MY_REVIEW_LIST);
         //when
@@ -91,7 +91,7 @@ public class ReviewControllerTest extends ControllerTest{
     }
     @Test
     @DisplayName("리뷰 업로드")
-    public void upload() throws Exception {
+    public void upload_WhenUploadReview_ThenReviewInfo() throws Exception {
         //given
         when(reviewService.save(any())).thenReturn(REVIEW_RESPONSE);
         //when
