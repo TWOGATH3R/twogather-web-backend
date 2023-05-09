@@ -34,7 +34,7 @@ public class StoreControllerTest extends ControllerTest{
     private StoreService storeService;
 
     @Test
-    public void update() throws Exception {
+    public void update_WhenStoreUpdate_ThenReturnStoreInfo() throws Exception {
         //given
         when(storeService.update(anyLong(), any())).thenReturn(STORE_RESPONSE);
         //when
@@ -72,7 +72,7 @@ public class StoreControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게 삭제")
-    public void deleteStore() throws Exception {
+    public void deleteStore_WhenDeleteStore_ThenReturn200Ok() throws Exception {
         //given
         doNothing().when(storeService).delete(anyLong());
         //when
@@ -94,7 +94,7 @@ public class StoreControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("나의가게조회")
-    public void getMyStoreInfo() throws Exception {
+    public void getMyStoreInfo_WhenGetMyStoreInfos_ThenReturnStoreInfos() throws Exception {
         //given
         when(storeService.getStoresByOwner(anyLong(), anyInt(), anyInt())).thenReturn(MY_STORES_RESPONSE_PAGE);
         //when
@@ -134,7 +134,7 @@ public class StoreControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보 - detail")
-    public void getStoreTopInfos() throws Exception {
+    public void getStoreTopInfos_WhenGetStoreTopInfos_ThenReturnStoreInfos() throws Exception {
         //given
         when(storeService.getStoresTop10(any())).thenReturn(STORES_TOP10_RESPONSE_LIST);
         //when
@@ -162,7 +162,7 @@ public class StoreControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("첫 화면에서 보여줄 검색 키워드 목록")
-    public void getKeyword() throws Exception {
+    public void getKeyword_WhenGetKeyword_Then5Keywords() throws Exception {
         //given
         when(storeService.getKeyword()).thenReturn(KEYWORD_LIST);
         //when
@@ -185,7 +185,7 @@ public class StoreControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보")
-    public void getStoreTopPreviewInfos() throws Exception {
+    public void getStoreTopPreviewInfos_WhenGetStoreTopPreviewInfos_ThenReturnInfos() throws Exception {
         //given
         when(storeService.getStoresTop10Preview()).thenReturn(STORES_TOP10_PREVIEW_RESPONSE);
         //when

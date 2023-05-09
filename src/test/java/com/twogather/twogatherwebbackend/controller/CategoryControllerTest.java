@@ -32,7 +32,7 @@ public class CategoryControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("카테고리 정보 얻어오기")
-    public void getCategoryInfos() throws Exception {
+    public void getCategoryInfos_WhenGetCategoryThenAllCategoryInfos() throws Exception {
         //given
         when(categoryService.getCategoryInfos()).thenReturn(CATEGORY_RESPONSE_LIST);
         //when

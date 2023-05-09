@@ -38,7 +38,7 @@ public class ImageControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("이미지 업로드")
-    public void upload() throws Exception {
+    public void uploadWhenImageSave_Then201() throws Exception {
         //given
         when(imageService.upload(any())).thenReturn(IMAGE_RESPONSE_LIST);
         //when
@@ -65,7 +65,7 @@ public class ImageControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게 이미지 리스트 삭제")
-    public void deleteStoreImage() throws Exception {
+    public void deleteStoreImage_WhenDeleteStoreImage_Then200Ok() throws Exception {
         //given
         doNothing().when(imageService).delete(any());
         //when
@@ -92,7 +92,7 @@ public class ImageControllerTest extends ControllerTest{
 
     @Test
     @DisplayName("가게 이미지 리스트 조회")
-    public void getStoreImageInfos() throws Exception {
+    public void getStoreImageInfos_WhenGetStoreImageInfos_ThenReturnFileUrl() throws Exception {
         //given
         when(imageService.getStoreImageInfos(any())).thenReturn(IMAGE_RESPONSE_LIST);
         //when
