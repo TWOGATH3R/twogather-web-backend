@@ -25,7 +25,9 @@
 
 #### API Spec
 - https://www.notion.so/33ed04558f434dc5bd9f0d8f8637b409?v=e1ff8bdf3f164428b9263244a137d54c
-- 위의 문서도 있지만 가장 최신화된 문서: src\main\resources\static\docs\index.html 참고
+- 가장 최신화된 문서: `src\main\resources\static\docs\index.html` 참고
+- ![image](https://user-images.githubusercontent.com/66842566/236997177-46160a24-f9db-4bbc-8d0c-cb7f7f6533c3.png)
+- 다운로드 버튼을 누르고 바로 html문서를 확인할 수 있습니다
 
 #### 기획안 
 - https://www.notion.so/74a37c10ea994f63b2bfd617d508f2bf
