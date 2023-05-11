@@ -87,12 +87,18 @@ public class TestConstants {
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
     public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD);
     public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST2 = new ConsumerSaveUpdateRequest("ASD@NA.COM", CONSUMER_PASSWORD, CONSUMER_NAME);
+
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(
                     OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
-
+    public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST2 =
+            new StoreOwnerSaveUpdateRequest(
+                    "sd@naer.com", OWNER_PASSWORD, OWNER_NAME,
+                    OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
+            );
     public static final BusinessHourSaveRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 

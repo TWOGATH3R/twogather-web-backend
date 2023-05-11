@@ -50,7 +50,6 @@ public class LoginTest {
 
     @Test
     public void createSecretKey512(){
-// Generate a 512-bit key
         final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
     }

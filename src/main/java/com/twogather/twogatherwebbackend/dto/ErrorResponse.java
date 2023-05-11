@@ -1,17 +1,18 @@
 package com.twogather.twogatherwebbackend.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class ErrorResponse {
     private String message;
-    private static final String SERVER_ERROR_MESSAGE = "일시적으로 접속이 원활하지 않습니다. 잠시 후 다시 이용해 주시기 바랍니다.";
-
     public ErrorResponse() {
-
     }
 
     public ErrorResponse(final String message) {
@@ -22,9 +23,8 @@ public class ErrorResponse {
         return new ErrorResponse(exception.getMessage());
     }
     public static ErrorResponse internalServerError(){
-        return new ErrorResponse(SERVER_ERROR_MESSAGE);
+        return new ErrorResponse("일시적으로 접속이 원활하지 않습니다.");
     }
-
     public static ErrorResponse of(final MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return new ErrorResponse(message);
