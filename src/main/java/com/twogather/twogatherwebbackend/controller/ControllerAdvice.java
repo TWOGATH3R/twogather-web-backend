@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
+
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -51,8 +53,7 @@ public class ControllerAdvice {
             }
             errors.put(fieldName, errorMessage);
         });
-
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(ErrorResponse.of(INVALID_ARGUMENT.getMessage(),errors));
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final HttpServletRequest request, final Exception exception) {

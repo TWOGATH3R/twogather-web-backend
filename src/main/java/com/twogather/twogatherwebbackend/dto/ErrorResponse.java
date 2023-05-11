@@ -7,11 +7,16 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.Getter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
 public class ErrorResponse {
     private String message;
+    private Map<String, String> errors;
     public ErrorResponse() {
     }
 
@@ -19,9 +24,18 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    public ErrorResponse(String message, Map<String, String> errors) {
+        this.message = message;
+        this.errors = errors;
+    }
+    public static ErrorResponse of(String message, Map<String, String> errors) {
+        return new ErrorResponse(message, errors);
+    }
+
     public static ErrorResponse of(final RuntimeException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
     public static ErrorResponse internalServerError(){
         return new ErrorResponse("일시적으로 접속이 원활하지 않습니다.");
     }
@@ -32,9 +46,5 @@ public class ErrorResponse {
     public String toJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(this);
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

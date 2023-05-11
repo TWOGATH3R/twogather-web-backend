@@ -127,5 +127,27 @@ public class LoginTest {
         String message = jsonNode.get("message").asText();
         assertThat(message).isEqualTo(INVALID_ID_AND_PASSWORD.getMessage());
     }
+    @Test
+    @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
+    public void WhenAttemptToLoginWithInvalidId_ThenUnauthorizedException() throws Exception {
+        // Given
+        LoginRequest invalidLoginRequest = new LoginRequest("dsa@amer.com", "sss313213");
+
+        // When
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidLoginRequest)))
+                .andDo(print())
+                .andReturn();
+
+        // Then
+        int status = mvcResult.getResponse().getStatus();
+        assertThat(status).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        String jsonString = mvcResult.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+        String message = jsonNode.get("message").asText();
+        assertThat(message).isEqualTo(INVALID_ID_AND_PASSWORD.getMessage());
+    }
 
 }
