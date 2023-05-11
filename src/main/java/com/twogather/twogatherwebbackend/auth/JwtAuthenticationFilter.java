@@ -28,15 +28,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.LOGIN_FAILURE;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
     private final AuthenticationManager authenticationManager;
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.authenticationManager = authenticationManager;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.setFilterProcessesUrl("/api/login"); // 로그인 URL 변경
     }
 
@@ -72,12 +73,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
         // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
-        Authentication authentication =
-                authenticationManager.authenticate(authenticationToken);
-
-        User user = (User) authentication.getPrincipal();
-        log.info("user info: {}", user.getUsername());
-        return authentication;
+        try {
+            Authentication authentication =
+                    authenticationManager.authenticate(authenticationToken);
+            User user = (User) authentication.getPrincipal();
+            log.info("user info: {}", user.getUsername());
+            return authentication;
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            log.info("Authentication failed: invalid username or password");
+            jwtAuthenticationEntryPoint.commence(request, response, new CustomAuthenticationException(INVALID_ID_AND_PASSWORD));
+            return null;
+        }
     }
 
     private LoginRequest createLoginRequest(ObjectMapper om, HttpServletRequest request){
@@ -100,6 +107,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(customUser.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
                 .withClaim("id", customUser.getMemberId())
+                .withClaim("role", customUser.getRole())
                 .withClaim("username", customUser.getUsername())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 

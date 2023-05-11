@@ -16,9 +16,11 @@ public class CustomUser extends User {
     private Long memberId;
     private String email;
     private String name;
+    private String role;
 
     public CustomUser(Member member){
         super(member.getEmail(), member.getPassword(), toGrantedAuthority(member.getAuthenticationType()));
+        role = member.getAuthenticationType().name();
         this.name = member.getName();
     }
     static Collection<? extends GrantedAuthority> toGrantedAuthority(AuthenticationType type){
@@ -32,5 +34,6 @@ public class CustomUser extends User {
         this.memberId = memberId;
         this.email = email;
         this.name = name;
+        this.role = authorities.toArray()[0].toString();
     }
 }

@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
@@ -53,7 +54,6 @@ public class TestConstants {
     public static final String OWNER_EMAIL = "asd@naver.com";
     public static final String OWNER_PASSWORD = "asd@asd@@123";
     public static final String OWNER_NAME = "루터";
-    public static final String OWNER_PHONE = "01012341234";
     public static final String OWNER_BUSINESS_NAME = "루터";
     public static final String OWNER_BUSINESS_NUMBER = "0000000000";
     public static final LocalDate OWNER_BUSINESS_START_DATE = LocalDate.now();
@@ -61,12 +61,12 @@ public class TestConstants {
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
     public static final String CONSUMER_NAME = "김소비";
-    public static final String CONSUMER_PHONE = "01012341234";
+    public static final Consumer CONSUMER = new Consumer(CONSUMER_EMAIL,
+            passwordEncoded.encode(CONSUMER_PASSWORD), CONSUMER_NAME, com.twogather.twogatherwebbackend.domain.AuthenticationType.CONSUMER, true);
 
     public static final String MEMBER_EMAIL = "pobi@email.com";
     public static final String MEMBER_PASSWORD = "test1234!!!";
     public static final String MEMBER_NAME = "루터";
-    public static final String MEMBER_PHONE = "01012341234";
 
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
@@ -85,6 +85,7 @@ public class TestConstants {
             = new ConsumerResponse(1l, "김멍치","sda@naer.com");
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
+    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD);
     public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(

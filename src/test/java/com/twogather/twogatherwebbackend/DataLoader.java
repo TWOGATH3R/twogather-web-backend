@@ -37,9 +37,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Consumer consumer1 =
-                new Consumer(CONSUMER_EMAIL, passwordEncoder.encode(CONSUMER_PASSWORD),
-                        CONSUMER_NAME, AuthenticationType.CONSUMER, true);
+        Consumer consumer1 = CONSUMER;
         StoreOwner owner1 = STORE_OWNER;
         consumer = consumerRepository.save(consumer1);
         owner = storeOwnerRepository.save(owner1);
