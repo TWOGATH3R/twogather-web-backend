@@ -9,7 +9,8 @@ public class CustomAuthenticationException extends AuthenticationException {
         TOKEN_EXPIRED("토큰이 만료되었습니다"),
         UNAUTHORIZED("인증된 사용자가 아닙니다"),
         INVALID_TOKEN("토큰이 유효하지 않습니다"),
-        LOGIN_FAILURE("로그인 과정 중 실패하였습니다");
+        INVALID_ID_AND_PASSWORD("아이디나 비밀번호가 틀렸습니다"),
+        LOGIN_FAILURE("로그인 과정 중 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
         private final String message;
         private final HttpStatus status;
 

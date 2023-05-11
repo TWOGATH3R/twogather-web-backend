@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
-public class LoginTest {
+public class LoginFilterTest {
 
     @Autowired
     private MockMvc mockMvc;
