@@ -1,15 +1,18 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
+import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
-import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +22,10 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID;
+import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 
 @Service
 @Transactional
@@ -40,7 +47,7 @@ public class BusinessHourService {
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
         List<BusinessHour> businessHours = businessHourRepository.findByStoreStoreId(storeId);
         if (businessHours.isEmpty()) {
-            throw new BusinessHourException(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID);
+            throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID);
         }
         ArrayList<BusinessHourResponse> responses = new ArrayList<>();
         for (BusinessHour businessHour: businessHours) {

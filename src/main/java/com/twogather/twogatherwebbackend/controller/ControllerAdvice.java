@@ -1,12 +1,12 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
-import com.twogather.twogatherwebbackend.exception.ClientException;
-import com.twogather.twogatherwebbackend.exception.MemberException;
-import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.exception.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,11 +19,20 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
-
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
         logInfo(request,e);
         return ResponseEntity.badRequest().body(ErrorResponse.of(e));
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException e) {
+        logInfo(request,e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.of(e));
+    }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> authenticationExceptionHandler(HttpServletRequest request, AuthenticationException e) {
+        logInfo(request,e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> validationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {

@@ -7,8 +7,10 @@ import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.get
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;
+import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,6 +36,9 @@ public class BusinessHourControllerTest extends ControllerTest{
 
     @MockBean
     private BusinessHourService businessHourService;
+    @MockBean
+    private StoreService storeService;
+    private static final String URL = "/api/stores/{storeId}/business-hours";
 
     @Test
     @DisplayName("영업시간 정보 여러개에 대해 업데이트를 요청했을때 변경된 정보 반환")
@@ -42,7 +47,7 @@ public class BusinessHourControllerTest extends ControllerTest{
         when(businessHourService.updateList(any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(put("/api/business-hours")
+        mockMvc.perform(RestDocumentationRequestBuilders.put(URL, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -54,6 +59,9 @@ public class BusinessHourControllerTest extends ControllerTest{
                 .andDo(document("business-hour/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
                                 fieldWithPath("[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
@@ -89,7 +97,7 @@ public class BusinessHourControllerTest extends ControllerTest{
                 .thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/{storeId}/business-hours",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
@@ -123,7 +131,7 @@ public class BusinessHourControllerTest extends ControllerTest{
         doNothing().when(businessHourService).deleteList(any());
         //when
         //then
-        mockMvc.perform(delete("/api/business-hours")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -135,6 +143,9 @@ public class BusinessHourControllerTest extends ControllerTest{
                 .andDo(document("business-hour/delete",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("businessHourId").type(JsonFieldType.ARRAY).description("The id of the 영업시간정보, 숫자로이루어져있다")
                            )
@@ -149,7 +160,7 @@ public class BusinessHourControllerTest extends ControllerTest{
         when(businessHourService.saveList(any(), any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/{storeId}/business-hours",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(

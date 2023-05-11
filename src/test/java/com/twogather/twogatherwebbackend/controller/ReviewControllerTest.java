@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReviewControllerTest extends ControllerTest{
     @MockBean
     private ReviewService reviewService;
+    private static final String URL = "/api/stores/{storeId}/reviews";
 
     @Test
     @DisplayName("내가 작성한 리뷰 목록")
@@ -42,7 +43,7 @@ public class ReviewControllerTest extends ControllerTest{
         when(reviewService.getMyReviewInfos(anyLong(), any(),any(),anyInt(), anyInt())).thenReturn(MY_REVIEW_LIST);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/reviews/consumers/{consumerId}", 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(URL+"/members/{memberId}", 1,2)
                         .param("orderBy", "desc")
                         .param("orderColumn", "createdAt")
                         .param("page", "1")
@@ -55,7 +56,8 @@ public class ReviewControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("consumerId").description("리뷰를 조회할 소비자의 고유 ID")
+                                parameterWithName("memberId").description("리뷰를 조회할 사용자의 고유 ID"),
+                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
                         ),
                         requestParameters(
                                 parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
@@ -96,7 +98,7 @@ public class ReviewControllerTest extends ControllerTest{
         when(reviewService.save(any())).thenReturn(REVIEW_RESPONSE);
         //when
         //then
-        mockMvc.perform(post("/api/reviews")
+        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -109,6 +111,9 @@ public class ReviewControllerTest extends ControllerTest{
                 .andDo(document("review/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("consumerId").type(JsonFieldType.NUMBER).description("리뷰작성자의 고유 id"),
                                 fieldWithPath("storeId").type(JsonFieldType.NUMBER).description("가게의 고유 id"),
@@ -134,7 +139,7 @@ public class ReviewControllerTest extends ControllerTest{
         when(reviewService.update(any())).thenReturn(REVIEW_RESPONSE);
         //when
         //then
-        mockMvc.perform(put("/api/reviews")
+        mockMvc.perform(RestDocumentationRequestBuilders.put(URL+"/{writerId}",1,2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -147,6 +152,10 @@ public class ReviewControllerTest extends ControllerTest{
                 .andDo(document("review/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("writerId").description("리뷰작성한사람의 고유 id"),
+                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("consumerId").type(JsonFieldType.NUMBER).description("리뷰작성자의 고유 id"),
                                 fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("리뷰 고유 id"),
@@ -171,7 +180,7 @@ public class ReviewControllerTest extends ControllerTest{
         doNothing().when(reviewService).delete(anyLong());
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/reviews/{reviewId}",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL+"/{reviewId}",1,2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -181,7 +190,8 @@ public class ReviewControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("reviewId").description("삭제할 리뷰 id")
+                                parameterWithName("storeId").description("리뷰 단 가게의 고유 id"),
+                                parameterWithName("reviewId").description("리뷰의 고유 id")
                         )
                 ));
 

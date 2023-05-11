@@ -99,7 +99,7 @@ public class StoreControllerTest extends ControllerTest{
         when(storeService.getStoresByOwner(anyLong(), anyInt(), anyInt())).thenReturn(MY_STORES_RESPONSE_PAGE);
         //when
         //then
-        mockMvc.perform(get("/api/stores/my?owner-id=1&limit=1&offset=2")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}/my?owner-id=1&limit=1&offset=2",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
@@ -112,6 +112,9 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("limit").description("한 페이지에 조회할 가게 수"),
                                 parameterWithName("offset").description("조회할 가게 목록의 시작 위치")
                         ),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 id")
+                        ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
@@ -122,6 +125,7 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].isApproved").type(JsonFieldType.BOOLEAN).description("관리자에 의해 가게가 승인됐는지의 여부"),
                                 fieldWithPath("data[].reasonForRejection").type(JsonFieldType.STRING).description("가게가 승인되지 않은 이유"),
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
+                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
                                 fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
                                 fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
                                 fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),

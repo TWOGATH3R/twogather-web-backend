@@ -18,6 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class ReviewService {
+
+    public boolean isMyReview(Long reviewId){
+        //TODO:구현
+        return false;
+    }
     public ReviewResponse save(ReviewSaveRequest request){
         //TODO:구현
         return new ReviewResponse();
@@ -30,7 +35,7 @@ public class ReviewService {
         //TODO:구현
 
     }
-    public Page<MyReviewInfoResponse> getMyReviewInfos(Long storeId, String orderBy, String orderColumn, int page, int size){
+    public Page<MyReviewInfoResponse> getMyReviewInfos(Long memberId, String orderBy, String orderColumn, int page, int size){
         //TODO:구현
         return null;
     }

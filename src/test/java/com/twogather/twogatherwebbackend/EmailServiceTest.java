@@ -2,11 +2,7 @@ package com.twogather.twogatherwebbackend;
 
 import com.twogather.twogatherwebbackend.service.EmailService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,7 +14,7 @@ public class EmailServiceTest {
     @Test
     public void sendEmail(){
         String email = "firefly_0@naver.com";
-        String token = emailService.sendEmail(email).getToken();
+        String token = emailService.sendEmail(email).getVerificationCode();
         Assertions.assertNotNull(token);
         System.out.println("token is: " + token);
     }

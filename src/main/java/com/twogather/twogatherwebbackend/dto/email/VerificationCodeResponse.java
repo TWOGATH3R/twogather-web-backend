@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor
-public class Token {
-    private String token;
+public class VerificationCodeResponse {
+    private String verificationCode;
 }

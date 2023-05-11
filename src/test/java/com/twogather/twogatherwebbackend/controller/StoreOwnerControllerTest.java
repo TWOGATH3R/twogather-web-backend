@@ -36,6 +36,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @MockBean
     private StoreOwnerService storeOwnerService;
 
+    private static final String URL = "/api/owners/{memberId}";
     @Test
     @DisplayName("가게주인탈퇴")
     public void leave_WhenOwnerLeave_Then200Ok() throws Exception {
@@ -43,7 +44,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         doNothing().when(storeOwnerService).delete(anyLong());
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/owners/{ownerId}", 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -53,8 +54,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("ownerId").description("사업자의 고유 id")
-                )));
+                                parameterWithName("memberId").description("사업자의 고유 id")
+                        )
+                ));
 
     }
 
@@ -66,7 +68,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/owners/{ownerId}", 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(URL, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -76,7 +78,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("ownerId").description("사업자의 고유 id")
+                                parameterWithName("memberId").description("사업자의 고유 id")
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
@@ -99,7 +101,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(put("/api/owners")
+        mockMvc.perform(RestDocumentationRequestBuilders.put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -112,6 +114,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                 .andDo(document("owner/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("사업자의 고유 id")
+                        ),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),

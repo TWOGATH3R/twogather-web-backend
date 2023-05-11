@@ -2,7 +2,6 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.service.EmailService;
-import com.twogather.twogatherwebbackend.service.ImageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -35,7 +34,7 @@ public class EmailControllerTest extends ControllerTest{
     @DisplayName("인증번호 받기")
     public void sendMail_WhenSendMail_ThenSendMailAndReturnToken() throws Exception {
         //given
-        when(emailService.sendEmail(any())).thenReturn(TOKEN);
+        when(emailService.sendEmail(any())).thenReturn(VERIFICATION_CODE_RESPONSE);
         //when
         //then
         mockMvc.perform(post("/api/email")
@@ -54,7 +53,7 @@ public class EmailControllerTest extends ControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("인증메일을 전송받을 이메일주소")
                         ),
                         responseFields(
-                                fieldWithPath("data.token").type(JsonFieldType.STRING).description("인증번호: 6자리로 구성되어있음")
+                                fieldWithPath("data.verificationCode").type(JsonFieldType.STRING).description("인증번호: 6자리로 구성되어있음")
                         )
                 ));
 

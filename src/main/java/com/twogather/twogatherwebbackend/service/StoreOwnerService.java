@@ -1,20 +1,23 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
+import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 
@@ -23,14 +26,27 @@ import static com.twogather.twogatherwebbackend.exception.MemberException.Member
 @Transactional
 public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
+    private final MemberRepository memberRepository;
     private final BizRegNumberValidator validator;
     private final PasswordEncoder passwordEncoder;
+
+    public boolean isStoreOwner(Long memberId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Member member = memberRepository.findByEmail(currentUsername).orElseThrow(
+                ()-> new MemberException(NO_SUCH_EMAIL)
+        );
+        if (!currentUsername.equals(member.getEmail())) {
+            throw new CustomAccessDeniedException(ACCESS_DENIED);
+        }
+        return true;
+    }
 
     public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
         validateDuplicateEmail(request.getEmail());
         validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
         StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
-                request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.OWNER,true);
+                request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
         return toStoreOwnerResponse(storedOwner);
         
@@ -59,10 +75,12 @@ public class StoreOwnerService {
 
     @Transactional(readOnly = true)
     public StoreOwnerResponse getMemberWithAuthorities(){
+        /*
         Optional<StoreOwner> optionalOwner = SecurityUtils.getCurrentUsername().flatMap(storeOwnerRepository::findByEmail);
         optionalOwner.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
         StoreOwner owner = optionalOwner.get();
-        return toStoreOwnerResponse(owner);
+        return toStoreOwnerResponse(owner);*/
+        return null;
     }
 
     public StoreOwner findMemberByEmailOrElseThrow(final String email){
