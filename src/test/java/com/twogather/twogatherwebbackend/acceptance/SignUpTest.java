@@ -29,8 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.*;
+
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.INVALID_ID_AND_PASSWORD;
+import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -119,4 +122,50 @@ public class SignUpTest {
         assertThat(message).isEqualTo(DUPLICATE_EMAIL.getMessage());
     }
 
+    @Test
+    @Transactional
+    @DisplayName("유효하지 않은 정보로 회원가입 시도 시 실패 + 오류가 있는 필드에 대한 정보 제공")
+    public void WhenOwnerSignupWithInvalidInfo_ThenBadRequest() throws Exception {
+        // When
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(INVALID_OWNER_SAVE_REQUEST)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        // Then
+        HttpServletResponse response = mvcResult.getResponse();
+        response.setCharacterEncoding("UTF-8");
+
+        String jsonString = ((MockHttpServletResponse) response).getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+        JsonNode errorsNode = jsonNode.get("errors");
+        String message = jsonNode.get("message").asText();
+        assertThat(message).isEqualTo(INVALID_ARGUMENT.getMessage());
+
+        if (errorsNode != null && errorsNode.isObject()) {
+            Set<String> expectedFields = new HashSet<>(Arrays.asList("password", "businessStartDate","name", "businessNumber", "email"));
+            Set<String> actualFields = new HashSet<>();
+
+            Iterator<Map.Entry<String, JsonNode>> fields = errorsNode.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
+                actualFields.add(entry.getKey());
+            }
+
+            if (expectedFields.equals(actualFields)) {
+                // 모든 필드가 존재함
+                System.out.println("모든 필드가 존재합니다.");
+            } else {
+                // 일부 필드가 누락됨
+                System.out.println("일부 필드가 누락되었습니다.");
+                Set<String> missingFields = new HashSet<>(expectedFields);
+                missingFields.removeAll(actualFields);
+                System.out.println("누락된 필드: " + missingFields);
+            }
+            assertThat(expectedFields).isEqualTo(actualFields);
+        }
+
+    }
 }

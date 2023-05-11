@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -25,6 +26,7 @@ public class StoreOwnerSaveUpdateRequest extends MemberSaveUpdateRequest {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalDate businessStartDate;
 
     public StoreOwnerSaveUpdateRequest(String email, String password, String name, String businessNumber, String businessName, LocalDate businessStartDate) {

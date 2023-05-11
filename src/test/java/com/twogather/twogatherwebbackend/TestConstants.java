@@ -99,6 +99,11 @@ public class TestConstants {
                     "sd@naer.com", OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
+    public static final StoreOwnerSaveUpdateRequest INVALID_OWNER_SAVE_REQUEST =
+            new StoreOwnerSaveUpdateRequest(
+                    "sd@@@", "AA", "!!!!!",
+                    "111", "AA!!!", null
+            );
     public static final BusinessHourSaveRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
