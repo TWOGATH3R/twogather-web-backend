@@ -39,7 +39,7 @@ public class BusinessHourServiceTest {
 
 
     /*
-    @Test
+    @Test1
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_WhenValidRequest_ShouldResponse() {
         // given
@@ -56,7 +56,7 @@ public class BusinessHourServiceTest {
     }
 
 
-    @Test
+    @Test1
     @DisplayName("save: 저장하는 과정에서 <가게 ID + 요일> 에 해당하는 객체가 발견되어 예외가 터진다")
     public void save_WhenFoundAnotherStoreEntity_ShouldReturnException() {
         // given
@@ -70,7 +70,7 @@ public class BusinessHourServiceTest {
         assertEquals(BusinessHourException.BusinessHourErrorCode.DUPLICATE_DAY_OF_WEEK, exception.getErrorCode());
     }
 
-    @Test
+    @Test1
     @DisplayName("find: storeId에 해당하는 businessHour 객체가 존재하지 않는다")
     public void find_WhenStoreIdNotFound_ShouldThrowException(){
         //given
@@ -83,7 +83,7 @@ public class BusinessHourServiceTest {
         //then
         assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID, exception.getErrorCode());
     }
-    @Test
+    @Test1
     @DisplayName("find: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void find_WhenValidRequest_ShouldResponse(){
         //given
@@ -95,7 +95,7 @@ public class BusinessHourServiceTest {
         //then
         assertEquals(list.get(0), result.get(0));
     }
-    @Test
+    @Test1
     @DisplayName("update: storeId와 dayOfWeek(요일)에 해당하는 BusinessHour객체가 없습니다")
     public void update_WhenNoSuchBusinessHour_ShouldReturnException(){
         //given
@@ -109,7 +109,7 @@ public class BusinessHourServiceTest {
         //then
         assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID, exception.getErrorCode());
     }
-    @Test
+    @Test1
     @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void update_WhenValidRequest_ShouldResponse(){
         //given
@@ -126,7 +126,7 @@ public class BusinessHourServiceTest {
         assertEquals(updatedBusinessHour.getDayOfWeek(), request.getDayOfWeek());
 
     }
-    @Test
+    @Test1
     @DisplayName("delete: businessHour id로 찾은 객체가 존재하지 않습니다")
     public void delete_WhenNoSuchBusinessHour_ShouldReturnException(){
         //given
@@ -139,7 +139,7 @@ public class BusinessHourServiceTest {
         //then
         assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID, exception.getErrorCode());
     }
-    @Test
+    @Test1
     @DisplayName("delete: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void delete_WhenValidRequest_ShouldResponse(){
         //given

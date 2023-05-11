@@ -6,6 +6,8 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;
+import com.twogather.twogatherwebbackend.service.StoreOwnerService;
+import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,33 +19,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/stores/{storeId}/business-hours")
 @RequiredArgsConstructor
 public class BusinessHourController {
     private final BusinessHourService businessHourService;
+    private final StoreService storeService;
 
-    @PostMapping("/{storeId}/business-hours")
-    @PreAuthorize("hasAnyRole('OWNER')")
+    @PostMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> saveList(@PathVariable final Long storeId, @RequestBody @Valid final List<BusinessHourSaveRequest> businessHourSaveRequestList) {
         List<BusinessHourResponse> data = businessHourService.saveList(storeId, businessHourSaveRequestList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
-    @PutMapping("/business-hours")
-    public ResponseEntity<Response> updateList(@RequestBody @Valid final List<BusinessHourUpdateRequest> businessHourUpdateRequestList) {
+    @PutMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> updateList(@PathVariable final Long storeId, @RequestBody @Valid final List<BusinessHourUpdateRequest> businessHourUpdateRequestList) {
         List<BusinessHourResponse> data = businessHourService.updateList(businessHourUpdateRequestList);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
-    @GetMapping("/{storeId}/business-hours")
+    @GetMapping
     public ResponseEntity<Response> getBusinessHourInfo(@PathVariable final Long storeId){
         List<BusinessHourResponse> data = businessHourService.findBusinessHoursByStoreId(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @DeleteMapping("/business-hours")
-    public ResponseEntity<Void> deleteList(@RequestBody final BusinessHourIdList businessHourIdList) {
+    @DeleteMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Void> deleteList(@PathVariable final Long storeId, @RequestBody final BusinessHourIdList businessHourIdList) {
         businessHourService.deleteList(businessHourIdList.getBusinessHourId());
 
         return ResponseEntity.status(HttpStatus.OK).build();

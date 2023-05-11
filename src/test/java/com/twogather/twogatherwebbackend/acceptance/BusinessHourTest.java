@@ -7,7 +7,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 public class BusinessHourTest extends ControllerTest {
 
     /*
-    @Test
+    @Test1
     @DisplayName("save: 유효한 businessHour 요청이 왔을때 businessHour 정보를 반환한다")
     public void WhenValidRequest_ShouldResponse(){
         //then
@@ -21,7 +21,7 @@ public class BusinessHourTest extends ControllerTest {
                 .when().post("/api/business-hours")
                 .then().log().all().extract();
     }
-    @Test
+    @Test1
     @DisplayName("save: 영업시작시간이 영업마감 시간보다 늦으면 예외를 발생시킨다")
     public void save_WhenInvalidTime_shouldException(){
         final BusinessHourSaveRequest request = INVALID_BUSINESS_HOUR_SAVE_REQUEST;
@@ -36,7 +36,7 @@ public class BusinessHourTest extends ControllerTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value()) // 예외가 발생하면 BAD_REQUEST(400) 상태 코드가 반환되어야 합니다.
                 .body("message", equalTo(INVALID_TIME.getMessage()));
     }
-    @Test
+    @Test1
     @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void update_WhenValidRequest_ShouldResponse() {
         //given
@@ -55,7 +55,7 @@ public class BusinessHourTest extends ControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @Test
+    @Test1
     @DisplayName("update: 영업시작시간이 영업마감 시간보다 늦으면 예외를 발생시킨다")
     public void update_InvalidTime_Exception(){
         //given
@@ -75,7 +75,7 @@ public class BusinessHourTest extends ControllerTest {
                 .body("message", equalTo(INVALID_TIME.getMessage()));
     }
 
-    @Test
+    @Test1
     @DisplayName("delete: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void delete_WhenValidRequest_ShouldResponse(){
         //given

@@ -39,3 +39,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### JWT ###
+/src/main/java/com/twogather/twogatherwebbackend/auth/JwtProperties.java

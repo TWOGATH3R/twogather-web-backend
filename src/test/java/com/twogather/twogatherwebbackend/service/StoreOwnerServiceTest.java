@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.Assertions;
@@ -29,12 +30,14 @@ public class StoreOwnerServiceTest {
     private BizRegNumberValidator validator;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private MemberRepository memberRepository;
     private StoreOwnerService storeOwnerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, validator, passwordEncoder);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, validator, passwordEncoder);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
@@ -75,6 +78,6 @@ public class StoreOwnerServiceTest {
     private StoreOwner requestToEntity(StoreOwnerSaveUpdateRequest request){
         return new StoreOwner(request.getEmail(), request.getPassword(), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(),
-                AuthenticationType.OWNER, true);
+                AuthenticationType.STORE_OWNER, true);
     }
 }
