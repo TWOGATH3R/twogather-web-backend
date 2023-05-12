@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,23 +61,20 @@ public class SignUpTest {
 
     @Test
     @Transactional
-    @DisplayName("owner 회원가입")
-    public void WhenOwnerSignup_ThenSuccess() throws Exception {
+    @DisplayName("owner 회원가입 - 사업자 등록번호 검증 실패")
+    public void WhenOwnerSignupWithInvalidBusinessNumber_ThenErrorResponse() throws Exception {
         // When
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andReturn();
 
         // Then
-        StoreOwner owner = storeOwnerRepository.findByEmail(OWNER_SAVE_REQUEST2.getEmail()).get();
-        assertThat(owner.getEmail()).isEqualTo(OWNER_SAVE_REQUEST2.getEmail());
-        assertThat(owner.getBusinessName()).isEqualTo(OWNER_SAVE_REQUEST2.getBusinessName());
-        assertThat(owner.getBusinessNumber()).isEqualTo(OWNER_SAVE_REQUEST2.getBusinessNumber());
-        assertThat(owner.getBusinessStartDate()).isEqualTo(OWNER_SAVE_REQUEST2.getBusinessStartDate());
-        assertThat(owner.getName()).isEqualTo(OWNER_SAVE_REQUEST2.getName());
+        assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class);
+        assertThat(result.getResponse().getContentAsString()).contains("Invalid business registration number");
+
 
     }
 
