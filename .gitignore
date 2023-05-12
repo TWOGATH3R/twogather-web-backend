@@ -7,7 +7,6 @@ build/
 /src/main/resources/application.properties
 /src/main/resources/application-dev.properties
 /src/main/resources/application-prod.properties
-/src/test/java/com/twogather/twogatherwebbackend/BizRegNumberValidatorTest.java
 /src/test/resources/application-test.properties
 ### STS ###
 .apt_generated
@@ -39,3 +38,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### JWT ###
+/src/main/java/com/twogather/twogatherwebbackend/auth/JwtProperties.java
+
+### Testing with personal information ###
+/src/test/java/com/twogather/twogatherwebbackend/acceptance/SignUpSuccessTest.java
+/src/test/java/com/twogather/twogatherwebbackend/valid/BizRegNumberValidatorTest.java

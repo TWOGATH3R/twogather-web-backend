@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.store.*;
+import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,16 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
+    @GetMapping("/{storeId}/check-owner")
+    @PreAuthorize("hasRole('STORE_OWNER')")
+    public ResponseEntity<Response> checkStoreOwner(@PathVariable Long storeId) {
+        // 현재 로그인한 사용자의 정보를 가져옴
+        boolean isOwner = storeService.isMyStore(storeId);
+        return ResponseEntity.ok(new Response(new CheckStoreOwnerResponse(isOwner)));
+    }
+
     @PostMapping
-    @PreAuthorize("hasAnyRole('OWNER')")
+    @PreAuthorize("hasRole('STORE_OWNER')")
     public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
         StoreResponse data = storeService.save(storeSaveRequest);
 
@@ -34,6 +43,7 @@ public class StoreController {
     }
 
     @PutMapping("/{storeId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
         StoreResponse data = storeService.update(storeId, storeUpdateRequest);
 
@@ -41,6 +51,7 @@ public class StoreController {
     }
 
     @GetMapping("/{storeId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
         StoreResponse data = storeService.getStore(storeId);
 
@@ -54,8 +65,10 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping("/my")
+    @GetMapping("/{storeId}/my")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getMyStoreInfo(
+            @PathVariable Long storeId,
             @RequestParam(value = "owner-id") Long storeOwnerId,
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "offset", required = false) Integer offset
@@ -92,6 +105,7 @@ public class StoreController {
     }
 
     @DeleteMapping("/{storeId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Void> delete(@PathVariable Long storeId) {
         storeService.delete(storeId);
 

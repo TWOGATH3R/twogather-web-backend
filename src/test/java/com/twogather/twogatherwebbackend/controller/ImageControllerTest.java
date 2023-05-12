@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.service.ImageService;
+import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -35,6 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ImageControllerTest extends ControllerTest{
     @MockBean
     private ImageService imageService;
+    @MockBean
+    private StoreService storeService;
+
+    private static final String URL = "/api/stores/{storeId}/images";
 
     @Test
     @DisplayName("이미지 업로드")
@@ -44,7 +49,7 @@ public class ImageControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(multipart("/api/images")
+        mockMvc.perform(RestDocumentationRequestBuilders.fileUpload(URL,1)
                         .file(IMAGE1)
                         .file(IMAGE2)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -55,6 +60,9 @@ public class ImageControllerTest extends ControllerTest{
                 .andDo(document("image/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보")
+                        ),
                         responseFields(
                                 fieldWithPath("data[].url").type(JsonFieldType.STRING).description("이미지 링크에 해당하는 url"),
                                 fieldWithPath("data[].imageId").type(JsonFieldType.NUMBER).description("이미지 고유 id")
@@ -71,7 +79,7 @@ public class ImageControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(delete("/api/images")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -83,6 +91,9 @@ public class ImageControllerTest extends ControllerTest{
                 .andDo(document("image/delete",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보")
+                        ),
                         requestFields(
                                 fieldWithPath("imageIdList").type(JsonFieldType.ARRAY).description("삭제대상인 이미지 고유 id 리스트")
                         )
@@ -98,7 +109,7 @@ public class ImageControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}/images",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )

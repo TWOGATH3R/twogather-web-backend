@@ -1,5 +1,7 @@
 package com.twogather.twogatherwebbackend.dto.valid;
 
+import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -8,18 +10,22 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Objects;
 
+import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.BIZ_REG_NUMBER_VALIDATION;
 
 @Slf4j
 @Component
-public class BizRegNumberValidator {
+public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberValidation, StoreOwnerSaveUpdateRequest> {
     private final String url;
     private final String key;
     private final String totalUrl;
@@ -47,7 +53,7 @@ public class BizRegNumberValidator {
             return isValid(responseBody);
         } catch (HttpServerErrorException e) {
             log.error("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
-            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
+            return false;
         }
     }
 
@@ -55,7 +61,7 @@ public class BizRegNumberValidator {
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONArray dataArray = jsonResponse.optJSONArray("data");
-            if (dataArray == null || dataArray.length()==0) {
+            if (dataArray == null || dataArray.length() == 0) {
                 return false;
             }
             JSONObject dataObject = dataArray.getJSONObject(0);
@@ -63,27 +69,40 @@ public class BizRegNumberValidator {
             return "01".equals(valid);
         } catch (JSONException e) {
             log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
+            return false;
         }
     }
 
     private String makeJsonString(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
-                    new JSONObject()
-                            .put("b_no", bizRegNumber)
-                            .put("start_dt", localDateToString(bizStartDate))
-                            .put("p_nm", bizName)
-            )));
-        } catch (JSONException e) {
-            log.error("Failed to validate business registration number: " + e.getMessage(), e);
-            throw new MemberException(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION);
-        }
+        JSONObject jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
+                new JSONObject()
+                        .put("b_no", bizRegNumber)
+                        .put("start_dt", localDateToString(bizStartDate))
+                        .put("p_nm", bizName)
+        )));
         return jsonObject.toString();
     }
+
     public String localDateToString(LocalDate date) {
-        //api에서 요청하는 형식이 yyyyMMdd임
         return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
+
+    @Override
+    public boolean isValid(StoreOwnerSaveUpdateRequest value, ConstraintValidatorContext context) {
+        String businessNumber = value.getBusinessNumber();
+        LocalDate businessStartDate = value.getBusinessStartDate();
+        String businessName = value.getBusinessName();
+
+        boolean isValid = validateBizRegNumber(businessNumber, businessStartDate, businessName);
+
+        if (!isValid) {
+            context.disableDefaultConstraintViolation();
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Invalid business registration number")
+                    .addPropertyNode("businessNumber")
+                    .addConstraintViolation();
+        }
+
+        return isValid;
     }
 }

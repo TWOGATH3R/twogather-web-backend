@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidation;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,22 +30,24 @@ public class StoreOwnerController {
     }
 
     @GetMapping("/{memberId}")
-    @PreAuthorize("hasAnyRole('OWNER')")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> getOwnerInfo(@PathVariable Long memberId){
         StoreOwnerResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
 
         return ResponseEntity.ok(new Response(data));
     }
 
-    @PutMapping
-    @PreAuthorize("hasAnyRole('OWNER')")
-    public ResponseEntity<Response> updateOwnerInfo(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest){
+
+    @PutMapping("/{memberId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
+    public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest){
         StoreOwnerResponse data = storeOwnerService.update(storeOwnerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }
 
     @DeleteMapping("/{memberId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> leave(@PathVariable Long memberId) {
         storeOwnerService.delete(memberId);
 

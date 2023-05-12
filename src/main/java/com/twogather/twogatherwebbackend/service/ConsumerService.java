@@ -23,6 +23,10 @@ public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public boolean isConsumer(Long memberId){
+        //TODO:구현
+        return false;
+    }
     public void delete(final Long memberId){
         //TODO:구현
     }
@@ -54,11 +58,14 @@ public class ConsumerService {
     }
     @Transactional(readOnly = true)
     public ConsumerResponse getMemberWithAuthorities(){
+        /*
         Optional<Consumer> optionalConsumer = SecurityUtils.getCurrentUsername().flatMap(consumerRepository::findByEmail);
         optionalConsumer.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
         Consumer consumer = optionalConsumer.get();
 
         return toConsumerResponse(consumer);
+        */
+        return null;
     }
 
     private Consumer findMemberByEmailOrElseThrow(final String email){
