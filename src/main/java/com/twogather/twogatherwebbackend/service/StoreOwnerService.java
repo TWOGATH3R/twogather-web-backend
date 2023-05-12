@@ -44,7 +44,6 @@ public class StoreOwnerService {
 
     public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
         validateDuplicateEmail(request.getEmail());
-        validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
         StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
