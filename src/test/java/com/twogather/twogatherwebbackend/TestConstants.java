@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
@@ -9,6 +9,10 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
+import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
+import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
+import com.twogather.twogatherwebbackend.dto.email.VerificationCodeResponse;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
@@ -17,7 +21,6 @@ import com.twogather.twogatherwebbackend.dto.review.ReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveRequest;
 import com.twogather.twogatherwebbackend.dto.review.ReviewUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
-import com.twogather.twogatherwebbackend.service.AuthService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockMultipartFile;
@@ -51,7 +54,6 @@ public class TestConstants {
     public static final String OWNER_EMAIL = "asd@naver.com";
     public static final String OWNER_PASSWORD = "asd@asd@@123";
     public static final String OWNER_NAME = "루터";
-    public static final String OWNER_PHONE = "01012341234";
     public static final String OWNER_BUSINESS_NAME = "루터";
     public static final String OWNER_BUSINESS_NUMBER = "0000000000";
     public static final LocalDate OWNER_BUSINESS_START_DATE = LocalDate.now();
@@ -59,12 +61,12 @@ public class TestConstants {
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
     public static final String CONSUMER_NAME = "김소비";
-    public static final String CONSUMER_PHONE = "01012341234";
+    public static final Consumer CONSUMER = new Consumer(CONSUMER_EMAIL,
+            passwordEncoded.encode(CONSUMER_PASSWORD), CONSUMER_NAME, com.twogather.twogatherwebbackend.domain.AuthenticationType.CONSUMER, true);
 
     public static final String MEMBER_EMAIL = "pobi@email.com";
     public static final String MEMBER_PASSWORD = "test1234!!!";
     public static final String MEMBER_NAME = "루터";
-    public static final String MEMBER_PHONE = "01012341234";
 
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
@@ -77,19 +79,31 @@ public class TestConstants {
 
     public static final Long BUSINESS_HOUR_ID = 1l;
     public static final Member MEMBER =
-            new Member(1l, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.OWNER,true);
+            new Member(1l, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.STORE_OWNER,true);
 
     public static final ConsumerResponse CONSUMER_RESPONSE
             = new ConsumerResponse(1l, "김멍치","sda@naer.com");
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
+    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD);
     public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST2 = new ConsumerSaveUpdateRequest("ASD@NA.COM", CONSUMER_PASSWORD, CONSUMER_NAME);
+
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(
                     OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
-
+    public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST2 =
+            new StoreOwnerSaveUpdateRequest(
+                    "sd@naer.com", OWNER_PASSWORD, OWNER_NAME,
+                    OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
+            );
+    public static final StoreOwnerSaveUpdateRequest INVALID_OWNER_SAVE_REQUEST =
+            new StoreOwnerSaveUpdateRequest(
+                    "sd@@@", "AA", "!!!!!",
+                    "111", "AA!!!", null
+            );
     public static final BusinessHourSaveRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
@@ -98,7 +112,7 @@ public class TestConstants {
     public static final StoreOwner STORE_OWNER =
             new StoreOwner(OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE,
-                    com.twogather.twogatherwebbackend.domain.AuthenticationType.OWNER, true);
+                    com.twogather.twogatherwebbackend.domain.AuthenticationType.STORE_OWNER, true);
 
     public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
@@ -149,9 +163,7 @@ public class TestConstants {
     public static final MockMultipartFile IMAGE2
             = new MockMultipartFile("imagesSDA", "imageS2.jpg", "image/jpeg", "test data".getBytes());
     public static final LoginRequest LOGIN_REQUEST
-            = new LoginRequest("asd@naerb.cm", "password123");
-    public static final AuthService.TokenAndId TOKEN_AND_ID
-            = new AuthService.TokenAndId("token1",1l);
+            = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final ImageIdList IMAGE_ID_LIST =
             new ImageIdList(
                     new ArrayList<>(){{
@@ -159,8 +171,16 @@ public class TestConstants {
                         add(2l);
                         add(3l);
                     }});
+    public static final CommentSaveUpdateRequest COMMENT_SAVE_UPDATE_REQUEST
+            = new CommentSaveUpdateRequest("내용내뇽ㅇ");
+    public static final CommentResponse COMMENT_RESPONSE =
+            new CommentResponse("대댓글내용", false, LocalDate.now());
     public static final ImageResponse IMAGE_RESPONSE =
             new ImageResponse(1l, "www.maver/ssd/c");
+    public static final String VALID_EMAIL = "firefly_0@naver.com";
+    public static final String INVALID_EMAIL = "firefASDly_0@naver.com";
+    public static final VerificationCodeResponse VERIFICATION_CODE_RESPONSE = new VerificationCodeResponse("asVVaa");
+    public static final EmailRequest EMAIL_REQUEST = new EmailRequest(VALID_EMAIL);
     public static final ArrayList CATEGORY_RESPONSE_LIST =
             new ArrayList<CategoryResponse>(){{
                 add(new CategoryResponse(1l,"양식"));

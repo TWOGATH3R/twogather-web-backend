@@ -28,13 +28,15 @@ public class ConsumerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
-    @PutMapping
-    public ResponseEntity<Response> updateConsumerInfo(@RequestBody @Valid final ConsumerSaveUpdateRequest consumerSaveUpdateRequest){
+    @PutMapping("/{memberId}")
+    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final ConsumerSaveUpdateRequest consumerSaveUpdateRequest){
         ConsumerResponse data = consumerService.update(consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }
     @DeleteMapping("/{memberId}")
+    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> leave(@PathVariable Long memberId) {
         consumerService.delete(memberId);
 
@@ -42,8 +44,8 @@ public class ConsumerController {
     }
 
     @GetMapping("/{memberId}")
-    @PreAuthorize("hasAnyRole('CONSUMER')")
-    public ResponseEntity<Response> getConsumerInfo(@PathVariable @Email final Long memberId) {
+    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> getConsumerInfo(@PathVariable final Long memberId) {
         ConsumerResponse data = consumerService.getMemberWithAuthorities(memberId);
         return ResponseEntity.ok(new Response(data));
     }

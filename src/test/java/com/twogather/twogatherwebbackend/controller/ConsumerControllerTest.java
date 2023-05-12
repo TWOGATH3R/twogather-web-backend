@@ -36,6 +36,7 @@ public class ConsumerControllerTest extends ControllerTest {
     @MockBean
     private ConsumerService consumerService;
 
+    private static final String URL = "/api/consumers/{memberId}";
     @Test
     @DisplayName("소비자 탈퇴")
     public void leave_WhenConsumerLeave_Then200Ok() throws Exception {
@@ -44,7 +45,7 @@ public class ConsumerControllerTest extends ControllerTest {
         //when
         //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/consumers/{memberId}",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -71,7 +72,7 @@ public class ConsumerControllerTest extends ControllerTest {
         //when
         //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/consumers/{memberId}",1)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -103,7 +104,7 @@ public class ConsumerControllerTest extends ControllerTest {
         //when
         //then
 
-        mockMvc.perform(put("/api/consumers")
+        mockMvc.perform(RestDocumentationRequestBuilders.put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -116,6 +117,9 @@ public class ConsumerControllerTest extends ControllerTest {
                 .andDo(document("consumer/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("고객의 고유 id")
+                        ),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),

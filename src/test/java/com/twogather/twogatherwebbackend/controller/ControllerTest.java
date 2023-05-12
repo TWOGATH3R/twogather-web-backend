@@ -1,13 +1,13 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.auth.JwtAccessDeniedHandler;
 import com.twogather.twogatherwebbackend.auth.JwtAuthenticationEntryPoint;
-import com.twogather.twogatherwebbackend.auth.TokenProvider;
-import com.twogather.twogatherwebbackend.service.AuthService;
+import com.twogather.twogatherwebbackend.auth.JwtAuthenticationFilter;
+import com.twogather.twogatherwebbackend.auth.JwtAuthorizationFilter;
 
+import com.twogather.twogatherwebbackend.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,10 +45,14 @@ public class ControllerTest {
     protected JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @MockBean
-    protected TokenProvider tokenProvider;
+    protected JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @MockBean
-    protected AuthService authService;
+    protected JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @MockBean
+    protected JwtAuthorizationFilter jwtAuthorizationFilter;
+
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 }
