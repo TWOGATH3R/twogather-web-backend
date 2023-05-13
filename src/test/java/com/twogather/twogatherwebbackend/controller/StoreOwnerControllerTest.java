@@ -8,12 +8,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.validation.ConstraintValidatorContext;
 
@@ -25,7 +30,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -34,20 +41,30 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureRestDocs
-@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(StoreOwnerController.class)
-public class StoreOwnerControllerTest extends ControllerTest{
+@AutoConfigureRestDocs
+public class StoreOwnerControllerTest {
     @MockBean
     private StoreOwnerService storeOwnerService;
     private static final String URL = "/api/owners/{memberId}";
     @Mock
     private BizRegNumberValidator validator;
-    @Mock
-    private ConstraintValidatorContext context;
+
+    @Autowired
+    private StoreOwnerController storeOwnerController; // Autowire your controller
+
+    @Autowired
+    private ObjectMapper objectMapper;
+    private MockMvc mockMvc;
+    @Autowired
+    private RestDocumentationContextProvider restDocumentation;
     @BeforeEach
-    public void init(){
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(storeOwnerController) // Pass your controller here
+                .setValidator(new NoopValidator())
+                .apply(documentationConfiguration(this.restDocumentation))
+                .build();
     }
     @Test
     @DisplayName("가게주인탈퇴")

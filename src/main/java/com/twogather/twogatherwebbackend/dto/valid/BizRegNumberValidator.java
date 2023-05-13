@@ -88,43 +88,8 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
         LocalDate businessStartDate = value.getBusinessStartDate();
         String businessName = value.getBusinessName();
 
-        if(businessNumber == null) {
-            addConstraintViolation(context, "businessNumber","필수 값을 입력해주세요");
-            return false;
-        }
-        if(businessStartDate == null) {
-            addConstraintViolation(context, "businessStartDate","필수 값을 입력해주세요");
-            return false;
-        }
-        if(businessName == null) {
-            addConstraintViolation(context, "businessName","필수 값을 입력해주세요");
-            return false;
-        }
+        return validateBizRegNumber(businessNumber, businessStartDate, businessName);
 
-        if(!businessNumber.matches("\\d+")) {
-            addConstraintViolation(context, "businessNumber","사업자등록번호는 숫자여야합니다");
-            return false;
-        }
-
-        boolean isValid = false;
-
-        try {
-            isValid = validateBizRegNumber(businessNumber, businessStartDate, businessName);
-        } catch (DateTimeParseException e) {
-            addConstraintViolation(context, "businessStartDate","유효하지 않은 형식입니다");
-            return false;
-        }
-
-        if (!isValid) {
-            addConstraintViolation(context, "businessNumber","유효하지 않은 사업자번호입니다");
-        }
-
-        return isValid;
     }
-    private void addConstraintViolation(ConstraintValidatorContext context, String fieldName, String message) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(message)
-                .addPropertyNode(fieldName)
-                .addConstraintViolation();
-    }
+
 }
