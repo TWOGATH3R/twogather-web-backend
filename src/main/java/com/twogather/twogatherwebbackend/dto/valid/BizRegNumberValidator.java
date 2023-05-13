@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -54,11 +53,21 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
     }
 
     public boolean isValidResponse(final String response) {
-        return test();
+        try {
+            JSONObject jsonResponse = new JSONObject(response);
+            JSONArray dataArray = jsonResponse.optJSONArray("data");
+            if (dataArray == null || dataArray.length() == 0) {
+                return false;
+            }
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            String valid = dataObject.optString("valid");
+            return "01".equals(valid);
+        } catch (JSONException e) {
+            log.error("Failed to validate business registration number: " + e.getMessage(), e);
+            return false;
+        }
     }
-    public boolean test(){
-        return false;
-    }
+
     private String makeJsonString(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
         JSONObject jsonObject = new JSONObject(Collections.singletonMap("businesses", Collections.singletonList(
                 new JSONObject()
@@ -75,7 +84,42 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
 
     @Override
     public boolean isValid(StoreOwnerSaveUpdateRequest value, ConstraintValidatorContext context) {
-        return test();
+        String businessNumber = value.getBusinessNumber();
+        LocalDate businessStartDate = value.getBusinessStartDate();
+        String businessName = value.getBusinessName();
+
+        if(businessNumber == null) {
+            addConstraintViolation(context, "businessNumber","필수 값을 입력해주세요");
+            return false;
+        }
+        if(businessStartDate == null) {
+            addConstraintViolation(context, "businessStartDate","필수 값을 입력해주세요");
+            return false;
+        }
+        if(businessName == null) {
+            addConstraintViolation(context, "businessName","필수 값을 입력해주세요");
+            return false;
+        }
+
+        if(!businessNumber.matches("\\d+")) {
+            addConstraintViolation(context, "businessNumber","사업자등록번호는 숫자여야합니다");
+            return false;
+        }
+
+        boolean isValid = false;
+
+        try {
+            isValid = validateBizRegNumber(businessNumber, businessStartDate, businessName);
+        } catch (DateTimeParseException e) {
+            addConstraintViolation(context, "businessStartDate","유효하지 않은 형식입니다");
+            return false;
+        }
+
+        if (!isValid) {
+            addConstraintViolation(context, "businessNumber","유효하지 않은 사업자번호입니다");
+        }
+
+        return isValid;
     }
     private void addConstraintViolation(ConstraintValidatorContext context, String fieldName, String message) {
         context.disableDefaultConstraintViolation();
