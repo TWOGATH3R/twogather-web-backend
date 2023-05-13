@@ -28,8 +28,6 @@ public class StoreOwnerServiceTest {
     @Mock
     private StoreOwnerRepository storeOwnerRepository;
     @Mock
-    private BizRegNumberValidator validator;
-    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private MemberRepository memberRepository;
@@ -38,14 +36,13 @@ public class StoreOwnerServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, validator, passwordEncoder);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, passwordEncoder);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void save_ValidMemberSaveRequest_ShouldReturnTrue() throws InvalidArgumentException {
+    public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final StoreOwnerSaveUpdateRequest request = returnRequest();
-        when(validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(),request.getBusinessName())).thenReturn(true);
         when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(false);
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);

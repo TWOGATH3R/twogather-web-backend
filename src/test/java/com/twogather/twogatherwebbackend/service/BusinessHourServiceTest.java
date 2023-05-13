@@ -17,11 +17,6 @@ public class BusinessHourServiceTest {
     private StoreRepository storeRepository;
     private BusinessHourService businessHourService;
 
-    @BeforeEach
-    void setUp() {
-        businessHourService = new BusinessHourService(businessHourRepository, storeRepository);
-    }
-
 
     /*
     @Test1
