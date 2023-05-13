@@ -28,6 +28,7 @@ public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BizRegNumberValidator validator = new BizRegNumberValidator();
 
     public boolean isStoreOwner(Long memberId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,6 +43,7 @@ public class StoreOwnerService {
     }
 
     public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
+        validator.isValid(request,null);
         validateDuplicateEmail(request.getEmail());
         StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
@@ -53,6 +55,7 @@ public class StoreOwnerService {
         //TODO:구현
     }
     public StoreOwnerResponse update(final StoreOwnerSaveUpdateRequest request){
+        validator.isValid(request,null);
         //TODO:구현
         int s = 2;
         return new StoreOwnerResponse();

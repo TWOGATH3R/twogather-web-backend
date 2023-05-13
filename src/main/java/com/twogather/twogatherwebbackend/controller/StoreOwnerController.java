@@ -23,7 +23,6 @@ import javax.validation.constraints.Email;
 @RequiredArgsConstructor
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
-    private final BizRegNumberValidator validator = new BizRegNumberValidator();
     @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest) {
         StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveUpdateRequest);
