@@ -24,7 +24,7 @@ public class StoreOwnerSaveUpdateRequest extends MemberSaveUpdateRequest {
 
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     private String businessName;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "비어있는 항목을 입력해주세요.")
