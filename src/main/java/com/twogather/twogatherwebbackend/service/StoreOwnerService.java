@@ -54,6 +54,7 @@ public class StoreOwnerService {
     }
     public StoreOwnerResponse update(final StoreOwnerSaveUpdateRequest request){
         //TODO:구현
+        int s = 2;
         return new StoreOwnerResponse();
     }
 

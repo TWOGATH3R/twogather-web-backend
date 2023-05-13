@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.twogather.twogatherwebbackend.BizRegNumberValidatorStub;
 import com.twogather.twogatherwebbackend.config.TestConfig;
+import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidation;
 import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -29,6 +31,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
@@ -59,19 +62,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(StoreOwnerController.class)
-@ActiveProfiles("test")
 public class StoreOwnerControllerTest extends ControllerTest{
     @MockBean
     private StoreOwnerService storeOwnerService;
     private static final String URL = "/api/owners/{memberId}";
-    @MockBean
+    @Mock
     private BizRegNumberValidator validator;
+    @Mock
+    private ConstraintValidatorContext context;
     @BeforeEach
     public void init(){
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        MockitoAnnotations.openMocks(this);
-
     }
     @Test
     @DisplayName("가게주인탈퇴")
@@ -135,10 +136,8 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //given
         when(storeOwnerService.update(any())).thenReturn(STORE_OWNER_RESPONSE);
         //when
-        when(validator.isValid(any(StoreOwnerSaveUpdateRequest.class),any(ConstraintValidatorContext.class)))
-                .thenReturn(true);
+        when(validator.isValid(any(), any())).thenReturn(true);
         //then
-
         mockMvc.perform(put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
