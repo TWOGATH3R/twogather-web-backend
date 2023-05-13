@@ -26,8 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.RequiredArgsConstructor;
-
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.*;
 
 @Slf4j
@@ -105,17 +103,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = JWT.create()
                 .withSubject(customUser.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis()+ PrivateConstants.EXPIRATION_TIME))
                 .withClaim("id", customUser.getMemberId())
                 .withClaim("role", customUser.getRole())
                 .withClaim("username", customUser.getUsername())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+                .sign(Algorithm.HMAC512(PrivateConstants.SECRET));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+        response.addHeader(PrivateConstants.HEADER_STRING, PrivateConstants.TOKEN_PREFIX+jwtToken);
         response.getWriter().write(loginResponseJson);
     }
 

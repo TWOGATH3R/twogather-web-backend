@@ -1,16 +1,9 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.auth.JwtProperties;
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
-import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +23,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.INVALID_ID_AND_PASSWORD;
 import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,7 +66,8 @@ public class SignUpTest {
 
         // Then
         assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class);
-        assertThat(result.getResponse().getContentAsString()).contains("Invalid business registration number");
+        String responseContent = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertThat(responseContent).contains("유효하지 않은 사업자번호입니다");
 
 
     }
@@ -101,15 +95,15 @@ public class SignUpTest {
     @DisplayName("동일한 이메일로 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() throws Exception {
         // When
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST)))
+                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         // Then
-        storeOwnerRepository.findByEmail(OWNER_SAVE_REQUEST.getEmail()).get();
+        consumerRepository.findByEmail(CONSUMER_SAVE_UPDATE_REQUEST.getEmail()).get();
 
         HttpServletResponse response = mvcResult.getResponse();
         response.setCharacterEncoding("UTF-8");

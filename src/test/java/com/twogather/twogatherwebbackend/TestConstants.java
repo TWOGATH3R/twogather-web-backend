@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend;
 
+import com.twogather.twogatherwebbackend.controller.BusinessHourController;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Member;
@@ -237,17 +238,22 @@ public class TestConstants {
                 add(BUSINESS_HOUR_RESPONSE);
                 add(BUSINESS_HOUR_RESPONSE);
             }};
-    public static final ArrayList BUSINESS_HOUR_UPDATE_REQUEST_LIST =
+    public static final ArrayList BUSINESS_HOUR_UPDATE_LIST =
             new ArrayList<BusinessHourUpdateRequest>(){{
                 add(BUSINESS_HOUR_UPDATE_REQUEST);
                 add(BUSINESS_HOUR_UPDATE_REQUEST);
             }};
-    public static final ArrayList BUSINESS_HOUR_SAVE_REQUEST_LIST =
+    public static final BusinessHourController.BusinessHourUpdateListRequest BUSINESS_HOUR_UPDATE_REQUEST_LIST =
+            new BusinessHourController.BusinessHourUpdateListRequest(BUSINESS_HOUR_UPDATE_LIST);
+
+    public static final ArrayList BUSINESS_HOUR_SAVE_LIST =
             new ArrayList<BusinessHourSaveRequest>(){{
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
             }};
+    public static final BusinessHourController.BusinessHourSaveListRequest BUSINESS_HOUR_SAVE_REQUEST_LIST
+            = new BusinessHourController.BusinessHourSaveListRequest(BUSINESS_HOUR_SAVE_LIST);
     public static final ArrayList BUSINESS_HOUR_RESPONSE_7_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);

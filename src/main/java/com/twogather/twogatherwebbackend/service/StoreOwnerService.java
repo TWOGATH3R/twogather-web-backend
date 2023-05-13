@@ -27,7 +27,6 @@ import static com.twogather.twogatherwebbackend.exception.MemberException.Member
 public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final MemberRepository memberRepository;
-    private final BizRegNumberValidator validator;
     private final PasswordEncoder passwordEncoder;
 
     public boolean isStoreOwner(Long memberId){
