@@ -43,29 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StoreOwnerController.class)
 @AutoConfigureRestDocs
-public class StoreOwnerControllerTest {
+@AutoConfigureMockMvc(addFilters = false)
+public class StoreOwnerControllerTest extends ControllerTest{
     @MockBean
     private StoreOwnerService storeOwnerService;
     private static final String URL = "/api/owners/{memberId}";
-    @Mock
-    private BizRegNumberValidator validator;
-
-    @Autowired
-    private StoreOwnerController storeOwnerController; // Autowire your controller
-
-    @Autowired
-    private ObjectMapper objectMapper;
-    private MockMvc mockMvc;
-    @Autowired
-    private RestDocumentationContextProvider restDocumentation;
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(storeOwnerController) // Pass your controller here
-                .setValidator(new NoopValidator())
-                .apply(documentationConfiguration(this.restDocumentation))
-                .build();
-    }
     @Test
     @DisplayName("가게주인탈퇴")
     public void leave_WhenOwnerLeave_Then200Ok() throws Exception {
@@ -127,9 +109,7 @@ public class StoreOwnerControllerTest {
     public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
         when(storeOwnerService.update(any())).thenReturn(STORE_OWNER_RESPONSE);
-        //when
-        when(validator.isValid(any(), any())).thenReturn(true);
-        //then
+      //then
         mockMvc.perform(put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
