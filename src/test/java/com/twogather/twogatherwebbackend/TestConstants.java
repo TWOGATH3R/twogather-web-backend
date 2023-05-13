@@ -142,7 +142,7 @@ public class TestConstants {
     public static final StoreOwnerSaveUpdateRequest STORE_OWNER_REQUEST =
             new StoreOwnerSaveUpdateRequest("sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
     public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
-            new StoreOwnerResponse(1l, "사업자이름", "ifd@naebr.com", "0000000000", "비즈니스이름", LocalDate.now());
+            new StoreOwnerResponse(1l, "홍길동", "ifd@naebr.com", "0000000000", "홍길동", LocalDate.of(2000,01,01));
     public static final LocalDate DATE = LocalDate.parse("2020-02-02");
     public static final MyStoreResponse MY_STORES_RESPONSE =
             new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",
