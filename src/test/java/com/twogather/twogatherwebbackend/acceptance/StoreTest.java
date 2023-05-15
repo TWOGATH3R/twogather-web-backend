@@ -83,7 +83,7 @@ public class StoreTest {
     @Test
     @DisplayName("findTopNByScore should return the top N stores by score")
     @Transactional
-    void WhenFindTopNByScore_ThenReturnTopNStoresByScore() throws Exception {
+    void WhenFindTopNByScore_ThenReturnTopNStoresByScoreExcludeStore3() throws Exception {
         StoreType type = StoreType.TOP_RATED;
         int count = 3;
         // When
@@ -111,7 +111,7 @@ public class StoreTest {
     @Test
     @DisplayName("findTopNByReviewCount should return the top N stores by review count")
     @Transactional
-    void WhenFindTopNByReviewCount_ThenReturnTopNByReviewCount() {
+    void WhenFindTopNByReviewCount_ThenReturnTopNByReviewCountExcludeStore4() {
         // When
         List<TopStoreInfoResponse> topStores = storeRepository.findTopNByReviewCount(3);
 
