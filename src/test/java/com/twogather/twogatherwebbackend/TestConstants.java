@@ -201,19 +201,18 @@ public class TestConstants {
                 add(STORES_RESPONSE);
             }};
 
-    public static final TopStoreInfoPreviewResponse STORES_TOP10_PREVIEW_RESPONSE = new TopStoreInfoPreviewResponse(
+    public static final List<TopStoreInfoResponse> STORES_TOP3_TOP_RATED_RESPONSE =
             Arrays.asList(
                     new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),
                     new TopStoreInfoResponse("store2", 4.2, "456 Oak Ave.", "url2"),
                     new TopStoreInfoResponse("store3", 4.0, "789 Elm St.", "url3")
-            ),
+            );
+    public static final List<TopStoreInfoResponse> STORES_TOP3_MOST_REVIEWED_RESPONSE =
             Arrays.asList(
                     new TopStoreInfoResponse("store11", 4.8, "123 Main St.", "url11"),
                     new TopStoreInfoResponse("store12", 4.6, "456 Oak Ave.", "url12"),
                     new TopStoreInfoResponse("store13", 4.4, "789 Elm St.", "url13")
-         )
-    );
-
+            );
     public static final List<TopStoreInfoResponse> STORES_TOP10_RESPONSE_LIST =
             Arrays.asList(
                     new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),

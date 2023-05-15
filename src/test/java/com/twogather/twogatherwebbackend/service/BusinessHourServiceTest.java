@@ -1,8 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
-import com.twogather.twogatherwebbackend.repository.StoreRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

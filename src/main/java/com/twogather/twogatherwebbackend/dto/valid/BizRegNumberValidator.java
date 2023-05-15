@@ -25,11 +25,10 @@ import java.util.Objects;
 
 import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_KEY;
 import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_URL;
-import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.BIZ_REG_NUMBER_VALIDATION;
-import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 
 @Slf4j
-public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberValidation, StoreOwnerSaveUpdateRequest> {
+@Component
+public class BizRegNumberValidator{
     private final String url = API_URL;
     private final String key = API_KEY;
     private final String totalUrl = this.url + "?serviceKey=" + this.key;
@@ -82,14 +81,5 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
         return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
-    @Override
-    public boolean isValid(StoreOwnerSaveUpdateRequest value, ConstraintValidatorContext context) {
-        String businessNumber = value.getBusinessNumber();
-        LocalDate businessStartDate = value.getBusinessStartDate();
-        String businessName = value.getBusinessName();
-
-        return validateBizRegNumber(businessNumber, businessStartDate, businessName);
-
-    }
 
 }

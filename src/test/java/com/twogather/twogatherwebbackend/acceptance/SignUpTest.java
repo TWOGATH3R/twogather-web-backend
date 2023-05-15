@@ -1,11 +1,19 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.store.TopStoreInfoResponse;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,12 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@Rollback
 public class SignUpTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private StoreOwnerRepository storeOwnerRepository;
 
     @Autowired
     private ConsumerRepository consumerRepository;
@@ -51,8 +59,6 @@ public class SignUpTest {
         //LocalDate 직렬화/역직렬화를 위해 필요한 모듈
         objectMapper.registerModule(new JavaTimeModule());;
     }
-
-    /*
     @Test
     @Transactional
     @DisplayName("owner 회원가입 - 사업자 등록번호 검증 실패")
@@ -66,12 +72,12 @@ public class SignUpTest {
                 .andReturn();
 
         // Then
-        assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class);
+        assertThat(result.getResolvedException()).isInstanceOf(MemberException.class);
         String responseContent = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertThat(responseContent).contains("유효하지 않은 사업자번호입니다");
+        assertThat(responseContent).contains(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage());
 
 
-    }*/
+    }
 
     @Test
     @Transactional
@@ -95,6 +101,8 @@ public class SignUpTest {
     @Test
     @DisplayName("동일한 이메일로 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() throws Exception {
+        initSetting();
+
         // When
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -160,5 +168,10 @@ public class SignUpTest {
             assertThat(expectedFields).isEqualTo(actualFields);
         }
 
+    }
+
+    private void initSetting(){
+        Consumer consumer1 = CONSUMER;
+        consumerRepository.save(consumer1);
     }
 }

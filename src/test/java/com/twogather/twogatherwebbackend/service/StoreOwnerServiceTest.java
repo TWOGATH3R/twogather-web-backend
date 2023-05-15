@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,19 +31,22 @@ public class StoreOwnerServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
+    private BizRegNumberValidator validator;
+    @Mock
     private MemberRepository memberRepository;
     private StoreOwnerService storeOwnerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, passwordEncoder);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, passwordEncoder,validator);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final StoreOwnerSaveUpdateRequest request = returnRequest();
+        when(validator.validateBizRegNumber(any(),any(),any())).thenReturn(true);
         when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(false);
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
@@ -59,7 +63,7 @@ public class StoreOwnerServiceTest {
         final StoreOwnerSaveUpdateRequest request = returnRequest();
         //when
         when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(true);
-
+        when(validator.validateBizRegNumber(any(),any(),any())).thenReturn(true);
         // when
         Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }

@@ -18,8 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final BizRegNumberValidator validator = new BizRegNumberValidator();
+    private final BizRegNumberValidator validator;
 
     public boolean isStoreOwner(Long memberId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,7 +42,7 @@ public class StoreOwnerService {
     }
 
     public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
-        validator.isValid(request,null);
+        if(!validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName())) throw new MemberException(BIZ_REG_NUMBER_VALIDATION);
         validateDuplicateEmail(request.getEmail());
         StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
@@ -55,7 +54,7 @@ public class StoreOwnerService {
         //TODO:구현
     }
     public StoreOwnerResponse update(final StoreOwnerSaveUpdateRequest request){
-        validator.isValid(request,null);
+        if(!validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName())) throw new MemberException(BIZ_REG_NUMBER_VALIDATION);
         //TODO:구현
         int s = 2;
         return new StoreOwnerResponse();
