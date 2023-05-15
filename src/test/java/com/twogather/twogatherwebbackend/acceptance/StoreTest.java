@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.TestUtil;
@@ -52,6 +53,7 @@ public class StoreTest {
     private Store store2;
     private Store store3;
     private Store store4;
+    static final int STORE_ENTITY_SIZE = 4;
     @BeforeEach
     void setUp() {
         store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444",true,null));
@@ -74,13 +76,14 @@ public class StoreTest {
         //store4: 리뷰가 가장적다
         //store3: 평점이 가장 적다
         em.flush();
+        System.out.println("===================");
     }
 
 
     @Test
-    @DisplayName("findTopNByScore should return the top N stores by score")
+    @DisplayName("리뷰3은 평점이 가장 적기때문에 결과로 반환된 리스트들 중에서는 없어야한다")
     @Transactional
-    void WhenFindTopNByScore_ThenReturnTopNStoresByScoreExcludeStore3() throws Exception {
+    void WhenFindTopNByTopRated_ThenReturnValueExcludeStore3() throws Exception {
         StoreType type = StoreType.TOP_RATED;
         int count = 3;
         // When
@@ -97,27 +100,61 @@ public class StoreTest {
 
         assertThat(topStores).isNotEmpty();
 
-        //store3는 리뷰가 가장 적다
+        //store3는 평점 가장 적다
         for (TopStoreResponse item: topStores){
             assertThat(item.getStoreName()).isNotEqualTo(store3.getName());
             assertThat(item.getStoreName()).isNotBlank();
+            System.out.println(item.getStoreName());
         }
     }
 
     @Test
-    @DisplayName("findTopNByReviewCount should return the top N stores by review count")
+    @DisplayName("리뷰4는 리뷰가 가장적기때문에 결과로 반환된 값중에 리뷰4는 없어야한다")
     @Transactional
-    void WhenFindTopNByReviewCount_ThenReturnTopNByReviewCountExcludeStore4() {
+    void WhenFindTopNByReviewCount_ThenReturnValueExcludeStore4() throws Exception {
+        StoreType type = StoreType.MOST_REVIEWED;
+        int count = 3;
         // When
-        List<TopStoreResponse> topStores = storeRepository.findTopNByReviewCount(3);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
         // Then
+        Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
+        List<TopStoreResponse> topStores = response.getData();
+
         assertThat(topStores).isNotEmpty();
-        //store4는 리뷰가 가장 적다
-        for (TopStoreResponse response: topStores){
-            assertThat(response.getStoreName()).isNotEqualTo(store4.getName());
-            assertThat(response.getStoreName()).isNotBlank();
+
+        //store3는 평점 가장 적다
+        for (TopStoreResponse item: topStores){
+            assertThat(item.getStoreName()).isNotEqualTo(store4.getName());
+            assertThat(item.getStoreName()).isNotBlank();
+            System.out.println(item.getStoreName());
         }
+    }
+
+    @Test
+    @DisplayName("존재하는 데이터 보다 많은 양을 요청했을땐 존재하는 데이터만 보여준다")
+    @Transactional
+    void WhenFindTopNByReviewCountMoreThenCurrentDBData_ThenReturnExistData() throws Exception {
+        StoreType type = StoreType.MOST_REVIEWED;
+        int count = 10;
+        // When
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        // Then
+        Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
+        List<TopStoreResponse> topStores = response.getData();
+
+        assertThat(topStores.size()).isEqualTo(STORE_ENTITY_SIZE);
     }
 
 }
