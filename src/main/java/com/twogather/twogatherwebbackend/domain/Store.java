@@ -31,6 +31,9 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Menu> menuList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store")
+    private List<Review> reviewList = new ArrayList<>();
+
     @OneToOne
     @JoinColumn(name = "category_id")
     private Category category;

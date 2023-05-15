@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

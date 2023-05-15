@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -78,15 +80,10 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
-    @GetMapping("/top-preview")
-    public ResponseEntity<Response> getStoreTopPreviewInfos() {
-        TopStoreInfoPreviewResponse data = storeService.getStoresTop10Preview();
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
-    @GetMapping("/top/{type}")
-    public ResponseEntity<Response> getStoreTopInfos(@PathVariable String type) {
-        List<TopStoreInfoResponse> data = storeService.getStoresTop10(type);
+    @GetMapping("/top/{type}/{count}")
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
+                                                     @PathVariable int count) {
+        List<TopStoreInfoResponse> data = storeService.getStoresTopN(type, count);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

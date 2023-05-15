@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -137,23 +138,25 @@ public class StoreControllerTest extends ControllerTest{
     }
 
     @Test
-    @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보 - detail")
+    @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보 - Top rated detail")
     public void getStoreTopInfos_WhenGetStoreTopInfos_ThenReturnStoreInfos() throws Exception {
         //given
-        when(storeService.getStoresTop10(any())).thenReturn(STORES_TOP10_RESPONSE_LIST);
+        when(storeService.getStoresTopN(StoreType.TOP_RATED, 10)).thenReturn(STORES_TOP10_RESPONSE_LIST);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/top/{type}", "topRatedStores")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/top/{storeType}/{count}", "TOP_RATED",10)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
                 .andExpect(status().isOk())
-                .andDo(document("store/get-list-default-detail",
+                .andDo(document("store/get-list",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("type").description("자세히 볼 페이지의 type").attributes(getStoreType())
-                        ),
+                                parameterWithName("storeType").description("자세히 볼 페이지의 type").attributes(getStoreType()),
+                                parameterWithName("count").description("자세히 볼 페이지 개수").attributes(getStoreType())
+
+                                ),
                         responseFields(
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("가게 평점"),
@@ -187,37 +190,7 @@ public class StoreControllerTest extends ControllerTest{
 
     }
 
-    @Test
-    @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보")
-    public void getStoreTopPreviewInfos_WhenGetStoreTopPreviewInfos_ThenReturnInfos() throws Exception {
-        //given
-        when(storeService.getStoresTop10Preview()).thenReturn(STORES_TOP10_PREVIEW_RESPONSE);
-        //when
-        //then
-        mockMvc.perform(get("/api/stores/top-preview")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                )
-                .andExpect(status().isOk())
-                .andDo(document("store/get-list-default",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("data.popularStores").type(JsonFieldType.ARRAY).description("가장 인기 있는 가게의 정보. 3개만 전송"),
-                                fieldWithPath("data.topRatedStores").type(JsonFieldType.ARRAY).description("가장 평점이 높은 가게의 정보. 3개만 전송"),
-                                fieldWithPath("data.popularStores[].storeName").type(JsonFieldType.STRING).description("가게이름"),
-                                fieldWithPath("data.popularStores[].score").type(JsonFieldType.NUMBER).description("가게 평점"),
-                                fieldWithPath("data.popularStores[].address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data.popularStores[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 url"),
-                                fieldWithPath("data.topRatedStores[].storeName").type(JsonFieldType.STRING).description("가게이름"),
-                                fieldWithPath("data.topRatedStores[].score").type(JsonFieldType.NUMBER).description("가게 평점"),
-                                fieldWithPath("data.topRatedStores[].address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data.topRatedStores[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 url")
 
-                        )
-                ));
-
-    }
 
     @Test
     @DisplayName("가게 여러건 조회")

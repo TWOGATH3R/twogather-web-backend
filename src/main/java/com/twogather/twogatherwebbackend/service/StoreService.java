@@ -2,26 +2,27 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.member.CustomUser;
+import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
+import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
-import com.twogather.twogatherwebbackend.repository.StoreRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.INVALID_STORE_TYPE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.STORE_NOT_FOUND;
 
 @Service
@@ -56,15 +57,13 @@ public class StoreService {
         //TODO: 구현
         return null;
     }
-    public TopStoreInfoPreviewResponse getStoresTop10Preview(){
-        //TODO: 구현
-
-        return null;
-    }
-    public List<TopStoreInfoResponse> getStoresTop10(String type){
-        //TODO: 구현
-
-        return null;
+    public List<TopStoreInfoResponse> getStoresTopN(StoreType type, int n){
+        if (type.equals(StoreType.MOST_REVIEWED)){
+            return storeRepository.findTopNByReviewCount(n);
+        }else if(type.equals(StoreType.TOP_RATED)){
+            return storeRepository.findTopNByScore(n);
+        }
+        throw new StoreException(INVALID_STORE_TYPE);
     }
 
     public void delete(Long storeId) {
