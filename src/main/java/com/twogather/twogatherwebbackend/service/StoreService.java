@@ -5,7 +5,6 @@ import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
-import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -33,7 +32,7 @@ public class StoreService {
     private final MemberRepository memberRepository;
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
-    public StoreResponse save(final StoreSaveRequest request){
+    public StoreResponse save(final StoreSaveUpdateRequest request){
         validateDuplicateName(request.getName());
         Store store = new Store(request.getName(), request.getAddress(), request.getPhone());
         Store savedStore = storeRepository.save(store);
@@ -57,7 +56,7 @@ public class StoreService {
         //TODO: 구현
         return null;
     }
-    public List<TopStoreInfoResponse> getStoresTopN(StoreType type, int n){
+    public List<TopStoreResponse> getStoresTopN(StoreType type, int n){
         if (type.equals(StoreType.MOST_REVIEWED)){
             return storeRepository.findTopNByReviewCount(n);
         }else if(type.equals(StoreType.TOP_RATED)){
@@ -71,7 +70,7 @@ public class StoreService {
         storeRepository.delete(store);
     }
 
-    public StoreResponse update(final Long storeId, final StoreUpdateRequest request) {
+    public StoreResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
         Store store = findStore(storeId);
         if (request.getName() != null && !request.getName().isEmpty() && !request.getName().equals(store.getName())) {
             validateDuplicateName(request.getName());
@@ -82,7 +81,7 @@ public class StoreService {
 
         return toStoreResponse(store);
     }
-    public List<StoresResponse> getStores(
+    public List<StoreResponseWithKeyword> getStores(
           String categoryName, String keyword, int limit, int offset, String orderBy, String order, String location){
         //TODO: 구현
         return new ArrayList<>();
@@ -105,6 +104,7 @@ public class StoreService {
         return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(STORE_NOT_FOUND));
     }
     private StoreResponse toStoreResponse(Store store) {
-        return new StoreResponse(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
+        //TODO:구현
+        return null;
     }
 }

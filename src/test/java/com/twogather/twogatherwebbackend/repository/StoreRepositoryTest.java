@@ -3,7 +3,7 @@ package com.twogather.twogatherwebbackend.repository;
 import com.twogather.twogatherwebbackend.config.QueryDslConfig;
 import com.twogather.twogatherwebbackend.domain.Review;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.store.TopStoreInfoResponse;
+import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -65,13 +64,13 @@ public class StoreRepositoryTest {
     @Transactional
     void findTopNByScore_ShouldReturnTopNStoresByScore() {
         // When
-        List<TopStoreInfoResponse> topStores = storeRepository.findTopNByScore(3);
+        List<TopStoreResponse> topStores = storeRepository.findTopNByScore(3);
         Store sss = storeRepository.findById(1l).get();
         // Then
         assertThat(topStores).isNotEmpty();
 
         //store3는 리뷰가 가장 적다
-        for (TopStoreInfoResponse response: topStores){
+        for (TopStoreResponse response: topStores){
             assertThat(response.getStoreName()).isNotEqualTo(store3.getName());
             assertThat(response.getStoreName()).isNotBlank();
         }
@@ -82,12 +81,12 @@ public class StoreRepositoryTest {
     @Transactional
     void findTopNByReviewCount_ShouldReturnTopNStoresByReviewCount() {
         // When
-        List<TopStoreInfoResponse> topStores = storeRepository.findTopNByReviewCount(3);
+        List<TopStoreResponse> topStores = storeRepository.findTopNByReviewCount(3);
 
         // Then
         assertThat(topStores).isNotEmpty();
         //store4는 리뷰가 가장 적다
-        for (TopStoreInfoResponse response: topStores){
+        for (TopStoreResponse response: topStores){
             assertThat(response.getStoreName()).isNotEqualTo(store4.getName());
             assertThat(response.getStoreName()).isNotBlank();
         }

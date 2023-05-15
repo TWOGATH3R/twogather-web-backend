@@ -1,11 +1,10 @@
 package com.twogather.twogatherwebbackend.repository.store;
 
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.store.TopStoreInfoResponse;
+import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 
 import java.util.List;
 
 public interface StoreCustomRepository {
-    List<TopStoreInfoResponse> findTopNByScore(int n);
-    List<TopStoreInfoResponse> findTopNByReviewCount(int n);
+    List<TopStoreResponse> findTopNByScore(int n);
+    List<TopStoreResponse> findTopNByReviewCount(int n);
 }

@@ -5,15 +5,13 @@ import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.QImage;
 import com.twogather.twogatherwebbackend.domain.QReview;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.store.TopStoreInfoResponse;
+import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QStore.store;
-import static com.twogather.twogatherwebbackend.domain.QReview.review;
 
 @Repository
 public class StoreCustomRepositoryImpl implements StoreCustomRepository{
@@ -23,11 +21,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         this.jpaQueryFactory = jpaQueryFactory;
     }
     @Override
-    public List<TopStoreInfoResponse> findTopNByScore(int n) {
+    public List<TopStoreResponse> findTopNByScore(int n) {
         QReview review = QReview.review;
         QImage image = QImage.image;
         List<Tuple> results = jpaQueryFactory
-                .select(store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
+                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
                 .from(store)
                 .where(store.isApproved.isTrue())
                 .leftJoin(store.reviewList, review)
@@ -38,7 +36,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .fetch();
 
         return results.stream()
-                .map(tuple -> new TopStoreInfoResponse(
+                .map(tuple -> new TopStoreResponse(
+                        tuple.get(store.storeId),
                         tuple.get(store.name),
                         tuple.get(MathExpressions.round(review.score.avg(), 1)),
                         tuple.get(store.address),
@@ -48,12 +47,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     }
 
     @Override
-    public List<TopStoreInfoResponse> findTopNByReviewCount(int n) {
+    public List<TopStoreResponse> findTopNByReviewCount(int n) {
         QReview review = QReview.review;
         QImage image = QImage.image;
 
         List<Tuple> results = jpaQueryFactory
-                .select(store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
+                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
                 .from(store)
                 .where(store.isApproved.isTrue())
                 .leftJoin(store.reviewList, review)
@@ -64,7 +63,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .fetch();
 
         return results.stream()
-                .map(tuple -> new TopStoreInfoResponse(
+                .map(tuple -> new TopStoreResponse(
+                        tuple.get(store.storeId),
                         tuple.get(store.name),
                         tuple.get(MathExpressions.round(review.score.avg(), 1)),
                         tuple.get(store.address),

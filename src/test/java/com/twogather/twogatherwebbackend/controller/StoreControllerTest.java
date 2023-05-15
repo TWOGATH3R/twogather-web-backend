@@ -62,7 +62,7 @@ public class StoreControllerTest extends ControllerTest{
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호")
 
@@ -119,7 +119,7 @@ public class StoreControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
-                                fieldWithPath("data[].storePhone").type(JsonFieldType.STRING).description("가게 전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data[].phone").type(JsonFieldType.STRING).description("가게 전화번호").attributes(getStorePhoneFormat()),
                                 fieldWithPath("data[].requestDate").type(JsonFieldType.STRING).description("승인 요청한 날짜").attributes(getDateFormat()),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 URL"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
@@ -158,8 +158,9 @@ public class StoreControllerTest extends ControllerTest{
 
                                 ),
                         responseFields(
+                                fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 고유 id"),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
-                                fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("가게 평점"),
+                                fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 평점"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 url")
                         )
@@ -226,9 +227,9 @@ public class StoreControllerTest extends ControllerTest{
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
-                                fieldWithPath("data[].name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data[].rating").type(JsonFieldType.NUMBER).description("가게 별점 정보").attributes(getRatingFormat()),
+                                fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 별점 정보").attributes(getRatingFormat()),
                                 fieldWithPath("data[].keywordList").type(JsonFieldType.ARRAY).description("가게 관련 키워드"),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url")
 
@@ -258,7 +259,7 @@ public class StoreControllerTest extends ControllerTest{
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호")
                         )
@@ -291,7 +292,7 @@ public class StoreControllerTest extends ControllerTest{
                       ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호")
 
