@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.TestUtil;
@@ -8,8 +7,7 @@ import com.twogather.twogatherwebbackend.domain.Review;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
-import com.twogather.twogatherwebbackend.dto.store.TopStoreInfoResponse;
-import com.twogather.twogatherwebbackend.exception.MemberException;
+import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +25,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -95,13 +92,13 @@ public class StoreTest {
                 .andReturn();
 
        // Then
-        Response<List<TopStoreInfoResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreInfoResponse>>>(){});
-        List<TopStoreInfoResponse> topStores = response.getData();
+        Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
+        List<TopStoreResponse> topStores = response.getData();
 
         assertThat(topStores).isNotEmpty();
 
         //store3는 리뷰가 가장 적다
-        for (TopStoreInfoResponse item: topStores){
+        for (TopStoreResponse item: topStores){
             assertThat(item.getStoreName()).isNotEqualTo(store3.getName());
             assertThat(item.getStoreName()).isNotBlank();
         }
@@ -112,12 +109,12 @@ public class StoreTest {
     @Transactional
     void WhenFindTopNByReviewCount_ThenReturnTopNByReviewCountExcludeStore4() {
         // When
-        List<TopStoreInfoResponse> topStores = storeRepository.findTopNByReviewCount(3);
+        List<TopStoreResponse> topStores = storeRepository.findTopNByReviewCount(3);
 
         // Then
         assertThat(topStores).isNotEmpty();
         //store4는 리뷰가 가장 적다
-        for (TopStoreInfoResponse response: topStores){
+        for (TopStoreResponse response: topStores){
             assertThat(response.getStoreName()).isNotEqualTo(store4.getName());
             assertThat(response.getStoreName()).isNotBlank();
         }
