@@ -94,8 +94,7 @@ public class StoreTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        //result는  List<TopStoreInfoResponse>를 담고있는데 이걸 어떻게 꺼내지?
-        // Then
+       // Then
         Response<List<TopStoreInfoResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreInfoResponse>>>(){});
         List<TopStoreInfoResponse> topStores = response.getData();
 
