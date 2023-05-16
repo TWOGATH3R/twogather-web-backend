@@ -37,9 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### JWT ###
-/src/main/java/com/twogather/twogatherwebbackend/auth/PrivateConstants.java
-
 ### Testing with personal information ###
 /src/test/java/com/twogather/twogatherwebbackend/acceptance/SignUpSuccessTest.java
 /src/test/java/com/twogather/twogatherwebbackend/valid/BizRegNumberValidatorTest.java

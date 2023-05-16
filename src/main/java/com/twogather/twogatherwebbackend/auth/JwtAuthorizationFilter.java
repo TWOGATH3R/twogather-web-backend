@@ -54,7 +54,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // loadByUsername이 호출됨.
         String username="";
         try {
-            username = JWT.require(Algorithm.HMAC512(PrivateConstants.SECRET)).build().verify(token)
+            username = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET)).build().verify(token)
                     .getClaim("username").asString();
         }catch(RuntimeException e){
             e.printStackTrace();

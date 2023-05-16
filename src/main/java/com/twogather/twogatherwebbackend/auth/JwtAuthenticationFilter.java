@@ -107,7 +107,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withClaim("id", customUser.getMemberId())
                 .withClaim("role", customUser.getRole())
                 .withClaim("username", customUser.getUsername())
-                .sign(Algorithm.HMAC512(PrivateConstants.SECRET));
+                .sign(Algorithm.HMAC512(PrivateConstants.JWT_SECRET));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
