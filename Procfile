@@ -1,0 +1,1 @@
+web: java -jar ./build/libs/twogather-web-backend-0.0.1-SNAPSHOT.jar
