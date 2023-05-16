@@ -2,13 +2,9 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
+import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.*;
-import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import com.twogather.twogatherwebbackend.service.StoreService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -26,25 +21,17 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-    @GetMapping("/{storeId}/check-owner")
-    @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> checkStoreOwner(@PathVariable Long storeId) {
-        // 현재 로그인한 사용자의 정보를 가져옴
-        boolean isOwner = storeService.isMyStore(storeId);
-        return ResponseEntity.ok(new Response(new CheckStoreOwnerResponse(isOwner)));
-    }
-
     @PostMapping
     @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveRequest storeSaveRequest) {
-        StoreResponse data = storeService.save(storeSaveRequest);
+    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeSaveUpdateRequest) {
+        StoreResponse data = storeService.save(storeSaveUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
     @PutMapping("/{storeId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
-    public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
+    public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreSaveUpdateRequest storeUpdateRequest) {
         StoreResponse data = storeService.update(storeId, storeUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
@@ -78,15 +65,10 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
-    @GetMapping("/top-preview")
-    public ResponseEntity<Response> getStoreTopPreviewInfos() {
-        TopStoreInfoPreviewResponse data = storeService.getStoresTop10Preview();
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
-    @GetMapping("/top/{type}")
-    public ResponseEntity<Response> getStoreTopInfos(@PathVariable String type) {
-        List<TopStoreInfoResponse> data = storeService.getStoresTop10(type);
+    @GetMapping("/top/{type}/{count}")
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
+                                                     @PathVariable int count) {
+        List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
@@ -99,7 +81,7 @@ public class StoreController {
                                                     @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
                                                     @RequestParam(value = "order", defaultValue = "asc") String order,
                                                     @RequestParam(value = "location", required = false) String location) {
-        List<StoresResponse> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order, location);
+        List<StoreResponseWithKeyword> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order, location);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

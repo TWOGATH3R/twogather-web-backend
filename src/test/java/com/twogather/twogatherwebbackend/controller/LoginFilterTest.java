@@ -1,6 +1,10 @@
 package com.twogather.twogatherwebbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -10,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.twogather.twogatherwebbackend.TestConstants.LOGIN_REQUEST;
+import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
@@ -30,9 +34,13 @@ public class LoginFilterTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private StoreOwnerRepository ownerRepository;
+
     @Test
     public void login() throws Exception {
         //given
+        initSetting();
         //when
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,6 +63,10 @@ public class LoginFilterTest {
                         )
                 ));
 
+    }
+    private void initSetting(){
+        StoreOwner owner1 = STORE_OWNER;
+        ownerRepository.save(owner1);
     }
 }
 

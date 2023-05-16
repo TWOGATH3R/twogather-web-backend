@@ -4,9 +4,16 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twogather.twogatherwebbackend.auth.JwtProperties;
+import com.twogather.twogatherwebbackend.auth.PrivateConstants;
+import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import io.jsonwebtoken.Jwts;
+import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,7 +29,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.INVALID_ID_AND_PASSWORD;
-import static javax.crypto.Cipher.SECRET_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
@@ -32,18 +36,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.crypto.SecretKey;
 import java.util.Base64;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@Rollback
 public class LoginTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ConsumerRepository consumerRepository;
+    @Autowired
+    private StoreOwnerRepository storeOwnerRepository;
+    @Autowired
+    private StoreRepository storeRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private StoreOwner storeOwner;
+    private Consumer consumer;
+    @BeforeEach
+    public void prepareTestData() {
+        Consumer consumer1 = CONSUMER;
+        StoreOwner owner1 = STORE_OWNER;
+        consumer = consumerRepository.save(consumer1);
+        storeOwner = storeOwnerRepository.save(owner1);
+        Store store1 = new Store(storeOwner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", true, "");
+        storeRepository.save(store1);
+    }
 
     @Test
     public void createSecretKey512(){
@@ -61,20 +86,20 @@ public class LoginTest {
                         .content(objectMapper.writeValueAsString(OWNER_LOGIN_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists(JwtProperties.HEADER_STRING))
+                .andExpect(MockMvcResultMatchers.header().exists(PrivateConstants.HEADER_STRING))
                 .andReturn();
 
         // Then
-        String originToken = mvcResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
-        String token = originToken.replace(JwtProperties.TOKEN_PREFIX, "");
+        String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
+        String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.SECRET))
                 .build()
                 .verify(token);
 
-        assertThat(decodedJWT.getClaim("id").asLong()).isEqualTo(STORE_OWNER.getMemberId());
-        assertThat(decodedJWT.getClaim("role").asString()).isEqualTo(STORE_OWNER.getAuthenticationType().authority());
-        assertThat(decodedJWT.getClaim("username").asString()).isEqualTo(STORE_OWNER.getEmail());
+        assertThat(decodedJWT.getClaim("id").asLong()).isEqualTo(storeOwner.getMemberId());
+        assertThat(decodedJWT.getClaim("role").asString()).isEqualTo(storeOwner.getAuthenticationType().authority());
+        assertThat(decodedJWT.getClaim("username").asString()).isEqualTo(storeOwner.getEmail());
     }
 
     @Test
@@ -87,20 +112,20 @@ public class LoginTest {
                         .content(objectMapper.writeValueAsString(CONSUMER_LOGIN_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists(JwtProperties.HEADER_STRING))
+                .andExpect(MockMvcResultMatchers.header().exists(PrivateConstants.HEADER_STRING))
                 .andReturn();
 
         // Then
-        String originToken = mvcResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
-        String token = originToken.replace(JwtProperties.TOKEN_PREFIX, "");
+        String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
+        String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.SECRET))
                 .build()
                 .verify(token);
 
-        assertThat(decodedJWT.getClaim("id").asLong()).isEqualTo(CONSUMER.getMemberId());
-        assertThat(decodedJWT.getClaim("role").asString()).isEqualTo(CONSUMER.getAuthenticationType().authority());
-        assertThat(decodedJWT.getClaim("username").asString()).isEqualTo(CONSUMER.getEmail());
+        assertThat(decodedJWT.getClaim("id").asLong()).isEqualTo(consumer.getMemberId());
+        assertThat(decodedJWT.getClaim("role").asString()).isEqualTo(consumer.getAuthenticationType().authority());
+        assertThat(decodedJWT.getClaim("username").asString()).isEqualTo(consumer.getEmail());
     }
     @Test
     @DisplayName("잘못된 비밀번호로 로그인 시도 시, 오류 메시지 반환 확인")

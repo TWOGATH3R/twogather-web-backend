@@ -42,11 +42,8 @@ operation::store/get-one/[snippets='http-request,path-parameters,http-response,r
 === Get-Keyword
 operation::store/get-keyword/[snippets='http-request,http-response,response-fields']
 
-=== Get-List-Default
-operation::store/get-list-default/[snippets='http-request,http-response,response-fields']
-
-=== Get-List-Default-Detail
-operation::store/get-list-default-detail/[snippets='http-request,path-parameters,http-response,response-fields']
+=== Get-List
+operation::store/get-list/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Get-List-Search
 operation::store/get-list-search/[snippets='http-request,request-parameters,http-response,response-fields']

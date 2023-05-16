@@ -7,7 +7,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveReques
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
-import com.twogather.twogatherwebbackend.repository.StoreRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

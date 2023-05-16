@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@BizRegNumberValidation
 public class StoreOwnerSaveUpdateRequest extends MemberSaveUpdateRequest {
     @Size(min = 10, max = 10, message = "숫자는 10자리여야 합니다.")
     @Digits(integer = 10,fraction = 0, message = "숫자로 이루어져야 합니다")

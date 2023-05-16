@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.dto.valid;
 
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.ClientException;
 import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,26 +19,19 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Objects;
 
-import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.BIZ_REG_NUMBER_VALIDATION;
+import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_KEY;
+import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_URL;
 
 @Slf4j
 @Component
-public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberValidation, StoreOwnerSaveUpdateRequest> {
-    private final String url;
-    private final String key;
-    private final String totalUrl;
-
-    public BizRegNumberValidator(@Value("${api.validate.url}") String url,
-                                 @Value("${api.validate.service.key}") String key) {
-        Objects.requireNonNull(url, "url must not be null");
-        Objects.requireNonNull(key, "key must not be null");
-        this.url = url;
-        this.key = key;
-        this.totalUrl = this.url + "?serviceKey=" + this.key;
-    }
+public class BizRegNumberValidator{
+    private final String url = API_URL;
+    private final String key = API_KEY;
+    private final String totalUrl = this.url + "?serviceKey=" + this.key;
 
     public boolean validateBizRegNumber(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
         RestTemplate restTemplate = new RestTemplate();
@@ -50,14 +44,14 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
         try {
             ResponseEntity<String> response = restTemplate.exchange(totalUrl, HttpMethod.POST, entity, String.class);
             String responseBody = response.getBody();
-            return isValid(responseBody);
+            return isValidResponse(responseBody);
         } catch (HttpServerErrorException e) {
             log.error("Failed to validate business registration number: " + e.getResponseBodyAsString(), e);
             return false;
         }
     }
 
-    private boolean isValid(final String response) {
+    public boolean isValidResponse(final String response) {
         try {
             JSONObject jsonResponse = new JSONObject(response);
             JSONArray dataArray = jsonResponse.optJSONArray("data");
@@ -87,22 +81,5 @@ public class BizRegNumberValidator implements ConstraintValidator<BizRegNumberVa
         return date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
-    @Override
-    public boolean isValid(StoreOwnerSaveUpdateRequest value, ConstraintValidatorContext context) {
-        String businessNumber = value.getBusinessNumber();
-        LocalDate businessStartDate = value.getBusinessStartDate();
-        String businessName = value.getBusinessName();
 
-        boolean isValid = validateBizRegNumber(businessNumber, businessStartDate, businessName);
-
-        if (!isValid) {
-            context.disableDefaultConstraintViolation();
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Invalid business registration number")
-                    .addPropertyNode("businessNumber")
-                    .addConstraintViolation();
-        }
-
-        return isValid;
-    }
 }
