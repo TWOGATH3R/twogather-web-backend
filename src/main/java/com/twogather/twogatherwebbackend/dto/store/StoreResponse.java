@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StoreResponse {
-    private Long storeId;
-    private String name;
-    private String address;
+public class StoreResponse extends StoreBaseResponse{
     private String phone;
+    public StoreResponse(Long storeId, String name, String phone, String address, String storeImageUrl){
+        super(storeId,name,address);
+        this.phone = phone;
+    }
 }

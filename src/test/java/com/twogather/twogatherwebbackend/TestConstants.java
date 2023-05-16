@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend;
 
+import com.twogather.twogatherwebbackend.controller.BusinessHourController;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Member;
@@ -107,8 +108,8 @@ public class TestConstants {
     public static final BusinessHourSaveRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
             new BusinessHourSaveRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
-    public static final StoreSaveRequest STORE_SAVE_REQUEST =
-            new StoreSaveRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE);
+    public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
+            new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE);
     public static final StoreOwner STORE_OWNER =
             new StoreOwner(OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE,
@@ -124,24 +125,24 @@ public class TestConstants {
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
     public static final StoreResponse STORE_RESPONSE =
-            new StoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+            new StoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234", "url1");
     public static final ArrayList KEYWORD_LIST =
             new ArrayList<>(){{
                 add("분위기좋은");
                 add("사진찍기좋은");
                 add("저렴한");
             }};
-    public static final StoresResponse STORES_RESPONSE =
-            new StoresResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",4.2,KEYWORD_LIST, "imageurl1");
-   public static final StoreSaveRequest STORE_REQUEST =
-            new StoreSaveRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
-    public static final StoreUpdateRequest STORE_UPDATE_REQUEST =
-            new StoreUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final StoreResponseWithKeyword STORES_RESPONSE =
+            new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3",4.2,KEYWORD_LIST, "imageurl1");
+   public static final StoreSaveUpdateRequest STORE_REQUEST =
+            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+    public static final StoreSaveUpdateRequest STORE_UPDATE_REQUEST =
+            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
 
     public static final StoreOwnerSaveUpdateRequest STORE_OWNER_REQUEST =
             new StoreOwnerSaveUpdateRequest("sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
     public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
-            new StoreOwnerResponse(1l, "사업자이름", "ifd@naebr.com", "0000000000", "비즈니스이름", LocalDate.now());
+            new StoreOwnerResponse(1l, "홍길동", "ifd@naebr.com", "0000000000", "홍길동", LocalDate.of(2000,01,01));
     public static final LocalDate DATE = LocalDate.parse("2020-02-02");
     public static final MyStoreResponse MY_STORES_RESPONSE =
             new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",
@@ -194,36 +195,35 @@ public class TestConstants {
                 add(IMAGE_RESPONSE);
             }};
     public static final ArrayList STORES_RESPONSE_LIST =
-            new ArrayList<StoresResponse>(){{
+            new ArrayList<StoreResponseWithKeyword>(){{
                 add(STORES_RESPONSE);
                 add(STORES_RESPONSE);
                 add(STORES_RESPONSE);
             }};
 
-    public static final TopStoreInfoPreviewResponse STORES_TOP10_PREVIEW_RESPONSE = new TopStoreInfoPreviewResponse(
+    public static final List<TopStoreResponse> STORES_TOP3_TOP_RATED_RESPONSE =
             Arrays.asList(
-                    new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),
-                    new TopStoreInfoResponse("store2", 4.2, "456 Oak Ave.", "url2"),
-                    new TopStoreInfoResponse("store3", 4.0, "789 Elm St.", "url3")
-            ),
+                    new TopStoreResponse(1l,"store1", 4.5, "123 Main St.", "url1"),
+                    new TopStoreResponse(1l,"store2", 4.2, "456 Oak Ave.", "url2"),
+                    new TopStoreResponse(1l,"store3", 4.0, "789 Elm St.", "url3")
+            );
+    public static final List<TopStoreResponse> STORES_TOP3_MOST_REVIEWED_RESPONSE =
             Arrays.asList(
-                    new TopStoreInfoResponse("store11", 4.8, "123 Main St.", "url11"),
-                    new TopStoreInfoResponse("store12", 4.6, "456 Oak Ave.", "url12"),
-                    new TopStoreInfoResponse("store13", 4.4, "789 Elm St.", "url13")
-         )
-    );
-
-    public static final List<TopStoreInfoResponse> STORES_TOP10_RESPONSE_LIST =
+                    new TopStoreResponse(1l,"store11", 4.8, "123 Main St.", "url11"),
+                    new TopStoreResponse(1l,"store12", 4.6, "456 Oak Ave.", "url12"),
+                    new TopStoreResponse(1l,"store13", 4.4, "789 Elm St.", "url13")
+            );
+    public static final List<TopStoreResponse> STORES_TOP10_RESPONSE_LIST =
             Arrays.asList(
-                    new TopStoreInfoResponse("store1", 4.5, "123 Main St.", "url1"),
-                    new TopStoreInfoResponse("store2", 4.2, "456 Oak Ave.", "url2"),
-                    new TopStoreInfoResponse("store3", 3.0, "789 Elm St.", "url3"),
-                    new TopStoreInfoResponse("store4", 3.5, "123 Main St.", "url1"),
-                    new TopStoreInfoResponse("store5", 3.2, "456 Oak Ave.", "url2"),
-                    new TopStoreInfoResponse("store6", 3.0, "789 Elm St.", "url3"),
-                    new TopStoreInfoResponse("store7", 3.5, "123 Main St.", "url1"),
-                    new TopStoreInfoResponse("store8", 2.2, "456 Oak Ave.", "url2"),
-                    new TopStoreInfoResponse("store9", 1.0, "789 Elm St.", "url3")
+                    new TopStoreResponse(1l,"store1", 4.5, "123 Main St.", "url1"),
+                    new TopStoreResponse(2l,"store2", 4.2, "456 Oak Ave.", "url2"),
+                    new TopStoreResponse(3l,"store3", 3.0, "789 Elm St.", "url3"),
+                    new TopStoreResponse(4l,"store4", 3.5, "123 Main St.", "url1"),
+                    new TopStoreResponse(5l,"store5", 3.2, "456 Oak Ave.", "url2"),
+                    new TopStoreResponse(6l,"store6", 3.0, "789 Elm St.", "url3"),
+                    new TopStoreResponse(7l,"store7", 3.5, "123 Main St.", "url1"),
+                    new TopStoreResponse(8l,"store8", 2.2, "456 Oak Ave.", "url2"),
+                    new TopStoreResponse(9l,"store9", 1.0, "789 Elm St.", "url3")
             );
     public static final Page<MyStoreResponse> MY_STORES_RESPONSE_PAGE = new PageImpl<>(List.of(
             MY_STORES_RESPONSE,
@@ -237,17 +237,22 @@ public class TestConstants {
                 add(BUSINESS_HOUR_RESPONSE);
                 add(BUSINESS_HOUR_RESPONSE);
             }};
-    public static final ArrayList BUSINESS_HOUR_UPDATE_REQUEST_LIST =
+    public static final ArrayList BUSINESS_HOUR_UPDATE_LIST =
             new ArrayList<BusinessHourUpdateRequest>(){{
                 add(BUSINESS_HOUR_UPDATE_REQUEST);
                 add(BUSINESS_HOUR_UPDATE_REQUEST);
             }};
-    public static final ArrayList BUSINESS_HOUR_SAVE_REQUEST_LIST =
+    public static final BusinessHourController.BusinessHourUpdateListRequest BUSINESS_HOUR_UPDATE_REQUEST_LIST =
+            new BusinessHourController.BusinessHourUpdateListRequest(BUSINESS_HOUR_UPDATE_LIST);
+
+    public static final ArrayList BUSINESS_HOUR_SAVE_LIST =
             new ArrayList<BusinessHourSaveRequest>(){{
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
                 add(BUSINESS_HOUR_SAVE_REQUEST);
             }};
+    public static final BusinessHourController.BusinessHourSaveListRequest BUSINESS_HOUR_SAVE_REQUEST_LIST
+            = new BusinessHourController.BusinessHourSaveListRequest(BUSINESS_HOUR_SAVE_LIST);
     public static final ArrayList BUSINESS_HOUR_RESPONSE_7_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);

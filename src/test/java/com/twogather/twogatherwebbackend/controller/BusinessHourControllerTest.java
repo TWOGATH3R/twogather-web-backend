@@ -63,15 +63,15 @@ public class BusinessHourControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("가게 고유 ID")
                         ),
                         requestFields(
-                                fieldWithPath("[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
-                                fieldWithPath("[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
-                                fieldWithPath("[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
-                                fieldWithPath("[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
-                                fieldWithPath("[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+                                fieldWithPath("businessHourUpdateList[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
+                                fieldWithPath("businessHourUpdateList[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
+                                fieldWithPath("businessHourUpdateList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
+                                fieldWithPath("businessHourUpdateList[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourUpdateList[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourUpdateList[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
+                                fieldWithPath("businessHourUpdateList[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourUpdateList[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourUpdateList[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
                         ),
                         responseFields(
                                 fieldWithPath("data[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
@@ -176,14 +176,14 @@ public class BusinessHourControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("가게 고유 ID")
                         ),
                         requestFields(
-                                fieldWithPath("[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
-                                fieldWithPath("[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
-                                fieldWithPath("[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
-                                fieldWithPath("[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+                                fieldWithPath("businessHourSaveList[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
+                                fieldWithPath("businessHourSaveList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
+                                fieldWithPath("businessHourSaveList[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourSaveList[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourSaveList[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
+                                fieldWithPath("businessHourSaveList[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourSaveList[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourSaveList[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
                         ),
                         responseFields(
                                 fieldWithPath("data[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),

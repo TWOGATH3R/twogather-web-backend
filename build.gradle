@@ -1,8 +1,16 @@
+//querydsl 추가
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
+//querydsl 추가
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.twogather'
@@ -59,6 +67,9 @@ dependencies {
 	implementation 'com.google.guava:guava:30.1.1-jre'
 	//jwt
 	implementation 'com.auth0:java-jwt:3.4.1'
+	//querydsl 추가
+	implementation "com.querydsl:querydsl-jpa:5.0.0"
+	implementation "com.querydsl:querydsl-apt:5.0.0"
 }
 
 
@@ -111,4 +122,23 @@ build {
 }
 tasks.named('test') {
 	useJUnitPlatform()
+}
+//querydsl 추가
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+sourceSets {
+	main.java.srcDir querydslDir
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	querydsl.extendsFrom compileClasspath
 }

@@ -1,18 +1,11 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.auth.JwtProperties;
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,19 +14,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.INVALID_ID_AND_PASSWORD;
 import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,12 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@Rollback
 public class SignUpTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private StoreOwnerRepository storeOwnerRepository;
 
     @Autowired
     private ConsumerRepository consumerRepository;
@@ -58,7 +50,6 @@ public class SignUpTest {
         //LocalDate 직렬화/역직렬화를 위해 필요한 모듈
         objectMapper.registerModule(new JavaTimeModule());;
     }
-
     @Test
     @Transactional
     @DisplayName("owner 회원가입 - 사업자 등록번호 검증 실패")
@@ -72,8 +63,9 @@ public class SignUpTest {
                 .andReturn();
 
         // Then
-        assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class);
-        assertThat(result.getResponse().getContentAsString()).contains("Invalid business registration number");
+        assertThat(result.getResolvedException()).isInstanceOf(MemberException.class);
+        String responseContent = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertThat(responseContent).contains(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage());
 
 
     }
@@ -100,16 +92,18 @@ public class SignUpTest {
     @Test
     @DisplayName("동일한 이메일로 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() throws Exception {
+        initSetting();
+
         // When
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST)))
+                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         // Then
-        storeOwnerRepository.findByEmail(OWNER_SAVE_REQUEST.getEmail()).get();
+        consumerRepository.findByEmail(CONSUMER_SAVE_UPDATE_REQUEST.getEmail()).get();
 
         HttpServletResponse response = mvcResult.getResponse();
         response.setCharacterEncoding("UTF-8");
@@ -165,5 +159,10 @@ public class SignUpTest {
             assertThat(expectedFields).isEqualTo(actualFields);
         }
 
+    }
+
+    private void initSetting(){
+        Consumer consumer1 = CONSUMER;
+        consumerRepository.save(consumer1);
     }
 }

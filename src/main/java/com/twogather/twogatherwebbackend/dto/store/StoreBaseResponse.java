@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CheckStoreOwnerResponse {
-    private Boolean isOwner;
+abstract public class StoreBaseResponse {
+    protected Long storeId;
+    protected String storeName;
+    protected String address;
 }

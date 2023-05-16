@@ -30,7 +30,7 @@ public interface DocumentFormatGenerator {
         return key("format").value("숫자 0~5 사이의 소수점 한자리 형태");
     }
     static Attributes.Attribute getStoreType() {
-        return key("format").value("popularStores or topRatedStores 만이 입력으로 들어올 수 있다");
+        return key("format").value("TOP_RATED or MOST_REVIEWED");
     }
 
 }

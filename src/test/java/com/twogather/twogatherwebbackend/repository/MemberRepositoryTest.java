@@ -11,8 +11,6 @@ import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {
-
-
     @Autowired
     private MemberRepository memberRepository;
 

@@ -3,7 +3,6 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidation;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,14 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/api/owners")
 @RequiredArgsConstructor
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
-
     @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest) {
         StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveUpdateRequest);

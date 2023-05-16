@@ -26,14 +26,14 @@ public class BusinessHourController {
     @PostMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> saveList(@PathVariable final Long storeId, @RequestBody @Valid final BusinessHourSaveListRequest request) {
-        List<BusinessHourResponse> data = businessHourService.saveList(storeId, request.getBusinessHourSaveRequestList());
+        List<BusinessHourResponse> data = businessHourService.saveList(storeId, request.getBusinessHourSaveList());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
     @PutMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> updateList(@PathVariable final Long storeId, @RequestBody @Valid final BusinessHourUpdateListRequest request) {
-        List<BusinessHourResponse> data = businessHourService.updateList(request.getBusinessHourUpdateRequests());
+        List<BusinessHourResponse> data = businessHourService.updateList(request.getBusinessHourUpdateList());
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
@@ -59,7 +59,7 @@ public class BusinessHourController {
     //도메인별로 class 생성
     public static class BusinessHourSaveListRequest {
         @Valid
-        private List<BusinessHourSaveRequest> businessHourSaveRequestList;
+        private List<BusinessHourSaveRequest> businessHourSaveList;
     }
 
     @AllArgsConstructor
@@ -67,7 +67,7 @@ public class BusinessHourController {
     @Getter
     public static class BusinessHourUpdateListRequest {
         @Valid
-        private List<BusinessHourUpdateRequest> businessHourUpdateRequests;
+        private List<BusinessHourUpdateRequest> businessHourUpdateList;
     }
 
 }

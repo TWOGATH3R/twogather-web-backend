@@ -1,16 +1,26 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.validation.ConstraintValidatorContext;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
@@ -20,7 +30,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -29,13 +41,12 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest(StoreOwnerController.class)
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(StoreOwnerController.class)
 public class StoreOwnerControllerTest extends ControllerTest{
     @MockBean
     private StoreOwnerService storeOwnerService;
-
     private static final String URL = "/api/owners/{memberId}";
     @Test
     @DisplayName("가게주인탈퇴")
@@ -44,10 +55,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
         doNothing().when(storeOwnerService).delete(anyLong());
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL, 1)
+        mockMvc.perform(delete(URL, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andDo(document("owner/delete",
@@ -68,7 +78,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get(URL, 1)
+        mockMvc.perform(get(URL, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -93,18 +103,16 @@ public class StoreOwnerControllerTest extends ControllerTest{
 
     }
 
+
     @Test
     @DisplayName("가게주인정보업데이트")
     public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
         when(storeOwnerService.update(any())).thenReturn(STORE_OWNER_RESPONSE);
-        //when
-        //then
-
-        mockMvc.perform(RestDocumentationRequestBuilders.put(URL,1)
+      //then
+        mockMvc.perform(put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())

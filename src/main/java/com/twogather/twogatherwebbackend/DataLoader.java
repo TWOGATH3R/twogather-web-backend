@@ -3,7 +3,7 @@ package com.twogather.twogatherwebbackend;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.repository.StoreRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Component
 @Profile("dev")
