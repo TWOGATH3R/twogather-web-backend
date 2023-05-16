@@ -3,21 +3,35 @@ package com.twogather.twogatherwebbackend.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Getter
 public class Review {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="review_id")
-    private Long id;
+    private Long reviewId;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private Consumer reviewer;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     //이거 string으로 해도되는건가
     private String content;
     private Double score;
+    private LocalDate createdDate;
+
+    public Review(Store store, Consumer reviewer, String content, Double score, LocalDate createdDate){
+        this.store = store;
+        this.reviewer = reviewer;
+        this.content = content;
+        this.score = score;
+        this.createdDate = createdDate;
+    }
+
 }

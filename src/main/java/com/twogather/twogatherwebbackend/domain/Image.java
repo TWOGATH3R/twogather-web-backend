@@ -8,11 +8,12 @@ import javax.persistence.*;
 @Getter
 public class Image {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="image_id")
-    private Long id;
+    private Long imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
     private Store store;
 
     private String serverFileName;

@@ -10,17 +10,10 @@ import java.util.List;
 @Getter
 public class Category {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="category_id")
-    private Long id;
+    private Long categoryId;
 
     @Column(unique = true)
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name="parent_id")
-    private Category parent;
-
-    @OneToMany(mappedBy = "parent")
-    private List<Category> childList = new ArrayList<>();
 }
