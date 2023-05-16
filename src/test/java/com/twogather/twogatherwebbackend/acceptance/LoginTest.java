@@ -12,7 +12,6 @@ import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,7 +92,7 @@ public class LoginTest {
         String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
         String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET))
                 .build()
                 .verify(token);
 
@@ -119,7 +118,7 @@ public class LoginTest {
         String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
         String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET))
                 .build()
                 .verify(token);
 
