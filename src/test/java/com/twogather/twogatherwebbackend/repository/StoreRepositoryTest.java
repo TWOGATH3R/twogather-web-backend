@@ -66,7 +66,6 @@ public class StoreRepositoryTest {
     void findTopNByScore_ShouldReturnTopNStoresByScore() {
         // When
         List<TopStoreResponse> topStores = storeRepository.findTopNByScore(3);
-        Store sss = storeRepository.findById(1l).get();
         // Then
         assertThat(topStores).isNotEmpty();
 
