@@ -23,9 +23,6 @@ jobs:
     environment: production
 
     steps:
-    # 권한설정
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
       
     # (1) 기본 체크아웃
     - name: Checkout
