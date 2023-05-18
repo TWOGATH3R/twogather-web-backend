@@ -16,6 +16,7 @@ import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.*;
 
@@ -33,10 +35,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    private PrivateConstants constants;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                   PrivateConstants constants) {
         this.authenticationManager = authenticationManager;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.setFilterProcessesUrl("/api/login"); // 로그인 URL 변경
+        this.constants = constants;
+
     }
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
@@ -103,17 +111,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = JWT.create()
                 .withSubject(customUser.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+ PrivateConstants.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis()+ constants.EXPIRATION_TIME))
                 .withClaim("id", customUser.getMemberId())
                 .withClaim("role", customUser.getRole())
                 .withClaim("username", customUser.getUsername())
-                .sign(Algorithm.HMAC512(PrivateConstants.JWT_SECRET));
+                .sign(Algorithm.HMAC512(constants.JWT_SECRET));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.addHeader(PrivateConstants.HEADER_STRING, PrivateConstants.TOKEN_PREFIX+jwtToken);
+        response.addHeader(constants.HEADER_STRING, constants.TOKEN_PREFIX+jwtToken);
         response.getWriter().write(loginResponseJson);
     }
 
