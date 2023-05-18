@@ -21,6 +21,11 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
+    
     @PostMapping
     @PreAuthorize("hasRole('STORE_OWNER')")
     public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeSaveUpdateRequest) {
