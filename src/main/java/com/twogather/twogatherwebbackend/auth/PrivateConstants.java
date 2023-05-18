@@ -11,8 +11,7 @@ public class PrivateConstants {
     @Value("${jwt.expiration-time}")
     public int EXPIRATION_TIME = 0;
 
-    @Value("${jwt.token-prefix}")
-    public String TOKEN_PREFIX = null;
+    public String TOKEN_PREFIX = "Bearer ";
 
     @Value("${jwt.header-string}")
     public String HEADER_STRING = null;
