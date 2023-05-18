@@ -34,11 +34,11 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
-    # (3) Gradle build (Test 제외)
+    # (3) Gradle build (Test 포함)
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      uses: gradle/gradle-build-action@779e6057f31b3676d140163b88a3ff20d2944809
       with:
-        arguments: clean build -x test
+        arguments: clean build
 
     # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
