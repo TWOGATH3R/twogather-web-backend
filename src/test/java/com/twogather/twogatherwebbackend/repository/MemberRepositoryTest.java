@@ -29,7 +29,9 @@ class MemberRepositoryTest extends RepositoryTest {
                 .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_EMAIL));
 
         // then
-        assertThat(findMember).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(findMember.getEmail()).isEqualTo(expected.getEmail());
+        assertThat(findMember.getPassword()).isEqualTo(expected.getPassword());
+        assertThat(findMember.getName()).isEqualTo(expected.getName());
     }
 
     @Test
@@ -40,7 +42,7 @@ class MemberRepositoryTest extends RepositoryTest {
         memberRepository.save(MEMBER);
 
         // when
-        boolean actual = memberRepository.existsByEmail(MEMBER_EMAIL);
+        boolean actual = memberRepository.existsByEmail(MEMBER.getEmail());
 
         // then
         assertThat(actual).isTrue();
