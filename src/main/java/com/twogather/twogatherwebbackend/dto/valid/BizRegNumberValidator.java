@@ -1,9 +1,11 @@
 package com.twogather.twogatherwebbackend.dto.valid;
 
+import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.ClientException;
 import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,21 +25,19 @@ import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Objects;
 
-import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_KEY;
-import static com.twogather.twogatherwebbackend.auth.PrivateConstants.API_URL;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class BizRegNumberValidator{
-    private final String url = API_URL;
-    private final String key = API_KEY;
-    private final String totalUrl = this.url + "?serviceKey=" + this.key;
+    private final PrivateConstants constants;
 
     public boolean validateBizRegNumber(final String bizRegNumber, final LocalDate bizStartDate, final String bizName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        String totalUrl = constants.API_URL + "?serviceKey=" + constants.API_KEY;
         String requestJson = makeJsonString(bizRegNumber, bizStartDate, bizName);
 
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);

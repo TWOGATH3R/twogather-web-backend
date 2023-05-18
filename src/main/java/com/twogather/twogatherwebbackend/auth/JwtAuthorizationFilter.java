@@ -27,34 +27,37 @@ import static com.twogather.twogatherwebbackend.exception.MemberException.Member
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private MemberRepository memberRepository;
+    private PrivateConstants constants;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository,
-                                  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                                  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                  PrivateConstants constants) {
         super(authenticationManager);
         this.memberRepository = memberRepository;
+        this.constants = constants;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String header = request.getHeader(PrivateConstants.HEADER_STRING);
-        if (header == null || !header.startsWith(PrivateConstants.TOKEN_PREFIX)) {
+        String header = request.getHeader(constants.HEADER_STRING);
+        if (header == null || !header.startsWith(constants.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
         System.out.println("header : " + header);
-        String token = request.getHeader(PrivateConstants.HEADER_STRING)
-                .replace(PrivateConstants.TOKEN_PREFIX, "");
+        String token = request.getHeader(constants.HEADER_STRING)
+                .replace(constants.TOKEN_PREFIX, "");
 
         // 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
         // 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는
         // loadByUsername이 호출됨.
         String username="";
         try {
-            username = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET)).build().verify(token)
+            username = JWT.require(Algorithm.HMAC512(constants.JWT_SECRET)).build().verify(token)
                     .getClaim("username").asString();
         }catch(RuntimeException e){
             e.printStackTrace();
@@ -77,7 +80,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 강제로 시큐리티의 세션에 접근하여 값 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         chain.doFilter(request, response);
     }
 

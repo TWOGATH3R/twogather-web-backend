@@ -55,6 +55,8 @@ public class LoginTest {
     private StoreOwnerRepository storeOwnerRepository;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private PrivateConstants constants;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private StoreOwner storeOwner;
@@ -85,14 +87,14 @@ public class LoginTest {
                         .content(objectMapper.writeValueAsString(OWNER_LOGIN_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists(PrivateConstants.HEADER_STRING))
+                .andExpect(MockMvcResultMatchers.header().exists(constants.HEADER_STRING))
                 .andReturn();
 
         // Then
-        String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
-        String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
+        String originToken = mvcResult.getResponse().getHeader(constants.HEADER_STRING);
+        String token = originToken.replace(constants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(constants.JWT_SECRET))
                 .build()
                 .verify(token);
 
@@ -111,14 +113,14 @@ public class LoginTest {
                         .content(objectMapper.writeValueAsString(CONSUMER_LOGIN_REQUEST)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists(PrivateConstants.HEADER_STRING))
+                .andExpect(MockMvcResultMatchers.header().exists(constants.HEADER_STRING))
                 .andReturn();
 
         // Then
-        String originToken = mvcResult.getResponse().getHeader(PrivateConstants.HEADER_STRING);
-        String token = originToken.replace(PrivateConstants.TOKEN_PREFIX, "");
+        String originToken = mvcResult.getResponse().getHeader(constants.HEADER_STRING);
+        String token = originToken.replace(constants.TOKEN_PREFIX, "");
 
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(PrivateConstants.JWT_SECRET))
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(constants.JWT_SECRET))
                 .build()
                 .verify(token);
 
