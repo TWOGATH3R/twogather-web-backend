@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ConsumerResponse extends MemberResponse {
     public ConsumerResponse(Long memberId, String name, String email){
-        super(memberId, name,email);
+        super(memberId,email,name);
     }
 }
