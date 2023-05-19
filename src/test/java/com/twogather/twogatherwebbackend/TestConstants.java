@@ -188,6 +188,8 @@ public class TestConstants {
                 add(new CategoryResponse(2l,"일식"));
                 add(new CategoryResponse(3l,"분식"));
             }};
+    public static final CategoryResponse CATEGORY_RESPONSE =
+            new CategoryResponse(1l,"양식");
     public static final ArrayList IMAGE_RESPONSE_LIST =
             new ArrayList<ImageResponse>(){{
                 add(IMAGE_RESPONSE);

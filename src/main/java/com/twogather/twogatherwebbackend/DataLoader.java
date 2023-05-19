@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
                 "김순순", "0000000000", LocalDate.now(), AuthenticationType.STORE_OWNER, true);
         consumerRepository.save(consumer1);
         StoreOwner savedOwner = storeOwnerRepository.save(owner1);
-        Store store = new Store(savedOwner, null, null, "김김분식집","전주시 어쩌고 어쩌고", "063-231-4222", true, null);
+        Store store = new Store(savedOwner, null, null, "김김분식집","전주시 어쩌고 어쩌고", "063-231-4222", StoreApprovalStatus.APPROVED, null);
         storeRepository.save(store);
     }
 }

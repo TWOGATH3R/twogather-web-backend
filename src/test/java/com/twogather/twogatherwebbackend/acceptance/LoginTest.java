@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
@@ -67,7 +68,7 @@ public class LoginTest {
         StoreOwner owner1 = STORE_OWNER;
         consumer = consumerRepository.save(consumer1);
         storeOwner = storeOwnerRepository.save(owner1);
-        Store store1 = new Store(storeOwner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", true, "");
+        Store store1 = new Store(storeOwner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", StoreApprovalStatus.APPROVED, "");
         storeRepository.save(store1);
     }
 

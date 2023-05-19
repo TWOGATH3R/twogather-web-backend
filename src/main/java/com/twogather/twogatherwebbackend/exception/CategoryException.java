@@ -2,34 +2,32 @@ package com.twogather.twogatherwebbackend.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class StoreException extends ClientException{
-
-    public enum StoreErrorCode {
-        DUPLICATE_NAME("이름이 중복됩니다"),
-        NO_SUCH_STORE("해당하는 가게가 존재하지 않습니다", HttpStatus.NOT_FOUND),
-        INVALID_STORE_TYPE("유효하지 않은 StoreType 입니다");
-
+public class CategoryException extends ClientException{
+    public enum CategoryErrorCode {
+        NO_SUCH_CATEGORY("해당하는 카테고리가 존재하지않습니다");
         private final String message;
         private final HttpStatus status;
 
-        StoreErrorCode(String message) {
+        CategoryErrorCode(String message) {
             this.message = message;
             this.status = HttpStatus.BAD_REQUEST;
         }
-        StoreErrorCode(String message, HttpStatus status) {
+        CategoryErrorCode(String message, HttpStatus status) {
             this.message = message;
             this.status = status;
         }
         public String getMessage(){ return message; }
         public HttpStatus getStatus(){ return status; }
     }
-    private final StoreErrorCode errorCode;
-    public StoreException(StoreErrorCode errorCode){
+    private final CategoryErrorCode errorCode;
+
+    public CategoryException(CategoryErrorCode errorCode){
         super(errorCode.getMessage());
         this.errorCode = errorCode;
+
     }
     public HttpStatus getStatus() {return errorCode.status;}
-    public StoreErrorCode getErrorCode(){
+    public CategoryErrorCode getErrorCode(){
         return errorCode;
     }
 }

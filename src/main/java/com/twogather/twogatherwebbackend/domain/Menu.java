@@ -17,5 +17,4 @@ public class Menu {
     @JoinColumn(name = "store_id")
     private Store store;
     private Integer price;
-    private String description;
 }

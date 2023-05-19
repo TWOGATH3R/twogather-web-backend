@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.QImage;
 import com.twogather.twogatherwebbackend.domain.QReview;
+import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         List<Tuple> results = jpaQueryFactory
                 .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
                 .from(store)
-                .where(store.isApproved.isTrue())
+                .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
                 .leftJoin(store.reviewList, review)
                 .leftJoin(store.storeImageList, image)
                 .groupBy(store.storeId)
@@ -54,7 +55,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         List<Tuple> results = jpaQueryFactory
                 .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
                 .from(store)
-                .where(store.isApproved.isTrue())
+                .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
                 .leftJoin(store.reviewList, review)
                 .leftJoin(store.storeImageList, image)
                 .groupBy(store.storeId)
