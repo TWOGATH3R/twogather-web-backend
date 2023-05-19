@@ -16,20 +16,6 @@ import java.util.List;
 public class CategoryPerformanceTest {
     @Autowired
     private CategoryRepository repository;
-    @Autowired
-    private TestRepository testRepository;
-
-    @Test
-    @Transactional
-    @Commit
-    public void saveAll2(){
-        List<com.twogather.twogatherwebbackend.domain.Test> tests = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            com.twogather.twogatherwebbackend.domain.Test test = new com.twogather.twogatherwebbackend.domain.Test(i);
-            tests.add(test);
-        }
-        testRepository.saveAll(tests);
-    }
 
     @Test
     @Transactional
