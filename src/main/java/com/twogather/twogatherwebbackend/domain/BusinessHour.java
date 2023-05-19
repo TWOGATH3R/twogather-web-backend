@@ -75,4 +75,16 @@ public class BusinessHour {
         this.breakStartTime = breakStartTime;
         this.breakEndTime = breakEndTime;
     }
+    public BusinessHour(Long id,Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
+                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
+        this.businessHourId = id;
+        this.store = store;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.dayOfWeek = dayOfWeek;
+        this.isOpen = isOpen;
+        this.hasBreakTime = hasBreakTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
+    }
 }
