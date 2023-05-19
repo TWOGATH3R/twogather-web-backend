@@ -15,12 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalTime;
+import java.util.*;
 
-import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID;
-import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -34,10 +32,19 @@ public class BusinessHourService {
     public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveRequest> requestList){
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         ArrayList<BusinessHourResponse> responseList = new ArrayList<>();
+        ArrayList<BusinessHour> entityList = new ArrayList<>();
+
+        Set<DayOfWeek> uniqueDays = checkDuplicateDays(requestList);
+
+        createClosedBusinessHourList(uniqueDays, store, entityList);
+
         for (BusinessHourSaveRequest request: requestList){
             BusinessHour businessHour = toEntity(request, store);
-            BusinessHour savedBusinessHour = businessHourRepository.save(businessHour);
-            responseList.add(toBusinessHourResponse(savedBusinessHour));
+            entityList.add(businessHour);
+        }
+        List<BusinessHour> savedBusinessHourList = businessHourRepository.saveAll(entityList);
+        for (BusinessHour businessHour: savedBusinessHourList){
+            responseList.add(toBusinessHourResponse(businessHour));
         }
         return responseList;
     }
@@ -84,11 +91,33 @@ public class BusinessHourService {
             // 예외를 던지지 않고 그냥 무시하고자 한다면 아무런 작업을 하지 않아도 됩니다.
         }
     }
-
+    private Set<DayOfWeek> checkDuplicateDays(List<BusinessHourSaveRequest> requestList){
+        Set<DayOfWeek> uniqueDays = new HashSet<>();
+        for (BusinessHourSaveRequest request : requestList) {
+            if (!uniqueDays.add(request.getDayOfWeek())) {
+                throw new BusinessHourException(DUPLICATE_DAY_OF_WEEK);
+            }
+        }
+        return uniqueDays;
+    }
     private Store findByStoreIdReturnStore(Long id){
         Optional<Store> store = storeRepository.findById(id);
         store.orElseThrow(()->new StoreException(NO_SUCH_STORE));
         return store.get();
+    }
+    private void createClosedBusinessHourList(Set<DayOfWeek> uniqueDays, Store store, List<BusinessHour> entityList){
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            if (!uniqueDays.contains(dayOfWeek)) {
+                BusinessHour closedBusinessHour = createClosedBusinessHour(dayOfWeek, store);
+                entityList.add(closedBusinessHour);
+            }
+        }
+    } private BusinessHour createClosedBusinessHour(DayOfWeek dayOfWeek, Store store){
+        BusinessHour businessHour = new BusinessHour(
+                store, null, null,dayOfWeek,false,
+                false, null,null
+        );
+        return businessHour;
     }
     private void validateBusinessHourId(Long businessHourId){
         businessHourRepository.findById(businessHourId).orElseThrow(
@@ -105,7 +134,7 @@ public class BusinessHourService {
     private void validateDuplicateDayOfWeek(Long storeId, DayOfWeek dayOfWeek) {
         Optional<BusinessHour> businessHourOptional = businessHourRepository.findByStoreStoreIdAndDayOfWeek(storeId, dayOfWeek);
         if (businessHourOptional.isPresent()) {
-            throw new BusinessHourException(BusinessHourException.BusinessHourErrorCode.DUPLICATE_DAY_OF_WEEK);
+            throw new BusinessHourException(DUPLICATE_DAY_OF_WEEK);
         }
     }
     private BusinessHourResponse toBusinessHourResponse(BusinessHour businessHour){
