@@ -40,11 +40,12 @@ public class Store {
     private String name;
     private String address;
     private String phone;
-    private Boolean isApproved;
+    @Enumerated(EnumType.STRING)
+    private StoreApprovalStatus isApproved;
     private String reasonForRejection;
 
 
-    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, Boolean isApproved, String reasonForRejection){
+    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreApprovalStatus isApproved, String reasonForRejection){
         this.owner = owner;
         this.businessHourList = businessHourList;
         this.menuList = menuList;
@@ -58,10 +59,10 @@ public class Store {
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = false;
+        this.isApproved = StoreApprovalStatus.PENDING;
         this.reasonForRejection = "";
     }
-    public Store(Long id, String name, String address, String phone, Boolean isApproved, String reasonForRejection){
+    public Store(Long id, String name, String address, String phone, StoreApprovalStatus isApproved, String reasonForRejection){
         this.storeId = id;
         this.name=name;
         this.address=address;
@@ -82,6 +83,11 @@ public class Store {
     public void updatePhone(String phone) {
         if (phone != null && !phone.isEmpty()) {
             this.phone = phone;
+        }
+    }
+    public void setCategory(Category category){
+        if(category!=null){
+            this.category = category;
         }
     }
 

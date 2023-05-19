@@ -22,7 +22,7 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.INVALID_STORE_TYPE;
-import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.STORE_NOT_FOUND;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +101,7 @@ public class StoreService {
         }
     }
     private Store findStore(Long storeId){
-        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(STORE_NOT_FOUND));
+        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
     }
     private StoreResponse toStoreResponse(Store store) {
         //TODO:구현
