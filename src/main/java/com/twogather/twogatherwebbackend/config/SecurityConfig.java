@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .cors().and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
