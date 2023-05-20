@@ -62,6 +62,14 @@ public class Store {
         this.isApproved = StoreApprovalStatus.PENDING;
         this.reasonForRejection = "";
     }
+    public Store(StoreOwner owner, String name, String address, String phone){
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+        this.owner = owner;
+        this.isApproved = StoreApprovalStatus.PENDING;
+        this.reasonForRejection = "";
+    }
     public Store(Long id, String name, String address, String phone, StoreApprovalStatus isApproved, String reasonForRejection){
         this.storeId = id;
         this.name=name;

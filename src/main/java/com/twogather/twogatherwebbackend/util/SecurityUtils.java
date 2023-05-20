@@ -10,16 +10,13 @@ import java.util.Optional;
 
 @Slf4j
 public class SecurityUtils {
-    //Security Context 에 저장되어있는 인증 객체(유저 객체) 가져오기
-    public static User getCurrentUser() {
+    public static String getLoginUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication==null){
             log.debug("Security Context 에 인증정보가 없습니다.");
             return null;
         }
-        User user = (User) authentication.getPrincipal();
-
-        return user;
+        return authentication.getName();
     }
 }

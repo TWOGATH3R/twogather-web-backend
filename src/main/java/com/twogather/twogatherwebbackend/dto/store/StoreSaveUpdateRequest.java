@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class StoreSaveUpdateRequest {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    private String name;
+    private String storeName;
 
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     private String address;

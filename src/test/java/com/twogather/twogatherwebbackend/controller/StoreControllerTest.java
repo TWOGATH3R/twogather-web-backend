@@ -37,7 +37,7 @@ public class StoreControllerTest extends ControllerTest{
     @Test
     public void update_WhenStoreUpdate_ThenReturnStoreInfo() throws Exception {
         //given
-        when(storeService.update(anyLong(), any())).thenReturn(STORE_RESPONSE);
+        when(storeService.update(anyLong(), any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.put("/api/stores/{storeId}", 1)
@@ -56,7 +56,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("가게 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호")
                         ),
@@ -270,7 +270,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("가게저장시에 요청한정보 + id 정보 반환")
     public void saveStoreMethod_WhenSaveStore_ThenReturnIdAndInfo() throws Exception {
         //given
-        when(storeService.save(any())).thenReturn(STORE_RESPONSE);
+        when(storeService.save(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
         mockMvc.perform(post("/api/stores")
@@ -286,7 +286,7 @@ public class StoreControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소").attributes(getStorePhoneFormat()),
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호")
                       ),
