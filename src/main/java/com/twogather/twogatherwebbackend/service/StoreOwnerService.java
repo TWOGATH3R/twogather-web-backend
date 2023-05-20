@@ -9,7 +9,7 @@ import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

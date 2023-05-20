@@ -17,9 +17,12 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
     private final StoreService storeService;
+
     @GetMapping("/categories")
     public ResponseEntity<Response> getAllCategories() {
         List<CategoryResponse> data = categoryService.getCategoryInfos();
+        Response ss = new Response(data);
+
         return ResponseEntity.ok(new Response(data));
     }
 

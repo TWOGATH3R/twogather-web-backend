@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.businesshour;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twogather.twogatherwebbackend.dto.valid.BusinessHourValidation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import java.time.LocalTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@BusinessHourValidation
 public abstract class BusinessHourRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     protected Long storeId;

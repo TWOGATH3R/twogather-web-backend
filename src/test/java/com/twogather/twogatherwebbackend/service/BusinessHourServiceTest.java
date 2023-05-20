@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveReques
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.valid.BusinessHourValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)//Mock 객체 생성, 초기화
@@ -37,13 +39,15 @@ public class BusinessHourServiceTest {
     private BusinessHourRepository businessHourRepository;
     @Mock
     private StoreRepository storeRepository;
+    @Mock
+    private BusinessHourValidator validator;
 
     private BusinessHourService businessHourService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        businessHourService = new BusinessHourService(businessHourRepository, storeRepository);
+        businessHourService = new BusinessHourService(businessHourRepository, storeRepository, validator);
     }
     @Test
     @DisplayName("saveList: businessHour을 여러건 저장할때 사용한다. 입력되지않은 요일에 대해서는 영업안함을 표시하여 응답에 포함시킨다")
@@ -76,6 +80,7 @@ public class BusinessHourServiceTest {
 
 
         // when
+        doNothing().when(validator).validateBusinessHourRequest(any());
         when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
         when(businessHourRepository.saveAll(any())).thenReturn(fullWeekBusinessHours);
 

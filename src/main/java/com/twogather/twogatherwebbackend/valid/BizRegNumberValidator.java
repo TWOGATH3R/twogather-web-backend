@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.dto.valid;
+package com.twogather.twogatherwebbackend.valid;
 
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
