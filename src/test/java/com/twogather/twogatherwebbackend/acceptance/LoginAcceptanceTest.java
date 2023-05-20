@@ -46,7 +46,7 @@ import java.util.Base64;
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class LoginTest {
+public class LoginAcceptanceTest {
 
     @Autowired
     private MockMvc mockMvc;

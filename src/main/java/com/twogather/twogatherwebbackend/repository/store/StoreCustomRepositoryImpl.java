@@ -26,7 +26,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         QReview review = QReview.review;
         QImage image = QImage.image;
         List<Tuple> results = jpaQueryFactory
-                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
+                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.url)
                 .from(store)
                 .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
                 .leftJoin(store.reviewList, review)
@@ -42,7 +42,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         tuple.get(store.name),
                         tuple.get(MathExpressions.round(review.score.avg(), 1)),
                         tuple.get(store.address),
-                        tuple.get(image.serverFileName)
+                        tuple.get(image.url)
                 ))
                 .collect(Collectors.toList());
     }
@@ -53,7 +53,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         QImage image = QImage.image;
 
         List<Tuple> results = jpaQueryFactory
-                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.serverFileName)
+                .select(store.storeId,store.name, MathExpressions.round(review.score.avg(), 1), store.address, image.url)
                 .from(store)
                 .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
                 .leftJoin(store.reviewList, review)
@@ -69,7 +69,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         tuple.get(store.name),
                         tuple.get(MathExpressions.round(review.score.avg(), 1)),
                         tuple.get(store.address),
-                        tuple.get(image.serverFileName)
+                        tuple.get(image.url)
                 ))
                 .collect(Collectors.toList());
     }

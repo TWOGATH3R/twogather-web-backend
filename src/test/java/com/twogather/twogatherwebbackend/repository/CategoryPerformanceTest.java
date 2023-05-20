@@ -19,7 +19,6 @@ public class CategoryPerformanceTest {
 
     @Test
     @Transactional
-    @Commit
     public void saveAll(){
         List<Category> categories = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
@@ -29,6 +28,7 @@ public class CategoryPerformanceTest {
         repository.saveAll(categories);
     }
     @Test
+    @Transactional
     public void save(){
         for (int i = 0; i < 100; i++) {
             Category category = new Category("Category " + i);
