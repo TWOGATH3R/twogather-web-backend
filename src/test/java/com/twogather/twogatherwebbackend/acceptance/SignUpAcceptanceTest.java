@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class SignUpTest {
+public class SignUpAcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
 

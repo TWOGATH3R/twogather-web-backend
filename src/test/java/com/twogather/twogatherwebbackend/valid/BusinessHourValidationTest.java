@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.valid;
 
 
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
+import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +16,22 @@ import java.time.LocalTime;
 import java.util.Set;
 
 import static com.twogather.twogatherwebbackend.TestConstants.BUSINESS_HOUR_SAVE_REQUEST;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes= {ValidationAutoConfiguration.class})
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringBootTest
 public class BusinessHourValidationTest {
     @Autowired
-    private Validator validator;
+    private BusinessHourValidator validator;
     @Test
     public void WhenValidBusinessHourRequest_ThenTrue() {
         // Given
         BusinessHourSaveRequest request = BUSINESS_HOUR_SAVE_REQUEST;
 
         // When
-        Set<ConstraintViolation<BusinessHourSaveRequest>> violations = validator.validate(request);
-        assertThat(violations.size()).isEqualTo(0);
+        validator.validateBusinessHourRequest(request);
         // Then
     }
 
@@ -41,12 +44,11 @@ public class BusinessHourValidationTest {
         );
 
         // When
-        Set<ConstraintViolation<BusinessHourSaveRequest>> violations = validator.validate(request);
-        boolean violationsFound =
-                violations.stream().anyMatch(
-                        v -> v.getMessageTemplate().contains("Open hours must have both start time and end time"));
-        assertThat(violationsFound).isTrue();
+        Throwable exception = assertThrows(BusinessHourException.class, () -> {
+            validator.validateBusinessHourRequest(request);
+        });
         // Then
+        assertThat(exception.getMessage()).isEqualTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage());
     }
     @Test
     public void WhenStartTimeAfterEndTime_ThenViolation() {
@@ -57,12 +59,10 @@ public class BusinessHourValidationTest {
         );
 
         // When
-        Set<ConstraintViolation<BusinessHourSaveRequest>> violations = validator.validate(request);
-
-        // Then
-        assertThat(violations).hasSize(1);
-        ConstraintViolation<BusinessHourSaveRequest> violation = violations.iterator().next();
-        assertThat(violation.getMessage()).isEqualTo("Start time must be before end time");
+        Throwable exception = assertThrows(BusinessHourException.class, () -> {
+            validator.validateBusinessHourRequest(request);
+        });
+        assertThat(exception.getMessage()).isEqualTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage());
     }
 
     @Test
@@ -74,12 +74,10 @@ public class BusinessHourValidationTest {
         );
 
         // When
-        Set<ConstraintViolation<BusinessHourSaveRequest>> violations = validator.validate(request);
-
-        // Then
-        assertThat(violations).hasSize(1);
-        ConstraintViolation<BusinessHourSaveRequest> violation = violations.iterator().next();
-        assertThat(violation.getMessage()).isEqualTo("Break start time must be before break end time");
+        Throwable exception = assertThrows(BusinessHourException.class, () -> {
+            validator.validateBusinessHourRequest(request);
+        });
+        assertThat(exception.getMessage()).isEqualTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage());
     }
 
     @Test
@@ -91,11 +89,10 @@ public class BusinessHourValidationTest {
         );
 
         // When
-        Set<ConstraintViolation<BusinessHourSaveRequest>> violations = validator.validate(request);
-
-        // Then
-        assertThat(violations).hasSize(1);
-        ConstraintViolation<BusinessHourSaveRequest> violation = violations.iterator().next();
-        assertThat(violation.getMessage()).isEqualTo("Break start time must be before break end time");
+        Throwable exception = assertThrows(BusinessHourException.class, () -> {
+            validator.validateBusinessHourRequest(request);
+        });
+        assertThat(exception.getMessage()).isEqualTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage());
     }
+
 }

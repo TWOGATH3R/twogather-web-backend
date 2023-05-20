@@ -1,22 +1,14 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.controller.BusinessHourController;
-import com.twogather.twogatherwebbackend.controller.ControllerTest;
-import com.twogather.twogatherwebbackend.domain.BusinessHour;
-import com.twogather.twogatherwebbackend.domain.Category;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;
-import lombok.RequiredArgsConstructor;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,11 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.OWNER_SAVE_REQUEST2;
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -45,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BusinessHourTest {
+public class BusinessHourAcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

@@ -29,12 +29,17 @@ import static com.twogather.twogatherwebbackend.exception.InvalidArgumentExcepti
 @RestControllerAdvice
 public class ControllerAdvice {
 
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<ErrorResponse> handleFileException(HttpServletRequest request, FileException ex) {
+        logInfo(request,ex);
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(ex.getStatus()).body(errorResponse);
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         String errorMessage = "잘못된 요청입니다. 요청 데이터의 형식이 올바르지 않습니다.";
 
-        // 예외 객체에서 발생한 원인을 추출하여 자세한 오류 메시지를 생성합니다.
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
         if (rootCause instanceof DateTimeParseException) {
             errorMessage = "잘못된 시간 형식입니다. 올바른 시간 형식으로 다시 시도해주세요.";

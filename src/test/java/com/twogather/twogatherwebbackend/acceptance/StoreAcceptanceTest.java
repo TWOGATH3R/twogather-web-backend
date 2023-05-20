@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.TestUtil;
@@ -38,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class StoreTest {
+public class StoreAcceptanceTest {
     @Autowired
     private StoreRepository storeRepository;
     @Autowired

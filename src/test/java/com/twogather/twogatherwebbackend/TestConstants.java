@@ -160,9 +160,9 @@ public class TestConstants {
     public static final ReviewUpdateRequest REVIEW_UPDATE_REQUEST =
             new ReviewUpdateRequest(1l,1l,"진짜맛있어요!", 1.2);
     public static final MockMultipartFile IMAGE1
-            = new MockMultipartFile("images", "image1.jpg", "image/jpeg", "test data".getBytes());
+            = new MockMultipartFile("fileList", "image1.jpg", "image/jpeg", "test data".getBytes());
     public static final MockMultipartFile IMAGE2
-            = new MockMultipartFile("imagesSDA", "imageS2.jpg", "image/jpeg", "test data".getBytes());
+            = new MockMultipartFile("fileList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
     public static final LoginRequest LOGIN_REQUEST
             = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
     public static final ImageIdList IMAGE_ID_LIST =
