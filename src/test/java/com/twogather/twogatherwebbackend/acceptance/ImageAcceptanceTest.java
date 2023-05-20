@@ -1,20 +1,26 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.domain.Image;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.menu.MenuIdList;
+import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,6 +50,8 @@ public class ImageAcceptanceTest {
     private StoreOwnerRepository storeOwnerRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ImageRepository imageRepository;
 
     private StoreOwner owner;
     private Store store;
@@ -69,6 +81,49 @@ public class ImageAcceptanceTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()").value(2));
 
+    }
+    @Test
+    public void whenDeleteImage_ThenCreateImage() throws Exception {
+        // Given
+        Image image1 = imageRepository.save(new Image(store, "url1"));
+        Image image2 = imageRepository.save(new Image(store, "url2"));
+        List<Long> idList = new ArrayList<>(){{
+            add(image1.getImageId());
+            add(image2.getImageId());
+        }};
+        MenuIdList request = new MenuIdList(idList);
+        // When
+        mockMvc.perform(delete("/api/stores/" + store.getStoreId() + "/images", store.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        boolean image1IsExist = imageRepository.findById(image1.getImageId()).isPresent();
+        boolean image2IsExist = imageRepository.findById(image2.getImageId()).isPresent();
+        Assertions.assertTrue(image1IsExist);
+        Assertions.assertTrue(image2IsExist);
+    }
+
+    @Test
+    public void whenDeleteNoSuchImage_ThenNotThrowException() throws Exception {
+        // Given
+        Image image1 = imageRepository.save(new Image(store, "url1"));
+        Long noSuchImageId = 12312312l;
+        List<Long> idList = new ArrayList<>(){{
+            add(image1.getImageId());
+            add(noSuchImageId);
+        }};
+        MenuIdList request = new MenuIdList(idList);
+        // When
+        mockMvc.perform(delete("/api/stores/" + store.getStoreId() + "/images", store.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        boolean image1IsExist = imageRepository.findById(image1.getImageId()).isPresent();
+        Assertions.assertTrue(image1IsExist);
     }
 
     private List<MultipartFile> createMockMultipartFiles() {

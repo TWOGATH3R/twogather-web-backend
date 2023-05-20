@@ -20,10 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +43,8 @@ public class StoreExcludeGetAcceptanceTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private EntityManager em;
     private StoreOwner owner;
     private Store store;
     private static final String URL = "/api/stores";
@@ -70,7 +73,7 @@ public class StoreExcludeGetAcceptanceTest {
                 .andExpect(jsonPath("$.data.phone").value(storeRequest.getPhone()))
                 .andDo(MockMvcResultHandlers.print());
 
-        Assertions.assertNotNull(storeRepository.findById(store.getStoreId()));
+        Assertions.assertNotNull(storeRepository.findByName(storeRequest.getStoreName()));
     }
 
 
@@ -130,5 +133,34 @@ public class StoreExcludeGetAcceptanceTest {
         Store savedStore = storeRepository.findById(store.getStoreId()).get();
         Assertions.assertNotEquals(savedStore.getAddress(), storeRequest.getAddress());
         Assertions.assertNotEquals(savedStore.getPhone(), storeRequest.getPhone());
+    }
+
+    @Test
+    @DisplayName("가게 삭제 요청 후 진짜 삭제되었는지 확인해보는 test")
+    public void whenDeleteStore_ThenNotExistStore() throws Exception {
+        //given
+        Store store = createStore(storeRepository, owner);
+
+        //when,then
+        mockMvc.perform(delete(URL+"/{storeId}", store.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        Assertions.assertFalse(storeRepository.findById(store.getStoreId()).isPresent());
+    }
+    @Test
+    @DisplayName("오직 자신의 가게만 삭제할 수 있다")
+    //근데 이거 남의 가게인 경우.. 만 forbidden이 떠야하는건지 상관없이 자기 소유 가게가 아니면 forbidden throw해도되는건지..
+    public void whenDeleteNotMyStore_ThenThrowException() throws Exception {
+        //given
+        Long noSuchId = 131232l;
+        //when,then
+        mockMvc.perform(delete(URL+"/{storeId}", noSuchId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(MockMvcResultHandlers.print());
+
+        Assertions.assertFalse(storeRepository.findById(noSuchId).isPresent());
     }
 }
