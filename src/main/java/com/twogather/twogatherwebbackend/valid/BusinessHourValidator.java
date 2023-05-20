@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.valid;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourRequest;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidatorContext;
@@ -9,6 +10,7 @@ import static com.twogather.twogatherwebbackend.exception.BusinessHourException.
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
 
 @Component
+@Slf4j
 public class BusinessHourValidator {
 
     public void validateBusinessHourRequest(BusinessHourRequest request) {
@@ -27,6 +29,7 @@ public class BusinessHourValidator {
         if (request.getBreakStartTime() != null && request.getBreakEndTime() != null && !request.getBreakStartTime().isBefore(request.getBreakEndTime())) {
             throw new BusinessHourException(START_TIME_MUST_BE_BEFORE_END_TIME);
         }
+        log.info("businessHour: 유효성 검사 통과");
     }
 
 }

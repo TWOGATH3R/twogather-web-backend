@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend;
 
 import com.twogather.twogatherwebbackend.controller.BusinessHourController;
+import com.twogather.twogatherwebbackend.controller.MenuController;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Member;
@@ -17,6 +18,9 @@ import com.twogather.twogatherwebbackend.dto.email.VerificationCodeResponse;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
+import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveRequest;
+import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveRequest;
@@ -233,6 +237,28 @@ public class TestConstants {
             MY_STORES_RESPONSE
     ));
 
+    public static final ArrayList<MenuResponse> MENU_RESPONSE_LIST =
+            new ArrayList<MenuResponse>(){{
+                add(new MenuResponse(1l,"감자",1000));
+                add(new MenuResponse(2l,"케찹",12000));
+                add(new MenuResponse(3l,"햄버기",11000));
+            }};
+    public static final ArrayList MENU_SAVE_LIST =
+            new ArrayList<MenuSaveRequest>(){{
+                add(new MenuSaveRequest("감자",1000));
+                add(new MenuSaveRequest("케찹",12000));
+                add(new MenuSaveRequest("햄버기",11000));
+            }};
+    public static final MenuController.MenuSaveListRequest MENU_SAVE_LIST_REQUEST
+            =new MenuController.MenuSaveListRequest(MENU_SAVE_LIST);
+    public static final ArrayList MENU_UPDATE_LIST =
+            new ArrayList<MenuUpdateRequest>(){{
+                add(new MenuUpdateRequest(1l,"감자",1000));
+                add(new MenuUpdateRequest(2l,"케찹",12000));
+                add(new MenuUpdateRequest(3l,"햄버기",11000));
+            }};
+    public static final MenuController.MenuUpdateListRequest MENU_UPDATE_LIST_REQUEST=
+            new MenuController.MenuUpdateListRequest(MENU_UPDATE_LIST);
     public static final ArrayList BUSINESS_HOUR_RESPONSE_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);
