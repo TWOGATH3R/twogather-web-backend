@@ -56,6 +56,7 @@ public class MenuController {
     @NoArgsConstructor
     @Getter
     public static class MenuSaveListRequest {
+        @Valid
         private List<MenuSaveRequest> menuSaveList;
     }
 
@@ -63,6 +64,7 @@ public class MenuController {
     @NoArgsConstructor
     @Getter
     public static class MenuUpdateListRequest {
+        @Valid
         private List<MenuUpdateRequest> menuUpdateList;
     }
 }

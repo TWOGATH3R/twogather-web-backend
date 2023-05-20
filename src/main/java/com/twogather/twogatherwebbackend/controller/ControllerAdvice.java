@@ -67,7 +67,7 @@ public class ControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> validationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {
         logInfo(request,e);
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(error -> {
