@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequ
 import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.valid.BusinessHourValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,6 +29,7 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class BusinessHourService {
     private final BusinessHourRepository businessHourRepository;
     private final StoreRepository storeRepository;
+    private final BusinessHourValidator validator;
 
     public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveRequest> requestList){
         Store store = storeRepository.findById(storeId)
@@ -141,6 +143,7 @@ public class BusinessHourService {
         }
 
         for (BusinessHourSaveRequest request : requestList) {
+            validator.validateBusinessHourRequest(request);
             BusinessHour businessHour = toEntity(request, store);
             entityList.add(businessHour);
         }
