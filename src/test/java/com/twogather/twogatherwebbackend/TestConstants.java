@@ -128,6 +128,9 @@ public class TestConstants {
     public static final BusinessHourResponse BUSINESS_HOUR_RESPONSE =
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
+    public static final StoreSaveUpdateResponse STORE_SAVE_UPDATE_RESPONSE =
+            new StoreSaveUpdateResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
+
     public static final StoreResponse STORE_RESPONSE =
             new StoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234", "url1");
     public static final ArrayList KEYWORD_LIST =

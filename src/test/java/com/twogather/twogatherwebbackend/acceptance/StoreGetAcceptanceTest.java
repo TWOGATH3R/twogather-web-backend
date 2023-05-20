@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class StoreAcceptanceTest {
+public class StoreGetAcceptanceTest {
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
@@ -156,5 +156,9 @@ public class StoreAcceptanceTest {
 
         assertThat(topStores.size()).isEqualTo(STORE_ENTITY_SIZE);
     }
+    //store save
 
+
+
+    //store validation test
 }

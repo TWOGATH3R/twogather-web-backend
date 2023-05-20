@@ -29,7 +29,7 @@ public class StoreController {
     @PostMapping
     @PreAuthorize("hasRole('STORE_OWNER')")
     public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeSaveUpdateRequest) {
-        StoreResponse data = storeService.save(storeSaveUpdateRequest);
+        StoreSaveUpdateResponse data = storeService.save(storeSaveUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -37,7 +37,7 @@ public class StoreController {
     @PutMapping("/{storeId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreSaveUpdateRequest storeUpdateRequest) {
-        StoreResponse data = storeService.update(storeId, storeUpdateRequest);
+        StoreSaveUpdateResponse data = storeService.update(storeId, storeUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
