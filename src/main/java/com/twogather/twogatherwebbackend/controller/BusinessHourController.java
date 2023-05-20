@@ -55,9 +55,8 @@ public class BusinessHourController {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    //응답과 다르게 요청시에 온 데이터는 실제 BusinessHourSaveRequest의 리스트가 맞는지에 대한 검증작업도 해주어야하기때문에
-    //도메인별로 class 생성
     public static class BusinessHourSaveListRequest {
+        @Valid
         private List<BusinessHourSaveRequest> businessHourSaveList;
     }
 
@@ -65,6 +64,7 @@ public class BusinessHourController {
     @NoArgsConstructor
     @Getter
     public static class BusinessHourUpdateListRequest {
+        @Valid
         private List<BusinessHourUpdateRequest> businessHourUpdateList;
     }
 
