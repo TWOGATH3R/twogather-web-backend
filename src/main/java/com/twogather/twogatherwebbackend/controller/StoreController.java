@@ -43,9 +43,8 @@ public class StoreController {
     }
 
     @GetMapping("/{storeId}")
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
-        StoreResponse data = storeService.getStore(storeId);
+        StoreSaveUpdateResponse data = storeService.getStore(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

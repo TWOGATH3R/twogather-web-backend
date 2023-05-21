@@ -599,7 +599,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhc2RAbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg0NjQxMjQ3LCJ1c2VybmFtZSI6ImFzZEBuYXZlci5jb20ifQ.Ryu4v42NNp8H-z8QKNXDxGWaw8lvxIp2VP5zO5JMe8QxNPC_QQcId7KCj59XlZn9YfO1vsj9w2Jm05l8ApUgNQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhc2RAbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg0NjQ1ODY3LCJ1c2VybmFtZSI6ImFzZEBuYXZlci5jb20ifQ.jPG0bkpfLWoQLKLZct7FapZEeAd6QNoNG8udfLm8D2vs8yfBaY3AicbPACBsuKA1QI6q_2p4DHTlL3gFDwScMg
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1511,11 +1511,11 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 692
+Content-Length: 688
 Host: docs.api.com
 
 {
-  "businessHourSaveList" : [ {
+  "businessHourList" : [ {
     "storeId" : 1,
     "startTime" : "11:30",
     "endTime" : "20:00",
@@ -1590,56 +1590,56 @@ Host: docs.api.com
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].storeId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].dayOfWeek</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].dayOfWeek</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The day of week.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].startTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].startTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].endTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].endTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].hasBreakTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].hasBreakTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].breakStartTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakStartTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].breakEndTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakEndTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourSaveList[].isOpen</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].isOpen</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1787,11 +1787,11 @@ Content-Length: 757
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 529
+Content-Length: 688
 Host: docs.api.com
 
 {
-  "businessHourUpdateList" : [ {
+  "businessHourList" : [ {
     "storeId" : 1,
     "startTime" : "11:30",
     "endTime" : "20:00",
@@ -1799,8 +1799,7 @@ Host: docs.api.com
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
-    "breakEndTime" : null,
-    "businessHourId" : 1
+    "breakEndTime" : null
   }, {
     "storeId" : 1,
     "startTime" : "11:30",
@@ -1809,8 +1808,16 @@ Host: docs.api.com
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
-    "breakEndTime" : null,
-    "businessHourId" : 1
+    "breakEndTime" : null
+  }, {
+    "storeId" : 1,
+    "startTime" : "11:30",
+    "endTime" : "20:00",
+    "dayOfWeek" : "MONDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
   } ]
 }</code></pre>
 </div>
@@ -1859,63 +1866,56 @@ Host: docs.api.com
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].businessHourId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the businessHour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].storeId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].dayOfWeek</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].dayOfWeek</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The day of week.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].startTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].startTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].endTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].endTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].hasBreakTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].hasBreakTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].breakStartTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakStartTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].breakEndTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakEndTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourUpdateList[].isOpen</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].isOpen</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -2240,8 +2240,8 @@ Content-Length: 165
   "data" : {
     "storeId" : 1,
     "storeName" : "가게이름",
-    "address" : "010-1234-1234",
-    "phone" : "전주시 평화동 산동 2길 1-3"
+    "address" : "전주시 평화동 산동 2길 1-3",
+    "phone" : "010-1234-1234"
   }
 }</code></pre>
 </div>
@@ -3121,7 +3121,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=8844d67a-55db-4a3a-b685-7d411932a293 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=d03e1db5-1b64-4f4e-ba29-a44d26ba586a HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3242,7 +3242,7 @@ Content-Length: 216
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=6ff7d955-872f-45f3-b264-e31b3d57fee0 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=073e34a1-f1c9-4eea-8761-59bcaa3806be HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 196
 Host: docs.api.com
@@ -3764,7 +3764,7 @@ Content-Length: 101
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=5bdad322-1a57-4863-a6a1-285ae055159e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=b658f028-d367-42da-855f-d99fc327020f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -3890,7 +3890,7 @@ Content-Length: 101
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=ab5babec-c284-46c0-950a-3d4631fb61b3 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=c95ed2cc-b67a-4729-a513-0292ccf14d09 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -4195,7 +4195,7 @@ Host: docs.api.com
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=_csrf
 
-c76b4846-4c14-4e18-b381-f88efd4be68b
+a2510b7c-22bf-4049-9b9f-5b24b67517cf
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=fileList; filename=image1.jpg
 Content-Type: image/jpeg
@@ -4463,11 +4463,11 @@ Content-Length: 1198
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "unsorted" : true,
-      "sorted" : false
+      "sorted" : false,
+      "unsorted" : true
     },
-    "first" : true,
     "numberOfElements" : 3,
+    "first" : true,
     "empty" : false
   }
 }</code></pre>
@@ -4658,7 +4658,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=23d663f7-5afb-42e4-8c12-6aacfc3e67a8 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=c21fa91c-ad7f-48e6-a23d-095e71606da6 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -4779,7 +4779,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=097baf6a-21b0-4541-8a79-b15e2c269ea7 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=3d469f5b-6ba1-4a49-a4b8-9e08731bb3b6 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -4904,7 +4904,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=1bb1b2d3-f8c7-4469-9451-cef897154353 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=c2c3d699-5438-4379-8cbd-bcb4250b22e2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
