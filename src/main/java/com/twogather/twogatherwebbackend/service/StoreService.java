@@ -71,12 +71,12 @@ public class StoreService {
     }
 
     public void delete(Long storeId) {
-        Store store = findStore(storeId);
+        Store store =  storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         storeRepository.delete(store);
     }
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
-        Store store = findStore(storeId);
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         if (request.getStoreName() != null && !request.getStoreName().isEmpty() && !request.getStoreName().equals(store.getName())) {
             validateDuplicateName(request.getStoreName());
             store.updateName(request.getStoreName());
@@ -95,18 +95,15 @@ public class StoreService {
         //TODO: 구현
         return null;
     }
-    public StoreResponse getStore(Long storeId){
-        Store store = findStore(storeId);
-        return toStoreResponse(store);
+    public StoreSaveUpdateResponse getStore(Long storeId){
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        return toStoreSaveUpdateResponse(store);
     }
 
     private void validateDuplicateName(String name){
         if (storeRepository.existsByName(name)) {
             throw new StoreException(StoreException.StoreErrorCode.DUPLICATE_NAME);
         }
-    }
-    private Store findStore(Long storeId){
-        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
     }
     private StoreResponse toStoreResponse(Store store){
         //TODO: 구현

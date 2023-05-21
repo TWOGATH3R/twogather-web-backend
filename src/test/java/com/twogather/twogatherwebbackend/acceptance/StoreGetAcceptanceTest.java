@@ -22,6 +22,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,9 @@ import java.util.List;
 
 import static com.twogather.twogatherwebbackend.TestConstants.OWNER_SAVE_REQUEST2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -156,9 +159,20 @@ public class StoreGetAcceptanceTest {
 
         assertThat(topStores.size()).isEqualTo(STORE_ENTITY_SIZE);
     }
-    //store save
 
 
+    @Test
+    @DisplayName("get: 가게 기본 정보 조회")
+    @Transactional(readOnly = true)
+    void WhenFindStoreInfo_ThenReturnStoreInfo() throws Exception {
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/{storeId}", store1.getStoreId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.data.storeName").value(store1.getName()))
+                .andExpect(jsonPath("$.data.address").value(store1.getAddress()))
+                .andExpect(jsonPath("$.data.phone").value(store1.getPhone()))
+                .andDo(MockMvcResultHandlers.print());
+    }
 
-    //store validation test
+
 }

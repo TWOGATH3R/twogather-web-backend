@@ -243,7 +243,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("가게 단건 조회")
     public void getStoreInfoMethod_WhenGetStoreInfo_ThenReturnStoreInfo() throws Exception {
         //given
-        when(storeService.getStore(any())).thenReturn(STORE_RESPONSE);
+        when(storeService.getStore(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}", 1)

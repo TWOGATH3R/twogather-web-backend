@@ -33,7 +33,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -208,5 +210,20 @@ public class MenuAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-
+    @Test
+    @DisplayName("storeId 에 해당하는 메뉴만 조회")
+    public void getMenuListByStoreId_ThenMenuList() throws Exception {
+        // Given
+        menuRepository.save(new Menu(store, "감자", 10));
+        menuRepository.save(new Menu(store, "케찹", 20));
+        Store store2 = storeRepository.save(new Store("이름","주소","phone"));
+        menuRepository.save(new Menu(store2, "not mine", 2000000));
+        // When, Then
+        mockMvc.perform(get(URL, store.getStoreId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[?(@.name == '감자' && @.price == 10)]").exists())
+                .andExpect(jsonPath("$.data[?(@.name == '케찹' && @.price == 20)]").exists())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
