@@ -3,8 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.*;
 
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
@@ -31,12 +29,12 @@ public class BusinessHourService {
     private final StoreRepository storeRepository;
     private final BusinessHourValidator validator;
 
-    public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveRequest> requestList){
+    public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveUpdateRequest> requestList){
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
         Set<DayOfWeek> uniqueDays = checkDuplicateDays(requestList);
-        List<BusinessHour> entityList = createBusinessHourList(requestList, store, uniqueDays);
+        List<BusinessHour> entityList = createBusinessHourListBySaveList(requestList, store, uniqueDays);
 
         List<BusinessHour> savedBusinessHourList = businessHourRepository.saveAll(entityList);
 
@@ -49,6 +47,7 @@ public class BusinessHourService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
         List<BusinessHour> businessHours = businessHourRepository.findByStoreStoreId(storeId);
         if (businessHours.isEmpty()) {
@@ -61,19 +60,24 @@ public class BusinessHourService {
         return responses;
     }
 
-    public List<BusinessHourResponse> updateList(List<BusinessHourUpdateRequest> requestList){
+    public List<BusinessHourResponse> updateList(Long storeId, List<BusinessHourSaveUpdateRequest> requestList){
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+
+        checkDuplicateDays(requestList);
+
+        createBusinessHourListByUpdateList(requestList, store);
+        List<BusinessHour> businessHourList = businessHourRepository.findByStoreStoreId(storeId);
+
+        if(businessHourList.size()!=7){
+            throw new BusinessHourException(INVALID_BUSINESS_HOUR);
+        }
+
         ArrayList<BusinessHourResponse> responseList = new ArrayList<>();
-        for (BusinessHourUpdateRequest request: requestList){
-            responseList.add(update(request));
+        for (BusinessHour businessHour: businessHourList){
+            responseList.add(toBusinessHourResponse(businessHour));
         }
         return responseList;
-    }
-    public BusinessHourResponse update(BusinessHourUpdateRequest request){
-        BusinessHour businessHour = findBusinessHour(request.getBusinessHourId());
-        businessHour.update(request.getStartTime(), request.getEndTime(), request.getDayOfWeek(), request.getIsOpen(),
-                request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
-
-        return toBusinessHourResponse(businessHour);
     }
     public void delete(Long businessHourId){
         try {
@@ -81,59 +85,25 @@ public class BusinessHourService {
         } catch (EmptyResultDataAccessException ex) {
             log.info("존재하지 않는 entity 입니다: businessHourId = {}", businessHourId);
             throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID);
-            // 엔티티가 존재하지 않는 경우 처리할 로직 작성
-            // 예를 들어, 에러 로그 출력 또는 예외를 다시 던지는 등의 작업을 수행할 수 있습니다.
-            // 예외를 던지지 않고 그냥 무시하고자 한다면 아무런 작업을 하지 않아도 됩니다.
         }
     }
-    private Store findByStoreIdReturnStore(Long id){
-        Optional<Store> store = storeRepository.findById(id);
-        store.orElseThrow(()->new StoreException(NO_SUCH_STORE));
-        return store.get();
-    }
-    private void createClosedBusinessHourList(Set<DayOfWeek> uniqueDays, Store store, List<BusinessHour> entityList){
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            if (!uniqueDays.contains(dayOfWeek)) {
-                BusinessHour closedBusinessHour = createClosedBusinessHour(dayOfWeek, store);
-                entityList.add(closedBusinessHour);
-            }
-        }
-    }
-    private void validateBusinessHourId(Long businessHourId){
-        businessHourRepository.findById(businessHourId).orElseThrow(
-                () -> new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID)
-        );
-    }
-    private BusinessHour findBusinessHour(Long businessHourId){
-        Optional<BusinessHour> businessHour = businessHourRepository.findById(businessHourId);
-        businessHour.orElseThrow(
-                () -> new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID)
-        );
-        return businessHour.get();
-    }
-    private void validateDuplicateDayOfWeek(Long storeId, DayOfWeek dayOfWeek) {
-        Optional<BusinessHour> businessHourOptional = businessHourRepository.findByStoreStoreIdAndDayOfWeek(storeId, dayOfWeek);
-        if (businessHourOptional.isPresent()) {
-            throw new BusinessHourException(DUPLICATE_DAY_OF_WEEK);
-        }
-    }
-    private BusinessHour toEntity(BusinessHourSaveRequest request, Store store){
+    private BusinessHour saveRequestToEntity(BusinessHourSaveUpdateRequest request, Store store){
         return new BusinessHour(store, request.getStartTime(), request.getEndTime(),
                 request.getDayOfWeek(), request.getIsOpen(), request.getHasBreakTime(),
                 request.getBreakStartTime(), request.getBreakEndTime());
     }
 
-    private Set<DayOfWeek> checkDuplicateDays(List<BusinessHourSaveRequest> requestList) {
+    private Set<DayOfWeek> checkDuplicateDays(List<BusinessHourSaveUpdateRequest> requestList) {
         Set<DayOfWeek> uniqueDays = new HashSet<>();
-        for (BusinessHourSaveRequest request : requestList) {
-            if (!uniqueDays.add(request.getDayOfWeek())) {
+        for (BusinessHourSaveUpdateRequest request : requestList) {
+            if (!uniqueDays.add((request).getDayOfWeek())) {
                 throw new BusinessHourException(DUPLICATE_DAY_OF_WEEK);
             }
         }
         return uniqueDays;
     }
 
-    private List<BusinessHour> createBusinessHourList(List<BusinessHourSaveRequest> requestList, Store store, Set<DayOfWeek> uniqueDays) {
+    private List<BusinessHour> createBusinessHourListBySaveList(List<BusinessHourSaveUpdateRequest> requestList, Store store, Set<DayOfWeek> uniqueDays) {
         List<BusinessHour> entityList = new ArrayList<>();
 
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
@@ -142,15 +112,27 @@ public class BusinessHourService {
             }
         }
 
-        for (BusinessHourSaveRequest request : requestList) {
+        for (BusinessHourSaveUpdateRequest request : requestList) {
             validator.validateBusinessHourRequest(request);
-            BusinessHour businessHour = toEntity(request, store);
+            BusinessHour businessHour = saveRequestToEntity(request, store);
             entityList.add(businessHour);
         }
 
         return entityList;
     }
+    private void createBusinessHourListByUpdateList(List<BusinessHourSaveUpdateRequest> requestList, Store store) {
 
+        for (BusinessHourSaveUpdateRequest request : requestList) {
+            validator.validateBusinessHourRequest(request);
+            BusinessHour businessHour = businessHourRepository.findByStoreStoreIdAndDayOfWeek(store.getStoreId(), request.getDayOfWeek())
+                    .orElseThrow(
+                            () -> new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID)
+                    );
+            businessHour.update(request.getStartTime(), request.getEndTime(), request.getDayOfWeek(),
+                    request.getIsOpen(), request.getHasBreakTime(), request.getBreakStartTime(), request.getBreakEndTime());
+
+        }
+    }
     private BusinessHour createClosedBusinessHour(DayOfWeek dayOfWeek, Store store) {
         return new BusinessHour(
                 store, null, null, dayOfWeek, false,

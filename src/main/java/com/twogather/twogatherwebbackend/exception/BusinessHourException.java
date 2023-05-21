@@ -9,7 +9,8 @@ public class BusinessHourException extends ClientException{
         DUPLICATE_DAY_OF_WEEK("중복되는 요일이 있습니다"),
         INVALID_TIME("시간정보가 유효하지 않습니다."),
         MUST_HAVE_START_TIME_AND_END_TIME("시작시작과 종료시간을 설정해주세요"),
-        START_TIME_MUST_BE_BEFORE_END_TIME("시작시간은 종료시간보다 먼저여야합니다");
+        START_TIME_MUST_BE_BEFORE_END_TIME("시작시간은 종료시간보다 먼저여야합니다"),
+        INVALID_BUSINESS_HOUR("영업시간은 요일별로 7개여야합니다");
 
         private final String message;
         private final HttpStatus status;

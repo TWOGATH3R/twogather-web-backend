@@ -8,8 +8,7 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveRequest;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
@@ -109,8 +108,8 @@ public class TestConstants {
                     "sd@@@", "AA", "!!!!!",
                     "111", "AA!!!", null
             );
-    public static final BusinessHourSaveRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
-            new BusinessHourSaveRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
+    public static final BusinessHourSaveUpdateRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
+            new BusinessHourSaveUpdateRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
             new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE);
@@ -119,11 +118,8 @@ public class TestConstants {
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE,
                     com.twogather.twogatherwebbackend.domain.AuthenticationType.STORE_OWNER, true);
 
-    public static final BusinessHourSaveRequest BUSINESS_HOUR_SAVE_REQUEST =
-            new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
-
-    public static final BusinessHourUpdateRequest BUSINESS_HOUR_UPDATE_REQUEST =
-            new BusinessHourUpdateRequest(STORE_ID, BUSINESS_HOUR_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
+    public static final BusinessHourSaveUpdateRequest BUSINESS_HOUR_SAVE_UPDATE_REQUEST =
+            new BusinessHourSaveUpdateRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
 
     public static final BusinessHourResponse BUSINESS_HOUR_RESPONSE =
             new BusinessHourResponse(BUSINESS_HOUR_ID, STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
@@ -268,22 +264,14 @@ public class TestConstants {
                 add(BUSINESS_HOUR_RESPONSE);
                 add(BUSINESS_HOUR_RESPONSE);
             }};
-    public static final ArrayList BUSINESS_HOUR_UPDATE_LIST =
-            new ArrayList<BusinessHourUpdateRequest>(){{
-                add(BUSINESS_HOUR_UPDATE_REQUEST);
-                add(BUSINESS_HOUR_UPDATE_REQUEST);
+    public static final ArrayList BUSINESS_HOUR_SAVE_UPDATE_LIST =
+            new ArrayList<BusinessHourSaveUpdateRequest>(){{
+                add(BUSINESS_HOUR_SAVE_UPDATE_REQUEST);
+                add(BUSINESS_HOUR_SAVE_UPDATE_REQUEST);
+                add(BUSINESS_HOUR_SAVE_UPDATE_REQUEST);
             }};
-    public static final BusinessHourController.BusinessHourUpdateListRequest BUSINESS_HOUR_UPDATE_REQUEST_LIST =
-            new BusinessHourController.BusinessHourUpdateListRequest(BUSINESS_HOUR_UPDATE_LIST);
-
-    public static final ArrayList BUSINESS_HOUR_SAVE_LIST =
-            new ArrayList<BusinessHourSaveRequest>(){{
-                add(BUSINESS_HOUR_SAVE_REQUEST);
-                add(BUSINESS_HOUR_SAVE_REQUEST);
-                add(BUSINESS_HOUR_SAVE_REQUEST);
-            }};
-    public static final BusinessHourController.BusinessHourSaveListRequest BUSINESS_HOUR_SAVE_REQUEST_LIST
-            = new BusinessHourController.BusinessHourSaveListRequest(BUSINESS_HOUR_SAVE_LIST);
+    public static final BusinessHourController.BusinessHourSaveUpdateListRequest BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST
+            = new BusinessHourController.BusinessHourSaveUpdateListRequest(BUSINESS_HOUR_SAVE_UPDATE_LIST);
     public static final ArrayList BUSINESS_HOUR_RESPONSE_7_LIST =
             new ArrayList<BusinessHourResponse>(){{
                 add(BUSINESS_HOUR_RESPONSE);
