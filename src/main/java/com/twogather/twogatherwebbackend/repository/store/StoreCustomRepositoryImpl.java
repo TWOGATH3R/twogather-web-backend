@@ -3,13 +3,12 @@ package com.twogather.twogatherwebbackend.repository.store;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.twogather.twogatherwebbackend.domain.QImage;
-import com.twogather.twogatherwebbackend.domain.QReview;
-import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QStore.store;
@@ -72,5 +71,18 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         tuple.get(image.url)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Category> findCategory(Long storeId) {
+        QStore qStore = QStore.store;
+
+        Category category = jpaQueryFactory
+                .select(qStore.category)
+                .from(qStore)
+                .where(qStore.storeId.eq(storeId))
+                .fetchOne();
+
+        return Optional.of(category);
     }
 }

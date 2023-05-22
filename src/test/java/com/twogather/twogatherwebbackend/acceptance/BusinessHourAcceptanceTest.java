@@ -259,7 +259,7 @@ public class BusinessHourAcceptanceTest {
                 .andExpect(jsonPath("$.message").value("시작시작과 종료시간을 설정해주세요"))
                 .andDo(MockMvcResultHandlers.print());
     }
-
+//생각해보니 영업중인날만들어오잖아
 
     @Test
     @Transactional

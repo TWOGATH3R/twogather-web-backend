@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.KeywordGenerator;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
@@ -9,6 +10,7 @@ import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -32,6 +34,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
     private final StoreOwnerRepository storeOwnerRepository;
+    private final KeywordGenerator keywordGenerator;
+    private final ReviewRepository reviewRepository;
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
@@ -58,8 +62,10 @@ public class StoreService {
         return true;
     }
     public List<String> getKeyword(){
-        //TODO: 구현
-        return null;
+        int count = 20;
+        List<String> reviewList = reviewRepository.findRandomNReviewContentList(count);
+
+        return keywordGenerator.generateKeyword(reviewList);
     }
     public List<TopStoreResponse> getStoresTopN(StoreType type, int n){
         if (type.equals(StoreType.MOST_REVIEWED)){

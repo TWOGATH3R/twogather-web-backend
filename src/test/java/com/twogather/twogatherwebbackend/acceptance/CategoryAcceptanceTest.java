@@ -7,6 +7,7 @@ import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.service.CategoryService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,10 +81,20 @@ public class CategoryAcceptanceTest {
 
         CategoryResponse response = categoryService.setCategoriesForStore(storeId, categoryId);
         String url = "/api/stores/" + storeId + "/categories/" + categoryId;
+
+
+        //when, then
         mockMvc.perform(patch(url))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.categoryId").value(response.getCategoryId()))
                 .andExpect(jsonPath("$.data.name").value(response.getName()))
                 .andDo(MockMvcResultHandlers.print());
+
+        em.flush();
+        em.clear();
+
+        Category savedCategory = storeRepository.findCategory(storeId).get();
+        Assertions.assertEquals(savedCategory.getName(), category.getName());
+        Assertions.assertEquals(savedCategory.getCategoryId(), categoryId);
     }
 }
