@@ -45,7 +45,7 @@ public class StoreOwnerServiceTest {
         // given
         final StoreOwnerSaveUpdateRequest request = returnRequest();
         when(validator.validateBizRegNumber(any(),any(),any())).thenReturn(true);
-        when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
         // when
@@ -60,13 +60,14 @@ public class StoreOwnerServiceTest {
         // given
         final StoreOwnerSaveUpdateRequest request = returnRequest();
         //when
-        when(storeOwnerRepository.existsByEmail(request.getEmail())).thenReturn(true);
+        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
         when(validator.validateBizRegNumber(any(),any(),any())).thenReturn(true);
         // when
         Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }
     private StoreOwnerSaveUpdateRequest returnRequest(){
         return new StoreOwnerSaveUpdateRequest(
+                "testid1",
                 "test@test.com",
                 "test131",
                 "김사업",
@@ -76,7 +77,9 @@ public class StoreOwnerServiceTest {
         );
     }
     private StoreOwner requestToEntity(StoreOwnerSaveUpdateRequest request){
-        return new StoreOwner(request.getEmail(), request.getPassword(), request.getName(),
+        return new StoreOwner(
+                request.getUsername(),
+                request.getEmail(), request.getPassword(), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(),
                 AuthenticationType.STORE_OWNER, true);
     }

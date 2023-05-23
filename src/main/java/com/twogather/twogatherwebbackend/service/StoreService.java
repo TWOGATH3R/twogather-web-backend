@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_USERNAME;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.INVALID_STORE_TYPE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
@@ -35,9 +35,9 @@ public class StoreService {
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
-        String email = SecurityUtils.getLoginUserEmail();
-        StoreOwner owner = storeOwnerRepository.findByEmail(email).orElseThrow(
-                ()->new MemberException(NO_SUCH_EMAIL)
+        String username = SecurityUtils.getUsername();
+        StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
+                ()->new MemberException(NO_SUCH_USERNAME)
         );
         validateDuplicateName(request.getStoreName());
         Store store = new Store(owner, request.getStoreName(), request.getAddress(), request.getPhone());
@@ -45,9 +45,9 @@ public class StoreService {
         return toStoreSaveUpdateResponse(savedStore);
     }
     public boolean isMyStore(Long storeId) {
-        String email = SecurityUtils.getLoginUserEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                ()-> new MemberException(NO_SUCH_EMAIL)
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findByUsername(username).orElseThrow(
+                ()-> new MemberException(NO_SUCH_USERNAME)
         );
         Store store = storeRepository.findById(storeId).orElseThrow(()->
                 new CustomAccessDeniedException(ACCESS_DENIED)

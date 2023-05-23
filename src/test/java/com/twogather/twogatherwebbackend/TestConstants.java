@@ -55,6 +55,7 @@ public class TestConstants {
     public static final DayOfWeek DAY_OF_WEEK = DayOfWeek.of(DAY_OF_WEEK_INTEGER);
     public static final boolean IS_OPEN = true;
 
+    public static final String OWNER_USERNAME = "owner1";
     public static final String OWNER_EMAIL = "asd@naver.com";
     public static final String OWNER_PASSWORD = "asd@asd@@123";
     public static final String OWNER_NAME = "루터";
@@ -62,10 +63,11 @@ public class TestConstants {
     public static final String OWNER_BUSINESS_NUMBER = "0000000000";
     public static final LocalDate OWNER_BUSINESS_START_DATE = LocalDate.now();
 
+    public static final String CONSUMER_USERNAME = "consumer1";
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
     public static final String CONSUMER_NAME = "김소비";
-    public static final Consumer CONSUMER = new Consumer(CONSUMER_EMAIL,
+    public static final Consumer CONSUMER = new Consumer(CONSUMER_USERNAME,CONSUMER_EMAIL,
             passwordEncoded.encode(CONSUMER_PASSWORD), CONSUMER_NAME, com.twogather.twogatherwebbackend.domain.AuthenticationType.CONSUMER, true);
 
     public static final String MEMBER_EMAIL = "pobi@email.com";
@@ -81,31 +83,32 @@ public class TestConstants {
 
     public static final String AUTH = "Authorization";
 
+    public static final String MEMBER_USERNAME = "member1";
     public static final Long BUSINESS_HOUR_ID = 1l;
     public static final Member MEMBER =
-            new Member(1l, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.STORE_OWNER,true);
+            new Member(1l,MEMBER_USERNAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.STORE_OWNER,true);
 
     public static final ConsumerResponse CONSUMER_RESPONSE
-            = new ConsumerResponse(1l, "김멍치","sda@naer.com");
-    public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
-    public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, WRONG_PASSWORD);
-    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD);
-    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
-    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST2 = new ConsumerSaveUpdateRequest("ASD@NA.COM", CONSUMER_PASSWORD, CONSUMER_NAME);
+            = new ConsumerResponse(1l, MEMBER_USERNAME,"김멍치","sda@naer.com");
+    public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_USERNAME,OWNER_PASSWORD);
+    public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_USERNAME, WRONG_PASSWORD);
+    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_USERNAME,CONSUMER_PASSWORD);
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST = new ConsumerSaveUpdateRequest(CONSUMER_USERNAME,CONSUMER_EMAIL, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final ConsumerSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST2 = new ConsumerSaveUpdateRequest("user2","ASD@NA.COM", CONSUMER_PASSWORD, CONSUMER_NAME);
 
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(
-                    OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
+                    OWNER_USERNAME, OWNER_EMAIL, OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
     public static final StoreOwnerSaveUpdateRequest OWNER_SAVE_REQUEST2 =
             new StoreOwnerSaveUpdateRequest(
-                    "sd@naer.com", OWNER_PASSWORD, OWNER_NAME,
+                    "user2", "sd@naer.com", OWNER_PASSWORD, OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE
             );
     public static final StoreOwnerSaveUpdateRequest INVALID_OWNER_SAVE_REQUEST =
             new StoreOwnerSaveUpdateRequest(
-                    "sd@@@", "AA", "!!!!!",
+                    "2asd","sd@@@", "AA", "!!!!!",
                     "111", "AA!!!", null
             );
     public static final BusinessHourSaveUpdateRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
@@ -114,7 +117,7 @@ public class TestConstants {
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
             new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE);
     public static final StoreOwner STORE_OWNER =
-            new StoreOwner(OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME,
+            new StoreOwner(OWNER_USERNAME, OWNER_EMAIL, passwordEncoded.encode(OWNER_PASSWORD), OWNER_NAME,
                     OWNER_BUSINESS_NUMBER, OWNER_BUSINESS_NAME, OWNER_BUSINESS_START_DATE,
                     com.twogather.twogatherwebbackend.domain.AuthenticationType.STORE_OWNER, true);
 
@@ -143,9 +146,9 @@ public class TestConstants {
             new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3","010-1234-1234");
 
     public static final StoreOwnerSaveUpdateRequest STORE_OWNER_REQUEST =
-            new StoreOwnerSaveUpdateRequest("sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
+            new StoreOwnerSaveUpdateRequest(OWNER_USERNAME, "sad@baer.co", "p23dasdaw","사업자이름", "0000000000", "이름",LocalDate.now());
     public static final StoreOwnerResponse STORE_OWNER_RESPONSE =
-            new StoreOwnerResponse(1l, "홍길동", "ifd@naebr.com", "0000000000", "홍길동", LocalDate.of(2000,01,01));
+            new StoreOwnerResponse(1l, "hello1","홍길동", "ifd@naebr.com", "0000000000", "홍길동", LocalDate.of(2000,01,01));
     public static final LocalDate DATE = LocalDate.parse("2020-02-02");
     public static final MyStoreResponse MY_STORES_RESPONSE =
             new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3",
@@ -167,7 +170,7 @@ public class TestConstants {
     public static final MockMultipartFile IMAGE2
             = new MockMultipartFile("fileList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
     public static final LoginRequest LOGIN_REQUEST
-            = new LoginRequest(OWNER_EMAIL, OWNER_PASSWORD);
+            = new LoginRequest(OWNER_EMAIL, OWNER_USERNAME,OWNER_PASSWORD);
     public static final ImageIdList IMAGE_ID_LIST =
             new ImageIdList(
                     new ArrayList<>(){{

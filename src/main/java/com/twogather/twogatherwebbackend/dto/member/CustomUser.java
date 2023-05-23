@@ -14,13 +14,15 @@ import java.util.List;
 @Getter
 public class CustomUser extends User {
     private Long memberId;
-    private String email;
+    private String username;
     private String name;
     private String role;
 
     public CustomUser(Member member){
-        super(member.getEmail(), member.getPassword(), toGrantedAuthority(member.getAuthenticationType()));
+        super(member.getUsername(), member.getPassword(), toGrantedAuthority(member.getAuthenticationType()));
         role = member.getAuthenticationType().name();
+        this.username = member.getUsername();
+        this.memberId = member.getMemberId();
         this.name = member.getName();
     }
     static Collection<? extends GrantedAuthority> toGrantedAuthority(AuthenticationType type){
@@ -28,11 +30,10 @@ public class CustomUser extends User {
         grantedAuthorityList.add(new SimpleGrantedAuthority(type.authority()));
         return grantedAuthorityList;
     }
-    public CustomUser(Long memberId, String email, String name,
-                      String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUser(Long memberId, String username, String name, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.memberId = memberId;
-        this.email = email;
+        this.username = username;
         this.name = name;
         this.role = authorities.toArray()[0].toString();
     }

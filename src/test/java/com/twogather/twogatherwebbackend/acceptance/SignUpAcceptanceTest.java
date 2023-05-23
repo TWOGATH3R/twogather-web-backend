@@ -3,9 +3,14 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,16 +26,20 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +48,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 public class SignUpAcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private StoreOwnerRepository ownerRepository;
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private ConsumerRepository consumerRepository;
@@ -66,8 +79,6 @@ public class SignUpAcceptanceTest {
         assertThat(result.getResolvedException()).isInstanceOf(MemberException.class);
         String responseContent = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertThat(responseContent).contains(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage());
-
-
     }
 
     @Test
@@ -83,14 +94,20 @@ public class SignUpAcceptanceTest {
                 .andReturn();
 
         // Then
-        Consumer consumer = consumerRepository.findByEmail(CONSUMER_SAVE_UPDATE_REQUEST2.getEmail()).get();
+        Consumer consumer = consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername()).get();
         assertThat(consumer.getEmail()).isEqualTo(CONSUMER_SAVE_UPDATE_REQUEST2.getEmail());
         assertThat(consumer.getName()).isEqualTo(CONSUMER_SAVE_UPDATE_REQUEST2.getName());
+
+        em.flush();
+        em.clear();
+        Consumer consumer1 = consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername()).get();
+        Assertions.assertEquals(consumer1.getUsername(),CONSUMER_SAVE_UPDATE_REQUEST2.getUsername());
+
 
     }
 
     @Test
-    @DisplayName("동일한 이메일로 회원가입 시도시 에러 응답이 잘 반환돼야 함")
+    @DisplayName("동일한 loginId 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() throws Exception {
         initSetting();
 
@@ -103,7 +120,7 @@ public class SignUpAcceptanceTest {
                 .andReturn();
 
         // Then
-        consumerRepository.findByEmail(CONSUMER_SAVE_UPDATE_REQUEST.getEmail()).get();
+        consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST.getUsername()).get();
 
         HttpServletResponse response = mvcResult.getResponse();
         response.setCharacterEncoding("UTF-8");
@@ -111,7 +128,7 @@ public class SignUpAcceptanceTest {
         String jsonString = ((MockHttpServletResponse) response).getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(jsonString);
         String message = jsonNode.get("message").asText();
-        assertThat(message).isEqualTo(DUPLICATE_EMAIL.getMessage());
+        assertThat(message).isEqualTo(DUPLICATE_USERNAME.getMessage());
     }
 
     @Test
@@ -164,5 +181,21 @@ public class SignUpAcceptanceTest {
     private void initSetting(){
         Consumer consumer1 = CONSUMER;
         consumerRepository.save(consumer1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("consumer, storeOwner 동일한 아이디로 가입 시 실패")
+    public void WhenSignUpWithSameUsernameByConsumerAndOwner_ThenThrowException() throws Exception {
+        // When
+        ownerRepository.save(new StoreOwner(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername(), "fd@naer.com", "adsasd123", "김김김","123123","김김김", LocalDate.now(), AuthenticationType.STORE_OWNER,true));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST2)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("로그인 아이디가 중복됩니다"))
+                .andReturn();
+
     }
 }
