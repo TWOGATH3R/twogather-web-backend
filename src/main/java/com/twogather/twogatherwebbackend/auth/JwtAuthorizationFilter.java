@@ -71,11 +71,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        try{
-            chain.doFilter(request, response);
-        }catch(AccessDeniedException e){
-            log.error("뭐지 이거 왜 안잡히지");
-        }
+       chain.doFilter(request, response);
+
 
     }
 
