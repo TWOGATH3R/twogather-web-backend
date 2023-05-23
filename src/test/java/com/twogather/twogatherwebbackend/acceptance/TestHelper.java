@@ -23,11 +23,18 @@ public class TestHelper {
         String password = passwordEncoder.encode("asd12345");
         String name = "name";
         String phoneNumber = "000000000";
-        String username = "kimsasa";
-        LocalDate now = java.time.LocalDate.now();
+        String username = "username1";
+        String businessName = "김머시기";
+        LocalDate businessStartDate = java.time.LocalDate.now();
         AuthenticationType authenticationType = AuthenticationType.STORE_OWNER;
         boolean active = true;
-        return ownerRepository.save(new StoreOwner(email, password, name, phoneNumber, username, now, authenticationType, active));
+        return ownerRepository.save(
+                new StoreOwner(
+                username,
+                email, password, name, phoneNumber,
+                businessName,businessStartDate,
+                authenticationType, active
+        ));
     }
 
     public static Store createStore(StoreRepository storeRepository, StoreOwner owner) {
@@ -35,7 +42,7 @@ public class TestHelper {
     }
     public static void createAuthority(StoreOwner owner){
         List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_STORE_OWNER"));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(owner.getEmail(), null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(owner.getUsername(), null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

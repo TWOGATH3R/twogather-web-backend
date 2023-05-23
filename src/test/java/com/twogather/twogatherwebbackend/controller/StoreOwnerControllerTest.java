@@ -79,6 +79,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
                                 fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
@@ -114,6 +115,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         ),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명"),
                                 fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
@@ -124,6 +126,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
                                 fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
@@ -158,6 +161,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명"),
                                 fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
                                 fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
@@ -168,6 +172,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
                                 fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public abstract class MemberResponse {
     private Long memberId;
+    private String username;
     private String email;
     private String name;
 }

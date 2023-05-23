@@ -1,14 +1,11 @@
 package com.twogather.twogatherwebbackend.repository;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,13 +22,14 @@ class MemberRepositoryTest extends RepositoryTest {
         Member expected = memberRepository.save(MEMBER);
 
         // when
-        Member findMember = memberRepository.findByEmail(MEMBER_EMAIL)
-                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_EMAIL));
+        Member findMember = memberRepository.findByUsername(MEMBER_USERNAME)
+                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME));
 
         // then
         assertThat(findMember.getEmail()).isEqualTo(expected.getEmail());
         assertThat(findMember.getPassword()).isEqualTo(expected.getPassword());
         assertThat(findMember.getName()).isEqualTo(expected.getName());
+        assertThat(findMember.getUsername()).isEqualTo(expected.getUsername());
     }
 
     @Test
@@ -42,7 +40,7 @@ class MemberRepositoryTest extends RepositoryTest {
         memberRepository.save(MEMBER);
 
         // when
-        boolean actual = memberRepository.existsByEmail(MEMBER.getEmail());
+        boolean actual = memberRepository.existsByUsername(MEMBER.getUsername());
 
         // then
         assertThat(actual).isTrue();

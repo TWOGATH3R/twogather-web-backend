@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ConsumerResponse extends MemberResponse {
-    public ConsumerResponse(Long memberId, String name, String email){
-        super(memberId,email,name);
+    public ConsumerResponse(Long memberId, String username, String name, String email){
+        super(memberId,username,email,name);
     }
 }

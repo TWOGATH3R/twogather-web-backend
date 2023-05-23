@@ -8,13 +8,20 @@ public class PrivateConstants {
     @Value("${jwt.secret}")
     public String JWT_SECRET = null;
 
-    @Value("${jwt.expiration-time}")
-    public int EXPIRATION_TIME = 0;
+    @Value("${jwt.access-token.expiration-time}")
+    public int ACCESS_TOKEN_EXPIRATION_TIME = 0;
+
+    @Value("${jwt.refresh-token.expiration-time}")
+    public int REFRESH_TOKEN_EXPIRATION_TIME = 0;
 
     public String TOKEN_PREFIX = "Bearer ";
 
-    @Value("${jwt.header-string}")
-    public String HEADER_STRING = null;
+    @Value("${jwt.access-header}")
+    public String ACCESS_TOKEN_HEADER = null;
+
+    @Value("${jwt.refresh-header}")
+    public String REFRESH_TOKEN_HEADER = null;
+
 
     @Value("${api.validate.service.key}")
     public String API_KEY = null;

@@ -20,10 +20,16 @@ public class DataLoader implements CommandLineRunner {
     private final StoreOwnerRepository storeOwnerRepository;
     private final PasswordEncoder passwordEncoder;
     private final StoreRepository storeRepository;
-   @Override
+
+    @Override
     public void run(String... args) {
-        Consumer consumer1 = new Consumer("consumer@naber.com", passwordEncoder.encode("asdasd!123"), "홍길동손님", AuthenticationType.CONSUMER, true);
-        StoreOwner owner1 = new StoreOwner("owner@naver.com",  passwordEncoder.encode("asdasd!123"),
+        Consumer consumer1 = new Consumer(
+                "consumer1",
+                "consumer@naber.com",
+                passwordEncoder.encode("asdasd!123"), "홍길동손님", AuthenticationType.CONSUMER, true);
+        StoreOwner owner1 = new StoreOwner(
+                "owner1",
+                "owner@naver.com",  passwordEncoder.encode("asdasd!123"),
                 "김순순사장",
                 "김순순", "0000000000", LocalDate.now(), AuthenticationType.STORE_OWNER, true);
         consumerRepository.save(consumer1);

@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PrivateConstants constants;
 
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http

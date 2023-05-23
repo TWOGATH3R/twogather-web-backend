@@ -32,5 +32,8 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getStoreType() {
         return key("format").value("TOP_RATED or MOST_REVIEWED");
     }
+    static Attributes.Attribute getUsernameFormat() {
+        return key("format").value("영어와 숫자로 조합해주세요");
+    }
 
 }

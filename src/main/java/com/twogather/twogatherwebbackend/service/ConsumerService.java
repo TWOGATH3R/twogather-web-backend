@@ -6,15 +6,11 @@ import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.util.SecurityUtils;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +18,7 @@ import static com.twogather.twogatherwebbackend.exception.MemberException.Member
 public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
 
     public boolean isConsumer(Long memberId){
         //TODO:구현
@@ -35,48 +32,30 @@ public class ConsumerService {
         return new ConsumerResponse();
     }
     public ConsumerResponse join(final ConsumerSaveUpdateRequest request){
-        validateDuplicateEmail(request.getEmail());
+        validateDuplicateEmail(request.getUsername());
         Consumer consumer
-                = new Consumer(request.getEmail(), passwordEncoder.encode(request.getPassword()),
+                = new Consumer(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), AuthenticationType.CONSUMER, true);
         Consumer storedConsumer = consumerRepository.save(consumer);
 
         return toConsumerResponse(storedConsumer);
     }
 
-    @Transactional(readOnly = true)
-    public ConsumerResponse getMemberWithAuthorities(final String email) {
-        Consumer consumer = findMemberByEmailOrElseThrow(email);
 
+    @Transactional(readOnly = true)
+    public ConsumerResponse getConsumerInfo(final Long memberId) {
+        Consumer consumer = consumerRepository.findById(memberId).orElseThrow(
+                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID)
+        );
         return toConsumerResponse(consumer);
     }
-    @Transactional(readOnly = true)
-    public ConsumerResponse getMemberWithAuthorities(final Long memberId) {
-        //TODO: 구현
 
-        return new ConsumerResponse();
-    }
-    @Transactional(readOnly = true)
-    public ConsumerResponse getMemberWithAuthorities(){
-        /*
-        Optional<Consumer> optionalConsumer = SecurityUtils.getCurrentUsername().flatMap(consumerRepository::findByEmail);
-        optionalConsumer.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
-        Consumer consumer = optionalConsumer.get();
-
-        return toConsumerResponse(consumer);
-        */
-        return null;
-    }
-
-    private Consumer findMemberByEmailOrElseThrow(final String email){
-        return consumerRepository.findByEmail(email).orElseThrow(() -> new MemberException(NO_SUCH_EMAIL));
-    }
-    private void validateDuplicateEmail(final String email){
-        if (consumerRepository.existsByEmail(email)) {
-            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
+    private void validateDuplicateEmail(final String username){
+        if (memberRepository.existsByUsername(username)) {
+            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_USERNAME);
         }
     }
     private ConsumerResponse toConsumerResponse(Consumer consumer){
-        return new ConsumerResponse(consumer.getMemberId(), consumer.getName(), consumer.getEmail());
+        return new ConsumerResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getName(), consumer.getEmail());
     }
 }

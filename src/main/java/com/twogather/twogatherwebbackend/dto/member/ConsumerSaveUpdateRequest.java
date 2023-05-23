@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ConsumerSaveUpdateRequest extends MemberSaveUpdateRequest {
-    public ConsumerSaveUpdateRequest(String email, String password, String name) {
-        super(email, password, name);
+    public ConsumerSaveUpdateRequest(String username, String email, String password, String name) {
+        super(email, username, password, name);
     }
 }
