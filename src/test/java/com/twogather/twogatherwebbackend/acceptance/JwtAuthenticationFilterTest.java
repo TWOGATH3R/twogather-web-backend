@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.acceptance;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -36,6 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
@@ -90,6 +91,7 @@ public class JwtAuthenticationFilterTest {
                         .header(constants.ACCESS_TOKEN_HEADER, expiredAccessToken)
                         .header(constants.REFRESH_TOKEN_HEADER, refreshToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andReturn();
 
         // Extract the new access token from the response headers
@@ -98,7 +100,8 @@ public class JwtAuthenticationFilterTest {
         // Verify that the new access token is valid and can be used to access protected resources
         mockMvc.perform(MockMvcRequestBuilders.get("/api/consumers/1")
                         .header(constants.ACCESS_TOKEN_HEADER, newAccessToken))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
     private Authentication getMockAuthentication() {
         CustomUser customUser = new CustomUser(1L, USERNAME, "김머시기","PASSWORD1234",

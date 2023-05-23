@@ -21,8 +21,8 @@ public class ConsumerService {
     private final MemberRepository memberRepository;
 
     public boolean isConsumer(Long memberId){
-        //TODO:구현
-        return false;
+        if(consumerRepository.findById(memberId).isPresent()) return true;
+        else return false;
     }
     public void delete(final Long memberId){
         //TODO:구현
