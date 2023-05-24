@@ -1,12 +1,14 @@
 package com.twogather.twogatherwebbackend.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +35,4 @@ public class Review {
         this.score = score;
         this.createdDate = createdDate;
     }
-
 }

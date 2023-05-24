@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StoreControllerTest extends ControllerTest{
     @MockBean
     private StoreService storeService;
+    @MockBean
+    private StoreKeywordService storeKeywordService;
 
     @Test
     public void update_WhenStoreUpdate_ThenReturnStoreInfo() throws Exception {
@@ -167,30 +170,6 @@ public class StoreControllerTest extends ControllerTest{
                 ));
 
     }
-
-    @Test
-    @DisplayName("첫 화면에서 보여줄 검색 키워드 목록")
-    public void getKeyword_WhenGetKeyword_Then5Keywords() throws Exception {
-        //given
-        when(storeService.getKeyword()).thenReturn(KEYWORD_LIST);
-        //when
-        //then
-        mockMvc.perform(get("/api/stores/keyword")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                )
-                .andExpect(status().isOk())
-                .andDo(document("store/get-keyword",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("키워드 이름 리스트")
-
-                        )
-                ));
-
-    }
-
 
 
     @Test

@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.*;
+import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
+    private final StoreKeywordService storeKeywordService;
 
     @GetMapping("/test")
     public String test(){
@@ -45,13 +47,6 @@ public class StoreController {
     @GetMapping("/{storeId}")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
         StoreSaveUpdateResponse data = storeService.getStore(storeId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
-
-    @GetMapping("/keyword")
-    public ResponseEntity<Response> getKeywordList() {
-        List<String> data = storeService.getKeyword();
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

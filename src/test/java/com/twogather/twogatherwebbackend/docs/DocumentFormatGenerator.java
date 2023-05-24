@@ -32,5 +32,11 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getStoreType() {
         return key("format").value("TOP_RATED or MOST_REVIEWED");
     }
+    static Attributes.Attribute getKeywordFormat() {
+        return key("format").value("키워드는 형용사로 입력해주세요");
+    }
+    static Attributes.Attribute getUsernameFormat() {
+        return key("format").value("비밀번호는 영어와 숫자를 포함해서 8자 이상 15자 이내로");
+    }
 
 }
