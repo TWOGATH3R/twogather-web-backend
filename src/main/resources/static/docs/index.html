@@ -511,6 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_review">Review</a>
 <ul class="sectlevel2">
+<li><a href="#_get_reviews_by_store_id">Get-Reviews-By-Store-Id</a></li>
 <li><a href="#_get_my_review_list">Get-My-Review-List</a></li>
 <li><a href="#_save_7">Save</a></li>
 <li><a href="#_update_6">Update</a></li>
@@ -599,7 +600,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhc2RAbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg0NjQ1ODY3LCJ1c2VybmFtZSI6ImFzZEBuYXZlci5jb20ifQ.jPG0bkpfLWoQLKLZct7FapZEeAd6QNoNG8udfLm8D2vs8yfBaY3AicbPACBsuKA1QI6q_2p4DHTlL3gFDwScMg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhc2RAbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg1MDEyOTI0LCJ1c2VybmFtZSI6ImFzZEBuYXZlci5jb20ifQ.c0nHEQlXaUQIeF2-9ELpfVEqmnYb1NrSXwe1JhsP-cyP8-w0VMWqBrZDGDegrcUF6Aw9d1eq9UpenEplVJBczg
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -3121,7 +3122,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=d03e1db5-1b64-4f4e-ba29-a44d26ba586a HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=ec70ffc4-f119-4f44-b736-5f38afe8d119 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3242,7 +3243,7 @@ Content-Length: 216
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=073e34a1-f1c9-4eea-8761-59bcaa3806be HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=2c9c4c4a-0efd-4ecf-b49c-80cef4a15c7c HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 196
 Host: docs.api.com
@@ -3253,7 +3254,7 @@ Host: docs.api.com
   "name" : "사업자이름",
   "businessNumber" : "0000000000",
   "businessName" : "이름",
-  "businessStartDate" : "2023-05-21"
+  "businessStartDate" : "2023-05-25"
 }</code></pre>
 </div>
 </div>
@@ -3427,7 +3428,7 @@ Host: docs.api.com
   "name" : "사업자이름",
   "businessNumber" : "0000000000",
   "businessName" : "이름",
-  "businessStartDate" : "2023-05-21"
+  "businessStartDate" : "2023-05-25"
 }</code></pre>
 </div>
 </div>
@@ -3764,7 +3765,7 @@ Content-Length: 101
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=b658f028-d367-42da-855f-d99fc327020f HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=d520cc78-4367-499e-b93c-dec675f0b7c0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -3890,7 +3891,7 @@ Content-Length: 101
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=c95ed2cc-b67a-4729-a513-0292ccf14d09 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=effb32e1-b55b-4e81-ac99-c1b6066c7df6 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 93
 Host: docs.api.com
@@ -4195,7 +4196,7 @@ Host: docs.api.com
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=_csrf
 
-a2510b7c-22bf-4049-9b9f-5b24b67517cf
+85689ce3-8aa0-401b-b7fb-00237d853fc3
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=fileList; filename=image1.jpg
 Content-Type: image/jpeg
@@ -4347,12 +4348,294 @@ Host: docs.api.com
 <h2 id="_review"><a class="link" href="#_review">Review</a></h2>
 <div class="sectionbody">
 <div class="sect2">
+<h3 id="_get_reviews_by_store_id"><a class="link" href="#_get_reviews_by_store_id">Get-Reviews-By-Store-Id</a></h3>
+<div class="sect3">
+<h4 id="_get_reviews_by_store_id_http_request"><a class="link" href="#_get_reviews_by_store_id_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/stores/1/reviews?orderBy=desc&amp;orderColumn=createdDate&amp;page=1&amp;size=10 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: docs.api.com</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_reviews_by_store_id_path_parameters"><a class="link" href="#_get_reviews_by_store_id_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/stores/{storeId}/reviews</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰를 조회할 가게의 고유 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_get_reviews_by_store_id_request_parameters"><a class="link" href="#_get_reviews_by_store_id_request_parameters">Request parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderBy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 방향 (asc 또는 desc). 기본값은 desc입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderColumn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 대상 컬럼. 기본값은 createdDate입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 페이지 번호. 기본값은 1입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">한 페이지에 조회할 리뷰 개수. 기본값은 10입니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_get_reviews_by_store_id_http_response"><a class="link" href="#_get_reviews_by_store_id_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 911
+
+{
+  "data" : {
+    "content" : [ {
+      "reviewId" : 1,
+      "content" : "맛잇서요",
+      "score" : 5.0,
+      "createdDate" : "2022-01-05",
+      "consumerName" : "김뿡치",
+      "consumerId" : 1
+    }, {
+      "reviewId" : 2,
+      "content" : "맛잇서요",
+      "score" : 5.0,
+      "createdDate" : "2022-01-05",
+      "consumerName" : "김뿡치",
+      "consumerId" : 1
+    }, {
+      "reviewId" : 3,
+      "content" : "맛잇서요",
+      "score" : 5.0,
+      "createdDate" : "2022-01-05",
+      "consumerName" : "김뿡치",
+      "consumerId" : 1
+    } ],
+    "pageable" : "INSTANCE",
+    "totalPages" : 1,
+    "totalElements" : 3,
+    "last" : true,
+    "size" : 3,
+    "number" : 0,
+    "sort" : {
+      "empty" : true,
+      "unsorted" : true,
+      "sorted" : false
+    },
+    "numberOfElements" : 3,
+    "first" : true,
+    "empty" : false
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_reviews_by_store_id_response_fields"><a class="link" href="#_get_reviews_by_store_id_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 리뷰 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].consumerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰를 작성한 사용자의의 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].consumerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰를 작성한 사용자의 고유 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].reviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰의 고유 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].score</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">숫자 0~5 사이의 소수점 한자리 형태</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 점수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content[].createdDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성일자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.pageable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 되지 않은 상태인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 가능한 상태인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 리뷰의 총 페이지 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 리뷰의 총 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.last</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.first</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">첫 페이지인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 조회한 페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.numberOfElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회한 페이지의 리뷰 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">한 페이지당 최대 리뷰 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 조회 결과가 비어있는지 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_get_my_review_list"><a class="link" href="#_get_my_review_list">Get-My-Review-List</a></h3>
 <div class="sect3">
 <h4 id="_get_my_review_list_http_request"><a class="link" href="#_get_my_review_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/stores/1/reviews/members/2?orderBy=desc&amp;orderColumn=createdAt&amp;page=1&amp;size=5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/stores/1/reviews/members/2?orderBy=desc&amp;orderColumn=createdDate&amp;page=1&amp;size=5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4404,7 +4687,7 @@ Host: docs.api.com</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderColumn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 대상 컬럼. 기본값은 createdAt입니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 대상 컬럼. 기본값은 createdDate입니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
@@ -4432,28 +4715,28 @@ Content-Length: 1198
       "content" : "Good product",
       "score" : 4.5,
       "createdDate" : "2022-01-01",
+      "consumerName" : "김은지",
       "url" : "imageurl",
       "storeName" : "김가네삼겹살",
-      "storeAddress" : "서울시 어쩌고 어쩌고",
-      "consumerName" : "김은지"
+      "storeAddress" : "서울시 어쩌고 어쩌고"
     }, {
       "reviewId" : 1,
       "content" : "Not bad",
       "score" : 3.0,
       "createdDate" : "2022-01-03",
+      "consumerName" : "박은지",
       "url" : "imageurl2",
       "storeName" : "레스토랑1",
-      "storeAddress" : "경기도 어쩌고 어쩌고",
-      "consumerName" : "박은지"
+      "storeAddress" : "경기도 어쩌고 어쩌고"
     }, {
       "reviewId" : 2,
       "content" : "Excellent",
       "score" : 5.0,
       "createdDate" : "2022-01-05",
+      "consumerName" : "김지은",
       "url" : "imageurl3",
       "storeName" : "김밥집1",
-      "storeAddress" : "전주시 어쩌고 어쩌고",
-      "consumerName" : "김지은"
+      "storeAddress" : "전주시 어쩌고 어쩌고"
     } ],
     "pageable" : "INSTANCE",
     "totalPages" : 1,
@@ -4463,8 +4746,8 @@ Content-Length: 1198
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 3,
     "first" : true,
@@ -4658,7 +4941,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=c21fa91c-ad7f-48e6-a23d-095e71606da6 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=3ee47c41-fa88-4f7c-8eea-8bad0de7e6d4 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -4700,15 +4983,16 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 163
+Content-Length: 198
 
 {
   "data" : {
-    "consumerId" : 1,
     "reviewId" : 1,
     "content" : "너무 맛있어요~!",
     "score" : 3.2,
-    "createdDate" : "2020-02-02"
+    "createdDate" : "2020-02-02",
+    "consumerName" : "김뿡치",
+    "consumerId" : 1
   }
 }</code></pre>
 </div>
@@ -4740,6 +5024,13 @@ Content-Length: 163
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 고유 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.reviewId</code></p></td>
@@ -4779,7 +5070,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=3d469f5b-6ba1-4a49-a4b8-9e08731bb3b6 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=002584e9-c808-42c1-a825-c61a1e3b28c1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -4810,7 +5101,7 @@ Host: docs.api.com
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>writerId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성한사람의 고유 id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성한사람의 고유 id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
@@ -4825,15 +5116,16 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 163
+Content-Length: 198
 
 {
   "data" : {
-    "consumerId" : 1,
     "reviewId" : 1,
     "content" : "너무 맛있어요~!",
     "score" : 3.2,
-    "createdDate" : "2020-02-02"
+    "createdDate" : "2020-02-02",
+    "consumerName" : "김뿡치",
+    "consumerId" : 1
   }
 }</code></pre>
 </div>
@@ -4864,7 +5156,14 @@ Content-Length: 163
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 고유 id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자의 고유 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자의 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.reviewId</code></p></td>
@@ -4904,7 +5203,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=c2c3d699-5438-4379-8cbd-bcb4250b22e2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=27cbc49c-ba42-4057-9abb-8943af7b4b0f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5005,7 +5304,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-05-21"
+    "createDate" : "2023-05-25"
   }
 }</code></pre>
 </div>
@@ -5115,7 +5414,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-05-21"
+    "createDate" : "2023-05-25"
   }
 }</code></pre>
 </div>
@@ -5250,7 +5549,7 @@ Content-Length: 181
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-05-21 11:42:07 +0900
+Last updated 2023-05-25 18:22:06 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
