@@ -3,13 +3,15 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.TestUtil;
-import com.twogather.twogatherwebbackend.domain.Review;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
-import com.twogather.twogatherwebbackend.repository.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.CategoryRepository;
+import com.twogather.twogatherwebbackend.repository.ImageRepository;
+import com.twogather.twogatherwebbackend.repository.KeywordRepository;
+import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +38,7 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.TestConstants.OWNER_SAVE_REQUEST2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -45,6 +51,14 @@ public class StoreGetAcceptanceTest {
     private StoreRepository storeRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private StoreKeywordRepository storeKeywordRepository;
+    @Autowired
+    private KeywordRepository keywordRepository;
     @Autowired
     private EntityManager em;
     @Autowired
@@ -75,13 +89,59 @@ public class StoreGetAcceptanceTest {
         Review review7 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
 
         Review review8 = reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 4.2, LocalDate.of(2019,01,12)));
-
         //store4: 리뷰가 가장적다
         //store3: 평점이 가장 적다
         em.flush();
         System.out.println("===================");
     }
 
+
+    @Test
+    @DisplayName("키워드, 카테고리, 지역으로 가게 검색하기")
+    @Transactional
+    public void WhenSearchByKeywordCategoryAndLocation_ThenSuccess() throws Exception {
+        //given
+        Keyword keyword1 = keywordRepository.save(new Keyword("분위기가 좋은"));
+        Keyword keyword2 = keywordRepository.save(new Keyword("청결한"));
+        Keyword keyword3 = keywordRepository.save(new Keyword("가족들과 시간보내기 좋은"));
+        Keyword keyword4 = keywordRepository.save(new Keyword("저렴한"));
+        Keyword keyword5 = keywordRepository.save(new Keyword("친절한"));
+
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword1));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword2));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword3));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword3));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword4));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword5));
+
+        Image image1 = imageRepository.save(new Image(store1,"url1"));
+        Image image2 = imageRepository.save(new Image(store1,"url2"));
+        Image image3 = imageRepository.save(new Image(store2,"url3"));
+
+        Category category1 = categoryRepository.save(new Category("앵식"));
+        Category category2 = categoryRepository.save(new Category("중식"));
+        store1.setCategory(category1);
+        store2.setCategory(category2);
+
+        Category temp1 = store1.getCategory();
+        List<StoreKeyword> list = storeKeywordRepository.findByStoreStoreId(store1.getStoreId());
+        List<Image> imageList = store1.getStoreImageList();
+
+        //when
+        mockMvc.perform(get("/api/stores/search")
+                        .param("category", category1.getName())
+                        .param("search", keyword1.getName())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "reviewsCount,desc")
+                        .characterEncoding("UTF-8")
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        //then
+    }
 
     @Test
     @DisplayName("리뷰3은 평점이 가장 적기때문에 결과로 반환된 리스트들 중에서는 없어야한다")

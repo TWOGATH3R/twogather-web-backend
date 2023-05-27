@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,10 +57,9 @@ public class StoreController {
     public ResponseEntity<Response> getMyStoreInfo(
             @PathVariable Long storeId,
             @RequestParam(value = "owner-id") Long storeOwnerId,
-            @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "offset", required = false) Integer offset
+            Pageable pageable
     ) {
-        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, limit, offset);
+        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
@@ -73,16 +73,13 @@ public class StoreController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Response> getStoreInfos(  @RequestParam(value = "category", required = false) String categoryName,
-                                                    @RequestParam(value = "search", required = false) String keyword,
-                                                    @RequestParam(value = "limit", defaultValue = "10") int limit,
-                                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                                    @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-                                                    @RequestParam(value = "order", defaultValue = "asc") String order,
-                                                    @RequestParam(value = "location", required = false) String location) {
-        List<StoreResponseWithKeyword> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order, location);
+    public ResponseEntity<Response> getStoreInfos(Pageable pageable,
+                                                  @RequestParam(value = "category", required = false) String categoryName,
+                                                  @RequestParam(value = "search", required = false) String keyword,
+                                                  @RequestParam(value = "location", required = false) String location) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data.getContent()));
     }
 
     @DeleteMapping("/{storeId}")

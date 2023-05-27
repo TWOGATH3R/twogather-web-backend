@@ -14,10 +14,10 @@ import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
@@ -86,12 +86,11 @@ public class StoreService {
 
         return toStoreSaveUpdateResponse(store);
     }
-    public List<StoreResponseWithKeyword> getStores(
-          String categoryName, String keyword, int limit, int offset, String orderBy, String order, String location){
-        //TODO: 구현
-        return new ArrayList<>();
+    public Page<StoreResponseWithKeyword> getStores(
+            Pageable pageable, String categoryName, String keyword,String location){
+        return storeRepository.findStoresByCondition(pageable, categoryName, keyword, location);
     }
-    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Integer limit, Integer offset){
+    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Pageable pageable){
         //TODO: 구현
         return null;
     }

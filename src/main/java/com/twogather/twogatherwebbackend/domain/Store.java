@@ -34,9 +34,13 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "store")
+    private List<StoreKeyword> storeKeywordList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
     private String name;
     private String address;
     private String phone;
