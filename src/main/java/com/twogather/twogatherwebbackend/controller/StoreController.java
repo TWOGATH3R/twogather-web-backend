@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.*;
+
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,22 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
+    @GetMapping("/keyword")
+    public ResponseEntity<Response> getKeywordList() {
+        List<String> data = storeService.getKeyword();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
+
+    @GetMapping("/top/{type}/{count}")
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
+                                                     @PathVariable int count) {
+        List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
     @GetMapping("/{storeId}/my")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getMyStoreInfo(
@@ -64,13 +81,6 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
-    @GetMapping("/top/{type}/{count}")
-    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
-                                                     @PathVariable int count) {
-        List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
 
     @GetMapping("/search")
     public ResponseEntity<Response> getStoreInfos(Pageable pageable,

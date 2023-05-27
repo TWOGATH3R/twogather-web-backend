@@ -10,6 +10,9 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 @TestPropertySource(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=10")
 class TwogatherWebBackendApplicationTests {

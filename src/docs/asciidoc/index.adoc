@@ -51,7 +51,6 @@ operation::keywords/get/[snippets='http-request,request-parameters,http-response
 === Set-Keyword-Store-Association
 operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
 
-
 == Store
 
 === Save

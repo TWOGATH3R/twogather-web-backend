@@ -199,6 +199,12 @@ public class TestConstants {
                 add(IMAGE_RESPONSE);
                 add(IMAGE_RESPONSE);
             }};
+    public static final ArrayList STORES_RESPONSE_LIST =
+            new ArrayList<StoreResponseWithKeyword>(){{
+                add(STORES_RESPONSE);
+                add(STORES_RESPONSE);
+                add(STORES_RESPONSE);
+            }};
 
     public static final List<TopStoreResponse> STORES_TOP3_TOP_RATED_RESPONSE =
             Arrays.asList(

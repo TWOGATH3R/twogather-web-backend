@@ -23,7 +23,7 @@ public class Review {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    //이거 string으로 해도되는건가
+    @Column(name = "content", columnDefinition = "VARCHAR(5000)")
     private String content;
     private Double score;
     private LocalDate createdDate;
@@ -35,4 +35,5 @@ public class Review {
         this.score = score;
         this.createdDate = createdDate;
     }
+
 }

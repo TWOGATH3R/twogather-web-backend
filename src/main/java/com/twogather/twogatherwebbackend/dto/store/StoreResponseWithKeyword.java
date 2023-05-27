@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.dto.store;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +23,4 @@ public class StoreResponseWithKeyword extends StoreBaseResponse {
         this.avgScore = score;
 
     }
-
 }

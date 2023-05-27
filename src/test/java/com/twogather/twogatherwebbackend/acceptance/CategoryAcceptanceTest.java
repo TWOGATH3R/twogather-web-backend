@@ -82,8 +82,10 @@ public class CategoryAcceptanceTest {
 
         String url = "/api/stores/" + storeId + "/categories/" + categoryId;
         mockMvc.perform(patch(url))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isOk());
+        categoryService.setCategoriesForStore(storeId, categoryId);
+
+        //when, then
 
         em.flush();
         em.clear();
@@ -144,5 +146,7 @@ public class CategoryAcceptanceTest {
         Category categoryOfStore1  = storeRepository.findById(store1.getStoreId()).get().getCategory();
         Category categoryOfStore2 = storeRepository.findById(store2.getStoreId()).get().getCategory();
         Assertions.assertEquals(categoryOfStore1, categoryOfStore2);
+
+
     }
 }

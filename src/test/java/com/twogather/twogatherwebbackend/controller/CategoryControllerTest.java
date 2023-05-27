@@ -18,6 +18,7 @@ import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumen
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -66,6 +67,7 @@ public class CategoryControllerTest extends ControllerTest{
     @DisplayName("가게 카테고리 update")
     public void setCategoriesForStore_WhenSetCategoryThenCategoryInfo() throws Exception {
         //given
+
         doNothing().when(categoryService).setCategoriesForStore(anyLong(),anyLong());
         //when
         //then
@@ -80,8 +82,7 @@ public class CategoryControllerTest extends ControllerTest{
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("storeId").description("가게 고유 id"),
-                                parameterWithName("categoryId").description("가게 카테고리의 고유 id")
-                        )
+                                parameterWithName("categoryId").description("가게 카테고리의 고유 id"))
                 ));
 
     }

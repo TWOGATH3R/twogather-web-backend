@@ -152,12 +152,12 @@ public class StoreGetAcceptanceTest {
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
                         .contentType(MediaType.APPLICATION_JSON)
-                       .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-       // Then
+        // Then
         Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
         List<TopStoreResponse> topStores = response.getData();
 

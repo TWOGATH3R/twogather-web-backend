@@ -92,11 +92,11 @@ public class StoreControllerTest extends ControllerTest{
                 )
                 .andExpect(status().isOk())
                 .andDo(document("store/delete",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("storeId").description("가게 고유 id")
-                        )
+                                getDocumentRequest(),
+                                getDocumentResponse(),
+                                pathParameters(
+                                        parameterWithName("storeId").description("가게 고유 id")
+                                )
                         )
                 );
     }
@@ -142,7 +142,7 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
                                 fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재페이지가 몇번인지")
 
-                                )
+                        )
                 ));
 
     }
@@ -166,7 +166,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("storeType").description("자세히 볼 페이지의 type").attributes(getStoreType()),
                                 parameterWithName("count").description("자세히 볼 페이지 개수").attributes(getStoreType())
 
-                                ),
+                        ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 고유 id"),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
@@ -231,7 +231,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("size").description("검사결과 최대 개수"),
                                 parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)")
 
-                                ),
+                        ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
@@ -296,7 +296,7 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
-                      ),
+                        ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
