@@ -18,7 +18,8 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{4,10}$", message = "비밀번호는 영어와 숫자를 포함해서 4자 이상 15자 이내로 입력해주세요.")  private String username;
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{4,10}$", message = "아이디는 영어와 숫자를 포함해서 4자 이상 15자 이내로 입력해주세요.")
+    private String username;
 
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로 입력해주세요.")
