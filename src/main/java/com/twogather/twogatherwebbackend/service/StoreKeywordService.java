@@ -28,22 +28,24 @@ public class StoreKeywordService {
     private final StoreRepository storeRepository;
 
     public void setStoreKeyword(Long storeId, List<String> keywordStringList){
-        if(keywordStringList.size()!=3){
+        if(keywordStringList.size()>3){
             throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
         }
         for (String keywordString: keywordStringList){
-            Optional<Keyword> keywordOptional = keywordRepository.findByName(keywordString);
-            Keyword keyword;
-            if(keywordOptional.isPresent()){
-                keyword = keywordOptional.get();
-            }else{
-                keyword = keywordRepository.save(new Keyword(keywordString));
-            }
+            if(!keywordString.isEmpty()){
+                Optional<Keyword> keywordOptional = keywordRepository.findByName(keywordString);
+                Keyword keyword;
+                if(keywordOptional.isPresent()){
+                    keyword = keywordOptional.get();
+                }else{
+                    keyword = keywordRepository.save(new Keyword(keywordString));
+                }
 
-            Store store = storeRepository.findById(storeId).orElseThrow(
-                    ()->new StoreException(NO_SUCH_STORE)
-            );
-            storeKeywordRepository.save(new StoreKeyword(store, keyword));
+                Store store = storeRepository.findById(storeId).orElseThrow(
+                        ()->new StoreException(NO_SUCH_STORE)
+                );
+                storeKeywordRepository.save(new StoreKeyword(store, keyword));
+            }
         }
     }
 }

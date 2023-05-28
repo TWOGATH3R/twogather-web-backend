@@ -10,6 +10,7 @@ import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -127,10 +128,13 @@ public class StoreGetAcceptanceTest {
         List<StoreKeyword> list = storeKeywordRepository.findByStoreStoreId(store1.getStoreId());
         List<Image> imageList = store1.getStoreImageList();
 
+        em.flush();
+        em.clear();
         //when
         mockMvc.perform(get("/api/stores/search")
                         .param("category", category1.getName())
                         .param("search", keyword1.getName())
+                        .param("location", "전주시")
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "reviewsCount,desc")
@@ -138,6 +142,12 @@ public class StoreGetAcceptanceTest {
                 )
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.data[0].storeId").value(1))
+                .andExpect(jsonPath("$.data[0].storeName").value(store1.getName()))
+                .andExpect(jsonPath("$.data[0].address").value(store1.getAddress()))
+                .andExpect(jsonPath("$.data[0].avgScore").value(3.2))
+                .andExpect(jsonPath("$.data[0].storeImageUrl").exists())
+                .andExpect(jsonPath("$.data[0].keywordList", hasSize(3)))
                 .andReturn();
 
         //then
@@ -149,6 +159,8 @@ public class StoreGetAcceptanceTest {
         StoreType type = StoreType.TOP_RATED;
         int count = 3;
         // When
+        em.flush();
+        em.clear();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
@@ -173,6 +185,8 @@ public class StoreGetAcceptanceTest {
     void WhenFindTopNByReviewCount_ThenReturnValueExcludeStore4() throws Exception {
         StoreType type = StoreType.MOST_REVIEWED;
         int count = 3;
+        em.flush();
+        em.clear();
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -200,6 +214,8 @@ public class StoreGetAcceptanceTest {
         StoreType type = StoreType.MOST_REVIEWED;
         int count = 10;
         // When
+        em.flush();
+        em.clear();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
@@ -239,20 +255,22 @@ public class StoreGetAcceptanceTest {
         Consumer consumer3 = consumerRepository.save(new Consumer("dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         Consumer consumer4 = consumerRepository.save(new Consumer("dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
 
-        likeRepository.save(new Likes(store1, consumer1));
-        likeRepository.save(new Likes(store1, consumer2));
-        likeRepository.save(new Likes(store1, consumer3));
-        likeRepository.save(new Likes(store1, consumer4));
+        likeRepository.save(new Likes(store4, consumer1));
+        likeRepository.save(new Likes(store4, consumer2));
+        likeRepository.save(new Likes(store4, consumer3));
+        likeRepository.save(new Likes(store4, consumer4));
 
         likeRepository.save(new Likes(store2, consumer1));
         likeRepository.save(new Likes(store2, consumer2));
         likeRepository.save(new Likes(store2, consumer3));
 
-        likeRepository.save(new Likes(store3, consumer1));
-        likeRepository.save(new Likes(store3, consumer2));
+        likeRepository.save(new Likes(store1, consumer1));
+        likeRepository.save(new Likes(store1, consumer2));
 
-        likeRepository.save(new Likes(store4, consumer1));
+        likeRepository.save(new Likes(store3, consumer1));
         // When
+        em.flush();
+        em.clear();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -262,10 +280,10 @@ public class StoreGetAcceptanceTest {
         Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
         List<TopStoreResponse> topStores = response.getData();
 
-        assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
+        assertThat(topStores.get(0).getStoreName()).isEqualTo(store4.getName());
         assertThat(topStores.get(1).getStoreName()).isEqualTo(store2.getName());
-        assertThat(topStores.get(2).getStoreName()).isEqualTo(store3.getName());
-        assertThat(topStores.get(3).getStoreName()).isEqualTo(store4.getName());
+        assertThat(topStores.get(2).getStoreName()).isEqualTo(store1.getName());
+        assertThat(topStores.get(3).getStoreName()).isEqualTo(store3.getName());
     }
 
 

@@ -146,7 +146,7 @@ public class LikeAcceptanceTest {
         //when
         //then
         mockMvc.perform(
-                        delete("/api/stores/{storeId}/likes", store.getStoreId()))
+                        post("/api/stores/{storeId}/likes", store.getStoreId()))
                 .andExpect(status().isForbidden());
 
     }

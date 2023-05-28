@@ -149,4 +149,60 @@ public class CategoryAcceptanceTest {
 
 
     }
+
+    @Test
+    @Transactional
+    @DisplayName("없는 카테고리로 등록시 throw exception")
+    public void whenNoSuchCategory_thenThrowException() throws Exception {
+        //given
+        StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
+        Store store1 = createStore(storeRepository,owner);
+        Store store2 = createStore(storeRepository,owner);
+
+        Long noSuchCategoryId = 123l;
+        createAuthority(owner);
+
+        String url = "/api/stores/" + store2.getStoreId() + "/categories/" + noSuchCategoryId;
+        mockMvc.perform(patch(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("해당하는 카테고리가 존재하지않습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        em.flush();
+        em.clear();
+        Category categoryOfStore1  = storeRepository.findById(store1.getStoreId()).get().getCategory();
+        Category categoryOfStore2 = storeRepository.findById(store2.getStoreId()).get().getCategory();
+        Assertions.assertEquals(categoryOfStore1, categoryOfStore2);
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("자신의 가게가 아닌 가게id로 카테고리를 등록시 throw exception")
+    public void whenNoSuchStore_ThenThrowException() throws Exception {
+        //given
+        StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
+        Store store1 = createStore(storeRepository,owner);
+
+        Category category = categoryRepository.save(new Category("categoryName"));
+
+        Long categoryId = category.getCategoryId();
+
+        Long noSuchStoreId = 123l;
+        createAuthority(owner);
+
+        String url = "/api/stores/" + noSuchStoreId + "/categories/" + categoryId;
+        mockMvc.perform(patch(url))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        em.flush();
+        em.clear();
+        Category categoryOfStore1  = storeRepository.findById(store1.getStoreId()).get().getCategory();
+        Assertions.assertNull(categoryOfStore1);
+
+
+
+    }
 }

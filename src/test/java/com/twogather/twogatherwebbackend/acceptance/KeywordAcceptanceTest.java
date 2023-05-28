@@ -112,7 +112,7 @@ public class KeywordAcceptanceTest {
     }
 
     @Test
-    @DisplayName("가게의 키워드 세개가 아닌 경우 throw exception")
+    @DisplayName("가게의 키워드 세개이상으로 입력이 들어온경우 throw exception")
     public void whenSettingTwoKeywordsForStore_thenThrowException() throws Exception {
         //given
         StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
@@ -122,6 +122,8 @@ public class KeywordAcceptanceTest {
         List<String> keywordList = new ArrayList<>(){{
             add("저렴한");
             add("분위기 좋은");
+            add("분위기 좋은2");
+            add("분위기 좋은3");
         }};
         mockMvc.perform(post(URL + "/stores/" + store.getStoreId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,5 +131,33 @@ public class KeywordAcceptanceTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message").value("정해진 개수만큼의 키워드만 입력할 수 있습니다"))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    @DisplayName("가게의 키워드가 빈 값이 들어온 경우 무시한다")
+    public void whenEmptyKeyword_thenIgnore() throws Exception {
+        //given
+        StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
+        Store store = createStore(storeRepository,owner);
+        createAuthority(owner);
+
+        List<String> keywordList = new ArrayList<>(){{
+            add("");
+            add("분위기 좋은");
+            add("아이들과 오기 좋은");
+        }};
+        mockMvc.perform(post(URL + "/stores/" + store.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(keywordList)))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        em.flush();
+        em.clear();
+        List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreStoreId(store.getStoreId());
+
+        assertTrue(storeKeywordList.size()==2);
+        assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getName().equals("분위기 좋은")));
+        assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getName().equals("아이들과 오기 좋은")));
     }
 }
