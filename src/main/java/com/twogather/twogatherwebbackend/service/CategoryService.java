@@ -31,11 +31,10 @@ public class CategoryService {
         }
         return categoryResponseList;
     }
-    public CategoryResponse setCategoriesForStore(Long storeId, Long categoryId){
+    public void setCategoriesForStore(Long storeId, Long categoryId){
         Store store = storeRepository.findById(storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryException(NO_SUCH_CATEGORY));
         store.setCategory(category);
-        return toResponse(category);
     }
     private CategoryResponse toResponse(Category category){
         return new CategoryResponse(category.getCategoryId(), category.getName());

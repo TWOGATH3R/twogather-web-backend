@@ -261,7 +261,6 @@ public class BusinessHourAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-
     @Test
     @Transactional
     @DisplayName("update: 요청한 날에 대해서만 UPDATE 수행한다. 요청하지 않은 날에 대해서는 삭제나 수정을 진행하지 않는다")

@@ -30,7 +30,13 @@ public interface DocumentFormatGenerator {
         return key("format").value("숫자 0~5 사이의 소수점 한자리 형태");
     }
     static Attributes.Attribute getStoreType() {
-        return key("format").value("TOP_RATED or MOST_REVIEWED");
+        return key("format").value("TOP_RATED or MOST_REVIEWED or MOST_LIKES_COUNT");
+    }
+    static Attributes.Attribute getKeywordFormat() {
+        return key("format").value("키워드는 형용사로 입력해주세요");
+    }
+    static Attributes.Attribute getUsernameFormat() {
+        return key("format").value("비밀번호는 영어와 숫자를 포함해서 8자 이상 15자 이내로");
     }
     static Attributes.Attribute getUsernameFormat() {
         return key("format").value("영어와 숫자로 조합해주세요");

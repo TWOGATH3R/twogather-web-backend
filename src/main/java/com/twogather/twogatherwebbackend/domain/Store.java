@@ -18,7 +18,7 @@ public class Store {
     @Column(name ="store_id")
     private Long storeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private StoreOwner owner;
 
@@ -34,9 +34,16 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToOne
+    @OneToMany(mappedBy = "store")
+    private List<StoreKeyword> storeKeywordList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store")
+    private List<Likes> likesList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
     private String name;
     private String address;
     private String phone;
