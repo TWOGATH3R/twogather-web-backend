@@ -207,6 +207,7 @@ public class MenuAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+
     @Test
     @DisplayName("storeId 에 해당하는 메뉴만 조회")
     public void getMenuListByStoreId_ThenMenuList() throws Exception {

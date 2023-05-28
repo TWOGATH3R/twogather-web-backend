@@ -61,8 +61,10 @@ public class CategoryAcceptanceTest {
 
         mockMvc.perform(get("/api/categories"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].name").value(category1.getName()))
+                .andExpect(jsonPath("$.data[1].name").value(category2.getName()))
                 .andExpect(jsonPath("$.data[0].categoryId").exists())
-                .andExpect(jsonPath("$.data[0].name").exists())
+                .andExpect(jsonPath("$.data[1].categoryId").exists())
                 .andDo(MockMvcResultHandlers.print());
     }
 

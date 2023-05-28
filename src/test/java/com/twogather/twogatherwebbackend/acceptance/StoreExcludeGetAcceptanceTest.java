@@ -136,6 +136,28 @@ public class StoreExcludeGetAcceptanceTest {
     }
 
     @Test
+    @DisplayName("유효하지않은 전화번호로 가게 업데이트 시도 시 실패하면서 롤백되는 test")
+    public void whenUpdateStoreIncludePhoneField_ThenThrowException() throws Exception {
+        //given
+        Store store = createStore(storeRepository, owner);
+        StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
+                "storename1", "새로운 전주시 임임동 23길1", "063232-4441"
+        );
+        //when,then
+        mockMvc.perform(put(URL+"/{storeId}", store.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(storeRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("유효하지않은 값을 입력하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        Store savedStore = storeRepository.findById(store.getStoreId()).get();
+        Assertions.assertNotEquals(savedStore.getAddress(), storeRequest.getAddress());
+        Assertions.assertNotEquals(savedStore.getPhone(), storeRequest.getPhone());
+    }
+
+
+    @Test
     @DisplayName("가게 삭제 요청 후 진짜 삭제되었는지 확인해보는 test")
     public void whenDeleteStore_ThenNotExistStore() throws Exception {
         //given

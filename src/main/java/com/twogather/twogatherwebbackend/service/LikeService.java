@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.exception.LikeException.LikeErrorCode.DUPLICATE_LIKE;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -29,9 +28,9 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     public void addStoreLike(Long storeId){
-        String loginUserEmail = SecurityUtils.getLoginUserEmail();
-        Member member = memberRepository.findByEmail(loginUserEmail).orElseThrow(
-                ()->new MemberException(NO_SUCH_EMAIL)
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findByUsername(username).orElseThrow(
+                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME)
         );
         Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
@@ -43,9 +42,9 @@ public class LikeService {
     }
 
     public void deleteStoreLike(Long storeId){
-        String loginUserEmail = SecurityUtils.getLoginUserEmail();
-        Member member = memberRepository.findByEmail(loginUserEmail).orElseThrow(
-                ()->new MemberException(NO_SUCH_EMAIL)
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findByUsername(username).orElseThrow(
+                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME)
         );
 
         int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(storeId, member.getMemberId());

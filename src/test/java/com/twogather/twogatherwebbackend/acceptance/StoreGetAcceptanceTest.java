@@ -250,10 +250,10 @@ public class StoreGetAcceptanceTest {
     void WhenFindTopNByMostLikesCount_ThenReturnSortedValues() throws Exception {
         StoreType type = StoreType.MOST_LIKES_COUNT;
         int count = 4;
-        Consumer consumer1 = consumerRepository.save(new Consumer("dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer2= consumerRepository.save(new Consumer("das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer3 = consumerRepository.save(new Consumer("dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer4 = consumerRepository.save(new Consumer("dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer2= consumerRepository.save(new Consumer("user1","das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer3 = consumerRepository.save(new Consumer("user1","dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer4 = consumerRepository.save(new Consumer("user1","dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
 
         likeRepository.save(new Likes(store4, consumer1));
         likeRepository.save(new Likes(store4, consumer2));

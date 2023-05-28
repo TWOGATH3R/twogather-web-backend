@@ -57,6 +57,7 @@ public class LikeAcceptanceTest {
         Store store = storeRepository.save(new Store("가게이름", "주소", "010-1234-1234"));
         Consumer consumer =
                 consumerRepository.save(new Consumer(
+                        "user1",
                         "email@naber.cim", passwordEncoder.encode("asdad1234"),
                         "kimminji", AuthenticationType.CONSUMER, true
                 ));
@@ -83,7 +84,7 @@ public class LikeAcceptanceTest {
         Store store = storeRepository.save(new Store("가게이름", "주소", "010-1234-1234"));
         Consumer consumer =
                 consumerRepository.save(new Consumer(
-                        "email@naber.cim", passwordEncoder.encode("asdad1234"),
+                        "user1","email@naber.cim", passwordEncoder.encode("asdad1234"),
                         "kimminji", AuthenticationType.CONSUMER, true
                 ));
         likeRepository.save(new Likes(store, consumer));
@@ -110,7 +111,7 @@ public class LikeAcceptanceTest {
         Store store = storeRepository.save(new Store("가게이름", "주소", "010-1234-1234"));
         Consumer consumer =
                 consumerRepository.save(new Consumer(
-                        "email@naber.cim", passwordEncoder.encode("asdad1234"),
+                        "user1",  "email@naber.cim", passwordEncoder.encode("asdad1234"),
                         "kimminji", AuthenticationType.CONSUMER, true
                 ));
         likeRepository.save(new Likes(store, consumer));
@@ -138,7 +139,7 @@ public class LikeAcceptanceTest {
         Store store = storeRepository.save(new Store("가게이름", "주소", "010-1234-1234"));
         Consumer consumer =
                 consumerRepository.save(new Consumer(
-                        "email@naber.cim", passwordEncoder.encode("asdad1234"),
+                        "user1","email@naber.cim", passwordEncoder.encode("asdad1234"),
                         "kimminji", AuthenticationType.CONSUMER, true
                 ));
         likeRepository.save(new Likes(store, consumer));

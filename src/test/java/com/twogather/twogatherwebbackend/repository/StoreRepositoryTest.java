@@ -121,7 +121,7 @@ public class StoreRepositoryTest {
     @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인")
     void whenFindTopNByLikeCount_ShouldReturnFirstIsStore1() {
         //given
-        Consumer consumer1 = consumerRepository.save(new Consumer("dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
         em.flush();
         em.clear();
