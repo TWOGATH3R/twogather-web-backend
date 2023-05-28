@@ -129,7 +129,6 @@ public class LikeAcceptanceTest {
         Store savedStore = storeRepository.findById(store.getStoreId()).get();
         Assertions.assertEquals(likes.getStore(), savedStore);
         Assertions.assertEquals(likes.getMember().getEmail(), consumer.getEmail());
-        int s = 2;
 
     }
     @Test

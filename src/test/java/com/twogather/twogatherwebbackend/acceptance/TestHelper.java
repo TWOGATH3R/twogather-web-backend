@@ -44,7 +44,7 @@ public class TestHelper {
     }
     public static void createAuthority(Consumer consumer){
         List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_CONSUMER"));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(consumer.getEmail(), null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(consumer.getUsername(), null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

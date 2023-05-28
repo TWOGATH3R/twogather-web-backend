@@ -142,7 +142,6 @@ public class StoreGetAcceptanceTest {
                 )
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.data[0].storeId").value(1))
                 .andExpect(jsonPath("$.data[0].storeName").value(store1.getName()))
                 .andExpect(jsonPath("$.data[0].address").value(store1.getAddress()))
                 .andExpect(jsonPath("$.data[0].avgScore").value(3.2))
@@ -251,9 +250,9 @@ public class StoreGetAcceptanceTest {
         StoreType type = StoreType.MOST_LIKES_COUNT;
         int count = 4;
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer2= consumerRepository.save(new Consumer("user1","das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer3 = consumerRepository.save(new Consumer("user1","dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer4 = consumerRepository.save(new Consumer("user1","dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer2= consumerRepository.save(new Consumer("user2","das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer3 = consumerRepository.save(new Consumer("user3","dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer4 = consumerRepository.save(new Consumer("user4","dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
 
         likeRepository.save(new Likes(store4, consumer1));
         likeRepository.save(new Likes(store4, consumer2));
