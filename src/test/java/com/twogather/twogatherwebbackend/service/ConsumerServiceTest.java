@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,13 +25,15 @@ public class ConsumerServiceTest {
     private ConsumerRepository consumerRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private MemberRepository memberRepository;
 
     private ConsumerService consumerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        consumerService = new ConsumerService(consumerRepository, passwordEncoder);
+        consumerService = new ConsumerService(consumerRepository, passwordEncoder,memberRepository);
     }
 
     @Test
@@ -38,7 +41,7 @@ public class ConsumerServiceTest {
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final ConsumerSaveUpdateRequest request = returnRequest();
-        when(consumerRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
         final Consumer consumer = requestToEntity(request);
         when(consumerRepository.save(any(Consumer.class))).thenReturn(consumer);
 
@@ -54,16 +57,19 @@ public class ConsumerServiceTest {
         // given
         final ConsumerSaveUpdateRequest request = returnRequest();
         //when
-        when(consumerRepository.existsByEmail(request.getEmail())).thenReturn(true);
+        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
 
         // when
         Assertions.assertThrows(MemberException.class, () -> consumerService.join(request));
     }
     private Consumer requestToEntity(ConsumerSaveUpdateRequest request){
-        return new Consumer(request.getEmail(), request.getPassword(), request.getName(),AuthenticationType.CONSUMER, true);
+        return new Consumer(
+                request.getUsername(),
+                request.getEmail(), request.getPassword(), request.getName(),AuthenticationType.CONSUMER, true);
     }
     private ConsumerSaveUpdateRequest returnRequest(){
         return new ConsumerSaveUpdateRequest(
+                "testid1",
                 "test@test.com",
                 "test",
                 "김사업"

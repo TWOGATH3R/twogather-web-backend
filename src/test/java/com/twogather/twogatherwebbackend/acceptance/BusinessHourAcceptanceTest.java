@@ -64,6 +64,7 @@ public class BusinessHourAcceptanceTest {
     @DisplayName("save: 열린 날만 요청해도 영업안하는요일까지 포함해서 응답으로 줘야한다")
     public void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() throws Exception {
         //given
+        StoreOwner owner1 = ownerRepository.findByUsername(owner.getUsername()).get();
         BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
                 store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null

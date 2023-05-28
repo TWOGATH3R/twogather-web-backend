@@ -3,8 +3,6 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
 import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/api/consumers")
@@ -46,7 +43,7 @@ public class ConsumerController {
     @GetMapping("/{memberId}")
     @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> getConsumerInfo(@PathVariable final Long memberId) {
-        ConsumerResponse data = consumerService.getMemberWithAuthorities(memberId);
+        ConsumerResponse data = consumerService.getConsumerInfo(memberId);
         return ResponseEntity.ok(new Response(data));
     }
 

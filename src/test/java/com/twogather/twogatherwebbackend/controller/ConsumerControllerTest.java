@@ -16,6 +16,7 @@ import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -68,7 +69,7 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 정보 조회")
     public void getConsumerInfo_WhenGetConsumerInfo_Then200Ok() throws Exception {
         //given
-        when(consumerService.getMemberWithAuthorities(anyLong())).thenReturn(CONSUMER_RESPONSE);
+        when(consumerService.getConsumerInfo(anyLong())).thenReturn(CONSUMER_RESPONSE);
         //when
         //then
 
@@ -90,6 +91,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
                         )
                 ));
@@ -121,6 +123,7 @@ public class ConsumerControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("고객의 고유 id")
                         ),
                         requestFields(
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
@@ -128,6 +131,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
                         )
                 ));
@@ -156,11 +160,13 @@ public class ConsumerControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
                         ),
                         responseFields(
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")

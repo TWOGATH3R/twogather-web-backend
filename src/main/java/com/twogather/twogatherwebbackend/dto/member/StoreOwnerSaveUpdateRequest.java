@@ -29,8 +29,8 @@ public class StoreOwnerSaveUpdateRequest extends MemberSaveUpdateRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalDate businessStartDate;
 
-    public StoreOwnerSaveUpdateRequest(String email, String password, String name, String businessNumber, String businessName, LocalDate businessStartDate) {
-        super(email, password, name);
+    public StoreOwnerSaveUpdateRequest(String username, String email, String password, String name, String businessNumber, String businessName, LocalDate businessStartDate) {
+        super(email, username, password, name);
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;

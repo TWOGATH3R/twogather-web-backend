@@ -3,14 +3,10 @@ package com.twogather.twogatherwebbackend.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Optional;
 
 @Slf4j
 public class SecurityUtils {
-    public static String getLoginUserEmail() {
+    public static String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication==null){

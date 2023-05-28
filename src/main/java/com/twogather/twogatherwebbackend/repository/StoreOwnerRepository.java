@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface StoreOwnerRepository extends JpaRepository<StoreOwner, Long> {
-    boolean existsByEmail(String email);
-    Optional<StoreOwner> findByEmail(String email);
+    boolean existsByUsername(String username);
+    Optional<StoreOwner> findByUsername(String username);
 }
