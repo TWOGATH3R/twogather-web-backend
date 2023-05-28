@@ -1,10 +1,7 @@
 package com.twogather.twogatherwebbackend.config;
 
 
-import com.twogather.twogatherwebbackend.auth.JwtAccessDeniedHandler;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationEntryPoint;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationFilter;
-import com.twogather.twogatherwebbackend.auth.JwtAuthorizationFilter;
+import com.twogather.twogatherwebbackend.auth.*;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +24,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CorsConfig corsConfig;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final PrivateConstants constants;
+
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,6 +33,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .cors().and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
@@ -51,8 +51,8 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtAuthenticationEntryPoint))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint));
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants));
         }
     }
 

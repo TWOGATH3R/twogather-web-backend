@@ -7,16 +7,30 @@ api spec 문서
 :toclevels: 2
 :sectlinks:
 
-== Login API
+== Auth
 
-=== Post
+=== Login
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
-== Email API
-=== Post
+== Email
+=== Email-Verification
 operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
 
-== BusinessHour API
+== Menu
+
+=== Get
+operation::menu/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Delete
+operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
+
+=== Save
+operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
+=== Update
+operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
+== BusinessHour
 
 === Get
 operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
@@ -31,7 +45,13 @@ operation::business-hour/save/[snippets='http-request,path-parameters,request-fi
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
-== Store API
+== Keyword
+=== Get-List
+operation::keywords/get/[snippets='http-request,request-parameters,http-response,response-fields']
+=== Set-Keyword-Store-Association
+operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
+
+== Store
 
 === Save
 operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
@@ -39,16 +59,13 @@ operation::store/save/[snippets='http-request,request-fields,http-response,respo
 === Get-One
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']
 
-=== Get-Keyword
-operation::store/get-keyword/[snippets='http-request,http-response,response-fields']
-
 === Get-List
 operation::store/get-list/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Get-List-Search
 operation::store/get-list-search/[snippets='http-request,request-parameters,http-response,response-fields']
 
-=== Get-My-List
+=== Get-My-Store-List
 operation::store/get-my-list/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
 
 === Delete
@@ -58,7 +75,7 @@ operation::store/delete/[snippets='http-request,path-parameters,http-response']
 operation::store/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
-== Store-Owner API
+== Store-Owner
 
 === Get
 operation::owner/get/[snippets='http-request,path-parameters,http-response,response-fields']
@@ -72,7 +89,7 @@ operation::owner/update/[snippets='http-request,path-parameters,request-fields,h
 === Delete
 operation::owner/delete/[snippets='http-request,path-parameters,http-response']
 
-== Consumer API
+== Consumer
 
 === Get
 operation::consumer/get/[snippets='http-request,path-parameters,http-response,response-fields']
@@ -86,7 +103,7 @@ operation::consumer/update/[snippets='http-request,path-parameters,request-field
 === Delete
 operation::consumer/delete/[snippets='http-request,path-parameters,http-response']
 
-== Image API
+== Image
 
 === Get
 operation::image/get/[snippets='http-request,path-parameters,http-response,response-fields']
@@ -98,7 +115,7 @@ operation::image/save/[snippets='http-request,path-parameters,http-response,resp
 operation::image/delete/[snippets='http-request,path-parameters,http-response']
 
 
-== Review API
+== Review
 
 === Get-My-Review-List
 operation::review/getMyReviewInfos/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
@@ -112,17 +129,24 @@ operation::review/update/[snippets='http-request,path-parameters,http-response,r
 === Delete
 operation::review/delete/[snippets='http-request,path-parameters,http-response']
 
-== Comment API
+== Comment
 === Save
 operation::comment/save/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Update
 operation::comment/update/[snippets='http-request,path-parameters,http-response,response-fields']
 
-== Category API
+== Category
 
 === Get
 operation::category/get/[snippets='http-request,http-response,response-fields']
+
+== Like
+=== AddLike
+operation::like/setLike/[snippets='http-request,path-parameters']
+
+=== DeleteLike
+operation::like/deleteLike/[snippets='http-request,path-parameters']
 
 
 :linkattrs:

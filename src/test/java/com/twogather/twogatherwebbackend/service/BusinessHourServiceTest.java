@@ -1,12 +1,36 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.domain.BusinessHour;
+import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.valid.BusinessHourValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)//Mock 객체 생성, 초기화
 public class BusinessHourServiceTest {
@@ -14,133 +38,75 @@ public class BusinessHourServiceTest {
     private BusinessHourRepository businessHourRepository;
     @Mock
     private StoreRepository storeRepository;
+    @Mock
+    private BusinessHourValidator validator;
+
     private BusinessHourService businessHourService;
 
-
-    /*
-    @Test1
-    @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void save_WhenValidRequest_ShouldResponse() {
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        businessHourService = new BusinessHourService(businessHourRepository, storeRepository, validator);
+    }
+    @Test
+    @DisplayName("saveList: businessHour을 여러건 저장할때 사용한다. 입력되지않은 요일에 대해서는 영업안함을 표시하여 응답에 포함시킨다")
+    void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() {
         // given
-        final Long ID = 1L;
-        final BusinessHour businessHour = returnBusinessHour();
-        when(storeRepository.findById(ID)).thenReturn(Optional.of(new Store()));
-        when(businessHourRepository.save(any(BusinessHour.class))).thenReturn(businessHour);
-        BusinessHourSaveRequest request = returnBusinessHourSaveRequest();
-        when(businessHourRepository.findByStoreStoreIdAndDayOfWeek(request.getStoreId(), request.getDayOfWeek()))
-                .thenReturn(Optional.empty());
+        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreApprovalStatus.APPROVED,"");
+        List<BusinessHourSaveUpdateRequest> onlyOpenDaysRequestList = Arrays.asList(
+                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null)
+        );
+        List<BusinessHour> fullWeekBusinessHours = Arrays.asList(
+                new BusinessHour(1l,store,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHour(2l,store,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHour(3l,store, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null),
+                new BusinessHour(4l,store, null,null, DayOfWeek.THURSDAY, false, false, null, null),
+                new BusinessHour(5l,store,  null,null, DayOfWeek.FRIDAY, false, false, null, null),
+                new BusinessHour(6l,store,null,null, DayOfWeek.SATURDAY, false, false, null, null),
+                new BusinessHour(7l,store, null,null, DayOfWeek.SUNDAY, false, false, null, null)
+        );
+        List<BusinessHourResponse> fullWeekBusinessHourResponse = Arrays.asList(
+                new BusinessHourResponse(1l,1l,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourResponse(2l,1l,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHourResponse(3l,1l, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null),
+                new BusinessHourResponse(4l,1l, null,null, DayOfWeek.THURSDAY, false, false, null, null),
+                new BusinessHourResponse(5l,1l,  null,null, DayOfWeek.FRIDAY, false, false, null, null),
+                new BusinessHourResponse(6l,1l,null,null, DayOfWeek.SATURDAY, false, false, null, null),
+                new BusinessHourResponse(7l,1l, null,null, DayOfWeek.SUNDAY, false, false, null, null)
+        );
+
+
         // when
+        doNothing().when(validator).validateBusinessHourRequest(any());
+        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
+        when(businessHourRepository.saveAll(any())).thenReturn(fullWeekBusinessHours);
+
+        List<BusinessHourResponse> responseList = businessHourService.saveList(1L, onlyOpenDaysRequestList);
+
         // then
-        assertDoesNotThrow(() -> businessHourService.save(request));
+        assertNotNull(responseList);
+        assertEquals(7, responseList.size());
+        assertThat(responseList).usingRecursiveComparison().isEqualTo(fullWeekBusinessHourResponse);
     }
 
 
-    @Test1
-    @DisplayName("save: 저장하는 과정에서 <가게 ID + 요일> 에 해당하는 객체가 발견되어 예외가 터진다")
-    public void save_WhenFoundAnotherStoreEntity_ShouldReturnException() {
-        // given
-        BusinessHourSaveRequest request = returnBusinessHourSaveRequest();
-        when(businessHourRepository.findByStoreStoreIdAndDayOfWeek(request.getStoreId(), request.getDayOfWeek()))
-                .thenReturn(Optional.of(new BusinessHour()));
-        // when, then
-        BusinessHourException exception = assertThrows(BusinessHourException.class, () -> {
-            businessHourService.save(request);
-        });
-        assertEquals(BusinessHourException.BusinessHourErrorCode.DUPLICATE_DAY_OF_WEEK, exception.getErrorCode());
-    }
+    @Test
+    @DisplayName("saveList: businessHour 을 여러건 저장할때 사용한다. 요일이 중복되어 요청되는 경우 exception")
+    void whenDuplicateDaysProvided_thenThrowsException() {
+        // Given
+        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreApprovalStatus.APPROVED,"");
+        List<BusinessHourSaveUpdateRequest> duplicatedDayOfWeekRequestList = Arrays.asList(
+                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
+        );
 
-    @Test1
-    @DisplayName("find: storeId에 해당하는 businessHour 객체가 존재하지 않는다")
-    public void find_WhenStoreIdNotFound_ShouldThrowException(){
-        //given
-        final Long ID = 1L;
-        when(businessHourRepository.findByStoreStoreId(ID)).thenReturn(new ArrayList<>());
-        //when
-        BusinessHourException exception = assertThrows(BusinessHourException.class, () -> {
-            businessHourService.findBusinessHoursByStoreId(ID);
-        });
-        //then
-        assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_STORE_ID, exception.getErrorCode());
-    }
-    @Test1
-    @DisplayName("find: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void find_WhenValidRequest_ShouldResponse(){
-        //given
-        final List<BusinessHour> result = returnBusinessHourList();
-        final Long ID = 1l;
-        when(businessHourRepository.findByStoreStoreId(ID)).thenReturn(result);
-        //when
-        List<BusinessHourResponse> list = businessHourService.findBusinessHoursByStoreId(ID);
-        //then
-        assertEquals(list.get(0), result.get(0));
-    }
-    @Test1
-    @DisplayName("update: storeId와 dayOfWeek(요일)에 해당하는 BusinessHour객체가 없습니다")
-    public void update_WhenNoSuchBusinessHour_ShouldReturnException(){
-        //given
-        final Long ID = 1l;
-        when(businessHourRepository.findById(ID)).thenReturn(Optional.empty());
-        BusinessHourUpdateRequest request = returnBusinessHourUpdateRequest();
-        //when
-        BusinessHourException exception = assertThrows(BusinessHourException.class, () -> {
-            businessHourService.update(ID, request);
-        });
-        //then
-        assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID, exception.getErrorCode());
-    }
-    @Test1
-    @DisplayName("update: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void update_WhenValidRequest_ShouldResponse(){
-        //given
-        final Long ID = 1l;
-        BusinessHour originBusinessHour = returnBusinessHour();
-        when(businessHourRepository.findById(ID)).thenReturn(Optional.of(originBusinessHour));
-        BusinessHourUpdateRequest request = returnBusinessHourUpdateRequest();
-        //when
-        businessHourService.update(ID, request);
-        BusinessHour updatedBusinessHour = businessHourRepository.findById(ID).get();
-        //then
-        assertEquals(updatedBusinessHour.getEndTime(), request.getEndTime());
-        assertEquals(updatedBusinessHour.getStartTime(), request.getStartTime());
-        assertEquals(updatedBusinessHour.getDayOfWeek(), request.getDayOfWeek());
+        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
 
-    }
-    @Test1
-    @DisplayName("delete: businessHour id로 찾은 객체가 존재하지 않습니다")
-    public void delete_WhenNoSuchBusinessHour_ShouldReturnException(){
-        //given
-        final Long ID = 1l;
-        when(businessHourRepository.findById(ID)).thenReturn(Optional.empty());
-        //when
-        BusinessHourException exception = assertThrows(BusinessHourException.class, () -> {
-            businessHourService.delete(ID);
+        // When & Then
+        assertThrows(BusinessHourException.class, () -> {
+            businessHourService.saveList(1L, duplicatedDayOfWeekRequestList);
         });
-        //then
-        assertEquals(BusinessHourException.BusinessHourErrorCode.NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID, exception.getErrorCode());
     }
-    @Test1
-    @DisplayName("delete: 유효한 요청이 왔을때 유효한 응답을 반환한다")
-    public void delete_WhenValidRequest_ShouldResponse(){
-        //given
-        final Long ID = 1l;
-        when(businessHourRepository.findById(ID)).thenReturn(Optional.of(new BusinessHour()));
-        doNothing().when(businessHourRepository).deleteById(ID);
-        //when, then
-        assertDoesNotThrow(() -> businessHourService.delete(ID));
-    }
-    private BusinessHourSaveRequest returnBusinessHourSaveRequest(){
-        return new BusinessHourSaveRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
-    }
-    private BusinessHourUpdateRequest returnBusinessHourUpdateRequest(){
-        return new BusinessHourUpdateRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, true, BREAK_START_TIME, BREAK_END_TIME);
-    }
-    private BusinessHour returnBusinessHour(){
-        return new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null);
-    }
-    private List<BusinessHour> returnBusinessHourList(){
-        List<BusinessHour> list = new ArrayList<>();
-        list.add(new BusinessHour(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null,null));
-        list.add(new BusinessHour(ANOTHER_STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null));
-        return list;
-    }*/
 }

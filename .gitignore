@@ -4,9 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-/src/main/resources/application.properties
 /src/main/resources/application-dev.properties
-/src/main/resources/application-prod.properties
 /src/test/resources/application-test.properties
 ### STS ###
 .apt_generated
@@ -38,9 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### JWT ###
-/src/main/java/com/twogather/twogatherwebbackend/auth/PrivateConstants.java
 
 ### Testing with personal information ###
 /src/test/java/com/twogather/twogatherwebbackend/acceptance/SignUpSuccessTest.java

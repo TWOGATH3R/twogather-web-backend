@@ -16,7 +16,7 @@ public class BusinessHour {
     @Column(name="business_hour_id")
     private Long businessHourId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
@@ -66,6 +66,18 @@ public class BusinessHour {
     }
     public BusinessHour(Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
                         Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
+        this.store = store;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.dayOfWeek = dayOfWeek;
+        this.isOpen = isOpen;
+        this.hasBreakTime = hasBreakTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
+    }
+    public BusinessHour(Long id,Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
+                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
+        this.businessHourId = id;
         this.store = store;
         this.startTime = startTime;
         this.endTime = endTime;

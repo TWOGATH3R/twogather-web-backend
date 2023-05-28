@@ -1,11 +1,13 @@
 package com.twogather.twogatherwebbackend.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,5 +18,10 @@ public class Image {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    private String serverFileName;
+    private String url;
+
+    public Image(Store store, String url){
+        this.store = store;
+        this.url = url;
+    }
 }

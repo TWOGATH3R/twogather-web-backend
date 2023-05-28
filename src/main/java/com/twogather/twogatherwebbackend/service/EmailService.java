@@ -23,7 +23,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
 
     // Create a rate limiter that allows 1 request per 5 minutes
-    private static final RateLimiter rateLimiter = RateLimiter.create(0.0033);
+    private static final RateLimiter rateLimiter = RateLimiter.create(1);
 
     public VerificationCodeResponse sendEmail(String to) {
         checkRateLimiter();

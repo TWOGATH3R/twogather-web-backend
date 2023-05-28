@@ -33,10 +33,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    private PrivateConstants constants;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                   PrivateConstants constants) {
         this.authenticationManager = authenticationManager;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.setFilterProcessesUrl("/api/login"); // 로그인 URL 변경
+        this.constants = constants;
+
     }
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
@@ -48,7 +54,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("JwtAuthenticationFilter : 진입");
 
         // request에 있는 username과 password를 파싱해서 자바 Object로 받기
-
         ObjectMapper om = new ObjectMapper();
         LoginRequest loginRequest = createLoginRequest(om, request);
 
@@ -57,7 +62,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 유저네임패스워드 토큰 생성
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getUsername(),
                         loginRequest.getPassword());
 
         System.out.println("JwtAuthenticationFilter : 토큰생성완료");
@@ -68,9 +73,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
         // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
 
-        // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
-        // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
-        // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
         try {
             Authentication authentication =
                     authenticationManager.authenticate(authenticationToken);
@@ -95,26 +97,45 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new CustomAuthenticationException(LOGIN_FAILURE);
         }
     }
+    // 액세스 토큰 생성
+    private String generateAccessToken(CustomUser customUser) {
+        return JWT.create()
+                .withSubject(customUser.getMemberId().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + constants.ACCESS_TOKEN_EXPIRATION_TIME))
+                .withClaim("id", customUser.getMemberId())
+                .withClaim("role", customUser.getRole())
+                .sign(Algorithm.HMAC512(constants.JWT_SECRET));
+    }
+
+    // 리프레시 토큰과 함께 응답 생성
+    private void writeTokensToResponse(CustomUser customUser, HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken);
+        response.addHeader(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX +  refreshToken);
+        response.getWriter().write(loginResponseJson);
+    }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException {
 
         CustomUser customUser = (CustomUser) authResult.getPrincipal();
 
-        String jwtToken = JWT.create()
-                .withSubject(customUser.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+ PrivateConstants.EXPIRATION_TIME))
-                .withClaim("id", customUser.getMemberId())
-                .withClaim("role", customUser.getRole())
-                .withClaim("username", customUser.getUsername())
-                .sign(Algorithm.HMAC512(PrivateConstants.SECRET));
+        String accessToken = generateAccessToken(customUser);
+        String refreshToken = generateRefreshToken(customUser);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
-        response.addHeader(PrivateConstants.HEADER_STRING, PrivateConstants.TOKEN_PREFIX+jwtToken);
-        response.getWriter().write(loginResponseJson);
+        writeTokensToResponse(customUser, response, accessToken, refreshToken);
+    }
+    // 리프레시 토큰 생성
+    private String generateRefreshToken(CustomUser customUser) {
+        return JWT.create()
+                .withSubject(customUser.getMemberId().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + constants.REFRESH_TOKEN_EXPIRATION_TIME))
+                .withClaim("id", customUser.getMemberId())
+                .sign(Algorithm.HMAC512(constants.JWT_SECRET));
     }
 
 }

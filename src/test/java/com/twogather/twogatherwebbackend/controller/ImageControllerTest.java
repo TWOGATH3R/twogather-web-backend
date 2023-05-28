@@ -18,6 +18,7 @@ import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumen
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -45,7 +46,7 @@ public class ImageControllerTest extends ControllerTest{
     @DisplayName("이미지 업로드")
     public void uploadWhenImageSave_Then201() throws Exception {
         //given
-        when(imageService.upload(any())).thenReturn(IMAGE_RESPONSE_LIST);
+        when(imageService.upload(anyLong(), any())).thenReturn(IMAGE_RESPONSE_LIST);
         //when
         //then
 

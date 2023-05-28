@@ -9,7 +9,7 @@ import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.dto.valid.BizRegNumberValidator;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,10 +32,10 @@ public class StoreOwnerService {
     public boolean isStoreOwner(Long memberId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        Member member = memberRepository.findByEmail(currentUsername).orElseThrow(
-                ()-> new MemberException(NO_SUCH_EMAIL)
+        Member member = memberRepository.findByUsername(currentUsername).orElseThrow(
+                ()-> new MemberException(NO_SUCH_USERNAME)
         );
-        if (!currentUsername.equals(member.getEmail())) {
+        if (!currentUsername.equals(member.getUsername())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
         }
         return true;
@@ -43,8 +43,10 @@ public class StoreOwnerService {
 
     public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
         if(!validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName())) throw new MemberException(BIZ_REG_NUMBER_VALIDATION);
-        validateDuplicateEmail(request.getEmail());
-        StoreOwner owner = new StoreOwner(request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
+        validateDuplicateEmail(request.getUsername());
+        StoreOwner owner = new StoreOwner(
+                request.getUsername(),
+                request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
                 request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
         return toStoreOwnerResponse(storedOwner);
@@ -60,12 +62,6 @@ public class StoreOwnerService {
         return new StoreOwnerResponse();
     }
 
-    @Transactional(readOnly = true)
-    public StoreOwnerResponse getMemberWithAuthorities(String email){
-        StoreOwner owner = findMemberByEmailOrElseThrow(email);
-
-        return toStoreOwnerResponse(owner);
-    }
     @Transactional(readOnly = true)
     public StoreOwnerResponse getMemberWithAuthorities(Long id){
         //TODO: 구현
@@ -84,16 +80,15 @@ public class StoreOwnerService {
         return null;
     }
 
-    public StoreOwner findMemberByEmailOrElseThrow(final String email){
-        return storeOwnerRepository.findByEmail(email).orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
-    }
-    public void validateDuplicateEmail(final String email){
-        if (storeOwnerRepository.existsByEmail(email)) {
-            throw new MemberException(DUPLICATE_EMAIL);
+    public void validateDuplicateEmail(final String username){
+        if (memberRepository.existsByUsername(username)) {
+            throw new MemberException(DUPLICATE_USERNAME);
         }
     }
     private StoreOwnerResponse toStoreOwnerResponse(StoreOwner owner){
-        return new StoreOwnerResponse(owner.getMemberId(), owner.getName(), owner.getEmail(),
+        return new StoreOwnerResponse(owner.getMemberId(),
+                owner.getUsername(),
+                owner.getName(), owner.getEmail(),
                 owner.getBusinessNumber(), owner.getBusinessName(), owner.getBusinessStartDate());
     }
 }
