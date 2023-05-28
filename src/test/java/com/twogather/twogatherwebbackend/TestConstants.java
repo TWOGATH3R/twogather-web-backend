@@ -193,7 +193,7 @@ public class TestConstants {
             }};
     public static final CategoryResponse CATEGORY_RESPONSE =
             new CategoryResponse(1l,"양식");
-    public static final ArrayList IMAGE_RESPONSE_LIST =
+    public static final List IMAGE_RESPONSE_LIST =
             new ArrayList<ImageResponse>(){{
                 add(IMAGE_RESPONSE);
                 add(IMAGE_RESPONSE);

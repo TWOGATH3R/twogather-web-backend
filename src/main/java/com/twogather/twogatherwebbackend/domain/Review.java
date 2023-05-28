@@ -1,12 +1,14 @@
 package com.twogather.twogatherwebbackend.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +23,7 @@ public class Review {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    //이거 string으로 해도되는건가
+    @Column(name = "content", columnDefinition = "VARCHAR(5000)")
     private String content;
     private Double score;
     private LocalDate createdDate;

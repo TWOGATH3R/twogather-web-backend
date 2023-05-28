@@ -1,9 +1,6 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +33,11 @@ public class TestHelper {
     public static void createAuthority(StoreOwner owner){
         List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_STORE_OWNER"));
         Authentication authentication = new UsernamePasswordAuthenticationToken(owner.getEmail(), null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    public static void createAuthority(Consumer consumer){
+        List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_CONSUMER"));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(consumer.getEmail(), null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
