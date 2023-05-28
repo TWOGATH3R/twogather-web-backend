@@ -141,6 +141,13 @@ operation::comment/update/[snippets='http-request,path-parameters,http-response,
 === Get
 operation::category/get/[snippets='http-request,http-response,response-fields']
 
+== Like
+=== AddLike
+operation::like/setLike/[snippets='http-request,path-parameters']
+
+=== DeleteLike
+operation::like/deleteLike/[snippets='http-request,path-parameters']
+
 
 :linkattrs:
 :bookmarks:

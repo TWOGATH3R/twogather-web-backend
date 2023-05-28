@@ -8,6 +8,9 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"store_id", "member_id"})
+})
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

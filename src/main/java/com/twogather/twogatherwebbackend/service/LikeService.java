@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Likes;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.exception.LikeException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.LikeRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.twogather.twogatherwebbackend.exception.LikeException.LikeErrorCode.DUPLICATE_LIKE;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
@@ -34,6 +36,9 @@ public class LikeService {
         Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
+        if(likeRepository.findByStoreStoreIdAndMemberMemberId(member.getMemberId(), storeId).isPresent()){
+            throw new LikeException(DUPLICATE_LIKE);
+        }
         likeRepository.save(new Likes(store, member));
     }
 
@@ -47,6 +52,7 @@ public class LikeService {
 
         if(deletedRows!=1){
             log.error("너무많거나 적은 like entity가 삭제되었습니다 storeId: {}, memberId: {}", storeId, member.getMemberId());
+
         }
 
     }
