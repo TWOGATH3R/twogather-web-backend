@@ -12,10 +12,12 @@ import java.time.LocalDate;
 @Getter
 public class StoreDetailReviewResponse extends ReviewResponse{
     private Long consumerId;
+    private Double consumerAvgScore;
 
     public StoreDetailReviewResponse(Long consumerId, Long reviewId, String content, Double score,
-                              LocalDate createdDate, String consumerName) {
+                              LocalDate createdDate, String consumerName, Double consumerAvgScore) {
         super(reviewId, content, score, createdDate, consumerName);
         this.consumerId = consumerId;
+        this.consumerAvgScore = consumerAvgScore;
     }
 }

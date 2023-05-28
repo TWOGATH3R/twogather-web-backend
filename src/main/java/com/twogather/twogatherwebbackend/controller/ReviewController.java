@@ -60,10 +60,10 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<Response> getReviewsByStoreIdAndPage(@PathVariable final Long storeId,
+    public ResponseEntity<Response> getReviewsByStoreId(@PathVariable final Long storeId,
                                                      @RequestParam(defaultValue = "desc") final String orderBy,
                                                      @RequestParam(defaultValue = "createdDate") final String orderColumn,
-                                                     @RequestParam(defaultValue = "1") final int page,
+                                                     @RequestParam(defaultValue = "0") final int page,
                                                      @RequestParam(defaultValue = "10") final int size) {
         Page<StoreDetailReviewResponse> reviews = reviewService.getReviewsByStoreId(storeId, orderBy, orderColumn, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(new Response(reviews));

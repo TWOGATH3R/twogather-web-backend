@@ -158,7 +158,7 @@ public class TestConstants {
     ));
 
     public static final StoreDetailReviewResponse REVIEW_RESPONSE =
-            new StoreDetailReviewResponse(1L, 1L,"너무 맛있어요~!" , 3.2, DATE, "김뿡치");
+            new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0);
     public static final ReviewSaveRequest REVIEW_SAVE_REQUEST =
             new ReviewSaveRequest(1l,1l,"진짜맛있어요!", 1.2);
     public static final ReviewUpdateRequest REVIEW_UPDATE_REQUEST =

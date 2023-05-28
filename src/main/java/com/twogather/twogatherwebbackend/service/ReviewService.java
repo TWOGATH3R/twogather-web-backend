@@ -5,7 +5,7 @@ import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveRequest;
 import com.twogather.twogatherwebbackend.dto.review.ReviewUpdateRequest;
-import com.twogather.twogatherwebbackend.repository.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -43,8 +43,6 @@ public class ReviewService {
 
     public Page<StoreDetailReviewResponse> getReviewsByStoreId(Long storeId, String orderBy,
                                                             String orderColumn, int page, int size) {
-        Page<Review> reviews;
-        List<StoreDetailReviewResponse> responseList = new ArrayList<>();
         Pageable pageable;
         
         if(orderBy.equals("desc")) {
@@ -55,15 +53,12 @@ public class ReviewService {
             pageable = PageRequest.of(page, size, Sort.by(orderColumn));
         }
 
-        reviews = reviewRepository.findByStoreStoreId(storeId, pageable);
+        List<StoreDetailReviewResponse> result = reviewRepository.findReviewsByStoreId(storeId, pageable);
 
-        // Review 객체들을 StoreDetailReviewResponse로 변환
-        for(Review review : reviews) {
-            responseList.add(new StoreDetailReviewResponse(review.getReviewer().getMemberId(), review.getReviewId(),
-                    review.getContent(), review.getScore(), review.getCreatedDate(), review.getReviewer().getName()));
-        }
-        
-        // PageImpl 구현체를 사용해 Page 반환
-        return new PageImpl<>(responseList, pageable, reviews.getTotalElements());
+        int resSize = result.size();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), size);
+
+        return new PageImpl<>(result.subList(start, end), pageable, size);
     }
 }

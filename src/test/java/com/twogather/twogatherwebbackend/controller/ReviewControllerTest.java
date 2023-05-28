@@ -83,11 +83,10 @@ public class ReviewControllerTest extends ControllerTest {
     @Test
     @DisplayName("페이징된 리뷰 목록 조회")
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
-        //TODO: 테스트코드 작성
         Page<StoreDetailReviewResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-                new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치"),
-                new StoreDetailReviewResponse(1L, 2L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치"),
-                new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치")
+                new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
+                new StoreDetailReviewResponse(1L, 2L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
+                new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0)
         ));
 
         when(reviewService.getReviewsByStoreId(anyLong(), any(), any(), anyInt(), anyInt()))
@@ -96,7 +95,7 @@ public class ReviewControllerTest extends ControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}/reviews", 1)
                         .param("orderBy", "desc")
                         .param("orderColumn", "createdDate")
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -114,13 +113,14 @@ public class ReviewControllerTest extends ControllerTest {
                                 requestParameters(
                                         parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
                                         parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdDate입니다."),
-                                        parameterWithName("page").description("조회할 페이지 번호. 기본값은 1입니다."),
+                                        parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다."),
                                         parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 10입니다.")
                                 ),
                                 responseFields(
                                         fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("조회한 리뷰 목록"),
-                                        fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰를 작성한 사용자의의 이름"),
+                                        fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰를 작성한 사용자의 이름"),
                                         fieldWithPath("data.content[].consumerId").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 고유 ID"),
+                                        fieldWithPath("data.content[].consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 평균 평점"),
                                         fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
                                         fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                         fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
@@ -159,6 +159,7 @@ public class ReviewControllerTest extends ControllerTest {
                         .characterEncoding("UTF-8")
                 )
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andDo(document("review/getMyReviewInfos",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -169,7 +170,7 @@ public class ReviewControllerTest extends ControllerTest {
                         requestParameters(
                                 parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
                                 parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdDate입니다."),
-                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 1입니다."),
+                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다."),
                                 parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
                         ),
                         responseFields(
@@ -177,7 +178,7 @@ public class ReviewControllerTest extends ControllerTest {
                                 fieldWithPath("data.content[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
                                 fieldWithPath("data.content[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
                                 fieldWithPath("data.content[].storeAddress").type(JsonFieldType.STRING).description("가게 주소"),
-                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 이름"),
+                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰 작성자의 이름"),
                                 fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
@@ -216,6 +217,7 @@ public class ReviewControllerTest extends ControllerTest {
                                         .writeValueAsString(REVIEW_SAVE_REQUEST))
                 )
                 .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print())
                 .andDo(document("review/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -231,6 +233,7 @@ public class ReviewControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("data.consumerId").type(JsonFieldType.NUMBER).description("리뷰작성자의 고유 id"),
                                 fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰작성자의 이름"),
+                                fieldWithPath("data.consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 평균 평점"),
                                 fieldWithPath("data.reviewId").type(JsonFieldType.NUMBER).description("해당 리뷰의 고유 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("data.score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat()),
@@ -258,6 +261,7 @@ public class ReviewControllerTest extends ControllerTest {
                                         .writeValueAsString(REVIEW_UPDATE_REQUEST))
                 )
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andDo(document("review/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -274,6 +278,7 @@ public class ReviewControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("data.consumerId").type(JsonFieldType.NUMBER).description("리뷰 작성자의 고유 id"),
                                 fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰 작성자의 이름"),
+                                fieldWithPath("data.consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰 자자의 평균 평점"),
                                 fieldWithPath("data.reviewId").type(JsonFieldType.NUMBER).description("해당 리뷰의 고유 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("data.score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat()),

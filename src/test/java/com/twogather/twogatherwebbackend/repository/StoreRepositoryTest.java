@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.domain.Review;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
