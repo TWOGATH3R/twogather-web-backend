@@ -37,6 +37,9 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<StoreKeyword> storeKeywordList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store")
+    private List<Likes> likesList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

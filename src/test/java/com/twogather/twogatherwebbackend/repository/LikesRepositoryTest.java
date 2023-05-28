@@ -36,10 +36,10 @@ public class LikesRepositoryTest {
         em.flush();
         em.clear();
         int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId());
-        Likes like = likeRepository.findByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId()).get();
+        boolean isExist = likeRepository.findByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
 
         //then
         Assertions.assertEquals(deletedRows,1);
-        Assertions.assertNotNull(like);
+        Assertions.assertFalse(isExist);
     }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
+import static com.twogather.twogatherwebbackend.domain.QLikes.likes;
 import static com.twogather.twogatherwebbackend.domain.QReview.review;
 import static com.twogather.twogatherwebbackend.domain.QStore.store;
 import static com.twogather.twogatherwebbackend.domain.QStoreKeyword.storeKeyword;
@@ -35,17 +36,15 @@ import static org.springframework.util.StringUtils.hasText;
 @Repository
 public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
-    private final ReviewRepository reviewRepository;
 
-    public StoreCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory, ReviewRepository reviewRepository) {
+    public StoreCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
-        this.reviewRepository = reviewRepository;
     }
+
     @Override
-    public List<TopStoreResponse> findTopNByScore(int n) {
-        QReview review = QReview.review;
-        QImage image = QImage.image;
-        List<TopStoreResponse> results = jpaQueryFactory
+    public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
+        List<TopStoreResponse> results =
+                jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 TopStoreResponse.class,
@@ -56,37 +55,18 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                 image.url
                         ))
                 .from(store)
+                        .leftJoin(store.likesList, likes)
+                        .leftJoin(store.reviewList, review)
+                        .leftJoin(store.storeImageList, image)
                 .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
-                .leftJoin(store.reviewList, review)
-                .leftJoin(store.storeImageList, image)
                 .groupBy(store.storeId)
-                .orderBy(review.score.avg().desc())
+                .orderBy(createOrderSpecifiersWithTopN(order, orderBy))
                 .limit(n)
                 .fetch();
 
         return results;
     }
 
-    @Override
-    public List<TopStoreResponse> findTopNByReviewCount(int n) {
-        return jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                TopStoreResponse.class,
-                                store.storeId,store.name,
-                                MathExpressions.round(review.score.avg(), 1),
-                                store.address,
-                                image.url))
-                .from(store)
-                .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
-                .leftJoin(store.reviewList, review)
-                .leftJoin(store.storeImageList, image)
-                .groupBy(store.storeId)
-                .orderBy(review.count().desc())
-                .limit(n)
-                .fetch();
-
-    }
 
     public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location) {
         List<Store> storeQuery = jpaQueryFactory
@@ -99,6 +79,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 )
                 .leftJoin(store.reviewList, review)
                 .leftJoin(store.storeImageList, image)
+                .leftJoin(store.likesList, likes)
                 .leftJoin(store.category, QCategory.category)
                 .leftJoin(store.storeKeywordList, storeKeyword)
                 .orderBy(createOrderSpecifiers(pageable))
@@ -131,6 +112,21 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
         return new PageImpl<>(storeResponses, pageable, storeResponses.size());
     }
+    private OrderSpecifier<?> createOrderSpecifiersWithTopN(String order, String orderBy) {
+        Order direction = orderBy.equals("asc") ? Order.ASC : Order.DESC;
+
+        switch (order){
+            case "MOST_REVIEWED":
+                return new OrderSpecifier(direction, store.reviewList.size());
+            case "TOP_RATED":
+                return new OrderSpecifier(direction, review.score.avg());
+            case "MOST_LIKES_COUNT":
+                return new OrderSpecifier(direction, store.likesList.size());
+            default:
+                throw new SQLException(INVALID_REQUEST_PARAM);
+        }
+
+    }
     private OrderSpecifier<?> createOrderSpecifiers(Pageable page) {
         if(!page.getSort().isEmpty()){
             for (Sort.Order order : page.getSort()) {
@@ -140,6 +136,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         return new OrderSpecifier(direction, store.reviewList.size());
                     case "avgScore":
                         return new OrderSpecifier(direction, review.score.avg());
+                    case "likesCount":
+                        return new OrderSpecifier(direction, store.likesList.size());
                     default:
                         throw new SQLException(INVALID_REQUEST_PARAM);
                 }

@@ -9,8 +9,7 @@ import java.util.List;
 
 
 public interface StoreCustomRepository {
-    List<TopStoreResponse> findTopNByScore(int n);
-    List<TopStoreResponse> findTopNByReviewCount(int n);
+    List<TopStoreResponse> findTopNByType(int n, String order, String orderBy);
     Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String categoryName, String keyword, String location);
 
 }

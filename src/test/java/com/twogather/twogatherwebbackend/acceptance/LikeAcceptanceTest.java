@@ -124,13 +124,11 @@ public class LikeAcceptanceTest {
                         post("/api/stores/{storeId}/likes", store.getStoreId()))
                 .andExpect(status().isBadRequest());
 
-        em.flush();
-        em.clear();
-
         Likes likes = likeRepository.findByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId()).get();
         Store savedStore = storeRepository.findById(store.getStoreId()).get();
         Assertions.assertEquals(likes.getStore(), savedStore);
         Assertions.assertEquals(likes.getMember().getEmail(), consumer.getEmail());
+        int s = 2;
 
     }
     @Test
@@ -150,10 +148,6 @@ public class LikeAcceptanceTest {
         mockMvc.perform(
                         delete("/api/stores/{storeId}/likes", store.getStoreId()))
                 .andExpect(status().isForbidden());
-
-        em.flush();
-        em.clear();
-
 
     }
 

@@ -62,12 +62,7 @@ public class StoreService {
         return null;
     }
     public List<TopStoreResponse> getStoresTopN(StoreType type, int n){
-        if (type.equals(StoreType.MOST_REVIEWED)){
-            return storeRepository.findTopNByReviewCount(n);
-        }else if(type.equals(StoreType.TOP_RATED)){
-            return storeRepository.findTopNByScore(n);
-        }
-        throw new StoreException(INVALID_STORE_TYPE);
+        return storeRepository.findTopNByType(n, type.name(), "desc");
     }
 
     public void delete(Long storeId) {

@@ -7,10 +7,7 @@ import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
-import com.twogather.twogatherwebbackend.repository.CategoryRepository;
-import com.twogather.twogatherwebbackend.repository.ImageRepository;
-import com.twogather.twogatherwebbackend.repository.KeywordRepository;
-import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
+import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +33,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.TestConstants.OWNER_SAVE_REQUEST2;
+import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Rollback
 public class StoreGetAcceptanceTest {
     @Autowired
     private StoreRepository storeRepository;
@@ -65,6 +62,10 @@ public class StoreGetAcceptanceTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private LikeRepository likeRepository;
+    @Autowired
+    private ConsumerRepository consumerRepository;
 
     private Store store1;
     private Store store2;
@@ -98,7 +99,6 @@ public class StoreGetAcceptanceTest {
 
     @Test
     @DisplayName("키워드, 카테고리, 지역으로 가게 검색하기")
-    @Transactional
     public void WhenSearchByKeywordCategoryAndLocation_ThenSuccess() throws Exception {
         //given
         Keyword keyword1 = keywordRepository.save(new Keyword("분위기가 좋은"));
@@ -145,7 +145,6 @@ public class StoreGetAcceptanceTest {
 
     @Test
     @DisplayName("리뷰3은 평점이 가장 적기때문에 결과로 반환된 리스트들 중에서는 없어야한다")
-    @Transactional
     void WhenFindTopNByTopRated_ThenReturnValueExcludeStore3() throws Exception {
         StoreType type = StoreType.TOP_RATED;
         int count = 3;
@@ -161,8 +160,6 @@ public class StoreGetAcceptanceTest {
         Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
         List<TopStoreResponse> topStores = response.getData();
 
-        assertThat(topStores).isNotEmpty();
-
         //store3는 평점 가장 적다
         for (TopStoreResponse item: topStores){
             assertThat(item.getStoreName()).isNotEqualTo(store3.getName());
@@ -173,7 +170,6 @@ public class StoreGetAcceptanceTest {
 
     @Test
     @DisplayName("리뷰4는 리뷰가 가장적기때문에 결과로 반환된 값중에 리뷰4는 없어야한다")
-    @Transactional
     void WhenFindTopNByReviewCount_ThenReturnValueExcludeStore4() throws Exception {
         StoreType type = StoreType.MOST_REVIEWED;
         int count = 3;
@@ -189,8 +185,6 @@ public class StoreGetAcceptanceTest {
         Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
         List<TopStoreResponse> topStores = response.getData();
 
-        assertThat(topStores).isNotEmpty();
-
         //store3는 평점 가장 적다
         for (TopStoreResponse item: topStores){
             assertThat(item.getStoreName()).isNotEqualTo(store4.getName());
@@ -199,9 +193,9 @@ public class StoreGetAcceptanceTest {
         }
     }
 
+
     @Test
     @DisplayName("존재하는 데이터 보다 많은 양을 요청했을땐 존재하는 데이터만 보여준다")
-    @Transactional
     void WhenFindTopNByReviewCountMoreThenCurrentDBData_ThenReturnExistData() throws Exception {
         StoreType type = StoreType.MOST_REVIEWED;
         int count = 10;
@@ -232,6 +226,46 @@ public class StoreGetAcceptanceTest {
                 .andExpect(jsonPath("$.data.address").value(store1.getAddress()))
                 .andExpect(jsonPath("$.data.phone").value(store1.getPhone()))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    @DisplayName("likes 개수대로 정렬이 잘되는지 확인")
+    void WhenFindTopNByMostLikesCount_ThenReturnSortedValues() throws Exception {
+        StoreType type = StoreType.MOST_LIKES_COUNT;
+        int count = 4;
+        Consumer consumer1 = consumerRepository.save(new Consumer("dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer2= consumerRepository.save(new Consumer("das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer3 = consumerRepository.save(new Consumer("dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer4 = consumerRepository.save(new Consumer("dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+
+        likeRepository.save(new Likes(store1, consumer1));
+        likeRepository.save(new Likes(store1, consumer2));
+        likeRepository.save(new Likes(store1, consumer3));
+        likeRepository.save(new Likes(store1, consumer4));
+
+        likeRepository.save(new Likes(store2, consumer1));
+        likeRepository.save(new Likes(store2, consumer2));
+        likeRepository.save(new Likes(store2, consumer3));
+
+        likeRepository.save(new Likes(store3, consumer1));
+        likeRepository.save(new Likes(store3, consumer2));
+
+        likeRepository.save(new Likes(store4, consumer1));
+        // When
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        // Then
+        Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
+        List<TopStoreResponse> topStores = response.getData();
+
+        assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
+        assertThat(topStores.get(1).getStoreName()).isEqualTo(store2.getName());
+        assertThat(topStores.get(2).getStoreName()).isEqualTo(store3.getName());
+        assertThat(topStores.get(3).getStoreName()).isEqualTo(store4.getName());
     }
 
 

@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.config.QueryDslConfig;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.StoreType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
@@ -23,11 +24,13 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(QueryDslConfig.class)
 @SpringBootTest
 @TestPropertySource(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=100")
+@Transactional
 public class StoreRepositoryTest {
     @Autowired
     private StoreRepository storeRepository;
@@ -43,6 +46,10 @@ public class StoreRepositoryTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private ConsumerRepository consumerRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     private Store store1;
     private Store store2;
@@ -77,11 +84,12 @@ public class StoreRepositoryTest {
 
 
     @Test
-    @DisplayName("findTopNByScore should return the top N stores by score")
-    @Transactional
+    @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")
     void whenFindTopNByScore_ShouldReturnTopNStoresByScore() {
         // When
-        List<TopStoreResponse> topStores = storeRepository.findTopNByScore(3);
+        em.flush();
+        em.clear();
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.TOP_RATED.name(), "desc");
         // Then
         assertThat(topStores).isNotEmpty();
 
@@ -93,15 +101,16 @@ public class StoreRepositoryTest {
     }
 
     @Test
-    @DisplayName("findTopNByReviewCount should return the top N stores by review count")
-    @Transactional
-    void whenFindTopNByReviewCount_ShouldReturnTopNStoresByReviewCount() {
+    @DisplayName("리뷰개수/내림차순으로 결과가 잘 정렬되는지확인")
+    void whenFindTopNByReviewCount_ShouldNotReturnStore4() {
         // When
-        List<TopStoreResponse> topStores = storeRepository.findTopNByReviewCount(3);
-
+        em.flush();
+        em.clear();
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_REVIEWED.name(), "desc");
         // Then
         assertThat(topStores).isNotEmpty();
-        //store4는 리뷰가 가장 적다
+
+        //store4는 평균 점수가 가장 적다
         for (TopStoreResponse response: topStores){
             assertThat(response.getStoreName()).isNotEqualTo(store4.getName());
             assertThat(response.getStoreName()).isNotBlank();
@@ -109,8 +118,23 @@ public class StoreRepositoryTest {
     }
 
     @Test
+    @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인")
+    void whenFindTopNByLikeCount_ShouldReturnFirstIsStore1() {
+        //given
+        Consumer consumer1 = consumerRepository.save(new Consumer("dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        likeRepository.save(new Likes(store1, consumer1));
+        em.flush();
+        em.clear();
+        // When
+
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_LIKES_COUNT.name(), "desc");
+        // Then
+        assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
+
+    }
+
+    @Test
     @DisplayName("가게를 키워드, 지역, 카테고리로 검색하면 그에 해당하는 결과를 페이징을 사용해서 반환해준다")
-    @Transactional
     void WhenSearchStoresWithKeywordLocationCategory_ThenReturnStore1() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
@@ -153,7 +177,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 지역, 카테고리로만 검색하면 키워드는 필터링에서 제외하고 결과를 반환해준다")
-    @Transactional
     void WhenSearchStoresWithLocationCategoryExcludeKeyword_ThenReturnStore2WithAllKeywords() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
@@ -196,7 +219,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,카테고리로만 검색하면 지역은 필터링에서 제외하고 결과를 반환해준다")
-    @Transactional
     void WhenSearchStoresWithKeywordCategoryExcludeLocation_ThenReturnStore1WithAllLocations() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
@@ -240,7 +262,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,지역로만 검색하면 카테고리는 필터링에서 제외하고 결과를 반환해준다")
-    @Transactional
     void WhenSearchStoresWithKeywordLocationExcludeCategory_ThenReturnStore1WithAllCategories() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
@@ -285,7 +306,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,지역, 카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - reviewCount, 내림차순")
-    @Transactional
     void whenSortingParametersPassed_thenFindStoresByReviewCountDESCSortsResults() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "reviewsCount");
@@ -310,7 +330,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - reviewCount, 오름차순")
-    @Transactional
     void whenSortingParametersPassed_thenFindStoresByReviewCountASCCSortsResults() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
@@ -335,7 +354,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - avgScore, 내림차순")
-    @Transactional
     void whenSortingParametersPassed_thenFindStoresByAvgScoreDESCSortsResults() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "avgScore");
@@ -359,7 +377,6 @@ public class StoreRepositoryTest {
 
     @Test
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - avgScore, 오름차순")
-    @Transactional
     void whenSortingParametersPassed_thenFindStoresByAvgScoreASCSortsResults() {
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "avgScore");
