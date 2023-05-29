@@ -27,16 +27,13 @@ public class CategoryService {
         List<Category> categoryList = categoryRepository.findAll();
         ArrayList<CategoryResponse> categoryResponseList = new ArrayList<>();
         for (Category category: categoryList){
-            categoryResponseList.add(toResponse(category));
+            categoryResponseList.add(CategoryResponse.from(category.getCategoryId(), category.getName()));
         }
         return categoryResponseList;
     }
     public void setCategoriesForStore(Long storeId, Long categoryId){
-        Store store = storeRepository.findById(storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryException(NO_SUCH_CATEGORY));
         store.setCategory(category);
-    }
-    private CategoryResponse toResponse(Category category){
-        return new CategoryResponse(category.getCategoryId(), category.getName());
     }
 }

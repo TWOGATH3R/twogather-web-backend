@@ -33,7 +33,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("@reviewService.isMyReeview(#reviewId)")
     public ResponseEntity<Response> delete(@PathVariable final Long reviewId, @PathVariable String storeId) {
         reviewService.delete(reviewId);
 

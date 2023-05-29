@@ -2,9 +2,7 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.controller.BusinessHourController;
-import com.twogather.twogatherwebbackend.domain.BusinessHour;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -52,12 +50,15 @@ public class BusinessHourAcceptanceTest {
 
     private StoreOwner owner;
     private Store store;
+    private Store leavedStore;
 
     @BeforeEach
     public void setup(){
         owner = createOwner(ownerRepository, passwordEncoder);
         store = createStore(storeRepository,owner);
         createAuthority(owner);
+        leavedStore = storeRepository.save(new Store(null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
+
     }
     @Test
     @Transactional
@@ -97,6 +98,72 @@ public class BusinessHourAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    @Transactional
+    @DisplayName("save: 탈퇴한 회원의 경우 throw exception")
+    public void whenLeavedUserRequest_thenThrowException() throws Exception {
+        //given
+        StoreOwner isNotActiveOwner = ownerRepository.save(new StoreOwner("user1", "asd@naer.com", passwordEncoder.encode("asdasdw123"),
+                "김사업", AuthenticationType.STORE_OWNER, false));
+        createAuthority(isNotActiveOwner);
+        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                false, null,null
+        );
+        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
+                false, null,null
+        );
+        Long storeId = leavedStore.getStoreId();
+        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        businessHourList.add(businessHour1);
+        businessHourList.add(businessHour2);
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+
+        String url = "/api/stores/" + storeId + "/business-hours";
+
+        //when, then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("save: 탈퇴한 회원은 아니지만 삭제된 가게의 경우 throw exception")
+    public void whenDeletedStoreRequest_thenThrowException() throws Exception {
+        //given
+        createAuthority(owner);
+        Store leavedStore = storeRepository.save(
+                new Store(owner, null,null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
+
+        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                false, null,null
+        );
+        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
+                false, null,null
+        );
+        Long storeId = leavedStore.getStoreId();
+        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        businessHourList.add(businessHour1);
+        businessHourList.add(businessHour2);
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+
+        String url = "/api/stores/" + storeId + "/business-hours";
+
+        //when, then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                .andDo(MockMvcResultHandlers.print());
+    }
     @Test
     @Transactional
     @DisplayName("save: 모든요일에 대해 열린날을 요청하면 응답으로 닫힌날을 제공하면안된다")
@@ -397,6 +464,140 @@ public class BusinessHourAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    @Transactional
+    @DisplayName("update: 삭제된 가게에 대해 업데이트를 요청할 경우 throw exception")
+    public void whenDeletedStoreUpdateRequest_thenThrowException() throws Exception {
+        //given
+        BusinessHour businessHour1 = new BusinessHour(
+                leavedStore, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
+                false, null, null
+        );
+        BusinessHour businessHour2 = new BusinessHour(
+                leavedStore, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
+                false, null, null
+        );
+        BusinessHour businessHour3 = new BusinessHour(
+                leavedStore, null,null, DayOfWeek.WEDNESDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour4 = new BusinessHour(
+                leavedStore, null,null, DayOfWeek.THURSDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour5 = new BusinessHour(
+                leavedStore, null,null, DayOfWeek.FRIDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour6 = new BusinessHour(
+                leavedStore, null,null, DayOfWeek.SUNDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour7 = new BusinessHour(
+                leavedStore, null,null, DayOfWeek.SATURDAY, false,
+                false, null, null
+        );
+        businessHourRepository.save(businessHour1);
+        businessHourRepository.save(businessHour2);
+        businessHourRepository.save(businessHour3);
+        businessHourRepository.save(businessHour4);
+        businessHourRepository.save(businessHour5);
+        businessHourRepository.save(businessHour6);
+        businessHourRepository.save(businessHour7);
+
+        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateRequest request2 = new BusinessHourSaveUpdateRequest(
+                leavedStore.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        Long storeId = leavedStore.getStoreId();
+        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        businessHourList.add(request1);
+        businessHourList.add(request2);
+        BusinessHourController.BusinessHourSaveUpdateListRequest requestList = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+
+        String url = "/api/stores/" + storeId + "/business-hours";
+
+        //when, then
+        mockMvc.perform(put(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestList)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("update: 탈퇴한 회원이 업데이트를 요청할 경우 throw exception")
+    public void whenLeavedStoreOwnerUpdateRequest_thenThrowException() throws Exception {
+        StoreOwner isNotActiveOwner = ownerRepository.save(new StoreOwner("user1", "asd@naer.com", passwordEncoder.encode("asdasdw123"),
+                "김사업", AuthenticationType.STORE_OWNER, false));
+        createAuthority(isNotActiveOwner);
+        //given
+        BusinessHour businessHour1 = new BusinessHour(
+                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
+                false, null, null
+        );
+        BusinessHour businessHour2 = new BusinessHour(
+                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
+                false, null, null
+        );
+        BusinessHour businessHour3 = new BusinessHour(
+                store, null,null, DayOfWeek.WEDNESDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour4 = new BusinessHour(
+                store, null,null, DayOfWeek.THURSDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour5 = new BusinessHour(
+                store, null,null, DayOfWeek.FRIDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour6 = new BusinessHour(
+                store, null,null, DayOfWeek.SUNDAY, false,
+                false, null, null
+        );
+        BusinessHour businessHour7 = new BusinessHour(
+                store, null,null, DayOfWeek.SATURDAY, false,
+                false, null, null
+        );
+        businessHourRepository.save(businessHour1);
+        businessHourRepository.save(businessHour2);
+        businessHourRepository.save(businessHour3);
+        businessHourRepository.save(businessHour4);
+        businessHourRepository.save(businessHour5);
+        businessHourRepository.save(businessHour6);
+        businessHourRepository.save(businessHour7);
+
+        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
+                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateRequest request2 = new BusinessHourSaveUpdateRequest(
+                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        Long storeId = store.getStoreId();
+        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        businessHourList.add(request1);
+        businessHourList.add(request2);
+        BusinessHourController.BusinessHourSaveUpdateListRequest requestList = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+
+        String url = "/api/stores/" + storeId + "/business-hours";
+
+        //when, then
+        mockMvc.perform(put(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestList)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
+                .andDo(MockMvcResultHandlers.print());
+    }
 
     //get
     @Test

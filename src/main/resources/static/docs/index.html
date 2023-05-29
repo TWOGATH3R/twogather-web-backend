@@ -451,6 +451,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_auth">Auth</a>
 <ul class="sectlevel2">
 <li><a href="#_login">Login</a></li>
+<li><a href="#_consumer_password_verification">Consumer-Password-Verification</a></li>
+<li><a href="#_storeowner_password_verification">StoreOwner-Password-Verification</a></li>
 </ul>
 </li>
 <li><a href="#_email">Email</a>
@@ -618,8 +620,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg1MzMwNTU0fQ.D3-IOYFUD1apZpjU2F8z2ayJw-mgthCu0FBw4ZoCUxD--LtxbtAtXPT2X8lPtkUUQf9X6eLgojd70ezo9mcgaw
-Refresh-Token: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NTMzOTI4NH0.BUF_OKc5jv-b108cUnkPSrI4NnBfNVf61s1_RSxX3T5Wn5MYH5o9BPkjydIrk3Sa4tL7MWyZF61iuyDL71cDlw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg1Mzc2NDUyfQ.tqXcVnuwjnWlNGY0XbdDnQ-VQRqlis7VoSFljBFE54HBpj5hn_GnlGAA07rMkpsaFnC1r3ECG163n6qOA0oOMA
+Refresh-Token: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NTM4NTE4Mn0.MUKUHXgopMlHbAaELhKIX7sCRfqHYAb-6EjdBORxHSICXd40BnroOq1nJVgSRJ9P2bHq2sjIkHq5s85b48uyjQ
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -662,6 +664,194 @@ Content-Length: 43
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인한 회원의 고유 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_consumer_password_verification"><a class="link" href="#_consumer_password_verification">Consumer-Password-Verification</a></h3>
+<div class="sect3">
+<h4 id="_consumer_password_verification_http_request"><a class="link" href="#_consumer_password_verification_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers/verify-password HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 33
+Host: docs.api.com
+
+{
+  "password" : "passsword1"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consumer_password_verification_request_fields"><a class="link" href="#_consumer_password_verification_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">기존 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_consumer_password_verification_http_response"><a class="link" href="#_consumer_password_verification_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 45
+
+{
+  "data" : {
+    "isValid" : true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consumer_password_verification_response_fields"><a class="link" href="#_consumer_password_verification_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.isValid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 일치 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_storeowner_password_verification"><a class="link" href="#_storeowner_password_verification">StoreOwner-Password-Verification</a></h3>
+<div class="sect3">
+<h4 id="_storeowner_password_verification_http_request"><a class="link" href="#_storeowner_password_verification_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners/verify-password HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 33
+Host: docs.api.com
+
+{
+  "password" : "passsword1"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_storeowner_password_verification_request_fields"><a class="link" href="#_storeowner_password_verification_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">기존 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_storeowner_password_verification_http_response"><a class="link" href="#_storeowner_password_verification_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 45
+
+{
+  "data" : {
+    "isValid" : true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_storeowner_password_verification_response_fields"><a class="link" href="#_storeowner_password_verification_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.isValid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 일치 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -2241,7 +2431,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-05-29"
+  "businessStartDate" : "2023-05-30"
 }</code></pre>
 </div>
 </div>
@@ -2906,8 +3096,8 @@ Content-Length: 1000
   "totalPages" : 1,
   "totalElements" : 3,
   "pageSize" : 3,
-  "first" : true,
-  "last" : true
+  "last" : true,
+  "first" : true
 }</code></pre>
 </div>
 </div>
@@ -3094,7 +3284,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-05-29"
+  "businessStartDate" : "2023-05-30"
 }</code></pre>
 </div>
 </div>
@@ -3268,7 +3458,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=cbe22410-2b63-43cb-ba37-00519ffa0623 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=ffecc363-1e71-4fb8-b8bc-26fe732b1581 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3373,7 +3563,7 @@ Content-Length: 138
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=1d3ce231-c901-4b26-9e1d-fff350072e6e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=fb50d669-5633-4dce-b13e-32ac78467cb2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -3840,7 +4030,7 @@ Content-Length: 130
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=03a1774a-bb66-4944-aa3d-3500a2223031 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=6a25bbe1-dac5-467d-a928-d9e6ad8153f7 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -3982,7 +4172,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=26486471-4ecf-445d-ab4f-6806cfd35f45 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=fc997413-6eae-4d1c-90d4-723b93b5f3af HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4296,7 +4486,7 @@ Host: docs.api.com
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=_csrf
 
-68378db9-e5f8-4f22-af02-06caaccdb8ea
+99d2ef37-57ad-437e-8e3a-fb7cf442eb3f
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=fileList; filename=image1.jpg
 Content-Type: image/jpeg
@@ -4557,15 +4747,15 @@ Content-Length: 1198
       "consumerName" : "김지은"
     } ],
     "pageable" : "INSTANCE",
-    "totalElements" : 3,
-    "last" : true,
     "totalPages" : 1,
+    "last" : true,
+    "totalElements" : 3,
     "size" : 3,
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 3,
     "first" : true,
@@ -4759,7 +4949,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=cfc89116-3886-492b-ab14-558d879e1670 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=380e93ea-1696-41bd-8c80-8121e3181c41 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -4880,7 +5070,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=c5bee591-f7ce-4339-98c2-6039a1a71452 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=9e564044-43a1-4831-8a9c-0c2097804e82 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -5005,7 +5195,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=8614c493-84ae-4b8a-b563-7153ea59ad0e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=34629aff-6ca8-4ffd-acf9-fa1f436a00eb HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5106,7 +5296,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-05-29"
+    "createDate" : "2023-05-30"
   }
 }</code></pre>
 </div>
@@ -5216,7 +5406,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-05-29"
+    "createDate" : "2023-05-30"
   }
 }</code></pre>
 </div>
@@ -5424,7 +5614,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-05-28 19:28:17 +0900
+Last updated 2023-05-29 12:03:46 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

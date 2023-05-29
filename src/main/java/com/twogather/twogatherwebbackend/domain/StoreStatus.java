@@ -1,7 +1,8 @@
 package com.twogather.twogatherwebbackend.domain;
 
-public enum StoreApprovalStatus {
+public enum StoreStatus {
     APPROVED,
     PENDING,
-    DENIED
+    DENIED,
+    LEAVE
 }

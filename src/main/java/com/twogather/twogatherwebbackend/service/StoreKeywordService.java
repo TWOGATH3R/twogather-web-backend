@@ -41,7 +41,7 @@ public class StoreKeywordService {
                     keyword = keywordRepository.save(new Keyword(keywordString));
                 }
 
-                Store store = storeRepository.findById(storeId).orElseThrow(
+                Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
                         ()->new StoreException(NO_SUCH_STORE)
                 );
                 storeKeywordRepository.save(new StoreKeyword(store, keyword));

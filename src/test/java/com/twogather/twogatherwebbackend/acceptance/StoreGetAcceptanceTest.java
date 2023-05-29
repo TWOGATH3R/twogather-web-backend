@@ -5,23 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.TestUtil;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -71,13 +65,15 @@ public class StoreGetAcceptanceTest {
     private Store store2;
     private Store store3;
     private Store store4;
+    private Store leavedStore;
     static final int STORE_ENTITY_SIZE = 4;
     @BeforeEach
     void setUp() {
-        store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreApprovalStatus.APPROVED,null));
-        store2 = storeRepository.save(new Store(null,"가게2", "서울시 어쩌고 어저고", "010-1234-1234",StoreApprovalStatus.APPROVED,null));
-        store3 = storeRepository.save(new Store(null,"가게3", "대전광역시 어쩌고 어쩌고", "02-232-2222",StoreApprovalStatus.APPROVED,null));
-        store4 = storeRepository.save(new Store(null,"가게4", "서울시 어쩌고 어쩌고", "02-232-2522", StoreApprovalStatus.APPROVED,null));
+        store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreStatus.APPROVED,null));
+        store2 = storeRepository.save(new Store(null,"가게2", "서울시 어쩌고 어저고", "010-1234-1234", StoreStatus.APPROVED,null));
+        store3 = storeRepository.save(new Store(null,"가게3", "대전광역시 어쩌고 어쩌고", "02-232-2222", StoreStatus.APPROVED,null));
+        store4 = storeRepository.save(new Store(null,"가게4", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.APPROVED,null));
+        leavedStore = storeRepository.save(new Store(null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
 
         Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
@@ -146,6 +142,7 @@ public class StoreGetAcceptanceTest {
                 .andExpect(jsonPath("$.data[0].avgScore").value(3.2))
                 .andExpect(jsonPath("$.data[0].storeImageUrl").exists())
                 .andExpect(jsonPath("$.data[0].keywordList", hasSize(3)))
+                .andExpect(jsonPath("$.data[?(@.storeName == '가게5')]").doesNotExist())
                 .andReturn();
 
         //then
@@ -154,7 +151,7 @@ public class StoreGetAcceptanceTest {
     @Test
     @DisplayName("리뷰3은 평점이 가장 적기때문에 결과로 반환된 리스트들 중에서는 없어야한다")
     void WhenFindTopNByTopRated_ThenReturnValueExcludeStore3() throws Exception {
-        StoreType type = StoreType.TOP_RATED;
+        StoreSearchType type = StoreSearchType.TOP_RATED;
         int count = 3;
         // When
         em.flush();
@@ -179,7 +176,7 @@ public class StoreGetAcceptanceTest {
     @Test
     @DisplayName("리뷰4는 리뷰가 가장적기때문에 결과로 반환된 값중에 리뷰4는 없어야한다")
     void WhenFindTopNByReviewCount_ThenReturnValueExcludeStore4() throws Exception {
-        StoreType type = StoreType.MOST_REVIEWED;
+        StoreSearchType type = StoreSearchType.MOST_REVIEWED;
         int count = 3;
         em.flush();
         em.clear();
@@ -205,7 +202,7 @@ public class StoreGetAcceptanceTest {
     @Test
     @DisplayName("존재하는 데이터 보다 많은 양을 요청했을땐 존재하는 데이터만 보여준다")
     void WhenFindTopNByReviewCountMoreThenCurrentDBData_ThenReturnExistData() throws Exception {
-        StoreType type = StoreType.MOST_REVIEWED;
+        StoreSearchType type = StoreSearchType.MOST_REVIEWED;
         int count = 10;
         // When
         em.flush();
@@ -239,10 +236,11 @@ public class StoreGetAcceptanceTest {
 
 
     @Test
-    @DisplayName("likes 개수대로 정렬이 잘되는지 확인")
+    @DisplayName("likes 개수대로 정렬이 잘되는지 확인, leavedStore은 조회되지 않아야한다")
     void WhenFindTopNByMostLikesCount_ThenReturnSortedValues() throws Exception {
-        StoreType type = StoreType.MOST_LIKES_COUNT;
-        int count = 4;
+        StoreSearchType type = StoreSearchType.MOST_LIKES_COUNT;
+        int count = 5;
+        int realCount = 4;
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         Consumer consumer2= consumerRepository.save(new Consumer("user2","das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         Consumer consumer3 = consumerRepository.save(new Consumer("user3","dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
@@ -273,6 +271,7 @@ public class StoreGetAcceptanceTest {
         Response<List<TopStoreResponse>> response = TestUtil.convert(result, new TypeReference<Response<List<TopStoreResponse>>>(){});
         List<TopStoreResponse> topStores = response.getData();
 
+        assertThat(topStores.size()).isEqualTo(realCount);
         assertThat(topStores.get(0).getStoreName()).isEqualTo(store4.getName());
         assertThat(topStores.get(1).getStoreName()).isEqualTo(store2.getName());
         assertThat(topStores.get(2).getStoreName()).isEqualTo(store1.getName());

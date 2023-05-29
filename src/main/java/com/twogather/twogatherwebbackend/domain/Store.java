@@ -48,25 +48,25 @@ public class Store {
     private String address;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private StoreApprovalStatus isApproved;
+    private StoreStatus status;
     private String reasonForRejection;
 
 
-    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreApprovalStatus isApproved, String reasonForRejection){
+    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
         this.owner = owner;
         this.businessHourList = businessHourList;
         this.menuList = menuList;
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = isApproved;
+        this.status = status;
         this.reasonForRejection = reasonForRejection;
     }
     public Store(String name, String address, String phone){
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = StoreApprovalStatus.PENDING;
+        this.status = StoreStatus.PENDING;
         this.reasonForRejection = "";
     }
     public Store(StoreOwner owner, String name, String address, String phone){
@@ -74,15 +74,15 @@ public class Store {
         this.address=address;
         this.phone=phone;
         this.owner = owner;
-        this.isApproved = StoreApprovalStatus.PENDING;
+        this.status = StoreStatus.PENDING;
         this.reasonForRejection = "";
     }
-    public Store(Long id, String name, String address, String phone, StoreApprovalStatus isApproved, String reasonForRejection){
+    public Store(Long id, String name, String address, String phone, StoreStatus status, String reasonForRejection){
         this.storeId = id;
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = isApproved;
+        this.status = status;
         this.reasonForRejection = reasonForRejection;
     }
     public void updateName(String name) {
@@ -103,6 +103,11 @@ public class Store {
     public void setCategory(Category category){
         if(category!=null){
             this.category = category;
+        }
+    }
+    public void setStatus(StoreStatus status){
+        if(status!=null){
+            this.status = status;
         }
     }
 

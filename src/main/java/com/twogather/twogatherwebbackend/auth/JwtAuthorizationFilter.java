@@ -14,7 +14,6 @@ import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +25,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.INVALID_TOKEN;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_USERNAME;
 
 // 인가
 @Slf4j
@@ -85,7 +83,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (memberId != null) {
             // Retrieve member details from the database (you may need to modify this part)
-            Member member = memberRepository.findById(memberId).orElseThrow(
+            Member member = memberRepository.findActiveMemberById(memberId).orElseThrow(
                     ()->new MemberException(NO_SUCH_MEMBER_ID)
             );
             if (member == null) {

@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class TestHelper {
     }
 
     public static Store createStore(StoreRepository storeRepository, StoreOwner owner) {
-        return storeRepository.save(new Store(owner, null, null, "storeName", "storeAddress", "063-231-400", StoreApprovalStatus.APPROVED, ""));
+        return storeRepository.save(new Store(owner, null, null, "storeName", "storeAddress", "063-231-400", StoreStatus.APPROVED, ""));
     }
     public static void createAuthority(StoreOwner owner){
         List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_STORE_OWNER"));

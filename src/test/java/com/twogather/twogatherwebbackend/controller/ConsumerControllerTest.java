@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
@@ -174,6 +176,35 @@ public class ConsumerControllerTest extends ControllerTest {
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 검증")
+    public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
+        //given
+        when(consumerService.verifyPassword(any())).thenReturn(true);
+        //when
+        //then
+
+        mockMvc.perform(post("/api/consumers/verify-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .writeValueAsString(new VerifyPasswordRequest("passsword1"))))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("consumer/verify-password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
                         )
                 ));
 

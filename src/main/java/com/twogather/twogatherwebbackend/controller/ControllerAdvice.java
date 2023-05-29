@@ -54,7 +54,7 @@ public class ControllerAdvice {
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
         logInfo(request,e);
-        return ResponseEntity.badRequest().body(ErrorResponse.of(e));
+        return ResponseEntity.status(e.getStatus()).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException e) {

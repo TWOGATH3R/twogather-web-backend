@@ -3,9 +3,10 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
+import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -22,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_USERNAME;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
 @Service
@@ -40,19 +42,19 @@ public class StoreService {
 
         String username = SecurityUtils.getUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
-                ()->new MemberException(NO_SUCH_USERNAME)
+                ()->new MemberException(NO_SUCH_MEMBER)
         );
         validateDuplicateName(request.getStoreName());
         Store store = new Store(owner, request.getStoreName(), request.getAddress(), request.getPhone());
         Store savedStore = storeRepository.save(store);
-        return toStoreSaveUpdateResponse(savedStore);
+        return StoreSaveUpdateResponse.from(savedStore.getStoreId(), savedStore.getName(), savedStore.getAddress(), savedStore.getPhone());
     }
     public boolean isMyStore(Long storeId) {
         String username = SecurityUtils.getUsername();
-        Member member = memberRepository.findByUsername(username).orElseThrow(
-                ()-> new MemberException(NO_SUCH_USERNAME)
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                () ->new CustomAuthenticationException(UNAUTHORIZED)
         );
-        Store store = storeRepository.findById(storeId).orElseThrow(()->
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->
                 new CustomAccessDeniedException(ACCESS_DENIED)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
@@ -60,11 +62,7 @@ public class StoreService {
         }
         return true;
     }
-    public List<String> getKeyword(){
-        //TODO: 구현
-        return null;
-    }
-    public List<TopStoreResponse> getStoresTopN(StoreType type, int n){
+    public List<TopStoreResponse> getStoresTopN(StoreSearchType type, int n){
         return storeRepository.findTopNByType(n, type.name(), "desc");
     }
 
@@ -74,7 +72,7 @@ public class StoreService {
     }
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         if (request.getStoreName() != null && !request.getStoreName().isEmpty() && !request.getStoreName().equals(store.getName())) {
             validateDuplicateName(request.getStoreName());
             store.updateName(request.getStoreName());
@@ -82,7 +80,8 @@ public class StoreService {
         store.updateAddress(request.getAddress());
         store.updatePhone(request.getPhone());
 
-        return toStoreSaveUpdateResponse(store);
+        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
+
     }
     public Page<StoreResponseWithKeyword> getStores(
             Pageable pageable, String categoryName, String keyword,String location){
@@ -93,21 +92,15 @@ public class StoreService {
         return null;
     }
     public StoreSaveUpdateResponse getStore(Long storeId){
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
-        return toStoreSaveUpdateResponse(store);
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+
+        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
     }
 
     private void validateDuplicateName(String name){
         if (storeRepository.existsByName(name)) {
             throw new StoreException(StoreException.StoreErrorCode.DUPLICATE_NAME);
         }
-    }
-    private StoreResponse toStoreResponse(Store store){
-        //TODO: 구현
-        return null;
-    }
-    private StoreSaveUpdateResponse toStoreSaveUpdateResponse(Store store) {
-        return new StoreSaveUpdateResponse(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
     }
     private void validationBizRegNumber(final StoreSaveUpdateRequest request){
         boolean isValid = validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());

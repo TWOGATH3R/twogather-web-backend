@@ -27,7 +27,7 @@ public class MenuService {
     private final StoreRepository storeRepository;
 
     public List<MenuResponse> saveList(Long storeId, List<MenuSaveRequest> requestList) {
-        Store store = storeRepository.findById(storeId).orElseThrow(
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
         List<Menu> menuList = toMenuEntity(requestList, store);
@@ -36,7 +36,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> updateList(Long storeId, List<MenuUpdateRequest> menuList) {
-        storeRepository.findById(storeId).orElseThrow(
+        storeRepository.findActiveStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
 

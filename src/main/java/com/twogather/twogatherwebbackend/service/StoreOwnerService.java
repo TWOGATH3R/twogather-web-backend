@@ -1,15 +1,14 @@
 package com.twogather.twogatherwebbackend.service;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
-import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
+import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
+import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 
 @Service
@@ -31,14 +31,22 @@ public class StoreOwnerService {
     public boolean isStoreOwner(Long memberId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        Member member = memberRepository.findByUsername(currentUsername).orElseThrow(
-                ()-> new MemberException(NO_SUCH_USERNAME)
-        );
+        Member member = memberRepository.findActiveMemberByUsername(currentUsername).orElseThrow(
+                ()->  new CustomAuthenticationException(UNAUTHORIZED));
         if (!currentUsername.equals(member.getUsername())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
         }
         return true;
     }
+
+    public boolean verifyPassword(String password){
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER)
+        );
+        return passwordEncoder.matches(password, member.getPassword());
+    }
+
 
     public MemberResponse join(final MemberSaveUpdateRequest request){
         validateDuplicateUsername(request.getUsername());
@@ -50,7 +58,13 @@ public class StoreOwnerService {
         
     }
     public void delete(Long id){
-        //TODO:구현
+        StoreOwner owner = storeOwnerRepository.findById(id).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER_ID)
+        );
+        for (Store store:owner.getStoreList()) {
+            store.setStatus(StoreStatus.LEAVE);
+        }
+        owner.setIsActive(false);
     }
     public MemberResponse update(final MemberSaveUpdateRequest request){
        //TODO:구현

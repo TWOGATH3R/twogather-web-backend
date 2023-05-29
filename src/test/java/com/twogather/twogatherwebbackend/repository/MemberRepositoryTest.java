@@ -22,8 +22,8 @@ class MemberRepositoryTest extends RepositoryTest {
         Member expected = memberRepository.save(MEMBER);
 
         // when
-        Member findMember = memberRepository.findByUsername(MEMBER_USERNAME)
-                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME));
+        Member findMember = memberRepository.findActiveMemberByUsername(MEMBER_USERNAME)
+                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER));
 
         // then
         assertThat(findMember.getEmail()).isEqualTo(expected.getEmail());

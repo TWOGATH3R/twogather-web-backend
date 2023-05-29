@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Image;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
@@ -10,6 +11,7 @@ import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,13 +62,12 @@ public class ImageAcceptanceTest {
     public void setup(){
         owner = createOwner(storeOwnerRepository, passwordEncoder);
         store = createStore(storeRepository,owner);
-        createAuthority(owner);
     }
 
     @Test
     public void whenUploadImage_ThenCreateImage() throws Exception {
         // Given
-
+        createAuthority(owner);
         List<MultipartFile> fileList = createMockMultipartFiles();
         // When
         MockHttpServletRequestBuilder requestBuilder =
@@ -82,9 +83,33 @@ public class ImageAcceptanceTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()").value(2));
 
     }
+
+    @Test
+    @DisplayName("탈퇴한 회원으로 이미지 업로드시 권한 exception")
+    public void whenUploadImageWithLeaveMember_ThenThrowException() throws Exception {
+        // Given
+        StoreOwner leavedOwner = storeOwnerRepository.save( new StoreOwner("owner", "owner@naver.com",passwordEncoder.encode("adasdsad123"), "김사업", AuthenticationType.STORE_OWNER, false));
+        Store storeByLeavedMember = createStore(storeRepository,leavedOwner);
+        List<MultipartFile> fileList = createMockMultipartFiles();
+        createAuthority(leavedOwner);
+        // When
+        MockHttpServletRequestBuilder requestBuilder =
+                MockMvcRequestBuilders
+                        .multipart("/api/stores/" + storeByLeavedMember.getStoreId() + "/images")
+                        .file((MockMultipartFile) fileList.get(0))
+                        .file((MockMultipartFile) fileList.get(1));
+
+        //then
+        mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
     @Test
     public void whenDeleteImage_ThenCreateImage() throws Exception {
         // Given
+        createAuthority(owner);
         Image image1 = imageRepository.save(new Image(store, "url1"));
         Image image2 = imageRepository.save(new Image(store, "url2"));
         List<Long> idList = new ArrayList<>(){{
@@ -106,8 +131,37 @@ public class ImageAcceptanceTest {
     }
 
     @Test
+    @DisplayName("탈퇴한 회원으로 이미지 삭제시 throw exception")
+    public void whenDeleteImageWithLeaveMember_ThenThrowException() throws Exception {
+        // Given
+        StoreOwner leavedOwner = storeOwnerRepository.save( new StoreOwner("owner", "owner@naver.com",passwordEncoder.encode("adasdsad123"), "김사업", AuthenticationType.STORE_OWNER, false));
+        Store storeByLeavedMember = createStore(storeRepository,leavedOwner);
+        createAuthority(leavedOwner);
+        Image image1 = imageRepository.save(new Image(store, "url1"));
+        Image image2 = imageRepository.save(new Image(store, "url2"));
+        List<Long> idList = new ArrayList<>(){{
+            add(image1.getImageId());
+            add(image2.getImageId());
+        }};
+        MenuIdList request = new MenuIdList(idList);
+        // When
+        mockMvc.perform(delete("/api/stores/{storeId}/images", storeByLeavedMember.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        boolean image1IsExist = imageRepository.findById(image1.getImageId()).isPresent();
+        boolean image2IsExist = imageRepository.findById(image2.getImageId()).isPresent();
+        Assertions.assertTrue(image1IsExist);
+        Assertions.assertTrue(image2IsExist);
+    }
+
+    @Test
     public void whenDeleteNoSuchImage_ThenNotThrowException() throws Exception {
         // Given
+        createAuthority(owner);
         Image image1 = imageRepository.save(new Image(store, "url1"));
         Long noSuchImageId = 12312312l;
         List<Long> idList = new ArrayList<>(){{

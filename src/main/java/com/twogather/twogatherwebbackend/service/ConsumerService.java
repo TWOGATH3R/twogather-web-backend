@@ -2,15 +2,19 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,13 @@ public class ConsumerService {
         Consumer storedConsumer = consumerRepository.save(consumer);
 
         return toResponse(storedConsumer);
+    }
+    public boolean verifyPassword(String password){
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER)
+        );
+        return passwordEncoder.matches(password, member.getPassword());
     }
 
 

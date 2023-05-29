@@ -108,7 +108,8 @@ public class LikeAcceptanceTest {
     @DisplayName("가게 좋아요 추가하는 요청을 두번 보냈을땐 두번 저장되지 않고 throw exception")
     public void whenDuplicateAddStoreLike_ThenThrowException() throws Exception {
         //given
-        Store store = storeRepository.save(new Store("가게이름", "주소", "010-1234-1234"));
+        Store store = storeRepository.save(
+                new Store(null,null,null,"가게이름", "주소", "010-1234-1234", StoreStatus.APPROVED, ""));
         Consumer consumer =
                 consumerRepository.save(new Consumer(
                         "user1",  "email@naber.cim", passwordEncoder.encode("asdad1234"),

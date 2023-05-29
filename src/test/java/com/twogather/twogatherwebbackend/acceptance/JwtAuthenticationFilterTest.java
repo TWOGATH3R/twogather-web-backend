@@ -82,7 +82,7 @@ public class JwtAuthenticationFilterTest {
         // Mock the authentication manager to return a successful authentication
         when(authenticationManager.authenticate(any(Authentication.class))).
                 thenReturn(getMockAuthentication());
-        when(memberRepository.findById(1l)).thenReturn(
+        when(memberRepository.findActiveMemberById(1l)).thenReturn(
                Optional.of(new Member(1l,USERNAME,
                "asd@naer.com",PASSWORD, "name1",
                        AuthenticationType.CONSUMER,true)));

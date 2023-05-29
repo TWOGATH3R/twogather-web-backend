@@ -16,8 +16,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.MEMBER_NOT_ACTIVE;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_USERNAME;
+
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 
 @Component("userDetailsService")
 @RequiredArgsConstructor
@@ -26,13 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        return memberRepository.findByUsername(username)
+        return memberRepository.findActiveMemberByUsername(username)
                 .map(member -> createUser(member))
-                .orElseThrow(()-> new MemberException(NO_SUCH_USERNAME));
+                .orElseThrow(()-> new MemberException(NO_SUCH_MEMBER));
     }
     public CustomUser createUser(Member member){
         if (!member.isActive()){
-            throw new MemberException(MEMBER_NOT_ACTIVE);
+            throw new MemberException(NO_SUCH_MEMBER);
         }
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
         grantedAuthorityList.add(new SimpleGrantedAuthority(member.getAuthenticationType().authority()));

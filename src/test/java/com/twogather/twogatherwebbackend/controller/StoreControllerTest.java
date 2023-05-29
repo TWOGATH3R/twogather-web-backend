@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
@@ -155,7 +155,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보 - Top rated detail")
     public void getStoreTopInfos_WhenGetStoreTopInfos_ThenReturnStoreInfos() throws Exception {
         //given
-        when(storeService.getStoresTopN(StoreType.TOP_RATED, 10)).thenReturn(STORES_TOP10_RESPONSE_LIST);
+        when(storeService.getStoresTopN(StoreSearchType.TOP_RATED, 10)).thenReturn(STORES_TOP10_RESPONSE_LIST);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/top/{storeType}/{count}", "TOP_RATED",10)

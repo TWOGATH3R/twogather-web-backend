@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class ConsumerController {
     private final ConsumerService consumerService;
+
+    @PostMapping("/verify-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Response> verifyPassword(@RequestBody String password) {
+        boolean passwordMatches = consumerService.verifyPassword(password);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
+    }
 
     @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveUpdateRequest consumerSaveRequest) {

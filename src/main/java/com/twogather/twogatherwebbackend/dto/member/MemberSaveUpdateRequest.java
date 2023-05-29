@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.member;
 
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,5 @@ public class MemberSaveUpdateRequest {
     @Pattern(regexp = "^[가-힣a-zA-Z]+$",  message = "이름은 한글 혹은 영어로만 입력해주세요.")
     private String name;
 
-    
+
 }

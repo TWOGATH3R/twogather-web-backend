@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.repository.store;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -12,7 +11,6 @@ import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
-import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +54,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         .leftJoin(store.likesList, likes)
                         .leftJoin(store.reviewList, review)
                         .leftJoin(store.storeImageList, image)
-                .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
+                .where(store.status.eq(StoreStatus.APPROVED))
                 .groupBy(store.storeId)
                 .orderBy(createOrderSpecifiersWithTopN(order, orderBy))
                 .limit(n)
@@ -71,7 +67,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location) {
         List<Store> storeQuery = jpaQueryFactory
                 .selectFrom(store)
-                .where(store.isApproved.eq(StoreApprovalStatus.APPROVED))
+                .where(store.status.eq(StoreStatus.APPROVED))
                 .where(
                         categoryEq(category),
                         keywordContain(keyword),

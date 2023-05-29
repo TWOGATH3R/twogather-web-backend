@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.config.QueryDslConfig;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
@@ -58,10 +58,10 @@ public class StoreRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreApprovalStatus.APPROVED,null));
-        store2 = storeRepository.save(new Store(null,"가게2", "서울특별시 서초구 신반포로23길 30 반원상가", "010-1234-1234",StoreApprovalStatus.APPROVED,null));
-        store3 = storeRepository.save(new Store(null,"가게3", "서울특별시 서초구 올림픽대로 2085-14 솔빛섬 1-2F", "02-232-2222",StoreApprovalStatus.APPROVED,null));
-        store4 = storeRepository.save(new Store(null,"가게4", "서울특별시 서초구 신반포로23길 30 반원상가", "02-232-2522", StoreApprovalStatus.APPROVED,null));
+        store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreStatus.APPROVED,null));
+        store2 = storeRepository.save(new Store(null,"가게2", "서울특별시 서초구 신반포로23길 30 반원상가", "010-1234-1234", StoreStatus.APPROVED,null));
+        store3 = storeRepository.save(new Store(null,"가게3", "서울특별시 서초구 올림픽대로 2085-14 솔빛섬 1-2F", "02-232-2222", StoreStatus.APPROVED,null));
+        store4 = storeRepository.save(new Store(null,"가게4", "서울특별시 서초구 신반포로23길 30 반원상가", "02-232-2522", StoreStatus.APPROVED,null));
 
         Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 4.2, LocalDate.of(2022,04,02)));
@@ -89,7 +89,7 @@ public class StoreRepositoryTest {
         // When
         em.flush();
         em.clear();
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.TOP_RATED.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.TOP_RATED.name(), "desc");
         // Then
         assertThat(topStores).isNotEmpty();
 
@@ -106,7 +106,7 @@ public class StoreRepositoryTest {
         // When
         em.flush();
         em.clear();
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_REVIEWED.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_REVIEWED.name(), "desc");
         // Then
         assertThat(topStores).isNotEmpty();
 
@@ -127,7 +127,7 @@ public class StoreRepositoryTest {
         em.clear();
         // When
 
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_LIKES_COUNT.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
         // Then
         assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
 

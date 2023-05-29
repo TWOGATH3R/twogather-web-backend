@@ -5,10 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -21,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -67,7 +65,7 @@ public class LoginAcceptanceTest {
         StoreOwner owner1 = STORE_OWNER;
         consumer = consumerRepository.save(consumer1);
         storeOwner = storeOwnerRepository.save(owner1);
-        Store store1 = new Store(storeOwner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", StoreApprovalStatus.APPROVED, "");
+        Store store1 = new Store(storeOwner, null,null, "김가네", "전주시 어쩌고 어쩌고", "063-234-1222", StoreStatus.APPROVED, "");
         storeRepository.save(store1);
     }
 
@@ -170,6 +168,26 @@ public class LoginAcceptanceTest {
         JsonNode jsonNode = objectMapper.readTree(jsonString);
         String message = jsonNode.get("message").asText();
         assertThat(message).isEqualTo(INVALID_ID_AND_PASSWORD.getMessage());
+    }
+
+    @Test
+    @DisplayName("탈퇴한 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
+    public void WhenAttemptLoginDeletedId_ThenUnauthorizedException() throws Exception {
+        // Given
+        String password = "asdasdas12";
+        Consumer consumer = consumerRepository.save(new Consumer("username1", "sdasd@naerv.com", passwordEncoded.encode(password), "홍길동",
+                AuthenticationType.CONSUMER, false));
+        LoginRequest invalidLoginRequest = new LoginRequest(consumer.getEmail(), consumer.getUsername(), password);
+
+        // When then
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidLoginRequest)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("아이디나 비밀번호가 틀렸습니다"))
+                .andReturn();
+
     }
 
 }
