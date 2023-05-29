@@ -8,8 +8,7 @@ public class MemberException extends ClientException{
         NO_SUCH_MEMBER_ID("해당 멤버가 존재하지 않습니다"),
         NO_SUCH_USERNAME("해당 ID로 가입된 사용자가 없습니다", HttpStatus.NOT_FOUND),
         PASSWORD_MISMATCH("비밀번호가 틀렸습니다"),
-        MEMBER_NOT_ACTIVE("해당 사용자가 활성화 되어있지 않습니다"),
-        BIZ_REG_NUMBER_VALIDATION("사업자등록번호 검증에 실패하였습니다");
+        MEMBER_NOT_ACTIVE("해당 사용자가 활성화 되어있지 않습니다");
         private final String message;
         private final HttpStatus status;
 

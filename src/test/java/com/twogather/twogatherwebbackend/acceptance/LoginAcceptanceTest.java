@@ -45,7 +45,6 @@ import java.util.Base64;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Rollback
 public class LoginAcceptanceTest {
 
     @Autowired

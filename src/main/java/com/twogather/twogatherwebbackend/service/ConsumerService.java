@@ -2,8 +2,8 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerResponse;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -27,27 +27,27 @@ public class ConsumerService {
     public void delete(final Long memberId){
         //TODO:구현
     }
-    public ConsumerResponse update(final ConsumerSaveUpdateRequest request){
+    public MemberResponse update(final MemberSaveUpdateRequest request){
         //TODO: 구현
-        return new ConsumerResponse();
+        return new MemberResponse();
     }
-    public ConsumerResponse join(final ConsumerSaveUpdateRequest request){
+    public MemberResponse join(final MemberSaveUpdateRequest request){
         validateDuplicateEmail(request.getUsername());
         Consumer consumer
                 = new Consumer(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), AuthenticationType.CONSUMER, true);
         Consumer storedConsumer = consumerRepository.save(consumer);
 
-        return toConsumerResponse(storedConsumer);
+        return toResponse(storedConsumer);
     }
 
 
     @Transactional(readOnly = true)
-    public ConsumerResponse getConsumerInfo(final Long memberId) {
+    public MemberResponse getConsumerInfo(final Long memberId) {
         Consumer consumer = consumerRepository.findById(memberId).orElseThrow(
                 ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID)
         );
-        return toConsumerResponse(consumer);
+        return toResponse(consumer);
     }
 
     private void validateDuplicateEmail(final String username){
@@ -55,7 +55,7 @@ public class ConsumerService {
             throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_USERNAME);
         }
     }
-    private ConsumerResponse toConsumerResponse(Consumer consumer){
-        return new ConsumerResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getName(), consumer.getEmail());
+    private MemberResponse toResponse(Consumer consumer){
+        return new MemberResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getName(), consumer.getEmail());
     }
 }

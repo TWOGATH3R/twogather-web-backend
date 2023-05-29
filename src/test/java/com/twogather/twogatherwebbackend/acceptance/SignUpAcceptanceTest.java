@@ -7,6 +7,7 @@ import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -44,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Rollback
 public class SignUpAcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
@@ -64,44 +64,45 @@ public class SignUpAcceptanceTest {
         objectMapper.registerModule(new JavaTimeModule());;
     }
     @Test
-    @Transactional
-    @DisplayName("owner 회원가입 - 사업자 등록번호 검증 실패")
-    public void WhenOwnerSignupWithInvalidBusinessNumber_ThenErrorResponse() throws Exception {
+    @DisplayName("owner 회원가입 성공")
+    public void WhenOwnerSignup_ThenSuccess() throws Exception {
         // When
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com","user1","pwsadasd12312","홍길동");
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-
         // Then
-        assertThat(result.getResolvedException()).isInstanceOf(MemberException.class);
-        String responseContent = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertThat(responseContent).contains(MemberException.MemberErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage());
+        StoreOwner owner = ownerRepository.findByUsername(request.getUsername()).get();
+        assertThat(owner.getName()).isEqualTo(request.getName());
+        assertThat(owner.getEmail()).isEqualTo(request.getEmail());
+        assertThat(owner.getPassword()).isNotBlank();
+
     }
 
     @Test
-    @Transactional
     @DisplayName("consumer 회원가입")
     public void WhenConsumerSignup_ThenSuccess() throws Exception {
         // When
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com","user1","pwsadasd12312","홍길동");
         mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST2)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
 
         // Then
-        Consumer consumer = consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername()).get();
-        assertThat(consumer.getEmail()).isEqualTo(CONSUMER_SAVE_UPDATE_REQUEST2.getEmail());
-        assertThat(consumer.getName()).isEqualTo(CONSUMER_SAVE_UPDATE_REQUEST2.getName());
+        Consumer consumer = consumerRepository.findByUsername(request.getUsername()).get();
+        assertThat(consumer.getEmail()).isEqualTo(request.getEmail());
+        assertThat(consumer.getName()).isEqualTo(request.getName());
 
         em.flush();
         em.clear();
-        Consumer consumer1 = consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername()).get();
-        Assertions.assertEquals(consumer1.getUsername(),CONSUMER_SAVE_UPDATE_REQUEST2.getUsername());
+        Consumer savedConsumer = consumerRepository.findByUsername(request.getUsername()).get();
+        Assertions.assertEquals(savedConsumer.getUsername(),request.getUsername());
 
 
     }
@@ -109,18 +110,20 @@ public class SignUpAcceptanceTest {
     @Test
     @DisplayName("동일한 loginId 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() throws Exception {
-        initSetting();
+        Consumer consumer1 = CONSUMER;
+        consumerRepository.save(consumer1);
 
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com",consumer1.getUsername(),"pasdw12312","홍길동");
         // When
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         // Then
-        consumerRepository.findByUsername(CONSUMER_SAVE_UPDATE_REQUEST.getUsername()).get();
+        consumerRepository.findByUsername(request.getUsername()).get();
 
         HttpServletResponse response = mvcResult.getResponse();
         response.setCharacterEncoding("UTF-8");
@@ -132,13 +135,14 @@ public class SignUpAcceptanceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("유효하지 않은 정보로 회원가입 시도 시 실패 + 오류가 있는 필드에 대한 정보 제공")
     public void WhenOwnerSignupWithInvalidInfo_ThenBadRequest() throws Exception {
         // When
+        MemberSaveUpdateRequest invalidRequest = new MemberSaveUpdateRequest("ascom","us1","pw","홍길@@동");
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(INVALID_OWNER_SAVE_REQUEST)))
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
@@ -154,7 +158,7 @@ public class SignUpAcceptanceTest {
         assertThat(message).isEqualTo(INVALID_ARGUMENT.getMessage());
 
         if (errorsNode != null && errorsNode.isObject()) {
-            Set<String> expectedFields = new HashSet<>(Arrays.asList("password", "businessStartDate","name", "businessNumber", "email"));
+            Set<String> expectedFields = new HashSet<>(Arrays.asList("password", "name", "username", "email"));
             Set<String> actualFields = new HashSet<>();
 
             Iterator<Map.Entry<String, JsonNode>> fields = errorsNode.fields();
@@ -184,14 +188,15 @@ public class SignUpAcceptanceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("consumer, storeOwner 동일한 아이디로 가입 시 실패")
     public void WhenSignUpWithSameUsernameByConsumerAndOwner_ThenThrowException() throws Exception {
         // When
-        ownerRepository.save(new StoreOwner(CONSUMER_SAVE_UPDATE_REQUEST2.getUsername(), "fd@naer.com", "adsasd123", "김김김","123123","김김김", LocalDate.now(), AuthenticationType.STORE_OWNER,true));
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com","user1","pw1asd2312","홍길동");
+
+        ownerRepository.save(new StoreOwner(request.getUsername(), "fd@naer.com", "adsasd123", "김김김",AuthenticationType.STORE_OWNER,true));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/consumers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST2)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("로그인 아이디가 중복됩니다"))

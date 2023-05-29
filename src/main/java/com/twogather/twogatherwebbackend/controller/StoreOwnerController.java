@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +20,8 @@ import javax.validation.Valid;
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
     @PostMapping
-    public ResponseEntity<Response> join(@RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest) {
-        StoreOwnerResponse data = storeOwnerService.join(storeOwnerSaveUpdateRequest);
+    public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveUpdateRequest storeOwnerSaveUpdateRequest) {
+        MemberResponse data = storeOwnerService.join(storeOwnerSaveUpdateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -29,7 +29,7 @@ public class StoreOwnerController {
     @GetMapping("/{memberId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> getOwnerInfo(@PathVariable Long memberId){
-        StoreOwnerResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
+        MemberResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
 
         return ResponseEntity.ok(new Response(data));
     }
@@ -37,8 +37,8 @@ public class StoreOwnerController {
 
     @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
-    public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final StoreOwnerSaveUpdateRequest storeOwnerSaveUpdateRequest){
-        StoreOwnerResponse data = storeOwnerService.update(storeOwnerSaveUpdateRequest);
+    public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final MemberSaveUpdateRequest storeOwnerSaveUpdateRequest){
+        MemberResponse data = storeOwnerService.update(storeOwnerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }

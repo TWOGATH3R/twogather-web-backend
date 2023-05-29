@@ -19,17 +19,13 @@ public class TestHelper {
         String email = "email@naver.cim";
         String password = passwordEncoder.encode("asd12345");
         String name = "name";
-        String phoneNumber = "000000000";
         String username = "username1";
-        String businessName = "김머시기";
-        LocalDate businessStartDate = java.time.LocalDate.now();
         AuthenticationType authenticationType = AuthenticationType.STORE_OWNER;
         boolean active = true;
         return ownerRepository.save(
                 new StoreOwner(
                 username,
-                email, password, name, phoneNumber,
-                businessName,businessStartDate,
+                email, password, name,
                 authenticationType, active
         ));
     }

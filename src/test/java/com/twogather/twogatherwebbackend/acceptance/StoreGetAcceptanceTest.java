@@ -33,7 +33,6 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.OWNER_SAVE_REQUEST2;
 import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -160,9 +159,7 @@ public class StoreGetAcceptanceTest {
         // When
         em.flush();
         em.clear();
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -187,9 +184,7 @@ public class StoreGetAcceptanceTest {
         em.flush();
         em.clear();
         // When
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -216,8 +211,7 @@ public class StoreGetAcceptanceTest {
         em.flush();
         em.clear();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/stores/top/{type}/{count}", type, count)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OWNER_SAVE_REQUEST2)))
+                )
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

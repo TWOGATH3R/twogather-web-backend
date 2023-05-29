@@ -7,7 +7,8 @@ public class StoreException extends ClientException{
     public enum StoreErrorCode {
         DUPLICATE_NAME("이름이 중복됩니다"),
         NO_SUCH_STORE("해당하는 가게가 존재하지 않습니다", HttpStatus.NOT_FOUND),
-        INVALID_STORE_TYPE("유효하지 않은 StoreType 입니다");
+        INVALID_STORE_TYPE("유효하지 않은 StoreType 입니다"),
+        BIZ_REG_NUMBER_VALIDATION("사업자등록번호 검증에 실패하였습니다");
 
         private final String message;
         private final HttpStatus status;

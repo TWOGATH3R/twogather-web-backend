@@ -1,6 +1,8 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,10 +51,6 @@ public class ConsumerControllerTest extends ControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/delete",
@@ -69,7 +67,8 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 정보 조회")
     public void getConsumerInfo_WhenGetConsumerInfo_Then200Ok() throws Exception {
         //given
-        when(consumerService.getConsumerInfo(anyLong())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        when(consumerService.getConsumerInfo(anyLong())).thenReturn(response);
         //when
         //then
 
@@ -79,7 +78,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName())))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/get",
@@ -102,7 +101,9 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 정보 변경")
     public void update_WhenConsumerInfoChange_Then200Ok() throws Exception {
         //given
-        when(consumerService.update(any())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+        when(consumerService.update(any())).thenReturn(response);
         //when
         //then
 
@@ -113,7 +114,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/update",
@@ -142,7 +143,10 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 가입")
     public void join_WhenConsumerJoin_Then201() throws Exception {
         //given
-        when(consumerService.join(any())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        when(consumerService.join(any())).thenReturn(response);
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+
         //when
         //then
 
@@ -153,7 +157,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(request))
                 )
                 .andExpect(status().isCreated())
                 .andDo(document("consumer/save",

@@ -6,6 +6,7 @@ import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
@@ -22,8 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDate;
+
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Rollback
 public class StoreExcludeGetAcceptanceTest {
     @Autowired
     private MockMvc mockMvc;
@@ -45,6 +50,8 @@ public class StoreExcludeGetAcceptanceTest {
     private StoreRepository storeRepository;
     @Autowired
     private EntityManager em;
+    @MockBean
+    private BizRegNumberValidator validator;
     private StoreOwner owner;
     private Store store;
     private static final String URL = "/api/stores";
@@ -61,8 +68,10 @@ public class StoreExcludeGetAcceptanceTest {
     public void whenSaveValidStore_ThenReturnStoreInfo() throws Exception {
         //given
         StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
-                "가게이름", "전주시 임임동 23길1", "063-231-4444"
+                "가게이름", "전주시 임임동 23길1", "063-231-4444",
+                "0000000000", "홍길동", LocalDate.now()
         );
+        when(validator.validateBizRegNumber(any(), any(), any())).thenReturn(true);
         //when, then
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,13 +85,30 @@ public class StoreExcludeGetAcceptanceTest {
         Assertions.assertNotNull(storeRepository.findByName(storeRequest.getStoreName()));
     }
 
+    @Test
+    @DisplayName("가게 저장 실패 - 사업자 등록번호 유효성 실패")
+    public void whenSaveInValidBizRegNumber_ThenThrowException() throws Exception {
+        //given
+        StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
+                "가게이름", "전주시 임임동 23길1", "063-231-4444",
+                "0000000000", "홍길동", LocalDate.now()
+        );
+        //when, then
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(storeRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("사업자등록번호 검증에 실패하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
 
     @Test
     @DisplayName("가게 저장시 빈값, null, 올바르지않은 전화번호 형식에 대한 예외 throw")
     public void whenSaveIncludeNullFieldStore_ThenThrowsException() throws Exception {
         //given
         StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
-                null, "", "01012312312"
+                null, "", "01012312312","0000000000", "홍길동", LocalDate.now()
         );
         //when, then
         mockMvc.perform(post(URL)
@@ -100,7 +126,7 @@ public class StoreExcludeGetAcceptanceTest {
         //given
         Store store = createStore(storeRepository, owner);
         StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
-                "새로운가게", "새로운 전주시 임임동 23길1", "063-232-4444"
+                "새로운가게", "새로운 전주시 임임동 23길1", "063-232-4444", "0000000000", "홍길동", LocalDate.now()
         );
         //when, then
         mockMvc.perform(put(URL+"/{storeId}", store.getStoreId())
@@ -120,7 +146,7 @@ public class StoreExcludeGetAcceptanceTest {
         //given
         Store store = createStore(storeRepository, owner);
         StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
-                null, "새로운 전주시 임임동 23길1", "063-232-4441"
+                null, "새로운 전주시 임임동 23길1", "063-232-4441", "000000000", "홍길동",LocalDate.now()
         );
         //when,then
         mockMvc.perform(put(URL+"/{storeId}", store.getStoreId())
@@ -141,7 +167,7 @@ public class StoreExcludeGetAcceptanceTest {
         //given
         Store store = createStore(storeRepository, owner);
         StoreSaveUpdateRequest storeRequest = new StoreSaveUpdateRequest(
-                "storename1", "새로운 전주시 임임동 23길1", "063232-4441"
+                "storename1", "새로운 전주시 임임동 23길1", "063232-4441", "000000000", "홍길동", LocalDate.now()
         );
         //when,then
         mockMvc.perform(put(URL+"/{storeId}", store.getStoreId())

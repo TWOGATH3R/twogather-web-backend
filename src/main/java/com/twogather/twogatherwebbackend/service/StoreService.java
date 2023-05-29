@@ -12,6 +12,7 @@ import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +23,7 @@ import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_USERNAME;
-import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.INVALID_STORE_TYPE;
-import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +32,12 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
     private final StoreOwnerRepository storeOwnerRepository;
+    private final BizRegNumberValidator validator;
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
+        validationBizRegNumber(request);
+
         String username = SecurityUtils.getUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_USERNAME)
@@ -105,5 +108,11 @@ public class StoreService {
     }
     private StoreSaveUpdateResponse toStoreSaveUpdateResponse(Store store) {
         return new StoreSaveUpdateResponse(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
+    }
+    private void validationBizRegNumber(final StoreSaveUpdateRequest request){
+        boolean isValid = validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
+        if(!isValid){
+            throw new StoreException(BIZ_REG_NUMBER_VALIDATION);
+        }
     }
 }

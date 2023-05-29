@@ -66,7 +66,11 @@ public class StoreControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
@@ -295,7 +299,10 @@ public class StoreControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
