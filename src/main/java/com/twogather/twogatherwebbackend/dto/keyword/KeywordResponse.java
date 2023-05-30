@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeywordResponse {
+public class
+KeywordResponse {
     private Long keywordId;
     private String name;
 }
