@@ -2,27 +2,30 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
+import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.util.SecurityUtils;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
-import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.INVALID_STORE_TYPE;
-import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.STORE_NOT_FOUND;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,69 +33,74 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final StoreOwnerRepository storeOwnerRepository;
+    private final BizRegNumberValidator validator;
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
-    public StoreResponse save(final StoreSaveUpdateRequest request){
-        validateDuplicateName(request.getName());
-        Store store = new Store(request.getName(), request.getAddress(), request.getPhone());
+    public void approveStore(final Long storeId){
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        store.approve();
+    }
+    public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
+        validationBizRegNumber(request);
+
+        String username = SecurityUtils.getUsername();
+        StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        validateDuplicateName(request.getStoreName());
+        Store store = new Store(owner, request.getStoreName(), request.getAddress(), request.getPhone());
         Store savedStore = storeRepository.save(store);
-        return toStoreResponse(savedStore);
+        return StoreSaveUpdateResponse.from(savedStore.getStoreId(), savedStore.getName(), savedStore.getAddress(), savedStore.getPhone());
     }
     public boolean isMyStore(Long storeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Member member = memberRepository.findByEmail(currentUsername).orElseThrow(
-                ()-> new MemberException(NO_SUCH_EMAIL)
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                () ->new CustomAuthenticationException(UNAUTHORIZED)
         );
-        Store store = storeRepository.findById(storeId).orElseThrow(()->
-                new CustomAccessDeniedException(ACCESS_DENIED)
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->
+                new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
         }
         return true;
     }
-    public List<String> getKeyword(){
-        //TODO: 구현
-        return null;
-    }
-    public List<TopStoreResponse> getStoresTopN(StoreType type, int n){
-        if (type.equals(StoreType.MOST_REVIEWED)){
-            return storeRepository.findTopNByReviewCount(n);
-        }else if(type.equals(StoreType.TOP_RATED)){
-            return storeRepository.findTopNByScore(n);
-        }
-        throw new StoreException(INVALID_STORE_TYPE);
+    public List<TopStoreResponse> getStoresTopN(StoreSearchType type, int n){
+        return storeRepository.findTopNByType(n, type.name(), "desc");
     }
 
     public void delete(Long storeId) {
-        Store store = findStore(storeId);
-        storeRepository.delete(store);
+        Store store =  storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        store.delete();;
     }
 
-    public StoreResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
-        Store store = findStore(storeId);
-        if (request.getName() != null && !request.getName().isEmpty() && !request.getName().equals(store.getName())) {
-            validateDuplicateName(request.getName());
-            store.updateName(request.getName());
+    public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        if (request.getStoreName() != null && !request.getStoreName().isEmpty() && !request.getStoreName().equals(store.getName())) {
+            validateDuplicateName(request.getStoreName());
+            store.updateName(request.getStoreName());
         }
         store.updateAddress(request.getAddress());
         store.updatePhone(request.getPhone());
 
-        return toStoreResponse(store);
+        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
+
     }
-    public List<StoreResponseWithKeyword> getStores(
-          String categoryName, String keyword, int limit, int offset, String orderBy, String order, String location){
-        //TODO: 구현
-        return new ArrayList<>();
+    public Page<StoreResponseWithKeyword> getStores(
+            Pageable pageable, String categoryName, String keyword,String location){
+        return storeRepository.findStoresByCondition(pageable, categoryName, keyword, location);
     }
-    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Integer limit, Integer offset){
+    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Pageable pageable){
         //TODO: 구현
         return null;
     }
-    public StoreResponse getStore(Long storeId){
-        Store store = findStore(storeId);
-        return toStoreResponse(store);
+    public StoreSaveUpdateResponse getStore(Long storeId){
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+
+        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
     }
 
     private void validateDuplicateName(String name){
@@ -100,11 +108,10 @@ public class StoreService {
             throw new StoreException(StoreException.StoreErrorCode.DUPLICATE_NAME);
         }
     }
-    private Store findStore(Long storeId){
-        return storeRepository.findById(storeId).orElseThrow(() -> new StoreException(STORE_NOT_FOUND));
-    }
-    private StoreResponse toStoreResponse(Store store) {
-        //TODO:구현
-        return null;
+    private void validationBizRegNumber(final StoreSaveUpdateRequest request){
+        boolean isValid = validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
+        if(!isValid){
+            throw new StoreException(BIZ_REG_NUMBER_VALIDATION);
+        }
     }
 }

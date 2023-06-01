@@ -18,7 +18,7 @@ public class Store {
     @Column(name ="store_id")
     private Long storeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private StoreOwner owner;
 
@@ -34,39 +34,55 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToOne
+    @OneToMany(mappedBy = "store")
+    private List<StoreKeyword> storeKeywordList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store")
+    private List<Likes> likesList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
     private String name;
     private String address;
     private String phone;
-    private Boolean isApproved;
+    @Enumerated(EnumType.STRING)
+    private StoreStatus status;
     private String reasonForRejection;
 
 
-    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, Boolean isApproved, String reasonForRejection){
+    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
         this.owner = owner;
         this.businessHourList = businessHourList;
         this.menuList = menuList;
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = isApproved;
+        this.status = status;
         this.reasonForRejection = reasonForRejection;
     }
     public Store(String name, String address, String phone){
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = false;
+        this.status = StoreStatus.PENDING;
         this.reasonForRejection = "";
     }
-    public Store(Long id, String name, String address, String phone, Boolean isApproved, String reasonForRejection){
+    public Store(StoreOwner owner, String name, String address, String phone){
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+        this.owner = owner;
+        this.status = StoreStatus.PENDING;
+        this.reasonForRejection = "";
+    }
+    public Store(Long id, String name, String address, String phone, StoreStatus status, String reasonForRejection){
         this.storeId = id;
         this.name=name;
         this.address=address;
         this.phone=phone;
-        this.isApproved = isApproved;
+        this.status = status;
         this.reasonForRejection = reasonForRejection;
     }
     public void updateName(String name) {
@@ -83,6 +99,17 @@ public class Store {
         if (phone != null && !phone.isEmpty()) {
             this.phone = phone;
         }
+    }
+    public void setCategory(Category category){
+        if(category!=null){
+            this.category = category;
+        }
+    }
+    public void delete(){
+        this.status = StoreStatus.DELETED;
+    }
+    public void approve(){
+        this.status = StoreStatus.APPROVED;
     }
 
 }

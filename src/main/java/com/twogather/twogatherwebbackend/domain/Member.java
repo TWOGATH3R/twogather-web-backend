@@ -16,6 +16,8 @@ public class Member {
     @Column(name="member_id")
     private Long memberId;
 
+    @Column(name="username", unique = true)
+    private String username;
     private String email;
     private String password;
     private String name;
@@ -24,20 +26,25 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private AuthenticationType authenticationType;
 
-    public Member(String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
+    public Member(String username, String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.name = name;
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }
-    public Member(Long id, String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
+    public Member(Long id, String username, String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
+        this.username = username;
         this.memberId = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.authenticationType = authenticationType;
         this.isActive = isActive;
+    }
+    public void leave(){
+        this.isActive = false;
     }
 
 }

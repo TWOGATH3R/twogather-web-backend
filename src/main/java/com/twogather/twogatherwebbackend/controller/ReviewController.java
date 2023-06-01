@@ -24,7 +24,6 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestBody @Valid final ReviewSaveRequest request) {
         ReviewResponse data = reviewService.save(request);
@@ -33,7 +32,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("@reviewService.isMyReeview(#reviewId)")
     public ResponseEntity<Response> delete(@PathVariable final Long reviewId, @PathVariable String storeId) {
         reviewService.delete(reviewId);
 

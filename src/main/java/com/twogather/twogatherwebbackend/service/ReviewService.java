@@ -21,6 +21,7 @@ public class ReviewService {
 
     public boolean isMyReview(Long reviewId){
         //TODO:구현
+        //new CustomAuthenticationException(UNAUTHORIZED)
         return false;
     }
     public ReviewResponse save(ReviewSaveRequest request){

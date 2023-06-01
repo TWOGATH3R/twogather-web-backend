@@ -70,7 +70,7 @@ public class ReviewControllerTest extends ControllerTest{
                                 fieldWithPath("data.content[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
                                 fieldWithPath("data.content[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
                                 fieldWithPath("data.content[].storeAddress").type(JsonFieldType.STRING).description("가게 주소"),
-                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 이름"),
+                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 닉네임"),
                                 fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
