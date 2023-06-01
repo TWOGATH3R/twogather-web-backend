@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,7 +243,13 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 별점 정보").attributes(getRatingFormat()),
                                 fieldWithPath("data[].keywordList").type(JsonFieldType.ARRAY).description("가게 관련 키워드"),
-                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url")
+                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url"),
+                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
+                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
 
                         )
                 ));

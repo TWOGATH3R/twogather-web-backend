@@ -18,7 +18,6 @@ import java.util.List;
 public class LikeController {
     private final LikeService likeService;
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> addStoreLike(@PathVariable final Long storeId) {
         likeService.addStoreLike(storeId);
 
@@ -26,7 +25,6 @@ public class LikeController {
     }
 
     @DeleteMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> deleteStoreLike(@PathVariable final Long storeId) {
         likeService.deleteStoreLike(storeId);
 

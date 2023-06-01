@@ -62,9 +62,9 @@ public class StoreOwnerService {
                 ()-> new MemberException(NO_SUCH_MEMBER_ID)
         );
         for (Store store:owner.getStoreList()) {
-            store.setStatus(StoreStatus.LEAVE);
+            store.delete();
         }
-        owner.setIsActive(false);
+        owner.leave();
     }
     public MemberResponse update(final MemberSaveUpdateRequest request){
        //TODO:구현

@@ -90,7 +90,7 @@ public class KeywordAcceptanceTest {
         //given
         StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
         Store store = createStore(storeRepository,owner);
-        createAuthority(owner);
+        //createAuthority(owner);
 
         List<String> keywordList = new ArrayList<>(){{
             add("저렴한");
@@ -117,7 +117,7 @@ public class KeywordAcceptanceTest {
         //given
         StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
         Store store = createStore(storeRepository,owner);
-        createAuthority(owner);
+        //createAuthority(owner);
 
         List<String> keywordList = new ArrayList<>(){{
             add("저렴한");

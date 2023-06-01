@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,6 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(QueryDslConfig.class)
@@ -32,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=100")
 @Transactional
 public class StoreRepositoryTest {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
@@ -121,7 +123,7 @@ public class StoreRepositoryTest {
     @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인")
     void whenFindTopNByLikeCount_ShouldReturnFirstIsStore1() {
         //given
-        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
         em.flush();
         em.clear();

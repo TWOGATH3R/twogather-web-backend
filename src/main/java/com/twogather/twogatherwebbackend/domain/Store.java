@@ -105,10 +105,11 @@ public class Store {
             this.category = category;
         }
     }
-    public void setStatus(StoreStatus status){
-        if(status!=null){
-            this.status = status;
-        }
+    public void delete(){
+        this.status = StoreStatus.DELETED;
+    }
+    public void approve(){
+        this.status = StoreStatus.APPROVED;
     }
 
 }

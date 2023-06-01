@@ -63,9 +63,10 @@ public class SignUpAcceptanceTest {
         //LocalDate 직렬화/역직렬화를 위해 필요한 모듈
         objectMapper.registerModule(new JavaTimeModule());;
     }
+
     @Test
     @DisplayName("owner 회원가입 성공")
-    public void WhenOwnerSignup_ThenSuccess() throws Exception {
+    public void whenOwnerSignup_ThenSuccess() throws Exception {
         // When
         MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com","user1","pwsadasd12312","홍길동");
         mockMvc.perform(MockMvcRequestBuilders.post("/api/owners")
@@ -79,7 +80,6 @@ public class SignUpAcceptanceTest {
         assertThat(owner.getName()).isEqualTo(request.getName());
         assertThat(owner.getEmail()).isEqualTo(request.getEmail());
         assertThat(owner.getPassword()).isNotBlank();
-
     }
 
     @Test

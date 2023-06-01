@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -44,7 +45,8 @@ import java.util.Base64;
 @AutoConfigureMockMvc
 @Transactional
 public class LoginAcceptanceTest {
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -175,7 +177,7 @@ public class LoginAcceptanceTest {
     public void WhenAttemptLoginDeletedId_ThenUnauthorizedException() throws Exception {
         // Given
         String password = "asdasdas12";
-        Consumer consumer = consumerRepository.save(new Consumer("username1", "sdasd@naerv.com", passwordEncoded.encode(password), "홍길동",
+        Consumer consumer = consumerRepository.save(new Consumer("username1", "sdasd@naerv.com", passwordEncoder.encode(password), "홍길동",
                 AuthenticationType.CONSUMER, false));
         LoginRequest invalidLoginRequest = new LoginRequest(consumer.getEmail(), consumer.getUsername(), password);
 

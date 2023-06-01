@@ -73,10 +73,9 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 	//mysql
 	implementation 'mysql:mysql-connector-java:8.0.33'
-	//mariadb
-	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 	//s3
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.464'
+	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
 }
 

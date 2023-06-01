@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,7 +28,6 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 public class StoreGetAcceptanceTest {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
@@ -73,7 +75,7 @@ public class StoreGetAcceptanceTest {
         store2 = storeRepository.save(new Store(null,"가게2", "서울시 어쩌고 어저고", "010-1234-1234", StoreStatus.APPROVED,null));
         store3 = storeRepository.save(new Store(null,"가게3", "대전광역시 어쩌고 어쩌고", "02-232-2222", StoreStatus.APPROVED,null));
         store4 = storeRepository.save(new Store(null,"가게4", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.APPROVED,null));
-        leavedStore = storeRepository.save(new Store(null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
+        leavedStore = storeRepository.save(new Store(null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.DELETED,"부적절한 영업시간"));
 
         Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
@@ -241,10 +243,10 @@ public class StoreGetAcceptanceTest {
         StoreSearchType type = StoreSearchType.MOST_LIKES_COUNT;
         int count = 5;
         int realCount = 4;
-        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer2= consumerRepository.save(new Consumer("user2","das1d2@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer3 = consumerRepository.save(new Consumer("user3","dasd3@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
-        Consumer consumer4 = consumerRepository.save(new Consumer("user4","dasd4@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer2= consumerRepository.save(new Consumer("user2","das1d2@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer3 = consumerRepository.save(new Consumer("user3","dasd3@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer4 = consumerRepository.save(new Consumer("user4","dasd4@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
 
         likeRepository.save(new Likes(store4, consumer1));
         likeRepository.save(new Likes(store4, consumer2));

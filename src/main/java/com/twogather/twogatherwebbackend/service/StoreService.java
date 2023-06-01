@@ -37,6 +37,12 @@ public class StoreService {
     private final BizRegNumberValidator validator;
     //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
+    public void approveStore(final Long storeId){
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        store.approve();
+    }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
         validationBizRegNumber(request);
 
@@ -55,7 +61,7 @@ public class StoreService {
                 () ->new CustomAuthenticationException(UNAUTHORIZED)
         );
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->
-                new CustomAccessDeniedException(ACCESS_DENIED)
+                new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
@@ -68,7 +74,7 @@ public class StoreService {
 
     public void delete(Long storeId) {
         Store store =  storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
-        storeRepository.delete(store);
+        store.delete();;
     }
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {

@@ -4,5 +4,5 @@ public enum StoreStatus {
     APPROVED,
     PENDING,
     DENIED,
-    LEAVE
+    DELETED
 }

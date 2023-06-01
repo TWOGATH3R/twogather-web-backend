@@ -1,37 +1,30 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.service.CategoryService;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class CategoryAcceptanceTest {
+public class CategoryAcceptanceTest extends AcceptanceTest{
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -43,56 +36,65 @@ public class CategoryAcceptanceTest {
     @Autowired
     private EntityManager em;
     @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private StoreRepository storeRepository;
 
-    @Test
-    @Transactional
-    public void whenGetAllCategories_ThenAllCategoryList() throws Exception {
-        Category category1 = new Category("category1");
-        Category category2 = new Category("category2");
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(category1);
-        categoryList.add(category2);
-        categoryRepository.saveAll(categoryList);
+    private Category category1;
+    private Category category2;
 
-        mockMvc.perform(get("/api/categories"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].name").value(category1.getName()))
-                .andExpect(jsonPath("$.data[1].name").value(category2.getName()))
-                .andExpect(jsonPath("$.data[0].categoryId").exists())
-                .andExpect(jsonPath("$.data[1].categoryId").exists())
-                .andDo(MockMvcResultHandlers.print());
+    public void initSetting(){
+        category1 = new Category("category1");
+        category2 = new Category("category2");
+        category1 = categoryRepository.save(category1);
+        category2 = categoryRepository.save(category2);
+    }
+
+    @Test
+    public void whenGetAllCategories_ThenAllCategoryList(){
+        initSetting();
+
+        when().
+                get(CATEGORY_URL).
+                then().
+                statusCode(HttpStatus.OK.value()).
+                log().all().
+                body("data[0].name", equalTo(category1.getName())).
+                body("data[1].name", equalTo(category2.getName())).
+                body("data[0].categoryId", notNullValue()).
+                body("data[1].categoryId", notNullValue());
     }
 
 
     @Test
-    @Transactional
-    public void whenSetCategoriesForStore_ThenAssociateCategoryWithStore() throws Exception {
+    public void whenSetCategoriesForStore_ThenAssociateCategoryWithStore() {
         //given
-        StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
-        Store store = createStore(storeRepository,owner);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        Category category = categoryRepository.save(new Category("categoryName"));
-        Long storeId = store.getStoreId();
-        Long categoryId = category.getCategoryId();
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
 
-        createAuthority(owner);
-
-        String url = "/api/stores/" + storeId + "/categories/" + categoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isOk());
-        categoryService.setCategoriesForStore(storeId, categoryId);
+        Long storeId = storeResponse.getStoreId();
+        initSetting();
+        Long categoryId = category1.getCategoryId();
 
         //when, then
+        String url = "/api/stores/" + storeId + "/categories/" + categoryId;
+        when().
+                patch(url).
+                then().
+                statusCode(HttpStatus.OK.value()).
+                log().all();
 
         em.flush();
         em.clear();
-        Category savedCategory = storeRepository.findById(store.getStoreId()).get().getCategory();
-        Assertions.assertEquals(savedCategory.getName(), category.getName());
+
+        Category savedCategory = storeRepository.findById(storeId).get().getCategory();
+        Assertions.assertEquals(savedCategory.getName(), category1.getName());
     }
 
     @Test
@@ -112,9 +114,12 @@ public class CategoryAcceptanceTest {
         createAuthority(owner);
 
         String url = "/api/stores/" + storeId + "/categories/" + categoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        when().
+                patch(url).
+                then().
+                statusCode(400).
+                body("message", equalTo("해당하는 카테고리가 존재하지않습니다")).
+                log().all();
 
         em.flush();
         em.clear();
@@ -139,9 +144,12 @@ public class CategoryAcceptanceTest {
         createAuthority(owner);
 
         String url = "/api/stores/" + store2Id + "/categories/" + categoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        when().
+                patch(url).
+                then().
+                statusCode(403).
+                body("message", equalTo("권한이 없습니다")).
+                log().all();
 
         em.flush();
         em.clear();
@@ -165,10 +173,12 @@ public class CategoryAcceptanceTest {
         createAuthority(owner);
 
         String url = "/api/stores/" + store2.getStoreId() + "/categories/" + noSuchCategoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("해당하는 카테고리가 존재하지않습니다"))
-                .andDo(MockMvcResultHandlers.print());
+        when().
+                patch(url).
+                then().
+                statusCode(400).
+                body("message", equalTo("해당하는 카테고리가 존재하지않습니다")).
+                log().all();
 
         em.flush();
         em.clear();
@@ -194,10 +204,12 @@ public class CategoryAcceptanceTest {
         createAuthority(owner);
 
         String url = "/api/stores/" + noSuchStoreId + "/categories/" + categoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                .andDo(MockMvcResultHandlers.print());
+        when().
+                patch(url).
+                then().
+                statusCode(403).
+                body("message", equalTo("권한이 없습니다")).
+                log().all();
 
         em.flush();
         em.clear();

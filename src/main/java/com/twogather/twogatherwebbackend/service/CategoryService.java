@@ -23,6 +23,7 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class CategoryService {
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+    @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryInfos(){
         List<Category> categoryList = categoryRepository.findAll();
         ArrayList<CategoryResponse> categoryResponseList = new ArrayList<>();

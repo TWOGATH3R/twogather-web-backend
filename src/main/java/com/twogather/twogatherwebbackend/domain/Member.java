@@ -43,8 +43,8 @@ public class Member {
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }
-    public void setIsActive(boolean isActive){
-        this.isActive = isActive;
+    public void leave(){
+        this.isActive = false;
     }
 
 }

@@ -20,7 +20,6 @@ public class ConsumerController {
     private final ConsumerService consumerService;
 
     @PostMapping("/verify-password")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> verifyPassword(@RequestBody String password) {
         boolean passwordMatches = consumerService.verifyPassword(password);
 

@@ -3,658 +3,522 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.controller.BusinessHourController;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
+import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
+import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import com.twogather.twogatherwebbackend.service.BusinessHourService;
-import org.junit.jupiter.api.BeforeEach;
+import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class BusinessHourAcceptanceTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private StoreOwnerRepository ownerRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private BusinessHourRepository businessHourRepository;
-    @Autowired
-    private BusinessHourService businessHourService;
+public class BusinessHourAcceptanceTest extends AcceptanceTest{
 
-    private StoreOwner owner;
-    private Store store;
-    private Store leavedStore;
+    @Autowired
+    private ConsumerRepository consumerRepository;
 
-    @BeforeEach
-    public void setup(){
-        owner = createOwner(ownerRepository, passwordEncoder);
-        store = createStore(storeRepository,owner);
-        createAuthority(owner);
-        leavedStore = storeRepository.save(new Store(null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
-
-    }
     @Test
-    @Transactional
     @DisplayName("save: 열린 날만 요청해도 영업안하는요일까지 포함해서 응답으로 줘야한다")
-    public void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() throws Exception {
+    public void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays(){
         //given
-        StoreOwner owner1 = ownerRepository.findByUsername(owner.getUsername()).get();
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
-                false, null,null
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        businessHourList.add(businessHour2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data", hasSize(7)))
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'MONDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'TUESDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'WEDNESDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'THURSDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'FRIDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SATURDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SUNDAY' && @.isOpen == false)]").exists())
-                .andDo(MockMvcResultHandlers.print());
+        given().contentType("application/json")
+                .body(request)
+                .header(constants.ACCESS_TOKEN_HEADER, myToken.getAccessToken())
+                .header(constants.REFRESH_TOKEN_HEADER, myToken.getRefreshToken())
+                .when()
+                .post(url)
+                .then()
+                .log().all()
+                .statusCode(201)
+                .body("data", hasSize(7))
+                .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'TUESDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'WEDNESDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'FRIDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SATURDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SUNDAY' && it.isOpen == false }", notNullValue());
     }
 
     @Test
-    @Transactional
     @DisplayName("save: 탈퇴한 회원의 경우 throw exception")
-    public void whenLeavedUserRequest_thenThrowException() throws Exception {
-        //given
-        StoreOwner isNotActiveOwner = ownerRepository.save(new StoreOwner("user1", "asd@naer.com", passwordEncoder.encode("asdasdw123"),
-                "김사업", AuthenticationType.STORE_OWNER, false));
-        createAuthority(isNotActiveOwner);
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
-                false, null,null
-        );
-        Long storeId = leavedStore.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        businessHourList.add(businessHour2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+    public void whenLeavedUserRequest_thenThrowException(){
+        // given
+        MemberResponse memberResponse =
+                doPost(
+                        OWNER_URL,
+                        OWNER_SAVE_UPDATE_REQUEST,
+                        MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        validatorWillPass();
+
+        StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
+        Long storeId = storeResponse.getStoreId();
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
+
+        String leaveMemberUrl = OWNER_URL+"/" + memberResponse.getMemberId();
+        doDelete(leaveMemberUrl, myToken.getRefreshToken(), myToken.getAccessToken());
 
         String url = "/api/stores/" + storeId + "/business-hours";
-
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("save: 탈퇴한 회원은 아니지만 삭제된 가게의 경우 throw exception")
     public void whenDeletedStoreRequest_thenThrowException() throws Exception {
         //given
-        createAuthority(owner);
-        Store leavedStore = storeRepository.save(
-                new Store(owner, null,null,"가게5", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.LEAVE,"부적절한 영업시간"));
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken ownerToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
-                false, null,null
-        );
-        Long storeId = leavedStore.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        businessHourList.add(businessHour2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        ownerToken.getRefreshToken(),
+                        ownerToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        String deleteStoreUrl = STORE_URL+"/" + storeId;
+        doDelete(deleteStoreUrl, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
 
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+
     }
     @Test
-    @Transactional
     @DisplayName("save: 모든요일에 대해 열린날을 요청하면 응답으로 닫힌날을 제공하면안된다")
-    public void whenAllOpenDaysProvided_thenResponseIncludesNoClosedDays() throws Exception {
+    public void whenAllOpenDaysProvided_thenResponseIncludesNoClosedDays() {
         //given
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour3 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.WEDNESDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour4 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour5 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SATURDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour6 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.FRIDAY, true,
-                false, null,null
-        );
-        BusinessHourSaveUpdateRequest businessHour7 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SUNDAY, true,
-                false, null,null
-        );
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        businessHourList.add(businessHour2);
-        businessHourList.add(businessHour3);
-        businessHourList.add(businessHour4);
-        businessHourList.add(businessHour5);
-        businessHourList.add(businessHour6);
-        businessHourList.add(businessHour7);
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
 
 
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        Long storeId = storeResponse.getStoreId();
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequestWithAllDayOfWeek(storeId);
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data", hasSize(7)))
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'MONDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'TUESDAY' && @.isOpen == true&& @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'WEDNESDAY' && @.isOpen == true&& @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'THURSDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'FRIDAY' && @.isOpen == true&& @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SATURDAY' && @.isOpen == true&& @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SUNDAY' && @.isOpen == true&& @.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url,  myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.CREATED.value())
+                .body("data", hasSize(7))
+                .body("data.findAll { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'TUESDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'WEDNESDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'FRIDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'SATURDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())))
+                .body("data.findAll { it.dayOfWeek == 'SUNDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", is(not(empty())));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("save: 영업시작시간이 영업종료시간보다 나중이라면 exception을 throw해야한다")
     public void whenStartTimeIsLaterThanEndTime_thenThrowException() throws Exception {
         //given
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(16,0), java.time.LocalTime.of(9,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("시작시간은 종료시간보다 먼저여야합니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
+
     }
     @Test
-    @Transactional
     @DisplayName("save: 브레이크시작시간이 브레이크종료시간보다 나중이라면 exception을 throw해야한다")
     public void whenBreakStartTimeIsLaterThanEndTime_thenThrowException() throws Exception {
         //given
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(11,0)
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("시작시간은 종료시간보다 먼저여야합니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("save: 만약 hasbreaktime을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
     public void whenValidateBreakTimeNull_thenThrowException() throws Exception {
         //given
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                true, null,null
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createNullTimeBusinessHourRequest(storeId);
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("시작시작과 종료시간을 설정해주세요"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("save: 만약 isopen을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
-    public void whenValidateOpenEndTimeNull_thenThrowException() throws Exception {
+    public void whenValidateOpenEndTimeNull_thenThrowException() {
         //given
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(),null, java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                false, null,null
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        Long storeId = storeResponse.getStoreId();
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createInvalidTimeBusinessHourRequest(storeId);
         String url = "/api/stores/" + storeId + "/business-hours";
 
         //when, then
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("시작시작과 종료시간을 설정해주세요"))
-                .andDo(MockMvcResultHandlers.print());
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("update: 요청한 날에 대해서만 UPDATE 수행한다. 요청하지 않은 날에 대해서는 삭제나 수정을 진행하지 않는다")
-    public void whenOnlyUpdateDaysProvided_thenReviseProvidedDays() throws Exception {
+    public void whenOnlyUpdateDaysProvided_thenReviseProvidedDays() {
         //given
-        BusinessHour businessHour1 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour2 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour3 = new BusinessHour(
-                store, null,null, DayOfWeek.WEDNESDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour4 = new BusinessHour(
-                store, null,null, DayOfWeek.THURSDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour5 = new BusinessHour(
-                store, null,null, DayOfWeek.FRIDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour6 = new BusinessHour(
-                store, null,null, DayOfWeek.SUNDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour7 = new BusinessHour(
-                store, null,null, DayOfWeek.SATURDAY, false,
-                false, null, null
-        );
-        BusinessHour savedBusinessHour1 = businessHourRepository.save(businessHour1);
-        businessHourRepository.save(businessHour2);
-        businessHourRepository.save(businessHour3);
-        businessHourRepository.save(businessHour4);
-        businessHourRepository.save(businessHour5);
-        businessHourRepository.save(businessHour6);
-        businessHourRepository.save(businessHour7);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), java.time.DayOfWeek.MONDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(request1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
 
+
+        Long storeId = storeResponse.getStoreId();
         String url = "/api/stores/" + storeId + "/business-hours";
 
-        //when, then
-        mockMvc.perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data", hasSize(7)))
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'MONDAY' && @.isOpen == true && @.startTime == '11:00' && @.endTime == '17:00' && @.hasBreakTime == true && @.breakStartTime =='12:00' && @.breakEndTime =='13:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'TUESDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00' )]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'WEDNESDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'THURSDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'FRIDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SATURDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SUNDAY' && @.isOpen == false)]").exists())
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
-                .andDo(MockMvcResultHandlers.print());
+        BusinessHourController.BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequestWithAllDayOfWeek(storeId);
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), saveRequest)
+                .statusCode(HttpStatus.CREATED.value());
+
+        //when, then
+        BusinessHourController.BusinessHourSaveUpdateListRequest updateRequest = createUpdateBusinessHourRequest(storeId);
+        doPut(url, myToken.getRefreshToken(), myToken.getAccessToken(), updateRequest)
+                .statusCode(HttpStatus.OK.value())
+                .body("data", hasSize(7))
+                .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '11:00' && it.endTime == '17:00' && it.hasBreakTime == true && it.breakStartTime == '12:00' && it.breakEndTime == '13:00'}", notNullValue())
+                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'WEDNESDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SATURDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'FRIDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SUNDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue());
+
     }
-    //만약 업데이트해서 중복된 요일이 나오면 exception 발생
+
     @Test
-    @Transactional
     @DisplayName("update: 업데이트를 요청한 결과 해당 가게에 중복되는 요일이 생겨버린다면 예외 throw")
-    public void whenUpdateDuplicatedDayOfWeek_thenThrowsException() throws Exception {
+    public void whenUpdateDuplicatedDayOfWeek_thenThrowsException() {
         //given
-        BusinessHour businessHour1 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour2 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour3 = new BusinessHour(
-                store, null,null, DayOfWeek.WEDNESDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour4 = new BusinessHour(
-                store, null,null, DayOfWeek.THURSDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour5 = new BusinessHour(
-                store, null,null, DayOfWeek.FRIDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour6 = new BusinessHour(
-                store, null,null, DayOfWeek.SUNDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour7 = new BusinessHour(
-                store, null,null, DayOfWeek.SATURDAY, false,
-                false, null, null
-        );
-        BusinessHour savedBusinessHour1 = businessHourRepository.save(businessHour1);
-        businessHourRepository.save(businessHour2);
-        businessHourRepository.save(businessHour3);
-        businessHourRepository.save(businessHour4);
-        businessHourRepository.save(businessHour5);
-        businessHourRepository.save(businessHour6);
-        businessHourRepository.save(businessHour7);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        DayOfWeek duplicatedDayOfWeek = DayOfWeek.THURSDAY;
-        BusinessHourSaveUpdateRequest duplicatedDayOfWeekRequest1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        BusinessHourSaveUpdateRequest duplicatedDayOfWeekRequest2 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(duplicatedDayOfWeekRequest1);
-        businessHourList.add(duplicatedDayOfWeekRequest2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
 
+
+        Long storeId = storeResponse.getStoreId();
         String url = "/api/stores/" + storeId + "/business-hours";
 
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequestWithAllDayOfWeek(storeId);
+        doPost(url, myToken.getRefreshToken(), myToken.getAccessToken(), saveRequest)
+                .statusCode(HttpStatus.CREATED.value());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createDuplicatedDayOfWeekBusinessHourRequest(storeId);
+
         //when, then
-        mockMvc.perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("중복되는 요일이 있습니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPut(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_DAY_OF_WEEK.getMessage()));
+
     }
 
     @Test
-    @Transactional
     @DisplayName("update: 삭제된 가게에 대해 업데이트를 요청할 경우 throw exception")
-    public void whenDeletedStoreUpdateRequest_thenThrowException() throws Exception {
+    public void whenDeletedStoreUpdateRequest_thenThrowException() {
         //given
-        BusinessHour businessHour1 = new BusinessHour(
-                leavedStore, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour2 = new BusinessHour(
-                leavedStore, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour3 = new BusinessHour(
-                leavedStore, null,null, DayOfWeek.WEDNESDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour4 = new BusinessHour(
-                leavedStore, null,null, DayOfWeek.THURSDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour5 = new BusinessHour(
-                leavedStore, null,null, DayOfWeek.FRIDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour6 = new BusinessHour(
-                leavedStore, null,null, DayOfWeek.SUNDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour7 = new BusinessHour(
-                leavedStore, null,null, DayOfWeek.SATURDAY, false,
-                false, null, null
-        );
-        businessHourRepository.save(businessHour1);
-        businessHourRepository.save(businessHour2);
-        businessHourRepository.save(businessHour3);
-        businessHourRepository.save(businessHour4);
-        businessHourRepository.save(businessHour5);
-        businessHourRepository.save(businessHour6);
-        businessHourRepository.save(businessHour7);
+        doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
-        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        BusinessHourSaveUpdateRequest request2 = new BusinessHourSaveUpdateRequest(
-                leavedStore.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        Long storeId = leavedStore.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(request1);
-        businessHourList.add(request2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest requestList = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        myToken.getRefreshToken(),
+                        myToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
 
+
+        Long storeId = storeResponse.getStoreId();
         String url = "/api/stores/" + storeId + "/business-hours";
+        BusinessHourController.BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequestWithAllDayOfWeek(storeId);
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        doPost( url,
+                myToken.getRefreshToken(),
+                myToken.getAccessToken(),
+                saveRequest)
+                    .statusCode(HttpStatus.CREATED.value());
+
+        doDelete(STORE_URL + "/" + storeId, myToken.getRefreshToken(), myToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest updateRequest = createDuplicatedDayOfWeekBusinessHourRequest(storeId);
 
         //when, then
-        mockMvc.perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestList)))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPut(url, myToken.getRefreshToken(), myToken.getAccessToken(), updateRequest)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+
     }
 
     @Test
-    @Transactional
     @DisplayName("update: 탈퇴한 회원이 업데이트를 요청할 경우 throw exception")
-    public void whenLeavedStoreOwnerUpdateRequest_thenThrowException() throws Exception {
-        StoreOwner isNotActiveOwner = ownerRepository.save(new StoreOwner("user1", "asd@naer.com", passwordEncoder.encode("asdasdw123"),
-                "김사업", AuthenticationType.STORE_OWNER, false));
-        createAuthority(isNotActiveOwner);
-        //given
-        BusinessHour businessHour1 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour2 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour3 = new BusinessHour(
-                store, null,null, DayOfWeek.WEDNESDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour4 = new BusinessHour(
-                store, null,null, DayOfWeek.THURSDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour5 = new BusinessHour(
-                store, null,null, DayOfWeek.FRIDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour6 = new BusinessHour(
-                store, null,null, DayOfWeek.SUNDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour7 = new BusinessHour(
-                store, null,null, DayOfWeek.SATURDAY, false,
-                false, null, null
-        );
-        businessHourRepository.save(businessHour1);
-        businessHourRepository.save(businessHour2);
-        businessHourRepository.save(businessHour3);
-        businessHourRepository.save(businessHour4);
-        businessHourRepository.save(businessHour5);
-        businessHourRepository.save(businessHour6);
-        businessHourRepository.save(businessHour7);
+    public void whenLeavedStoreOwnerUpdateRequest_thenThrowException() {
+        MemberResponse memberResponse =
+                doPost(
+                        OWNER_URL,
+                        OWNER_SAVE_UPDATE_REQUEST,
+                        MemberResponse.class);
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        validatorWillPass();
 
-        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        BusinessHourSaveUpdateRequest request2 = new BusinessHourSaveUpdateRequest(
-                store.getStoreId(), java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
-        );
-        Long storeId = store.getStoreId();
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
-        businessHourList.add(request1);
-        businessHourList.add(request2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest requestList = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
+        Long storeId = storeResponse.getStoreId();
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
+
+        String leaveMemberUrl = OWNER_URL+"/" + memberResponse.getMemberId();
+        doDelete(leaveMemberUrl, myToken.getRefreshToken(), myToken.getAccessToken());
 
         String url = "/api/stores/" + storeId + "/business-hours";
-
         //when, then
-        mockMvc.perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestList)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value("인증된 사용자가 아닙니다"))
-                .andDo(MockMvcResultHandlers.print());
+        doPut(url, myToken.getRefreshToken(), myToken.getAccessToken(), request)
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+
     }
 
     //get
     @Test
-    @Transactional
     @DisplayName("get: 가게 id에 해당하는 영업시간 7개 정보를 모두 가져온다")
-    public void whenGetBusinessHourByStoreId_thenReturnAllDayOfWeekBusinessHour() throws Exception {
+    public void whenGetBusinessHourByStoreId_thenReturnAllDayOfWeekBusinessHour() {
         //given
-        BusinessHour businessHour1 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.MONDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour2 = new BusinessHour(
-                store, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
-                false, null, null
-        );
-        BusinessHour businessHour3 = new BusinessHour(
-                store, null,null, DayOfWeek.WEDNESDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour4 = new BusinessHour(
-                store, null,null, DayOfWeek.THURSDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour5 = new BusinessHour(
-                store, null,null, DayOfWeek.FRIDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour6 = new BusinessHour(
-                store, null,null, DayOfWeek.SUNDAY, false,
-                false, null, null
-        );
-        BusinessHour businessHour7 = new BusinessHour(
-                store, null,null, DayOfWeek.SATURDAY, false,
-                false, null, null
-        );
-        businessHourRepository.save(businessHour1);
-        businessHourRepository.save(businessHour2);
-        businessHourRepository.save(businessHour3);
-        businessHourRepository.save(businessHour4);
-        businessHourRepository.save(businessHour5);
-        businessHourRepository.save(businessHour6);
-        businessHourRepository.save(businessHour7);
+        doPost(
+                        OWNER_URL,
+                        OWNER_SAVE_UPDATE_REQUEST,
+                        MemberResponse.class);
 
-        String url = "/api/stores/" + store.getStoreId() + "/business-hours";
+        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        validatorWillPass();
+
+        StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
+        Long storeId = storeResponse.getStoreId();
+
+        String url = "/api/stores/" + storeId + "/business-hours";
+
+        consumerRepository.save(ADMIN);
+        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+        BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
+        doPost(
+                url,
+                myToken.getRefreshToken(),
+                myToken.getAccessToken(),
+                request
+        )
+                .statusCode(HttpStatus.CREATED.value());
 
         //when, then
-        mockMvc.perform(get(url))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data", hasSize(7)))
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'MONDAY' && @.isOpen == true &&@.startTime == '09:00' && @.endTime == '16:00')]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'TUESDAY' && @.isOpen == true && @.startTime == '09:00' && @.endTime == '16:00' )]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'WEDNESDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'THURSDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'FRIDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SATURDAY' && @.isOpen == false)]").exists())
-                .andExpect(jsonPath("$.data[?(@.dayOfWeek == 'SUNDAY' && @.isOpen == false)]").exists())
+        doGet(url)
+                .body("data", hasSize(7))
+                .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'TUESDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'WEDNESDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'FRIDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SATURDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'SUNDAY' && it.isOpen == false }", notNullValue());
 
-                .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("save: 토큰 없이 요청 시 throw exception")
+    public void whenNoTokenRequest_thenThrowException() {
+        String url = "/api/stores/" + 1 + "/business-hours";
+        //when, then
+        doPost(url, createBusinessHourRequest(1l))
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+    }
+
 }

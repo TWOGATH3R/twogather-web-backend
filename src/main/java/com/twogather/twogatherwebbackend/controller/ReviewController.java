@@ -24,7 +24,6 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestBody @Valid final ReviewSaveRequest request) {
         ReviewResponse data = reviewService.save(request);

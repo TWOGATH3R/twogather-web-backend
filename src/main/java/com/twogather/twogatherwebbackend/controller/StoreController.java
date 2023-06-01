@@ -80,7 +80,7 @@ public class StoreController {
                                                   @RequestParam(value = "location", required = false) String location) {
 
         Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data.getContent()));
+        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
     @DeleteMapping("/{storeId}")
