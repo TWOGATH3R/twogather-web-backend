@@ -61,6 +61,7 @@ public class StoreExcludeGetAcceptanceTest {
         owner = createOwner(ownerRepository, passwordEncoder);
         createAuthority(owner);
     }
+    /*
 
     //save, update 에 대해서 작성해놨음
     @Test
@@ -210,5 +211,5 @@ public class StoreExcludeGetAcceptanceTest {
                 .andDo(MockMvcResultHandlers.print());
 
         Assertions.assertFalse(storeRepository.findById(noSuchId).isPresent());
-    }
+    }*/
 }

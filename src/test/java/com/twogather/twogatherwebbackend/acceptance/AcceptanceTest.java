@@ -2,14 +2,15 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,11 +19,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static io.restassured.RestAssured.UNDEFINED_PORT;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest
@@ -167,7 +167,7 @@ public class AcceptanceTest
     }
 
 
-    protected <T> MyToken doLogin(String path, T request) {
+    protected <T> Tokens doLogin(String path, T request) {
         Response response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
@@ -184,7 +184,7 @@ public class AcceptanceTest
         String accessToken = headers.getValue(constants.ACCESS_TOKEN_HEADER);
         String refreshToken = headers.getValue(constants.REFRESH_TOKEN_HEADER);
 
-        return new MyToken(accessToken, refreshToken);
+        return new Tokens(accessToken, refreshToken);
     }
     protected void validatorWillPass(){
         org.mockito.Mockito.when(validator.validateBizRegNumber(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any())).thenReturn(true);

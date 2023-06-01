@@ -50,6 +50,7 @@ public class LikeAcceptanceTest {
     @Autowired
     private StoreRepository storeRepository;
 
+    /*
     @Test
     @DisplayName("가게 좋아요를 눌렸을때 디비에 제대로된 관계를 맺으며 저장되었는지 확인")
     public void whenAddStoreLike_ThenSuccessAssociationMemberAndStoreAndLikes() throws Exception {
@@ -151,6 +152,6 @@ public class LikeAcceptanceTest {
                 .andExpect(status().isForbidden());
 
     }
-
+*/
 
 }

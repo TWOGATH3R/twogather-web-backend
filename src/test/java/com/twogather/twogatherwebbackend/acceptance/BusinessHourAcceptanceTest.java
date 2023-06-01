@@ -1,31 +1,14 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.controller.BusinessHourController;
-import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
-import com.twogather.twogatherwebbackend.exception.BusinessHourException;
-import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
@@ -45,7 +28,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays(){
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -59,7 +42,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -94,14 +77,14 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
                         OWNER_URL,
                         OWNER_SAVE_UPDATE_REQUEST,
                         MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
         validatorWillPass();
 
         StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
         Long storeId = storeResponse.getStoreId();
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -123,7 +106,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenDeletedStoreRequest_thenThrowException() throws Exception {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken ownerToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens ownerToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -137,7 +120,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequest(storeId);
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -156,7 +139,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenAllOpenDaysProvided_thenResponseIncludesNoClosedDays() {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -171,7 +154,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         BusinessHourController.BusinessHourSaveUpdateListRequest request = createBusinessHourRequestWithAllDayOfWeek(storeId);
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -196,7 +179,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenStartTimeIsLaterThanEndTime_thenThrowException() throws Exception {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -209,7 +192,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         Long storeId = storeResponse.getStoreId();
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -227,7 +210,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenBreakStartTimeIsLaterThanEndTime_thenThrowException() throws Exception {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -240,7 +223,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         Long storeId = storeResponse.getStoreId();
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -259,7 +242,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenValidateBreakTimeNull_thenThrowException() throws Exception {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -272,7 +255,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         Long storeId = storeResponse.getStoreId();
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -291,7 +274,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenValidateOpenEndTimeNull_thenThrowException() {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -304,7 +287,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         Long storeId = storeResponse.getStoreId();
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -323,7 +306,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenOnlyUpdateDaysProvided_thenReviseProvidedDays() {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -338,7 +321,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         String url = "/api/stores/" + storeId + "/business-hours";
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -366,7 +349,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenUpdateDuplicatedDayOfWeek_thenThrowsException() {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -381,7 +364,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         String url = "/api/stores/" + storeId + "/business-hours";
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -403,7 +386,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenDeletedStoreUpdateRequest_thenThrowException() {
         //given
         doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
 
         validatorWillPass();
         StoreResponse storeResponse =
@@ -419,7 +402,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         BusinessHourController.BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequestWithAllDayOfWeek(storeId);
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 
@@ -447,7 +430,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
                         OWNER_URL,
                         OWNER_SAVE_UPDATE_REQUEST,
                         MemberResponse.class);
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
         validatorWillPass();
 
         StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
@@ -476,7 +459,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
                         OWNER_SAVE_UPDATE_REQUEST,
                         MemberResponse.class);
 
-        MyToken myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+        Tokens myToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
         validatorWillPass();
 
         StoreResponse storeResponse = doPost(STORE_URL, myToken.getRefreshToken(), myToken.getAccessToken(), STORE_SAVE_REQUEST, StoreResponse.class);
@@ -485,7 +468,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         String url = "/api/stores/" + storeId + "/business-hours";
 
         consumerRepository.save(ADMIN);
-        MyToken adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        Tokens adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 

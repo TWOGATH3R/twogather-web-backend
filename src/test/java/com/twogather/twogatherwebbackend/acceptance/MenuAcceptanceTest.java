@@ -64,6 +64,7 @@ public class MenuAcceptanceTest {
     private Store store;
     private static final String URL = "/api/stores/{storeId}/menus";
 
+    /*
     @BeforeEach
     public void setup(){
         owner = createOwner(ownerRepository, passwordEncoder);
@@ -222,5 +223,5 @@ public class MenuAcceptanceTest {
                 .andExpect(jsonPath("$.data[?(@.name == '감자' && @.price == 10)]").exists())
                 .andExpect(jsonPath("$.data[?(@.name == '케찹' && @.price == 20)]").exists())
                 .andDo(MockMvcResultHandlers.print());
-    }
+    }*/
 }

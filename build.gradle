@@ -36,10 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'junit:junit:4.13.2'
-	implementation 'org.projectlombok:lombok:1.18.26'
-	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation group: 'org.json', name: 'json', version: '20230227'
@@ -76,6 +73,16 @@ dependencies {
 	//s3
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.464'
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
+	//dbunit
+	testImplementation 'org.dbunit:dbunit:2.7.3'
+
+	//lombok
+	implementation('org.projectlombok:lombok')
+	annotationProcessor('org.projectlombok:lombok')
+
+	// test 환경
+	testImplementation('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
 
 }
 

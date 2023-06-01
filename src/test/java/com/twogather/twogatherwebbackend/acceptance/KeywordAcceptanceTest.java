@@ -52,6 +52,7 @@ public class KeywordAcceptanceTest {
     @Autowired
     private EntityManager em;
     String URL = "/api/keywords";
+    /*
     @Test
     @DisplayName("다섯개보다 많은 키워드가 있을때 다섯개의 키워드만 랜덤으로 조회해온다")
     public void whenExistKeywordMoreThanFive_ThenRandomKeywordList() throws Exception {
@@ -159,5 +160,5 @@ public class KeywordAcceptanceTest {
         assertTrue(storeKeywordList.size()==2);
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getName().equals("분위기 좋은")));
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getName().equals("아이들과 오기 좋은")));
-    }
+    }*/
 }

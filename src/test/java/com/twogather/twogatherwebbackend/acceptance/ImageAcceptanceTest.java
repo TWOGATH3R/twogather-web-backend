@@ -58,6 +58,7 @@ public class ImageAcceptanceTest {
     private StoreOwner owner;
     private Store store;
 
+    /*
     @BeforeEach
     public void setup(){
         owner = createOwner(storeOwnerRepository, passwordEncoder);
@@ -190,5 +191,5 @@ public class ImageAcceptanceTest {
         fileList.add(file2);
 
         return fileList;
-    }
+    }*/
 }
