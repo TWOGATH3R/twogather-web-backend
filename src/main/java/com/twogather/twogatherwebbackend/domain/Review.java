@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicUpdate  // 변경된 필드만 반영되도록 설정
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +39,15 @@ public class Review {
         this.createdDate = createdDate;
     }
 
+    public void updateContent(String content) {
+        if(content != null && !content.isEmpty()) {
+            this. content = content;
+        }
+    }
+
+    public void updateScore(Double score) {
+        if(!score.isNaN() && 0.0 <= score && score <= 5.0) {
+            this. content = content;
+        }
+    }
 }

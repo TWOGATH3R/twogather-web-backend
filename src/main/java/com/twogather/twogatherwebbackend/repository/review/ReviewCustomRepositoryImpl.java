@@ -1,19 +1,12 @@
 package com.twogather.twogatherwebbackend.repository.review;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.QTuple;
-import com.querydsl.core.types.SubQueryExpression;
-import com.querydsl.core.types.dsl.MathExpressions;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.twogather.twogatherwebbackend.domain.QImage;
 import com.twogather.twogatherwebbackend.domain.QReview;
-import com.twogather.twogatherwebbackend.domain.Review;
+import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,29 +22,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<StoreDetailReviewResponse> findReviewsByStoreId(Long storeId, Pageable pageable) {
-        /* TODO
-                select *
-                from review inner join (
-                    select member_id, avg(score)
-                    from review
-                    group by member_id
-                ) as avg_score
-                on review.member_id = avg_score.member_id
-                where store_id = 33
-         */
-
-        /* TODO
-            QueryDSL은 from절 subquery를 지원하지 않음
-            위 SQL문을 from절 subquery를 사용하지 않고 join만 사용하는 SQL문으로 변경
-            SELECT a.review_id, a.content, a.created_date, a.score, a.member_id, a.store_id, b.member_id, avg(b.score)
-            FROM REVIEW as a
-            left join review as b
-            on a.member_id = b.member_id
-            group by b.member_id, a.review_id, a.content, a.created_date, a.score, a.member_id, a.store_id
-            having a.store_id = :storeId;
-         */
-
+    public Page<StoreDetailReviewResponse> findReviewsByStoreId(Long storeId, Pageable pageable) {
         QReview a = QReview.review;
         QReview b = new QReview("b");
 
@@ -66,19 +37,43 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                 .having(a.store.storeId.eq(storeId))
                 .fetch();
 
+        List<StoreDetailReviewResponse> responseList = results.stream().map(tuple -> new StoreDetailReviewResponse(
+                tuple.get(a.reviewer.memberId),
+                tuple.get(a.reviewId),
+                tuple.get(a.content),
+                tuple.get(a.score),
+                tuple.get(a.createdDate),
+                tuple.get(a.reviewer.name),
+                tuple.get(b.score.avg())
+        )).collect(Collectors.toList());
 
-        List<StoreDetailReviewResponse> responseList = results.stream()
-                .map(tuple -> new StoreDetailReviewResponse(
-                        tuple.get(a.reviewer.memberId),
-                        tuple.get(a.reviewId),
-                        tuple.get(a.content),
-                        tuple.get(a.score),
-                        tuple.get(a.createdDate),
-                        tuple.get(a.reviewer.name),
-                        tuple.get(b.score.avg())
-                ))
-                .collect(Collectors.toList());
+        return new PageImpl<>(responseList, pageable, responseList.size());
+    }
 
-        return responseList;
+    @Override
+    public Page<MyReviewInfoResponse> findMyReviewsByMemberId(Long memberId, Pageable pageable) {
+        QReview review = QReview.review;
+        QImage image = new QImage("image");
+
+        List<Tuple> result = jpaQueryFactory
+                .select(review, image.url)
+                .from(review)
+                .leftJoin(image)
+                .on(review.store.storeId.eq(image.store.storeId))
+                .where(review.reviewer.memberId.eq(memberId))
+                .fetch();
+
+        List<MyReviewInfoResponse> responseList = result.stream().map(tuple -> new MyReviewInfoResponse(
+                tuple.get(review.reviewId),
+                tuple.get(review.content),
+                tuple.get(review.score),
+                tuple.get(review.createdDate),
+                tuple.get(image.url),
+                tuple.get(review.store.name),
+                tuple.get(review.store.address),
+                tuple.get(review.reviewer.name)
+        )).collect(Collectors.toList());
+
+        return new PageImpl<>(responseList, pageable, responseList.size());
     }
 }

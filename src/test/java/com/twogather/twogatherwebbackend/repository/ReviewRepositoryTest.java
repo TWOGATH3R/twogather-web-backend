@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Review;
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -74,6 +75,65 @@ public class ReviewRepositoryTest {
     }
 
     @Test
+    @DisplayName("내가 작성한 리뷰 목록 조회")
+    @Transactional
+    void WhenRequestMyReviews_ThenGetReviewsByMyMemberId() {
+        // given
+        int page = 0;
+        int size = 5;
+        String orderColumn = "createdDate";
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderColumn).descending());
+
+        // when
+        Page<MyReviewInfoResponse> result1 = reviewRepository.findMyReviewsByMemberId(consumer1.getMemberId(), pageable);
+        Page<MyReviewInfoResponse> result2 = reviewRepository.findMyReviewsByMemberId(consumer2.getMemberId(), pageable);
+        Page<MyReviewInfoResponse> result3 = reviewRepository.findMyReviewsByMemberId(consumer3.getMemberId(), pageable);
+
+        // then
+        result1.stream().map(
+                review -> Assertions.assertThat(review.getConsumerName())
+                        .isEqualTo("user1")
+        );
+        result2.stream().map(
+                review -> Assertions.assertThat(review.getConsumerName())
+                        .isEqualTo("user2")
+        );
+        result3.stream().map(
+                review -> Assertions.assertThat(review.getConsumerName())
+                        .isEqualTo("user3")
+        );
+
+        Assertions.assertThat(result1.getTotalElements()).isEqualTo(2);
+        Assertions.assertThat(result2.getTotalElements()).isEqualTo(2);
+        Assertions.assertThat(result3.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 테스트")
+    @Transactional
+    void WhenDelete_ThenReviewSizeDecreases() {
+        // given
+        int page = 0;
+        int size = 10;
+        String orderColumn = "createdDate";
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderColumn).descending());
+
+        // 리뷰 삭제 이전 store1의 리뷰 개수
+        Long reviewSize = reviewRepository
+                .findReviewsByStoreId(store1.getStoreId(), pageable).getTotalElements();
+
+        // when
+        reviewRepository.deleteById(review1.getReviewId());
+
+        // 리뷰 삭제 이후 store1의 리뷰 개수
+        Long reviewSizeAfterDelete = reviewRepository
+                .findReviewsByStoreId(store1.getStoreId(), pageable).getTotalElements();
+
+        // then
+        Assertions.assertThat(reviewSizeAfterDelete).isEqualTo(reviewSize - 1);
+    }
+
+    @Test
     @DisplayName("리뷰 목록 조회시 사용자의 평균 평점을 정상적으로 포함하여 응답하는지 테스트")
     @Transactional
     void WhenFindByStoreStoreId_ThenReturnReviewsWithAvgScoreOfCustomer() {
@@ -84,13 +144,13 @@ public class ReviewRepositoryTest {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orderColumn).descending());
 
         // when
-        List<StoreDetailReviewResponse> results1 = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
-        List<StoreDetailReviewResponse> results2 = reviewRepository.findReviewsByStoreId(store2.getStoreId(), pageable);
+        Page<StoreDetailReviewResponse> results1 = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
+        Page<StoreDetailReviewResponse> results2 = reviewRepository.findReviewsByStoreId(store2.getStoreId(), pageable);
 
         // then
         Assertions.assertThat(results1).isNotEmpty();
         System.out.println("store1");
-        System.out.println("page" + page + " count : " + results1.size());
+        System.out.println("page" + page + " count : " + results1.getTotalElements());
         System.out.println();
         for(StoreDetailReviewResponse item : results1) {
             System.out.println("reviewId: " + item.getReviewId());
@@ -105,7 +165,7 @@ public class ReviewRepositoryTest {
 
         Assertions.assertThat(results2).isNotEmpty();
         System.out.println("store2");
-        System.out.println("page" + page + " count : " + results2.size());
+        System.out.println("page" + page + " count : " + results2.getTotalElements());
         System.out.println();
         for(StoreDetailReviewResponse item : results2) {
             System.out.println("reviewId: " + item.getReviewId());
