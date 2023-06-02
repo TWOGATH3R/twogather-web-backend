@@ -26,13 +26,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application-prod.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.properties
-    - run: cat ./src/main/resources/application-prod.properties
+    - run: touch ./src/main/resources/application.properties
+    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+    - run: cat ./src/main/resources/application.properties
 
-    - run: touch ./src/test/resources/application-prod.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application-prod.properties
-    - run: cat ./src/test/resources/application-prod.properties
+    - run: touch ./src/test/resources/application.properties
+    - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application.properties
+    - run: cat ./src/test/resources/application.properties
     # (1) 기본 체크아웃
     - name: Checkout
       uses: actions/checkout@v3
@@ -50,7 +50,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: clean build -Pprod
+        arguments: clean build
 
     # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
