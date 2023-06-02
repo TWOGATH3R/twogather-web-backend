@@ -41,9 +41,9 @@ api:
       key: ${secrets.API_KEY}
     url: https://api.odcloud.kr/api/nts-businessman/v1/validate
 aws:
+  access-key: ${secrets.S3_ACCESS_KEY}
+  secret-key: ${secrets.S3_SECRET_KEY}
   s3:
     region: ${secrets.S3_REGION}
     bucket:
       name: ${secrets.S3_BUCKET_NAME}
-  access-key: ${secrets.S3_ACCESS_KEY}
-  secret-key: ${secrets.S3_SECRET_KEY}
