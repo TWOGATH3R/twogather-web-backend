@@ -12,8 +12,6 @@ env:
   S3_BUCKET_NAME: twogather-bucket
   CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
-  MAIN_RESOURCE_PATH: ./src/main/resources/application.properties
-  TEST_RESOURCE_PATH: ./src/test/resources/application.properties
 
 permissions:
   contents: read
@@ -41,8 +39,6 @@ jobs:
 
       - name: Set main-properties file
         uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{ env.MAIN_RESOURCE_PATH }}
         env:
           S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
           S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
@@ -54,21 +50,7 @@ jobs:
           EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
           DB_URL: ${{secrets.DB_URL}}
-      - name: Set test-properties file
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{ env.TEST_RESOURCE_PATH }}
-        env:
-          S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
-          S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
-          S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-          S3_REGION: ${{secrets.S3_REGION}}
-          API_KEY: ${{secrets.API_KEY}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          EMAIL: ${{secrets.EMAIL}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_URL: ${{secrets.DB_URL}}
+    
           
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
