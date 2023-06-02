@@ -84,6 +84,10 @@ dependencies {
 	testImplementation('org.projectlombok:lombok')
 	testAnnotationProcessor('org.projectlombok:lombok')
 
+	// MariaDB
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+
+
 }
 
 
