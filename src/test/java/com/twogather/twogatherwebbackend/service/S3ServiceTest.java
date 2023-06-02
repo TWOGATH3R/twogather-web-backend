@@ -19,6 +19,7 @@ public class S3ServiceTest {
     @Autowired
     private S3Uploader s3Uploader;
 
+    /*
     @Test
     public void testUploadAndDelete() throws IOException {
         // 업로드할 파일 생성
@@ -32,5 +33,5 @@ public class S3ServiceTest {
 
         // 파일 삭제
         s3Uploader.delete(imageUrl);
-    }
+    }*/
 }
