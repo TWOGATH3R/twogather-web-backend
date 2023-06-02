@@ -12,8 +12,8 @@ env:
   S3_BUCKET_NAME: twogather-bucket
   CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
-  MAIN_RESOURCE_PATH: ./src/main/resources/application.properties
-  TEST_RESOURCE_PATH: ./src/test/resources/application.properties
+  MAIN_RESOURCE_PATH: ./src/main/resources/application.yml
+  TEST_RESOURCE_PATH: ./src/test/resources/application.yml
 
 permissions:
   contents: read
@@ -69,7 +69,7 @@ jobs:
           EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
           DB_URL: ${{secrets.DB_URL}}
-          
+
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
