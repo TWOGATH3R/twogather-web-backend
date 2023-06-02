@@ -12,8 +12,6 @@ env:
   S3_BUCKET_NAME: twogather-bucket
   CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
-  MAIN_RESOURCE_PATH: ./src/main/resources/application.yml
-  TEST_RESOURCE_PATH: ./src/test/resources/application.yml
 
 permissions:
   contents: read
@@ -40,9 +38,9 @@ jobs:
           java-version: '11'
 
       - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.yml
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
-      - run: cat ./src/main/resources/application.yml
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
 
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
