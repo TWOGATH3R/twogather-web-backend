@@ -42,6 +42,11 @@ jobs:
       - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
 
+      - uses: actions/checkout@v3
+      - run: touch ./src/test/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application.properties
+      - run: cat ./src/test/resources/application.properties
+
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
