@@ -12,8 +12,8 @@ env:
   S3_BUCKET_NAME: twogather-bucket
   CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
-  MAIN_RESOURCE_PATH: ../../src/main/resources/application.properties
-  TEST_RESOURCE_PATH: ../../src/test/resources/application.properties
+  MAIN_RESOURCE_PATH: ./src/main/resources/application.properties
+  TEST_RESOURCE_PATH: ./src/test/resources/application.properties
 
 permissions:
   contents: read
