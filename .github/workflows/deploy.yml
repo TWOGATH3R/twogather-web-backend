@@ -39,40 +39,14 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Set main-properties file
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{ env.MAIN_RESOURCE_PATH }}
-        env:
-          S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
-          S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
-          S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-          S3_REGION: ${{secrets.S3_REGION}}
-          API_KEY: ${{secrets.API_KEY}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          EMAIL: ${{secrets.EMAIL}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_URL: ${{secrets.DB_URL}}
-      - name: Set test-properties file
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{ env.TEST_RESOURCE_PATH }}
-        env:
-          S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
-          S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
-          S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-          S3_REGION: ${{secrets.S3_REGION}}
-          API_KEY: ${{secrets.API_KEY}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          EMAIL: ${{secrets.EMAIL}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_URL: ${{secrets.DB_URL}}
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application.yml
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+      - run: cat ./src/main/resources/application.yml
 
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean build
 
