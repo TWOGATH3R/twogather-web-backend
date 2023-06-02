@@ -25,14 +25,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-    - run: cat ./src/main/resources/application.properties
+    - run: touch ./src/main/resources/application-prod.properties
+    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.properties
+    - run: cat ./src/main/resources/application-prod.properties
 
     - uses: actions/checkout@v3
-    - run: touch ./src/test/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application.properties
-    - run: cat ./src/test/resources/application.properties
+    - run: touch ./src/test/resources/application-prod.properties
+    - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application-prod.properties
+    - run: cat ./src/test/resources/application-prod.properties
     # (1) 기본 체크아웃
     - name: Checkout
       uses: actions/checkout@v3
