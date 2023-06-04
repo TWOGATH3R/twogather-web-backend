@@ -70,11 +70,6 @@ jobs:
             --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
             --source .
 
-      - name: Upload to AWS S3
-        run: |
-          aws s3 cp ./src/main/resources/application.properties s3://$S3_BUCKET_NAME/application.properties
-          aws s3 cp ./src/test/resources/application.properties s3://$S3_BUCKET_NAME/application.properties
-
       # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
         run: |
