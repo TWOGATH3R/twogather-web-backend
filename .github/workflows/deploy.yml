@@ -37,42 +37,21 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: touch ./src/main/resources/application.properties
-      - run: echo "${{secrets.APPLICATION}}" > ./src/main/resources/application.properties
-      - uses: actions/upload-artifact@v2
-        with:
-          name: application.properties
-          path: ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: touch ./src/test/resources/application.properties
-      - run: echo "${{secrets.TEST_APPLICATION}}" > ./src/test/resources/application.properties
-      - uses: actions/upload-artifact@v2
-        with:
-          name: application.properties
-          path: ./src/test/resources/application.properties
+      - run: echo "${{ secrets.TEST_APPLICATION }}" > ./src/test/resources/application.properties
+      - run: cat ./src/test/resources/application.properties
 
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean build
-
-      # 추가: 디렉토리 생성
-      - name: Make Directory
-        run: mkdir -p deploy
-
-      # 추가: 필요한 파일들 복사
-      - name: Copy Files
-        run: |
-          cp ./build/libs/*.jar ./deploy
-          cp ./src/main/resources/application.properties ./deploy
-
-      # 추가: ZIP 파일 생성
-      - name: Make zip file
-        run: zip -r ./deploy.zip ./deploy
-        shell: bash
 
       # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
@@ -82,16 +61,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # (5) 빌드 결과물을 S3 버킷에 업로드 (ZIP 파일명 변경)
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./deploy.zip s3://$S3_BUCKET_NAME/
+      # (5) 빌드 결과물을 S3 버킷에 업로드
+      - name: Upload to AWS S3
+        run: |
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
+            --source .
 
-      # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행 (ZIP 파일명 변경)
+      # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
         run: |
           aws deploy create-deployment \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-            --file-exists-behavior OVERWRITE \
-            --s3-location bucket=$S3_BUCKET_NAME,key=deploy.zip,bundleType=zip
+            --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
