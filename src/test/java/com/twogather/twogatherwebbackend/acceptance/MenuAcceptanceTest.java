@@ -30,7 +30,6 @@ import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -39,10 +38,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-public class MenuAcceptanceTest {
+
+public class MenuAcceptanceTest extends AcceptanceTest{
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
@@ -51,18 +48,11 @@ public class MenuAcceptanceTest {
     private StoreRepository storeRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private MenuService menuService;
-    @Autowired
-    private EntityManager em;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private StoreOwner owner;
     private Store store;
     private static final String URL = "/api/stores/{storeId}/menus";
+
 
     /*
     @BeforeEach

@@ -58,10 +58,10 @@ public class StoreService {
     public boolean isMyStore(Long storeId) {
         String username = SecurityUtils.getUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
-                () ->new CustomAuthenticationException(UNAUTHORIZED)
+                () ->new CustomAccessDeniedException(ACCESS_DENIED)
         );
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->
-                new StoreException(NO_SUCH_STORE)
+                new CustomAccessDeniedException(ACCESS_DENIED)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
