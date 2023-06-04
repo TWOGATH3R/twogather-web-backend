@@ -62,6 +62,17 @@ public class Store {
         this.status = status;
         this.reasonForRejection = reasonForRejection;
     }
+    public Store(Category category, StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
+        this.category = category;
+        this.owner = owner;
+        this.businessHourList = businessHourList;
+        this.menuList = menuList;
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+        this.status = status;
+        this.reasonForRejection = reasonForRejection;
+    }
     public Store(String name, String address, String phone){
         this.name=name;
         this.address=address;

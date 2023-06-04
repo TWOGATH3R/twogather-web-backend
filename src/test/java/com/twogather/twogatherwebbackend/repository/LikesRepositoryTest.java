@@ -11,19 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-@SpringBootTest
-@Transactional
-public class LikesRepositoryTest {
-    @Autowired
-    private LikeRepository likeRepository;
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private ConsumerRepository consumerRepository;
-    @Autowired
-    private StoreOwnerRepository ownerRepository;
-    @Autowired
-    private EntityManager em;
+public class LikesRepositoryTest extends RepositoryTest{
+
     @Test
     public void deleteByStoreIdAndMemberId(){
         //given
@@ -36,7 +25,7 @@ public class LikesRepositoryTest {
         em.flush();
         em.clear();
         int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId());
-        boolean isExist = likeRepository.findByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
+        boolean isExist = likeRepository.findByStoreIdAndMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
 
         //then
         Assertions.assertEquals(deletedRows,1);

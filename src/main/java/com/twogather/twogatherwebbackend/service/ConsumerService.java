@@ -1,8 +1,6 @@
 package com.twogather.twogatherwebbackend.service;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
-import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +28,22 @@ public class ConsumerService {
         else return false;
     }
     public void delete(final Long memberId){
-        //TODO:구현
+        Consumer consumer = consumerRepository.findById(memberId).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER_ID)
+        );
+        consumer.leave();
     }
     public MemberResponse update(final MemberSaveUpdateRequest request){
-        //TODO: 구현
-        return new MemberResponse();
+        Consumer consumer = consumerRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        consumer.update(
+                request.getUsername(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName());
+
+        return toResponse(consumer);
     }
     public MemberResponse join(final MemberSaveUpdateRequest request){
         validateDuplicateEmail(request.getUsername());
@@ -52,7 +62,6 @@ public class ConsumerService {
         return passwordEncoder.matches(password, member.getPassword());
     }
 
-
     @Transactional(readOnly = true)
     public MemberResponse getConsumerInfo(final Long memberId) {
         Consumer consumer = consumerRepository.findById(memberId).orElseThrow(
@@ -67,6 +76,6 @@ public class ConsumerService {
         }
     }
     private MemberResponse toResponse(Consumer consumer){
-        return new MemberResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getName(), consumer.getEmail());
+        return new MemberResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getEmail(),consumer.getName());
     }
 }
