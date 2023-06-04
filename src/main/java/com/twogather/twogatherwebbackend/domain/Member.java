@@ -16,10 +16,12 @@ public class Member {
     @Column(name="member_id")
     protected Long memberId;
 
-    @Column(name="username", unique = true)
+    @Column(unique = true, length = 20)
     protected String username;
+    @Column(unique = true, length = 30)
     protected String email;
     protected String password;
+    @Column(length = 10)
     protected String name;
     protected boolean isActive;
 

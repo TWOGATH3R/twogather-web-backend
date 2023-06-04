@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"store_id", "member_id"})
+        @UniqueConstraint(name = "store_member_unique", columnNames = {"store_id", "member_id"})
 })
 public class Likes {
     @Id
