@@ -9,9 +9,9 @@ on:
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: twogather-s3-bucket
-  CODE_DEPLOY_APPLICATION_NAME: twogather-codedeploy-app
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-codedeploy-deployment-group
+  S3_BUCKET_NAME: twogather-bucket
+  CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
 
 permissions:
   contents: read
@@ -44,7 +44,7 @@ jobs:
 
       - uses: actions/checkout@v3
       - run: touch ./src/test/resources/application.properties
-      - run: echo "${{ secrets.TEST_APPLICATION }}" > ./src/test/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application.properties
       - run: cat ./src/test/resources/application.properties
 
       # (3) Gradle build (Test 포함)
@@ -69,6 +69,11 @@ jobs:
             --ignore-hidden-files \
             --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
             --source .
+
+      - name: Upload to AWS S3
+        run: |
+          aws s3 cp ./src/main/resources/application.properties s3://$S3_BUCKET_NAME/application.properties
+          aws s3 cp ./src/test/resources/application.properties s3://$S3_BUCKET_NAME/application.properties
 
       # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
