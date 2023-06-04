@@ -9,9 +9,9 @@ on:
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: twogather-bucket
-  CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
+  S3_BUCKET_NAME: twogather-s3-bucket
+  CODE_DEPLOY_APPLICATION_NAME: twogather-codedeploy-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-codedeploy-deployment-group
 
 permissions:
   contents: read
@@ -44,7 +44,7 @@ jobs:
 
       - uses: actions/checkout@v3
       - run: touch ./src/test/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/test/resources/application.properties
+      - run: echo "${{ secrets.TEST_APPLICATION }}" > ./src/test/resources/application.properties
       - run: cat ./src/test/resources/application.properties
 
       # (3) Gradle build (Test 포함)
