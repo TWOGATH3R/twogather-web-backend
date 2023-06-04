@@ -37,7 +37,7 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - run: touch ./src/main/resources/application.properties
       - run: echo "${{secrets.APPLICATION}}" > ./src/main/resources/application.properties
       - uses: actions/upload-artifact@v2
@@ -45,7 +45,7 @@ jobs:
           name: application.properties
           path: ./src/main/resources/application.properties
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - run: touch ./src/test/resources/application.properties
       - run: echo "${{secrets.TEST_APPLICATION}}" > ./src/test/resources/application.properties
       - uses: actions/upload-artifact@v2
