@@ -12,8 +12,6 @@ env:
   S3_BUCKET_NAME: twogather-bucket
   CODE_DEPLOY_APPLICATION_NAME: twogather-codedelpoy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: twogather-deploy-group
-  MAIN_RESOURCE_PATH: ./src/main/resources/application.yml
-  TEST_RESOURCE_PATH: ./src/test/resources/application.yml
 
 permissions:
   contents: read
@@ -39,40 +37,25 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Set main-properties file
-        uses: microsoft/variable-substitution@v1
+      - uses: actions/checkout@v2
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{secrets.APPLICATION}}" > ./src/main/resources/application.properties
+      - uses: actions/upload-artifact@v2
         with:
-          files: ${{ env.MAIN_RESOURCE_PATH }}
-        env:
-          S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
-          S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
-          S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-          S3_REGION: ${{secrets.S3_REGION}}
-          API_KEY: ${{secrets.API_KEY}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          EMAIL: ${{secrets.EMAIL}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_URL: ${{secrets.DB_URL}}
-      - name: Set test-properties file
-        uses: microsoft/variable-substitution@v1
+          name: application.properties
+          path: ./src/main/resources/application.properties
+
+      - uses: actions/checkout@v2
+      - run: touch ./src/test/resources/application.properties
+      - run: echo "${{secrets.TEST-APPLICATION}}" > ./src/test/resources/application.properties
+      - uses: actions/upload-artifact@v2
         with:
-          files: ${{ env.TEST_RESOURCE_PATH }}
-        env:
-          S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
-          S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
-          S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-          S3_REGION: ${{secrets.S3_REGION}}
-          API_KEY: ${{secrets.API_KEY}}
-          JWT_SECRET: ${{secrets.JWT_SECRET}}
-          EMAIL: ${{secrets.EMAIL}}
-          EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          DB_URL: ${{secrets.DB_URL}}
+          name: application.properties
+          path: ./src/test/resources/application.properties
 
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean build
 
@@ -89,7 +72,6 @@ jobs:
         run: |
           aws deploy push \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
             --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
             --source .
 
