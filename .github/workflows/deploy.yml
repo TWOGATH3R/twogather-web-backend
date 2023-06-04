@@ -39,7 +39,7 @@ jobs:
 
       - uses: actions/checkout@v3
       - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: echo "${{ secrets.MAIN_APPLICATION }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
 
       - uses: actions/checkout@v3
