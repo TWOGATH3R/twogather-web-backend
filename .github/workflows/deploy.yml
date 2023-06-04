@@ -41,10 +41,10 @@ jobs:
           java-version: '11'
 
       - uses: actions/checkout@v3
-      - run: cp ./security/application.properties ./src/main/resources/application.properties
+      - run: cp -r ./security/application.properties ./src/main/resources/application.properties
 
       - uses: actions/checkout@v3
-      - run: cp ./security/application-test.properties ./src/test/resources/application.properties
+      - run: cp -r ./security/application-test.properties ./src/test/resources/application.properties
 
 
       # (3) Gradle build (Test 포함)
