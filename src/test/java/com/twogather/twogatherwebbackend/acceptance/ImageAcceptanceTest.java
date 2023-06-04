@@ -37,6 +37,7 @@ public class ImageAcceptanceTest extends AcceptanceTest{
 
     @BeforeEach
     public void initSetting(){
+        super.setUp();
         registerOwner();
         registerStore();
         approveStore();

@@ -4,6 +4,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
@@ -58,7 +59,8 @@ public class LoginAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("owner 로그인 성공 시, 토큰에 owner 권한 정보와 memberId가 들어있는지 확인")
-    public void WhenOwnerLogin_ThenSuccess() throws Exception {
+    public void WhenOwnerLogin_ThenSuccess() {
+
         given()
                 .contentType(ContentType.JSON)
                 .body(OWNER_LOGIN_REQUEST)
