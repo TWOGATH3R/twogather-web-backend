@@ -67,9 +67,16 @@ public class StoreOwnerService {
         owner.leave();
     }
     public MemberResponse update(final MemberSaveUpdateRequest request){
-       //TODO:구현
-        int s = 2;
-        return new MemberResponse();
+        StoreOwner owner = storeOwnerRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        owner.update(
+                request.getUsername(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName());
+
+        return toStoreOwnerResponse(owner);
     }
 
     @Transactional(readOnly = true)
@@ -98,6 +105,7 @@ public class StoreOwnerService {
     private MemberResponse toStoreOwnerResponse(StoreOwner owner){
         return new MemberResponse(owner.getMemberId(),
                 owner.getUsername(),
-                owner.getName(), owner.getEmail());
+                owner.getEmail(),
+                owner.getName());
     }
 }

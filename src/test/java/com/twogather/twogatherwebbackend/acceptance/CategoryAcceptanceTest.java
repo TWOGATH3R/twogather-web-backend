@@ -97,7 +97,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
 
     }
     private void approveStore2(Long storeId2){
-        adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        adminToken = doLogin(ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId2;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
 

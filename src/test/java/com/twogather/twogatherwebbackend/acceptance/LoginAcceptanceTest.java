@@ -98,7 +98,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
     @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
     public void WhenAttemptToLoginWithInvalidId_ThenUnauthorizedException() {
         // Given
-        LoginRequest invalidLoginRequest = new LoginRequest( "dsa@amer.com", "username1","sss313213");
+        LoginRequest invalidLoginRequest = new LoginRequest( "username1","sss313213");
 
         // When
         given()

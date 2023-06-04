@@ -101,10 +101,10 @@ public class TestConstants {
             new Member(1l, MEMBER_USERNAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.STORE_OWNER, true);
 
     // Login Requests
-    public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_USERNAME, OWNER_PASSWORD);
-    public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_EMAIL, OWNER_USERNAME, WRONG_PASSWORD);
-    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest(CONSUMER_EMAIL, CONSUMER_USERNAME, CONSUMER_PASSWORD);
-    public static final LoginRequest ADMIN_LOGIN_REQUEST = new LoginRequest(ADMIN_EMAIL, ADMIN_USERNAME, ADMIN_PASSWORD);
+    public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest( OWNER_USERNAME, OWNER_PASSWORD);
+    public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_USERNAME, WRONG_PASSWORD);
+    public static final LoginRequest CONSUMER_LOGIN_REQUEST = new LoginRequest( CONSUMER_USERNAME, CONSUMER_PASSWORD);
+    public static final LoginRequest ADMIN_LOGIN_REQUEST = new LoginRequest( ADMIN_USERNAME, ADMIN_PASSWORD);
 
     // Business Hour Save/Update Request
     public static final BusinessHourSaveUpdateRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
@@ -156,7 +156,7 @@ public class TestConstants {
 
     // Owner Login Request
     public static final LoginRequest LOGIN_REQUEST =
-            new LoginRequest(OWNER_EMAIL, OWNER_USERNAME, OWNER_PASSWORD);
+            new LoginRequest( OWNER_USERNAME, OWNER_PASSWORD);
 
     // Image Id List
     public static final ImageIdList IMAGE_ID_LIST =
