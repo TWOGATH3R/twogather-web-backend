@@ -11,7 +11,7 @@ public class CustomAccessDeniedException extends AccessDeniedException {
 
         AccessDeniedExceptionErrorCode(String message) {
             this.message = message;
-            this.status = HttpStatus.UNAUTHORIZED;
+            this.status = HttpStatus.FORBIDDEN;
         }
         AccessDeniedExceptionErrorCode(String message, HttpStatus status) {
             this.message = message;

@@ -35,7 +35,7 @@ public class LikeService {
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
-        if(likeRepository.findByStoreStoreIdAndMemberMemberId(member.getMemberId(), storeId).isPresent()){
+        if(likeRepository.findByStoreIdAndMemberId(storeId, member.getMemberId()).isPresent()){
             throw new LikeException(DUPLICATE_LIKE);
         }
         likeRepository.save(new Likes(store, member));

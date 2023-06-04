@@ -36,7 +36,7 @@ public class LikesRepositoryTest {
         em.flush();
         em.clear();
         int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId());
-        boolean isExist = likeRepository.findByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
+        boolean isExist = likeRepository.findByStoreIdAndMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
 
         //then
         Assertions.assertEquals(deletedRows,1);

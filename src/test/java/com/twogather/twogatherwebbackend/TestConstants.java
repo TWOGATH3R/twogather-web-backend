@@ -81,6 +81,8 @@ public class TestConstants {
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
     public static final String CONSUMER_NAME = "김소비";
+    public static final MemberSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST =
+            new MemberSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_USERNAME, CONSUMER_PASSWORD, CONSUMER_NAME);
     public static final Consumer CONSUMER = new Consumer(CONSUMER_USERNAME, CONSUMER_EMAIL,
             passwordEncoder.encode(CONSUMER_PASSWORD), CONSUMER_NAME, AuthenticationType.CONSUMER, true);
 
@@ -118,6 +120,9 @@ public class TestConstants {
     // Store Save/Update Request
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
             new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now());
+    public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST2 =
+            new StoreSaveUpdateRequest("other store", STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now());
+
     public static final StoreOwner STORE_OWNER =
             new StoreOwner(OWNER_USERNAME, OWNER_EMAIL, passwordEncoder.encode(OWNER_PASSWORD), OWNER_NAME,
                     AuthenticationType.STORE_OWNER, true);
@@ -274,6 +279,7 @@ public class TestConstants {
 
     //API
     public static final String OWNER_URL = "/api/owners";
+    public static final String CONSUMER_URL = "/api/consumers";
     public static final String LOGIN_URL = "/api/login";
     public static final String STORE_URL = "/api/stores";
     public static final String CATEGORY_URL = "/api/categories";

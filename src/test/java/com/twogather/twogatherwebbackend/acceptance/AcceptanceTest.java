@@ -4,13 +4,16 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,11 +23,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static io.restassured.RestAssured.UNDEFINED_PORT;
 import static io.restassured.RestAssured.given;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
 public class AcceptanceTest
 {
     @LocalServerPort
@@ -33,43 +38,28 @@ public class AcceptanceTest
     protected PrivateConstants constants;
     @Autowired
     protected ObjectMapper objectMapper;
+    @Autowired
+    protected ConsumerRepository consumerRepository;
     @MockBean
     private BizRegNumberValidator validator;
-
     @Autowired
     private DatabaseCleanup databaseCleanup;
+
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         if(RestAssured.port == UNDEFINED_PORT){
             RestAssured.port = port;
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.execute();
     }
+    protected Tokens adminToken;
+    protected Tokens ownerToken;
+    protected Tokens consumerToken;
+    protected MemberResponse memberResponse;
+    protected Long storeId;
+    protected Long consumerId;
 
-    protected <T> T doGet(String path, String refreshToken, String accessToken, Class<T> response) {
-        return given()
-                .header("Authorization", "Bearer " + refreshToken)
-                .header("Authorization", "Bearer " + accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(response);
-    }
-
-    protected <T> T doGet(String path, Class<T> response) {
-        return given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(response);
-    }
     protected <T> ValidatableResponse doGet(String path) {
         return given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -79,25 +69,23 @@ public class AcceptanceTest
                 .log().all()
                 .statusCode(HttpStatus.OK.value());
     }
-    protected <T> void doDelete(String path,String refreshToken, String accessToken) {
-        given()
+    protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
+        return given()
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
                 .when()
                 .delete(path)
                 .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
+                .log().all();
     }
-    protected <T> void doPatch(String path,String refreshToken, String accessToken) {
-        given()
+    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken) {
+        return given()
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
                 .when()
                 .patch(path)
                 .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
+                .log().all();
     }
     protected <T, R> R doPost(String path, String refreshToken, String accessToken, T request, Class<R> responseClass) {
 
@@ -165,6 +153,22 @@ public class AcceptanceTest
                 .then()
                 .log().all();
     }
+    protected <T> ValidatableResponse doPost(String path) {
+        return given()
+                .when()
+                .post(path)
+                .then()
+                .log().all();
+    }
+    protected <T> ValidatableResponse doPost(String path,  String refreshToken, String accessToken) {
+        return given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
+                .when()
+                .post(path)
+                .then()
+                .log().all();
+    }
 
 
     protected <T> Tokens doLogin(String path, T request) {
@@ -188,6 +192,51 @@ public class AcceptanceTest
     }
     protected void validatorWillPass(){
         org.mockito.Mockito.when(validator.validateBizRegNumber(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any())).thenReturn(true);
+    }
+
+    protected void registerOwner(){
+        log.info("register owner");
+        memberResponse = doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        ownerToken = doLogin(LOGIN_URL, OWNER_LOGIN_REQUEST);
+    }
+    protected void registerStore(){
+        log.info("register store");
+        validatorWillPass();
+        StoreResponse storeResponse =
+                doPost(STORE_URL,
+                        ownerToken.getRefreshToken(),
+                        ownerToken.getAccessToken(),
+                        STORE_SAVE_REQUEST,
+                        StoreResponse.class);
+
+        storeId = storeResponse.getStoreId();
+        System.out.println(storeId + ": myinfo");
+    }
+    protected Long registerStore(StoreSaveUpdateRequest request){
+        log.info("register store");
+        validatorWillPass();
+        storeId = doPost(STORE_URL,
+                        ownerToken.getRefreshToken(),
+                        ownerToken.getAccessToken(),
+                        request,
+                        StoreResponse.class).getStoreId();
+        return storeId;
+    }
+    protected void approveStore(){
+        log.info("approve store");
+        consumerRepository.save(ADMIN);
+        adminToken = doLogin(LOGIN_URL, ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+    }
+    protected void registerConsumer(){
+        consumerId = consumerRepository.save(CONSUMER).getMemberId();
+        consumerToken = doLogin(LOGIN_URL, CONSUMER_LOGIN_REQUEST);
+    }
+    protected void leaveOwner(){
+        log.info("leave owner");
+        String leaveMemberUrl = OWNER_URL+"/" + memberResponse.getMemberId();
+        doDelete(leaveMemberUrl, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
     }
 
 }

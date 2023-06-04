@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BusinessHourController {
     private final BusinessHourService businessHourService;
-    private final StoreService storeService;
 
     @PostMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")

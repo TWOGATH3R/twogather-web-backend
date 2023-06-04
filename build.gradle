@@ -73,9 +73,6 @@ dependencies {
 	//s3
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.464'
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
-	//dbunit
-	testImplementation 'org.dbunit:dbunit:2.7.3'
-
 	//lombok
 	implementation('org.projectlombok:lombok')
 	annotationProcessor('org.projectlombok:lombok')
