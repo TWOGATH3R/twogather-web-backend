@@ -60,7 +60,7 @@ public class StoreService {
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 () ->new CustomAccessDeniedException(ACCESS_DENIED)
         );
-        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(()->
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(()->
                 new CustomAccessDeniedException(ACCESS_DENIED)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {

@@ -24,6 +24,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
 
     @BeforeEach
     public void initSetting(){
+        super.setUp();
         registerOwner();
         registerStore();
         approveStore();

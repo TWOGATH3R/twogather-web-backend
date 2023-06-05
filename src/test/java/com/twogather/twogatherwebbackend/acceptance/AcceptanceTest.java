@@ -91,6 +91,17 @@ public class AcceptanceTest
                 .then()
                 .log().all();
     }
+    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken, T request) {
+        return given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .body(request)
+                .patch(path)
+                .then()
+                .log().all();
+    }
     protected <T, R> R doPost(String path, String refreshToken, String accessToken, T request, Class<R> responseClass) {
 
         com.twogather.twogatherwebbackend.dto.Response response = given()

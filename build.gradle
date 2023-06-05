@@ -130,7 +130,16 @@ bootJar {
 		into 'static/docs'
 	}
 }
-
+task copyGitSubmoduleWithMain(type: Copy) {
+	from './security'
+	include 'application-prod.properties'
+	into './src/main/resources'
+}
+task copyGitSubmoduleWithTest(type: Copy) {
+	from './security'
+	include 'application-test.properties'
+	into './src/test/resources'
+}
 // build시 copyDocument 테스크를 실행한다
 build {
 	dependsOn copyDocument
