@@ -27,6 +27,9 @@ jobs:
       # (1) 기본 체크아웃
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
+          submodules: true
       - name: Grant execute permission for gradlew
         run:
           chmod +x gradlew
@@ -38,14 +41,11 @@ jobs:
           java-version: '11'
 
       - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.MAIN_APPLICATION }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
+      - run: cp -r ./security/application.properties ./src/main/resources/application.properties
 
       - uses: actions/checkout@v3
-      - run: touch ./src/test/resources/application.properties
-      - run: echo "${{ secrets.TEST_APPLICATION }}" > ./src/test/resources/application.properties
-      - run: cat ./src/test/resources/application.properties
+      - run: cp -r ./security/application-test.properties ./src/test/resources/application.properties
+
 
       # (3) Gradle build (Test 포함)
       - name: Build with Gradle
