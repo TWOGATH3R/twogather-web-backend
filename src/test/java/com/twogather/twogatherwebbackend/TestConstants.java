@@ -244,20 +244,39 @@ public class TestConstants {
     // Menu Constants
     public static final ArrayList<MenuResponse> MENU_RESPONSE_LIST = new ArrayList<>(Arrays.asList(
             new MenuResponse(1l, "감자", 1000),
-            new MenuResponse(2l, "케찹", 12000),
-            new MenuResponse(3l, "햄버기", 11000)
+            new MenuResponse(2l, "케찹", 2000)
     ));
     public static final ArrayList<MenuSaveRequest> MENU_SAVE_LIST = new ArrayList<>(Arrays.asList(
             new MenuSaveRequest("감자", 1000),
-            new MenuSaveRequest("케찹", 12000),
-            new MenuSaveRequest("햄버기", 11000)
+            new MenuSaveRequest("케찹", 2000)
+    ));
+    public static final ArrayList<MenuSaveRequest> MENU_SAVE_NULL_LIST = new ArrayList<>(Arrays.asList(
+            new MenuSaveRequest("감자", 1000),
+            new MenuSaveRequest(null, 2000)
+    ));
+    public static final ArrayList<MenuSaveRequest> MENU_SAVE_MINUS_VALUE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuSaveRequest("감자", -1000)
+    ));
+    public static final ArrayList<MenuUpdateRequest> MENU_UPDATE_NULL_LIST = new ArrayList<>(Arrays.asList(
+            new MenuUpdateRequest(1l,"감자", 1000),
+            new MenuUpdateRequest(2l,null, 2000)
+    ));
+    public static final ArrayList<MenuUpdateRequest> MENU_UPDATE_MINUS_VALUE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuUpdateRequest(1l,"감자", -1000)
     ));
     public static final MenuController.MenuSaveListRequest MENU_SAVE_LIST_REQUEST =
             new MenuController.MenuSaveListRequest(MENU_SAVE_LIST);
+    public static final MenuController.MenuSaveListRequest MENU_SAVE_LIST_NULL_REQUEST =
+            new MenuController.MenuSaveListRequest(MENU_SAVE_NULL_LIST);
+    public static final MenuController.MenuUpdateListRequest MENU_UPDATE_LIST_NULL_REQUEST =
+            new MenuController.MenuUpdateListRequest(MENU_UPDATE_NULL_LIST);
+    public static final MenuController.MenuSaveListRequest MENU_SAVE_LIST_MINUS_VALUE_REQUEST =
+            new MenuController.MenuSaveListRequest(MENU_SAVE_MINUS_VALUE_LIST);
+    public static final MenuController.MenuUpdateListRequest MENU_UPDATE_LIST_MINUS_VALUE_REQUEST =
+            new MenuController.MenuUpdateListRequest(MENU_UPDATE_MINUS_VALUE_LIST);
     public static final ArrayList<MenuUpdateRequest> MENU_UPDATE_LIST = new ArrayList<>(Arrays.asList(
-            new MenuUpdateRequest(1l, "감자", 1000),
-            new MenuUpdateRequest(2l, "케찹", 12000),
-            new MenuUpdateRequest(3l, "햄버기", 11000)
+            new MenuUpdateRequest(1l, "new 감자", 10000),
+            new MenuUpdateRequest(2l, "new 케찹", 20000)
     ));
     public static final MenuController.MenuUpdateListRequest MENU_UPDATE_LIST_REQUEST =
             new MenuController.MenuUpdateListRequest(MENU_UPDATE_LIST);

@@ -13,7 +13,7 @@ public class Keyword {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="keyword_id")
     private Long keywordId;
-    @Column(unique = true)
+    @Column(unique = true, length = 20)
     private String name;
 
     public Keyword(String name){
