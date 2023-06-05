@@ -11,8 +11,17 @@
   <br>TwoGather 프로젝트를 진행하면서 validation의 적절한 적용, 로그를 작성하고, 로그분석을 통해 시스템 장애 대응, 좋은 test코드에 대해 생각해보고, test 자동화를 하는 부분에 신경써가며 작업하려고한다.
 
 ### 로컬에서 작동시키는 법
+- 프로젝트 실행과 빌드를 위해선 /src/main/resources, /src/test/resources하위에 application.properties 파일이 존재해야합니다
+- 현재는 프로파일관리로 배포시엔 "prod"라는 설정을 활성화 시키거나 개발시엔 "dev"라는 설정을 활성화시키면서 개발을 하고 있습니다
+- 그렇기에 로컬에서 실행시키려면 application.properties파일내용안에(없다면 만들고) 프로젝트 내에 존재하는 다른 xxx.properties파일에서 작성된 요구하는 값에 대해 copy하여 빈 부분에 대해서는 채워주셔야합니다
 
 ### 아키텍쳐 설명
+![image](https://github.com/TWOGATH3R/twogather-web-backend/assets/66842566/b94260eb-0949-4e7a-8764-223907507033)
+1. 코드를 작성한 뒤, Github에 push를 한다.
+2. master 브랜치에 push가 발생하면, Github Actions이 실행된다.
+3. Github Actions는 빌드를 하여 코드에 문제가 없는지 확인한다.
+4. Github Actions는 프로젝트 파일을 압축하여 AWS S3로 전송하고, CodeDeploy에게 배포를 요청한다.
+5. CodeDeploy는 S3로부터 zip 파일을 받아 배포를 진행한다.
 
 ### 한계점
 
