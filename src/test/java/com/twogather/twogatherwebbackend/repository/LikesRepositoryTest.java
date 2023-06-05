@@ -18,7 +18,7 @@ public class LikesRepositoryTest extends RepositoryTest{
         //given
         StoreOwner storeOwner = ownerRepository.save(new StoreOwner());
         Store store = storeRepository.save(new Store(storeOwner, "sad","주소","010-1234-1234"));
-        Consumer consumer = consumerRepository.save(new Consumer("user1","이름","주소","010-123-123", AuthenticationType.CONSUMER, true));
+        Consumer consumer = consumerRepository.save(new Consumer("user1","asd@naver.com","asda@1221!#","이름", AuthenticationType.CONSUMER, true));
 
         //when
         likeRepository.save(new Likes(store,consumer));
