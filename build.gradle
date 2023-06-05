@@ -130,6 +130,7 @@ bootJar {
 		into 'static/docs'
 	}
 }
+
 task copyGitSubmoduleWithMain(type: Copy) {
 	from './security'
 	include 'application-prod.properties'
