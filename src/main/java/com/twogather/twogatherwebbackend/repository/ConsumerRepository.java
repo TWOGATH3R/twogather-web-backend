@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

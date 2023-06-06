@@ -30,7 +30,7 @@ public class BusinessHourService {
     private final BusinessHourValidator validator;
 
     public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveUpdateRequest> requestList){
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findActiveStoreById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
         Set<DayOfWeek> uniqueDays = checkDuplicateDays(requestList);
@@ -61,7 +61,7 @@ public class BusinessHourService {
     }
 
     public List<BusinessHourResponse> updateList(Long storeId, List<BusinessHourSaveUpdateRequest> requestList){
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findActiveStoreById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
         checkDuplicateDays(requestList);

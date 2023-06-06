@@ -20,6 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
+<<<<<<< HEAD
+=======
+    @PostMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestPart List<MultipartFile> fileList) {
+        List<ImageResponse> data = imageService.upload(storeId, fileList);
+>>>>>>> 18f5ce16a536b680fc67a2e900535460f85c6617
 
     @GetMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
@@ -30,7 +37,7 @@ public class ImageController {
     }
     @DeleteMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
-    public ResponseEntity<Response> delete(@PathVariable Long storeId, ImageIdList idList) {
+    public ResponseEntity<Response> delete(@PathVariable Long storeId, @RequestBody ImageIdList idList) {
         imageService.delete(idList);
 
         return ResponseEntity.status(HttpStatus.OK).build();

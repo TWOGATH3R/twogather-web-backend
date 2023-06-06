@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreApprovalStatus;
+import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
@@ -52,7 +52,7 @@ public class BusinessHourServiceTest {
     @DisplayName("saveList: businessHour을 여러건 저장할때 사용한다. 입력되지않은 요일에 대해서는 영업안함을 표시하여 응답에 포함시킨다")
     void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() {
         // given
-        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreApprovalStatus.APPROVED,"");
+        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreStatus.APPROVED,"");
         List<BusinessHourSaveUpdateRequest> onlyOpenDaysRequestList = Arrays.asList(
                 new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
                 new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
@@ -80,7 +80,7 @@ public class BusinessHourServiceTest {
 
         // when
         doNothing().when(validator).validateBusinessHourRequest(any());
-        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
+        when(storeRepository.findActiveStoreById(anyLong())).thenReturn(Optional.of(store));
         when(businessHourRepository.saveAll(any())).thenReturn(fullWeekBusinessHours);
 
         List<BusinessHourResponse> responseList = businessHourService.saveList(1L, onlyOpenDaysRequestList);
@@ -96,13 +96,13 @@ public class BusinessHourServiceTest {
     @DisplayName("saveList: businessHour 을 여러건 저장할때 사용한다. 요일이 중복되어 요청되는 경우 exception")
     void whenDuplicateDaysProvided_thenThrowsException() {
         // Given
-        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreApprovalStatus.APPROVED,"");
+        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreStatus.APPROVED,"");
         List<BusinessHourSaveUpdateRequest> duplicatedDayOfWeekRequestList = Arrays.asList(
                 new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
                 new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
         );
 
-        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
+        when(storeRepository.findActiveStoreById(anyLong())).thenReturn(Optional.of(store));
 
         // When & Then
         assertThrows(BusinessHourException.class, () -> {

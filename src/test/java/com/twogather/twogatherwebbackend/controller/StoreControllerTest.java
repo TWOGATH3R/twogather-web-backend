@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,11 @@ public class StoreControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
@@ -151,7 +156,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("첫 화면에서 보여줄 가게의 대략적인 정보 - Top rated detail")
     public void getStoreTopInfos_WhenGetStoreTopInfos_ThenReturnStoreInfos() throws Exception {
         //given
-        when(storeService.getStoresTopN(StoreType.TOP_RATED, 10)).thenReturn(STORES_TOP10_RESPONSE_LIST);
+        when(storeService.getStoresTopN(StoreSearchType.TOP_RATED, 10)).thenReturn(STORES_TOP10_RESPONSE_LIST);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/top/{storeType}/{count}", "TOP_RATED",10)
@@ -238,7 +243,13 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 별점 정보").attributes(getRatingFormat()),
                                 fieldWithPath("data[].keywordList").type(JsonFieldType.ARRAY).description("가게 관련 키워드"),
-                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url")
+                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url"),
+                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
+                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
 
                         )
                 ));
@@ -295,7 +306,10 @@ public class StoreControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),

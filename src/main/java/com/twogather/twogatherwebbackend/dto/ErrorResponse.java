@@ -19,7 +19,6 @@ public class ErrorResponse {
     private Map<String, String> errors;
     public ErrorResponse() {
     }
-
     public ErrorResponse(final String message) {
         this.message = message;
     }

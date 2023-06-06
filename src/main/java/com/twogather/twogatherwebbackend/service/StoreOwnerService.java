@@ -1,15 +1,14 @@
 package com.twogather.twogatherwebbackend.service;
 
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
-import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerResponse;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
+import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
+import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 
 @Service
@@ -27,51 +27,68 @@ public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final BizRegNumberValidator validator;
 
     public boolean isStoreOwner(Long memberId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        Member member = memberRepository.findByUsername(currentUsername).orElseThrow(
-                ()-> new MemberException(NO_SUCH_USERNAME)
-        );
+        Member member = memberRepository.findActiveMemberByUsername(currentUsername).orElseThrow(
+                ()->  new CustomAuthenticationException(UNAUTHORIZED));
         if (!currentUsername.equals(member.getUsername())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
         }
         return true;
     }
 
-    public StoreOwnerResponse join(final StoreOwnerSaveUpdateRequest request){
-        if(!validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName())) throw new MemberException(BIZ_REG_NUMBER_VALIDATION);
-        validateDuplicateEmail(request.getUsername());
+    public boolean verifyPassword(String password){
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER)
+        );
+        return passwordEncoder.matches(password, member.getPassword());
+    }
+
+
+    public MemberResponse join(final MemberSaveUpdateRequest request){
+        validateDuplicateUsername(request.getUsername());
         StoreOwner owner = new StoreOwner(
                 request.getUsername(),
-                request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(),
-                request.getBusinessNumber(), request.getBusinessName(), request.getBusinessStartDate(), AuthenticationType.STORE_OWNER,true);
+                request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(), AuthenticationType.STORE_OWNER,true);
         StoreOwner storedOwner = storeOwnerRepository.save(owner);
         return toStoreOwnerResponse(storedOwner);
         
     }
     public void delete(Long id){
-        //TODO:구현
+        StoreOwner owner = storeOwnerRepository.findById(id).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER_ID)
+        );
+        for (Store store:owner.getStoreList()) {
+            store.delete();
+        }
+        owner.leave();
     }
-    public StoreOwnerResponse update(final StoreOwnerSaveUpdateRequest request){
-        if(!validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName())) throw new MemberException(BIZ_REG_NUMBER_VALIDATION);
-        //TODO:구현
-        int s = 2;
-        return new StoreOwnerResponse();
+    public MemberResponse update(final MemberSaveUpdateRequest request){
+        StoreOwner owner = storeOwnerRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        owner.update(
+                request.getUsername(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName());
+
+        return toStoreOwnerResponse(owner);
     }
 
     @Transactional(readOnly = true)
-    public StoreOwnerResponse getMemberWithAuthorities(Long id){
+    public MemberResponse getMemberWithAuthorities(Long id){
         //TODO: 구현
 
-        return new StoreOwnerResponse();
+        return new MemberResponse();
     }
 
 
     @Transactional(readOnly = true)
-    public StoreOwnerResponse getMemberWithAuthorities(){
+    public MemberResponse getMemberWithAuthorities(){
         /*
         Optional<StoreOwner> optionalOwner = SecurityUtils.getCurrentUsername().flatMap(storeOwnerRepository::findByEmail);
         optionalOwner.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
@@ -80,15 +97,15 @@ public class StoreOwnerService {
         return null;
     }
 
-    public void validateDuplicateEmail(final String username){
+    public void validateDuplicateUsername(final String username){
         if (memberRepository.existsByUsername(username)) {
             throw new MemberException(DUPLICATE_USERNAME);
         }
     }
-    private StoreOwnerResponse toStoreOwnerResponse(StoreOwner owner){
-        return new StoreOwnerResponse(owner.getMemberId(),
+    private MemberResponse toStoreOwnerResponse(StoreOwner owner){
+        return new MemberResponse(owner.getMemberId(),
                 owner.getUsername(),
-                owner.getName(), owner.getEmail(),
-                owner.getBusinessNumber(), owner.getBusinessName(), owner.getBusinessStartDate());
+                owner.getEmail(),
+                owner.getName());
     }
 }

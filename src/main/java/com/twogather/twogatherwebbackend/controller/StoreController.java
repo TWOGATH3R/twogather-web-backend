@@ -2,11 +2,10 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 
-import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
-    private final StoreKeywordService storeKeywordService;
 
     @GetMapping("/test")
     public String test(){
@@ -66,16 +64,9 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping("/keyword")
-    public ResponseEntity<Response> getKeywordList() {
-        List<String> data = storeService.getKeyword();
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
-
 
     @GetMapping("/top/{type}/{count}")
-    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreSearchType type,
                                                      @PathVariable int count) {
         List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
 
@@ -102,7 +93,7 @@ public class StoreController {
                                                   @RequestParam(value = "location", required = false) String location) {
 
         Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data.getContent()));
+        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
     @DeleteMapping("/{storeId}")

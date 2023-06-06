@@ -37,6 +37,15 @@ public class S3Uploader implements StorageUploader {
     private String region;
     private final AmazonS3 amazonS3Client;
 
+    public boolean doesObjectExist(String objectUrl) {
+        try {
+            String key = extractKeyFromUrl(objectUrl);
+
+            return amazonS3Client.doesObjectExist(bucketName, key);
+        } catch (RuntimeException e) {
+            throw new AmazonClientException("Amazon client exception", e);
+        }
+    }
     @Override
     public String upload(String directory, File uploadFile) {
         String fileName = directory + "/" + UUID.randomUUID() + uploadFile.getName();

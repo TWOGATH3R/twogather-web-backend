@@ -36,25 +36,10 @@ public class ControllerAdvice {
         return ResponseEntity.status(ex.getStatus()).body(errorResponse);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        String errorMessage = "잘못된 요청입니다. 요청 데이터의 형식이 올바르지 않습니다.";
-
-        Throwable rootCause = ExceptionUtils.getRootCause(ex);
-        if (rootCause instanceof DateTimeParseException) {
-            errorMessage = "잘못된 시간 형식입니다. 올바른 시간 형식으로 다시 시도해주세요.";
-        } else if (rootCause instanceof InvalidFormatException) {
-            errorMessage = "잘못된 데이터 형식입니다. 올바른 데이터 형식으로 다시 시도해주세요.";
-        } else if (rootCause instanceof MissingServletRequestParameterException) {
-            errorMessage = "필수 필드가 누락되었습니다. 필수 필드를 모두 입력해주세요.";
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
-    }
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
         logInfo(request,e);
-        return ResponseEntity.badRequest().body(ErrorResponse.of(e));
+        return ResponseEntity.status(e.getStatus()).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException e) {

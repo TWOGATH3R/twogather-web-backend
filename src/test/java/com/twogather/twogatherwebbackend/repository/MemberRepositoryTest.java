@@ -11,19 +11,16 @@ import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {
-    @Autowired
-    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("find: 저장된 멤버를 이메일을 통해 찾아올 수 있다.")
-    @Transactional
     void findByEmail() {
         // given
         Member expected = memberRepository.save(MEMBER);
 
         // when
-        Member findMember = memberRepository.findByUsername(MEMBER_USERNAME)
-                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME));
+        Member findMember = memberRepository.findActiveMemberByUsername(MEMBER_USERNAME)
+                .orElseThrow(()-> new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER));
 
         // then
         assertThat(findMember.getEmail()).isEqualTo(expected.getEmail());
@@ -34,7 +31,6 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("특정 이메일을 가진 멤버가 있는지 확인할 수 있다.")
-    @Transactional
     void existsByEmail() {
         // given
         memberRepository.save(MEMBER);

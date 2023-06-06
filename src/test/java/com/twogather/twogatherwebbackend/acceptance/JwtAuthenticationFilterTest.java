@@ -38,6 +38,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class JwtAuthenticationFilterTest {
 
     @Autowired
@@ -80,7 +82,7 @@ public class JwtAuthenticationFilterTest {
         // Mock the authentication manager to return a successful authentication
         when(authenticationManager.authenticate(any(Authentication.class))).
                 thenReturn(getMockAuthentication());
-        when(memberRepository.findById(1l)).thenReturn(
+        when(memberRepository.findActiveMemberById(1l)).thenReturn(
                Optional.of(new Member(1l,USERNAME,
                "asd@naer.com",PASSWORD, "name1",
                        AuthenticationType.CONSUMER,true)));
