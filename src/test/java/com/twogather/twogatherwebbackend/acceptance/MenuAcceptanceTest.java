@@ -5,8 +5,10 @@ import com.twogather.twogatherwebbackend.controller.MenuController;
 import com.twogather.twogatherwebbackend.domain.Menu;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.menu.MenuSaveRequest;
-import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveInfo;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
+import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateInfo;
+import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateListRequest;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -76,11 +78,11 @@ public class MenuAcceptanceTest {
     @DisplayName("Save menu 성공")
     public void saveMenuList_WithValidMenuList_ThenMenuSaved() throws Exception {
         // Given
-        List<MenuSaveRequest> menuSaveList = Arrays.asList(
-                new MenuSaveRequest("감자", 1000),
-                new MenuSaveRequest("케찹", 2000)
+        List<MenuSaveInfo> menuSaveList = Arrays.asList(
+                new MenuSaveInfo("감자", 1000),
+                new MenuSaveInfo("케찹", 2000)
         );
-        MenuController.MenuSaveListRequest request = new MenuController.MenuSaveListRequest(menuSaveList);
+        MenuSaveListRequest request = new MenuSaveListRequest(menuSaveList);
 
         // When, Then
         mockMvc.perform(post(URL, store.getStoreId())
@@ -96,11 +98,11 @@ public class MenuAcceptanceTest {
     @DisplayName("Save menu 시에 유효성 실패 - null 입력하면 안됨")
     public void saveMenuList_WithInputNull_ThenThrowException() throws Exception {
         // Given
-        List<MenuSaveRequest> menuSaveList = Arrays.asList(
-                new MenuSaveRequest(null, 1000), // Name is null (violation)
-                new MenuSaveRequest("케찹", null) // Price is null (violation)
+        List<MenuSaveInfo> menuSaveList = Arrays.asList(
+                new MenuSaveInfo(null, 1000), // Name is null (violation)
+                new MenuSaveInfo("케찹", null) // Price is null (violation)
         );
-        MenuController.MenuSaveListRequest request = new MenuController.MenuSaveListRequest(menuSaveList);
+        MenuSaveListRequest request = new MenuSaveListRequest(menuSaveList);
 
         // When, Then
         // No value at JSON path "$.menuSaveList[0].name" < jsonpath 문법때문에 인식못하는듯. 응답은 성공적으로 옴
@@ -116,11 +118,11 @@ public class MenuAcceptanceTest {
     @DisplayName("Save menu 시에 유효성 실패 - 음수 가격 입력하면 안됨")
     public void saveMenuList_WithInputMinusPrice_ThenThrowException() throws Exception {
         // Given
-        List<MenuSaveRequest> menuSaveList = Arrays.asList(
-                new MenuSaveRequest(null, -1000), // Name is null (violation)
-                new MenuSaveRequest("케찹", null) // Price is null (violation)
+        List<MenuSaveInfo> menuSaveList = Arrays.asList(
+                new MenuSaveInfo(null, -1000), // Name is null (violation)
+                new MenuSaveInfo("케찹", null) // Price is null (violation)
         );
-        MenuController.MenuSaveListRequest request = new MenuController.MenuSaveListRequest(menuSaveList);
+        MenuSaveListRequest request = new MenuSaveListRequest(menuSaveList);
 
         // When, Then
         mockMvc.perform(post(URL, store.getStoreId())
@@ -139,11 +141,11 @@ public class MenuAcceptanceTest {
         Menu menu1 = menuRepository.save(new Menu(store, "origin 감자", 10));
         Menu menu2 = menuRepository.save(new Menu(store, "origin 케찹", 20));
 
-        List<MenuUpdateRequest> menuUpdateList = Arrays.asList(
-                new MenuUpdateRequest(menu1.getMenuId(),"new 감자", 10000),
-                new MenuUpdateRequest(menu2.getMenuId(), "new 케찹", 20000)
+        List<MenuUpdateInfo> menuUpdateList = Arrays.asList(
+                new MenuUpdateInfo(menu1.getMenuId(),"new 감자", 10000),
+                new MenuUpdateInfo(menu2.getMenuId(), "new 케찹", 20000)
         );
-        MenuController.MenuUpdateListRequest request = new MenuController.MenuUpdateListRequest(menuUpdateList);
+        MenuUpdateListRequest request = new MenuUpdateListRequest(menuUpdateList);
 
         // When, Then
         mockMvc.perform(patch(URL, store.getStoreId())
@@ -169,11 +171,11 @@ public class MenuAcceptanceTest {
         Menu menu1 = menuRepository.save(new Menu(store, "origin 감자", 10));
         Menu menu2 = menuRepository.save(new Menu(store, "origin 케찹", 20));
 
-        List<MenuUpdateRequest> menuUpdateList = Arrays.asList(
-                new MenuUpdateRequest(menu1.getMenuId(),null, 10000),
-                new MenuUpdateRequest(menu2.getMenuId(), "new 케찹", null)
+        List<MenuUpdateInfo> menuUpdateList = Arrays.asList(
+                new MenuUpdateInfo(menu1.getMenuId(),null, 10000),
+                new MenuUpdateInfo(menu2.getMenuId(), "new 케찹", null)
         );
-        MenuController.MenuUpdateListRequest request = new MenuController.MenuUpdateListRequest(menuUpdateList);
+        MenuUpdateListRequest request = new MenuUpdateListRequest(menuUpdateList);
 
         // When, Then
        mockMvc.perform(patch(URL, store.getStoreId())
@@ -191,11 +193,11 @@ public class MenuAcceptanceTest {
         Menu menu1 = menuRepository.save(new Menu(store, "origin 감자", 10));
         Menu menu2 = menuRepository.save(new Menu(store, "origin 케찹", 20));
 
-        List<MenuUpdateRequest> menuUpdateList = Arrays.asList(
-                new MenuUpdateRequest(menu1.getMenuId(),"new 감자", -10000),
-                new MenuUpdateRequest(menu2.getMenuId(), "new 케찹", 10000)
+        List<MenuUpdateInfo> menuUpdateList = Arrays.asList(
+                new MenuUpdateInfo(menu1.getMenuId(),"new 감자", -10000),
+                new MenuUpdateInfo(menu2.getMenuId(), "new 케찹", 10000)
         );
-        MenuController.MenuUpdateListRequest request = new MenuController.MenuUpdateListRequest(menuUpdateList);
+        MenuUpdateListRequest request = new MenuUpdateListRequest(menuUpdateList);
 
 
         // When, Then

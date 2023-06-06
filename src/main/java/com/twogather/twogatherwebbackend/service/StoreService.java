@@ -4,11 +4,14 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.MenuRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -17,7 +20,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
@@ -31,17 +39,30 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final MenuService menuService;
+    private final ImageService imageService;
+    private final StoreKeywordService storeKeywordService;
     private final StoreOwnerRepository storeOwnerRepository;
-    //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
+    private final CategoryService categoryService;
 
-    public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
+    public StoreSaveUpdateResponse save(final Long categoryId,
+                                        final StoreSaveUpdateRequest storeRequest,
+                                        final MenuSaveListRequest menuRequest,
+                                        final List<MultipartFile> storeImageList,
+                                        final List<String> keywordList){
         String username = SecurityUtils.getUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_USERNAME)
         );
-        validateDuplicateName(request.getStoreName());
-        Store store = new Store(owner, request.getStoreName(), request.getAddress(), request.getPhone());
+        validateDuplicateName(storeRequest.getStoreName());
+        Store store = new Store(owner, storeRequest.getStoreName(), storeRequest.getAddress(), storeRequest.getPhone());
         Store savedStore = storeRepository.save(store);
+
+        storeKeywordService.setStoreKeyword(store.getStoreId(), keywordList);
+        menuService.saveList(store.getStoreId(), menuRequest.getMenuSaveList());
+        imageService.upload(store.getStoreId(), storeImageList);
+        categoryService.setCategoriesForStore(store.getStoreId(), categoryId);
+
         return toStoreSaveUpdateResponse(savedStore);
     }
     public boolean isMyStore(Long storeId) {

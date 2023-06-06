@@ -277,7 +277,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("가게저장시에 요청한정보 + id 정보 반환")
     public void saveStoreMethod_WhenSaveStore_ThenReturnIdAndInfo() throws Exception {
         //given
-        when(storeService.save(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
+        when(storeService.save(any(), any(), any(), anyList(), anyList())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
         mockMvc.perform(post("/api/stores")

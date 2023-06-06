@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,10 +32,21 @@ public class StoreController {
         return "test";
     }
 
-    @PostMapping
+    @PostMapping("/categories/{categoryId}")
     @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeSaveUpdateRequest) {
-        StoreSaveUpdateResponse data = storeService.save(storeSaveUpdateRequest);
+    public ResponseEntity<Response> save(
+                                        @PathVariable Long categoryId,
+                                        @RequestPart @Valid final StoreSaveUpdateRequest storeRequest,
+                                        @RequestPart @Valid final MenuSaveListRequest menuRequest,
+                                        @RequestPart List<MultipartFile> storeImageList,
+                                        @RequestPart final List<String> keywordList
+                                         ) {
+        StoreSaveUpdateResponse data =
+                storeService.save(categoryId,
+                        storeRequest,
+                        menuRequest,
+                        storeImageList,
+                        keywordList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }

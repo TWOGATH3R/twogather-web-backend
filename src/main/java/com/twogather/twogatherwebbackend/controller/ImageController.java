@@ -20,14 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
-    private final StoreService storeService;
-    @PostMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
-    public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestPart List<MultipartFile> fileList) {
-        List<ImageResponse> data = imageService.upload(storeId, fileList);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
-    }
     @GetMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getStoreImageInfos(@PathVariable Long storeId) {
