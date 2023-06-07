@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
@@ -63,6 +64,31 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         return results;
     }
 
+    @Override
+    public Page<MyStoreResponse> findStoresByStatus(StoreStatus status, Pageable pageable){
+        List<Store> storeQuery = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.status.eq(status))
+                .leftJoin(store.storeImageList, image)
+                .groupBy(store.storeId)
+                .fetch();
+
+        List<MyStoreResponse> storeResponses = storeQuery
+                .stream()
+                .map(store ->
+                        MyStoreResponse.builder()
+                                .storeImageUrl(store.getStoreImageList().get(0).getUrl())
+                                .isApproved(store.getStatus().equals(StoreStatus.APPROVED))
+                                .phone(store.getPhone())
+                                .reasonForRejection(store.getReasonForRejection())
+                                .requestDate(store.getRequestDate())
+                                .storeId(store.getStoreId())
+                                .address(store.getAddress())
+                                .name(store.getName())
+                                .build()).collect(Collectors.toList());
+
+        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+    }
 
     public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location) {
         List<Store> storeQuery = jpaQueryFactory

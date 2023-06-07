@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class Store {
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
     private String reasonForRejection;
+    private LocalDate requestDate = LocalDate.now();
 
 
     public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
@@ -115,6 +117,10 @@ public class Store {
         if(category!=null){
             this.category = category;
         }
+    }
+    public void reject(String reasonForRejection){
+        this.status = StoreStatus.DENIED;
+        this.reasonForRejection = reasonForRejection;
     }
     public void delete(){
         this.status = StoreStatus.DELETED;

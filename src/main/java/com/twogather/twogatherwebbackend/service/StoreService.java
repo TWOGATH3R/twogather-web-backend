@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
@@ -42,6 +43,12 @@ public class StoreService {
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.approve();
+    }
+    public void rejectStore(final Long storeId, final RejectReason rejectReason){
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        store.reject(rejectReason.getReason());
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest request){
         validationBizRegNumber(request);
@@ -92,6 +99,9 @@ public class StoreService {
     public Page<StoreResponseWithKeyword> getStores(
             Pageable pageable, String categoryName, String keyword,String location){
         return storeRepository.findStoresByCondition(pageable, categoryName, keyword, location);
+    }
+    public Page<MyStoreResponse> getStores(StoreStatus type, Pageable pageable){
+        return storeRepository.findStoresByStatus(type, pageable);
     }
     public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Pageable pageable){
         //TODO: 구현
