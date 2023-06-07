@@ -4,7 +4,7 @@ import com.twogather.twogatherwebbackend.domain.BusinessHour;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateInfo;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -17,12 +17,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.twogather.twogatherwebbackend.TestConstants.APPROVED_STORE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,20 +56,19 @@ public class BusinessHourServiceTest {
     @DisplayName("saveList: businessHour을 여러건 저장할때 사용한다. 입력되지않은 요일에 대해서는 영업안함을 표시하여 응답에 포함시킨다")
     void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() {
         // given
-        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreStatus.APPROVED,"");
-        List<BusinessHourSaveUpdateRequest> onlyOpenDaysRequestList = Arrays.asList(
-                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
-                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
-                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null)
+        List<BusinessHourSaveUpdateInfo> onlyOpenDaysRequestList = Arrays.asList(
+                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null)
         );
         List<BusinessHour> fullWeekBusinessHours = Arrays.asList(
-                new BusinessHour(1l,store,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
-                new BusinessHour(2l,store,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
-                new BusinessHour(3l,store, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null),
-                new BusinessHour(4l,store, null,null, DayOfWeek.THURSDAY, false, false, null, null),
-                new BusinessHour(5l,store,  null,null, DayOfWeek.FRIDAY, false, false, null, null),
-                new BusinessHour(6l,store,null,null, DayOfWeek.SATURDAY, false, false, null, null),
-                new BusinessHour(7l,store, null,null, DayOfWeek.SUNDAY, false, false, null, null)
+                new BusinessHour(1l,APPROVED_STORE,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHour(2l,APPROVED_STORE,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHour(3l,APPROVED_STORE, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null),
+                new BusinessHour(4l,APPROVED_STORE, null,null, DayOfWeek.THURSDAY, false, false, null, null),
+                new BusinessHour(5l,APPROVED_STORE,  null,null, DayOfWeek.FRIDAY, false, false, null, null),
+                new BusinessHour(6l,APPROVED_STORE,null,null, DayOfWeek.SATURDAY, false, false, null, null),
+                new BusinessHour(7l,APPROVED_STORE, null,null, DayOfWeek.SUNDAY, false, false, null, null)
         );
         List<BusinessHourResponse> fullWeekBusinessHourResponse = Arrays.asList(
                 new BusinessHourResponse(1l,1l,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
@@ -80,7 +83,7 @@ public class BusinessHourServiceTest {
 
         // when
         doNothing().when(validator).validateBusinessHourRequest(any());
-        when(storeRepository.findActiveStoreById(anyLong())).thenReturn(Optional.of(store));
+        when(storeRepository.findAllStoreById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
         when(businessHourRepository.saveAll(any())).thenReturn(fullWeekBusinessHours);
 
         List<BusinessHourResponse> responseList = businessHourService.saveList(1L, onlyOpenDaysRequestList);
@@ -96,13 +99,12 @@ public class BusinessHourServiceTest {
     @DisplayName("saveList: businessHour 을 여러건 저장할때 사용한다. 요일이 중복되어 요청되는 경우 exception")
     void whenDuplicateDaysProvided_thenThrowsException() {
         // Given
-        Store store = new Store(1l, "이름", "주소","010-1234-1234", StoreStatus.APPROVED,"");
-        List<BusinessHourSaveUpdateRequest> duplicatedDayOfWeekRequestList = Arrays.asList(
-                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
-                new BusinessHourSaveUpdateRequest(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
+       List<BusinessHourSaveUpdateInfo> duplicatedDayOfWeekRequestList = Arrays.asList(
+                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
         );
 
-        when(storeRepository.findActiveStoreById(anyLong())).thenReturn(Optional.of(store));
+        when(storeRepository.findAllStoreById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
 
         // When & Then
         assertThrows(BusinessHourException.class, () -> {

@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,22 +25,28 @@ public class Store {
     @JoinColumn(name = "member_id")
     private StoreOwner owner;
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Image> storeImageList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<BusinessHour> businessHourList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<StoreKeyword> storeKeywordList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     private List<Likes> likesList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,66 +59,41 @@ public class Store {
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
     private String reasonForRejection;
+    @Builder.Default
     private LocalDate requestDate = LocalDate.now();
+    private String businessNumber;
+    private String businessName;
+    private LocalDate businessStartDate;
 
-
-    public Store(StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
-        this.owner = owner;
-        this.businessHourList = businessHourList;
-        this.menuList = menuList;
-        this.name=name;
-        this.address=address;
-        this.phone=phone;
-        this.status = status;
-        this.reasonForRejection = reasonForRejection;
-    }
-    public Store(Category category, StoreOwner owner, List<BusinessHour> businessHourList, List<Menu> menuList, String name, String address, String phone, StoreStatus status, String reasonForRejection){
-        this.category = category;
-        this.owner = owner;
-        this.businessHourList = businessHourList;
-        this.menuList = menuList;
-        this.name=name;
-        this.address=address;
-        this.phone=phone;
-        this.status = status;
-        this.reasonForRejection = reasonForRejection;
-    }
-    public Store(String name, String address, String phone){
-        this.name=name;
-        this.address=address;
-        this.phone=phone;
-        this.status = StoreStatus.PENDING;
-        this.reasonForRejection = "";
-    }
-    public Store(StoreOwner owner, String name, String address, String phone){
+    public Store(StoreOwner owner, String name, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate){
         this.name=name;
         this.address=address;
         this.phone=phone;
         this.owner = owner;
         this.status = StoreStatus.PENDING;
         this.reasonForRejection = "";
+        this.businessName = businessName;
+        this.businessNumber = businessNumber;
+        this.businessStartDate = businessStartDate;
     }
-    public Store(Long id, String name, String address, String phone, StoreStatus status, String reasonForRejection){
-        this.storeId = id;
-        this.name=name;
-        this.address=address;
-        this.phone=phone;
-        this.status = status;
-        this.reasonForRejection = reasonForRejection;
-    }
-    public void updateName(String name) {
-        if (name != null && !name.isEmpty()) {
-            this.name = name;
+    public void update(String storeName, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate) {
+        if (storeName != null && !storeName.isEmpty()) {
+            this.name = storeName;
         }
-    }
-    public void updateAddress(String address) {
         if (address != null && !address.isEmpty()) {
             this.address = address;
         }
-    }
-    public void updatePhone(String phone) {
         if (phone != null && !phone.isEmpty()) {
             this.phone = phone;
+        }
+        if (businessName != null && !businessName.isEmpty()) {
+            this.businessName = businessName;
+        }
+        if (businessNumber != null && !businessNumber.isEmpty()) {
+            this.businessNumber = businessNumber;
+        }
+        if (businessStartDate != null) {
+            this.businessStartDate = businessStartDate;
         }
     }
     public void setCategory(Category category){
@@ -118,10 +101,11 @@ public class Store {
             this.category = category;
         }
     }
-    public void reject(String reasonForRejection){
+    public void reject(String reasonForRejection) {
         this.status = StoreStatus.DENIED;
         this.reasonForRejection = reasonForRejection;
     }
+
     public void delete(){
         this.status = StoreStatus.DELETED;
     }

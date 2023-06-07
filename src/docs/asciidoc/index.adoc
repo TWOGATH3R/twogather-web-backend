@@ -31,9 +31,6 @@ operation::menu/get/[snippets='http-request,path-parameters,http-response,respon
 === Delete
 operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
 
-=== Save
-operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-
 === Update
 operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
@@ -44,9 +41,6 @@ operation::business-hour/get/[snippets='http-request,path-parameters,http-respon
 
 === Delete
 operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
-
-=== Save
-operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === Update
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
@@ -61,7 +55,7 @@ operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-
 == Store
 
 === Save
-operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
+operation::store/save/[snippets='http-request,request-parts,http-response,response-fields']
 
 === Get-One
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']

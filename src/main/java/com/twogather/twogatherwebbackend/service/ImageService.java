@@ -29,7 +29,7 @@ public class ImageService {
     private static final String DIRECTORY_NAME = "store";
 
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
-        Store store = storeRepository.findById(storeId).orElseThrow(
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
         List<String> uploadedFileUrlList = s3Uploader.uploadList(DIRECTORY_NAME, fileList);

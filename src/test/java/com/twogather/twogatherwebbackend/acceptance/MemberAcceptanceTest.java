@@ -7,6 +7,7 @@ import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,9 @@ import org.springframework.http.HttpStatus;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -103,6 +106,22 @@ public class MemberAcceptanceTest extends AcceptanceTest{
 
         doPost(CONSUMER_URL, request)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+    @Test
+    @DisplayName("consumer, storeOwner 동일한 이메일로 가입 시 실패")
+    public void WhenSignUpWithSameEmailByConsumerAndOwner_ThenThrowException() {
+        // given
+        MemberSaveUpdateRequest request1 = new MemberSaveUpdateRequest("asd@naver.com","user1","pw1asd2312","홍길동");
+        MemberSaveUpdateRequest request2 = new MemberSaveUpdateRequest("asd@naver.com","user12","pw1asd2312","홍길동");
+
+        //when, then
+        doPost(OWNER_URL, request1)
+                .statusCode(HttpStatus.CREATED.value());
+
+        doPost(CONSUMER_URL, request2)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
 
     }
     @Test

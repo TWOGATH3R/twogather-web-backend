@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.TestConstants;
 import com.twogather.twogatherwebbackend.service.ImageService;
-import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -12,11 +12,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -27,7 +27,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ImageControllerTest extends ControllerTest{
     @MockBean
     private ImageService imageService;
-    @MockBean
-    private StoreService storeService;
 
     private static final String URL = "/api/stores/{storeId}/images";
 
@@ -51,12 +48,12 @@ public class ImageControllerTest extends ControllerTest{
         //then
 
         mockMvc.perform(RestDocumentationRequestBuilders.fileUpload(URL,1)
-                        .file(IMAGE1)
-                        .file(IMAGE2)
+                        .file(IMAGE_REQUEST_PART2)
+                        .file(TestConstants.IMAGE_REQUEST_PART2)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .characterEncoding("UTF-8")
-                        .with(csrf())
                 )
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
                 .andDo(document("image/save",
                         getDocumentRequest(),

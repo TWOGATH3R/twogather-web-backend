@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
+import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StoreOwnerControllerTest extends ControllerTest{
     @MockBean
     private StoreOwnerService storeOwnerService;
+    @MockBean
+    private MemberService memberService;
     private static final String URL = "/api/owners/{memberId}";
     @Test
     @DisplayName("가게주인탈퇴")
@@ -98,7 +101,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보업데이트")
     public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.update(any())).thenReturn(
+        when(memberService.update(any())).thenReturn(
                 new MemberResponse(1l, "nick1", "dda@naver.com",
                 "가게주인이름"));
       //then
@@ -183,7 +186,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("비밀번호 검증")
     public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
         //given
-        when(storeOwnerService.verifyPassword(any())).thenReturn(true);
+        when(memberService.verifyPassword(any())).thenReturn(true);
         //when
         //then
 

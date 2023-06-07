@@ -1,10 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.menu.MenuIdList;
-import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
-import com.twogather.twogatherwebbackend.dto.menu.MenuSaveRequest;
-import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.menu.*;
 import com.twogather.twogatherwebbackend.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,13 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
     private final MenuService menuService;
-    @PostMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
-    public ResponseEntity<Response> saveList(@PathVariable final Long storeId, @RequestBody @Valid final MenuSaveListRequest request) {
-        List<MenuResponse> data = menuService.saveList(storeId, request.getMenuSaveList());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
-    }
     @PatchMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> updateList(@PathVariable final Long storeId, @RequestBody @Valid final MenuUpdateListRequest request) {
@@ -52,19 +43,4 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class MenuSaveListRequest {
-        @Valid
-        private List<MenuSaveRequest> menuSaveList;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class MenuUpdateListRequest {
-        @Valid
-        private List<MenuUpdateRequest> menuUpdateList;
-    }
 }

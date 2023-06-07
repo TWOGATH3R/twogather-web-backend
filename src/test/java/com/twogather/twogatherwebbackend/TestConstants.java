@@ -1,14 +1,13 @@
 package com.twogather.twogatherwebbackend;
 
-import com.twogather.twogatherwebbackend.controller.BusinessHourController;
-import com.twogather.twogatherwebbackend.controller.MenuController;
-import com.twogather.twogatherwebbackend.domain.AuthenticationType;
-import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateInfo;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
@@ -17,9 +16,7 @@ import com.twogather.twogatherwebbackend.dto.email.VerificationCodeResponse;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
-import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
-import com.twogather.twogatherwebbackend.dto.menu.MenuSaveRequest;
-import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.menu.*;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveRequest;
@@ -31,6 +28,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,6 +45,7 @@ public class TestConstants {
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
     public static final String STORE_PHONE = "063-231-2222";
+    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"", "0000000000", "홍길동", LocalDate.now());
 
     // Business Hour Constants
     public static final String START_TIME_STRING = "11:30";
@@ -57,8 +56,7 @@ public class TestConstants {
     public static final LocalTime BREAK_END_TIME = LocalTime.parse(BREAK_END_TIME_STRING);
     public static final LocalTime START_TIME = LocalTime.parse(START_TIME_STRING);
     public static final LocalTime END_TIME = LocalTime.parse(END_TIME_STRING);
-    public static final Integer DAY_OF_WEEK_INTEGER = 1;
-    public static final DayOfWeek DAY_OF_WEEK = DayOfWeek.of(DAY_OF_WEEK_INTEGER);
+    public static final DayOfWeek DAY_OF_WEEK = DayOfWeek.MONDAY;
     public static final boolean IS_OPEN = true;
 
     // Owner Constants
@@ -107,10 +105,10 @@ public class TestConstants {
     public static final LoginRequest ADMIN_LOGIN_REQUEST = new LoginRequest( ADMIN_USERNAME, ADMIN_PASSWORD);
 
     // Business Hour Save/Update Request
-    public static final BusinessHourSaveUpdateRequest INVALID_BUSINESS_HOUR_SAVE_REQUEST =
-            new BusinessHourSaveUpdateRequest(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
-    public static final BusinessHourSaveUpdateRequest BUSINESS_HOUR_SAVE_UPDATE_REQUEST =
-            new BusinessHourSaveUpdateRequest(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
+    public static final BusinessHourSaveUpdateInfo INVALID_BUSINESS_HOUR_SAVE_INFO =
+            new BusinessHourSaveUpdateInfo(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
+    public static final BusinessHourSaveUpdateInfo BUSINESS_HOUR_SAVE_UPDATE_INFO =
+            new BusinessHourSaveUpdateInfo(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
 
     // Business Hour Response
     public static final Long BUSINESS_HOUR_ID = 1l;
@@ -146,12 +144,6 @@ public class TestConstants {
             new ReviewSaveRequest(1l, 1l, "진짜맛있어요!", 1.2);
     public static final ReviewUpdateRequest REVIEW_UPDATE_REQUEST =
             new ReviewUpdateRequest(1l, 1l, "진짜맛있어요!", 1.2);
-
-    // Image Constants
-    public static final MockMultipartFile IMAGE1 =
-            new MockMultipartFile("fileList", "image1.jpg", "image/jpeg", "test data".getBytes());
-    public static final MockMultipartFile IMAGE2 =
-            new MockMultipartFile("fileList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
 
 
     // Owner Login Request
@@ -244,31 +236,50 @@ public class TestConstants {
     // Menu Constants
     public static final ArrayList<MenuResponse> MENU_RESPONSE_LIST = new ArrayList<>(Arrays.asList(
             new MenuResponse(1l, "감자", 1000),
-            new MenuResponse(2l, "케찹", 12000),
-            new MenuResponse(3l, "햄버기", 11000)
+            new MenuResponse(2l, "케찹", 2000)
     ));
-    public static final ArrayList<MenuSaveRequest> MENU_SAVE_LIST = new ArrayList<>(Arrays.asList(
-            new MenuSaveRequest("감자", 1000),
-            new MenuSaveRequest("케찹", 12000),
-            new MenuSaveRequest("햄버기", 11000)
+    public static final ArrayList<MenuSaveInfo> MENU_SAVE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuSaveInfo("감자", 1000),
+            new MenuSaveInfo("케찹", 2000)
     ));
-    public static final MenuController.MenuSaveListRequest MENU_SAVE_LIST_REQUEST =
-            new MenuController.MenuSaveListRequest(MENU_SAVE_LIST);
-    public static final ArrayList<MenuUpdateRequest> MENU_UPDATE_LIST = new ArrayList<>(Arrays.asList(
-            new MenuUpdateRequest(1l, "감자", 1000),
-            new MenuUpdateRequest(2l, "케찹", 12000),
-            new MenuUpdateRequest(3l, "햄버기", 11000)
+    public static final ArrayList<MenuSaveInfo> MENU_SAVE_NULL_LIST = new ArrayList<>(Arrays.asList(
+            new MenuSaveInfo("감자", 1000),
+            new MenuSaveInfo(null, 2000)
     ));
-    public static final MenuController.MenuUpdateListRequest MENU_UPDATE_LIST_REQUEST =
-            new MenuController.MenuUpdateListRequest(MENU_UPDATE_LIST);
+    public static final ArrayList<MenuSaveInfo> MENU_SAVE_MINUS_VALUE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuSaveInfo("감자", -1000)
+    ));
+    public static final ArrayList<MenuUpdateInfo> MENU_UPDATE_NULL_LIST = new ArrayList<>(Arrays.asList(
+            new MenuUpdateInfo(1l,"감자", 1000),
+            new MenuUpdateInfo(2l,null, 2000)
+    ));
+    public static final ArrayList<MenuUpdateInfo> MENU_UPDATE_MINUS_VALUE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuUpdateInfo(1l,"감자", -1000)
+    ));
+    public static final MenuSaveListRequest MENU_SAVE_LIST_REQUEST =
+            new MenuSaveListRequest(MENU_SAVE_LIST);
+    public static final MenuSaveListRequest MENU_SAVE_LIST_NULL_REQUEST =
+            new MenuSaveListRequest(MENU_SAVE_NULL_LIST);
+    public static final MenuUpdateListRequest MENU_UPDATE_LIST_NULL_REQUEST =
+            new MenuUpdateListRequest(MENU_UPDATE_NULL_LIST);
+    public static final MenuSaveListRequest MENU_SAVE_LIST_MINUS_VALUE_REQUEST =
+            new MenuSaveListRequest(MENU_SAVE_MINUS_VALUE_LIST);
+    public static final MenuUpdateListRequest MENU_UPDATE_LIST_MINUS_VALUE_REQUEST =
+            new MenuUpdateListRequest(MENU_UPDATE_MINUS_VALUE_LIST);
+    public static final ArrayList<MenuUpdateInfo> MENU_UPDATE_LIST = new ArrayList<>(Arrays.asList(
+            new MenuUpdateInfo(1l, "new 감자", 10000),
+            new MenuUpdateInfo(2l, "new 케찹", 20000)
+    ));
+    public static final MenuUpdateListRequest MENU_UPDATE_LIST_REQUEST =
+            new MenuUpdateListRequest(MENU_UPDATE_LIST);
 
     // Business Hour Constants
     public static final ArrayList<BusinessHourResponse> BUSINESS_HOUR_RESPONSE_LIST =
             new ArrayList<>(Arrays.asList(BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE));
-    public static final ArrayList<BusinessHourSaveUpdateRequest> BUSINESS_HOUR_SAVE_UPDATE_LIST =
-            new ArrayList<>(Arrays.asList(BUSINESS_HOUR_SAVE_UPDATE_REQUEST, BUSINESS_HOUR_SAVE_UPDATE_REQUEST, BUSINESS_HOUR_SAVE_UPDATE_REQUEST));
-    public static final BusinessHourController.BusinessHourSaveUpdateListRequest BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST =
-            new BusinessHourController.BusinessHourSaveUpdateListRequest(BUSINESS_HOUR_SAVE_UPDATE_LIST);
+    public static final ArrayList<BusinessHourSaveUpdateInfo> BUSINESS_HOUR_SAVE_UPDATE_LIST =
+            new ArrayList<>(Arrays.asList(BUSINESS_HOUR_SAVE_UPDATE_INFO));
+    public static final BusinessHourSaveUpdateListRequest BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST =
+            new BusinessHourSaveUpdateListRequest(BUSINESS_HOUR_SAVE_UPDATE_LIST);
     public static final ArrayList<BusinessHourResponse> BUSINESS_HOUR_RESPONSE_7_LIST =
             new ArrayList<>(Arrays.asList(BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE,
                     BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE, BUSINESS_HOUR_RESPONSE));
@@ -280,55 +291,57 @@ public class TestConstants {
     //API
     public static final String OWNER_URL = "/api/owners";
     public static final String CONSUMER_URL = "/api/consumers";
-    public static final String LOGIN_URL = "/api/login";
     public static final String STORE_URL = "/api/stores";
     public static final String CATEGORY_URL = "/api/categories";
 
+    public TestConstants() throws JsonProcessingException {
+    }
+
     //BusinessHour List
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
-            storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+    public static BusinessHourSaveUpdateListRequest createBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour2 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
                 false, null,null
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(businessHour1);
         businessHourList.add(businessHour2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
 
         return request;
     }
 
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createBusinessHourRequestWithAllDayOfWeek(Long storeId){
-        List<BusinessHourSaveUpdateRequest> list = new ArrayList<>();
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createBusinessHourRequestWithAllDayOfWeek(Long storeId){
+        List<BusinessHourSaveUpdateInfo> list = new ArrayList<>();
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour2 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour2 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour3 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour3 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.WEDNESDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour4 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour4 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour5 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour5 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SATURDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour6 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour6 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.FRIDAY, true,
                 false, null,null
         );
-        BusinessHourSaveUpdateRequest businessHour7 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo businessHour7 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SUNDAY, true,
                 false, null,null
         );
@@ -340,80 +353,190 @@ public class TestConstants {
         list.add(businessHour6);
         list.add(businessHour7);
 
-        return new BusinessHourController.BusinessHourSaveUpdateListRequest(list);
+        return new BusinessHourSaveUpdateListRequest(list);
     }
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(16,0), java.time.LocalTime.of(9,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
         return request;
     }
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createBreakStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createBreakStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(11,0)
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
 
         return request;
     }
 
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createNullTimeBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createNullTimeBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 true, null,null
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
 
 
         return request;
     }
 
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createInvalidTimeBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest businessHour1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createInvalidTimeBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
                 storeId,null, java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(businessHour1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
 
 
         return request;
     }
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createUpdateBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateRequest request1 = new BusinessHourSaveUpdateRequest(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), java.time.DayOfWeek.MONDAY, true,
+    public static BusinessHourSaveUpdateListRequest createUpdateBusinessHourRequest(Long storeId){
+        BusinessHourSaveUpdateInfo request1 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SUNDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        BusinessHourSaveUpdateInfo request2 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateInfo request3 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.THURSDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateInfo request4 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.TUESDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateInfo request5 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SATURDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateInfo request6 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        BusinessHourSaveUpdateInfo request7 = new BusinessHourSaveUpdateInfo(
+                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.FRIDAY, true,
+                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
+        );
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(request1);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        businessHourList.add(request2);
+        businessHourList.add(request3);
+        businessHourList.add(request4);
+        businessHourList.add(request5);
+        businessHourList.add(request6);
+        businessHourList.add(request7);
+
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
         return request;
     }
-    public static BusinessHourController.BusinessHourSaveUpdateListRequest createDuplicatedDayOfWeekBusinessHourRequest(Long storeId){
-        DayOfWeek duplicatedDayOfWeek = DayOfWeek.THURSDAY;
-        BusinessHourSaveUpdateRequest duplicatedDayOfWeekRequest1 = new BusinessHourSaveUpdateRequest(
+    public static BusinessHourSaveUpdateListRequest createDuplicatedDayOfWeekBusinessHourRequest(Long storeId){
+        DayOfWeek duplicatedDayOfWeek = DayOfWeek.MONDAY;
+        BusinessHourSaveUpdateInfo duplicatedDayOfWeekRequest1 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
-        BusinessHourSaveUpdateRequest duplicatedDayOfWeekRequest2 = new BusinessHourSaveUpdateRequest(
+        BusinessHourSaveUpdateInfo duplicatedDayOfWeekRequest2 = new BusinessHourSaveUpdateInfo(
                 storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
-        ArrayList<BusinessHourSaveUpdateRequest> businessHourList = new ArrayList<>();
+        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
         businessHourList.add(duplicatedDayOfWeekRequest1);
         businessHourList.add(duplicatedDayOfWeekRequest2);
-        BusinessHourController.BusinessHourSaveUpdateListRequest request = new BusinessHourController.BusinessHourSaveUpdateListRequest(businessHourList);
+        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
         return request;
+    }
+
+    //mock file
+
+    // Image Constants
+    public static final MockMultipartFile IMAGE_REQUEST_PART =
+            new MockMultipartFile("storeImageList", "image1.jpg", "image/jpeg", "test data".getBytes());
+    public static final MockMultipartFile IMAGE_REQUEST_PART2 =
+            new MockMultipartFile("storeImageList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
+
+    public static MockMultipartFile MENU_REQUEST_PART;
+
+    static {
+        try {
+            MENU_REQUEST_PART = new MockMultipartFile("menuRequest", "menuRequest", "application/json",  (new ObjectMapper()).writeValueAsString(MENU_SAVE_LIST_REQUEST).getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static MockMultipartFile KEYWORD_REQUEST_PART;
+
+    static {
+        try {
+            KEYWORD_REQUEST_PART = new MockMultipartFile("keywordList", "keywordList", "application/json",   (new ObjectMapper()).writeValueAsString(KEYWORD_LIST).getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static MockMultipartFile STORE_REQUEST_PART;
+
+    static {
+        try {
+            STORE_REQUEST_PART = new MockMultipartFile(
+            "storeRequest",
+                    "storeRequest",
+                    "application/json",
+    (new ObjectMapper())
+                    .registerModule(new JavaTimeModule())
+                    .writeValueAsString(STORE_SAVE_REQUEST)
+                    .getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static MockMultipartFile BUSINESS_HOUR_REQUEST_PART;
+
+    static {
+        try {
+            BUSINESS_HOUR_REQUEST_PART = new MockMultipartFile(
+                            "businessHourRequest",
+                    "businessHourRequest",
+                        "application/json",
+    (new ObjectMapper())
+                    .registerModule(new JavaTimeModule())
+                    .writeValueAsString(BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST)
+                    .getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static MockMultipartFile toRequestPart(StoreSaveUpdateRequest request){
+        MockMultipartFile result = null;
+        try {
+            result = new MockMultipartFile(
+                        "storeRequest",
+                    "storeRequest",
+                    "application/json",
+                    (new ObjectMapper())
+                            .registerModule(new JavaTimeModule())
+                            .writeValueAsString(request)
+                            .getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }

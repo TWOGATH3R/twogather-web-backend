@@ -28,6 +28,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,7 +56,7 @@ public class KeywordControllerTest extends ControllerTest{
         doNothing().when(storeKeywordService).setStoreKeyword(1l, keywordList);
         //when
         //then
-        mockMvc.perform(post("/api/keywords/stores/{storeId}", storeId)
+        mockMvc.perform(put("/api/keywords/stores/{storeId}", storeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 objectMapper

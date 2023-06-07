@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -53,10 +54,9 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     public void createImages(){
         List<File> fileList = createMockFiles();
         List<ImageResponse> responseList =
-                new ObjectMapper().convertValue(doPostWithFile(fileList)
+                convert(doPostWithFile(fileList)
                         .extract()
-                        .as(Response.class)
-                        .getData(), new TypeReference<>() {});
+                        .as(Response.class), new TypeReference<List<ImageResponse>>() {});
         imageId1 = responseList.get(0).getImageId();
         imageId2 = responseList.get(1).getImageId();
         imageUrl1 = responseList.get(0).getUrl();
@@ -177,8 +177,8 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     }
     private <T> ValidatableResponse doPostWithFile(List<File> fileList) {
         return given()
-                .multiPart("fileList", fileList.get(0))
-                .multiPart("fileList", fileList.get(1))
+                .multiPart("storeImageList", fileList.get(0))
+                .multiPart("storeImageList", fileList.get(1))
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
                 .when()
