@@ -48,7 +48,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("다섯개보다 적은 키워드가 있을때 해당 개수의 키워드만 랜덤으로 조회해온다")
-    public void whenExistKeywordLessThanFive_ThenRandomKeywordList() throws Exception {
+    public void whenExistKeywordLessThanFive_ThenRandomKeywordList() {
         createLessThanFive();
 
         given()
@@ -65,7 +65,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("가게의 키워드 세개 설정")
-    public void whenSettingThreeKeywordsForStore_thenTheyAreSavedInStoreKeywordTable() throws Exception {
+    public void whenSettingThreeKeywordsForStore_thenTheyAreSavedInStoreKeywordTable()  {
         //given
         registerOwner();
         registerStore();
@@ -73,7 +73,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
 
         //when
         List<String> request = createRequest();
-        doPost(URL+"/stores/"+storeId,
+        doPut(URL+"/stores/"+storeId,
                 ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken(),
                 request)
@@ -99,7 +99,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
         approveStore();
 
         List<String> request = createMoreThan3Request();
-        doPost(URL+ "/stores/" + storeId,
+        doPut(URL+ "/stores/" + storeId,
                 ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken(),
                 request)
@@ -107,7 +107,6 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
                 .body("message", equalTo("정해진 개수만큼의 키워드만 입력할 수 있습니다"));
 
     }
-
 
     @Test
     @DisplayName("가게의 키워드가 빈 값이 들어온 경우 무시한다")
@@ -118,7 +117,8 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
         approveStore();
 
         int keywordSize = 2;
-        doPost(URL+ "/stores/" + storeId,
+
+        doPut(URL+ "/stores/" + storeId,
                 ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken(),
                 createEmptyRequest())
@@ -126,6 +126,9 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
 
         List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreStoreId(storeId);
         Assertions.assertEquals(storeKeywordList.size(), keywordSize);
+        Assertions.assertTrue(storeKeywordRepository.findKeywordsByStoreId(storeId).stream().anyMatch(k -> k.getName().equals(createEmptyRequest().get(0))));
+        Assertions.assertTrue(storeKeywordRepository.findKeywordsByStoreId(storeId).stream().anyMatch(k -> k.getName().equals(createEmptyRequest().get(1))));
+
     }
 
     private void createMoreThanFive(){

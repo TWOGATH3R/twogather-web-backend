@@ -1,7 +1,14 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
+import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
+import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
+import com.twogather.twogatherwebbackend.repository.ImageRepository;
+import com.twogather.twogatherwebbackend.repository.MenuRepository;
+import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,15 +19,27 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 
-import static com.twogather.twogatherwebbackend.TestConstants.STORE_SAVE_REQUEST;
-import static com.twogather.twogatherwebbackend.TestConstants.STORE_URL;
-import static org.hamcrest.Matchers.equalTo;
+import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
+import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
 
 
 public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
 
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private BusinessHourRepository businessHourRepository;
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private MenuRepository menuRepository;
+    @Autowired
+    private StoreKeywordRepository storeKeywordRepository;
 
     private static final String URL = "/api/stores";
 
@@ -36,20 +55,134 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         //when
         registerStore();
         approveStore();
+
         //then
-        Assertions.assertTrue(storeRepository.findById(storeId).isPresent());
+        Store store = storeRepository.findById(storeId).get();
+        Assertions.assertNotNull(store);
+        Assertions.assertTrue(categoryRepository.findById(store.getCategory().getCategoryId()).isPresent());
+        Assertions.assertTrue(!businessHourRepository.findByStoreStoreId(storeId).isEmpty());
+        Assertions.assertTrue(businessHourRepository.findByStoreStoreId(storeId).size() == 7);
+        Assertions.assertTrue(!imageRepository.findByStoreStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!menuRepository.findByStoreStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
+    }
+
+
+    @Test
+    @DisplayName("가게 저장시 Save menu 시에 유효성 실패 - null 입력하면 안됨")
+    public void whenSaveMenuList_WithInputNull_ThenThrowException(){
+
+        registerStore(
+                STORE_SAVE_REQUEST,
+                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_NULL_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+
     }
 
     @Test
-    @DisplayName("가게 저장 실패 - 사업자 등록번호 유효성 실패")
-    public void whenSaveInValidBizRegNumber_ThenThrowException() {
-        //when, then
-        doPost(STORE_URL,
-                ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken(),
-                STORE_SAVE_REQUEST)
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+    @DisplayName("save: 탈퇴한 회원의 경우 throw exception")
+    public void whenLeavedUserRequest_thenThrowException(){
+        // given
+        leaveOwner();
 
+        //when, then
+        registerStore(
+                STORE_SAVE_REQUEST,
+                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_NULL_REQUEST
+        )
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("save: 영업시작시간이 영업종료시간보다 나중이라면 exception throw")
+    public void whenStartTimeIsLaterThanEndTime_thenThrowException() {
+        //given
+        BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
+
+        //when, then
+        registerStore(
+                STORE_SAVE_REQUEST,
+                request,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
+
+    }
+    @Test
+    @DisplayName("save: 브레이크시작시간이 브레이크종료시간보다 나중이라면 exception을 throw해야한다")
+    public void whenBreakStartTimeIsLaterThanEndTime_thenThrowException() {
+        //given
+        BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
+
+        //when, then
+        registerStore(
+                STORE_SAVE_REQUEST,
+                request,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("save: 만약 hasbreaktime을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
+    public void whenValidateBreakTimeNull_thenThrowException() {
+        //given
+        BusinessHourSaveUpdateListRequest request = createNullTimeBusinessHourRequest(storeId);
+
+        //when, then
+        registerStore(
+                STORE_SAVE_REQUEST,
+                request,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("save: 만약 isopen을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
+    public void whenValidateOpenEndTimeNull_thenThrowException() {
+        //given
+        BusinessHourSaveUpdateListRequest request = createInvalidTimeBusinessHourRequest(storeId);
+
+        //when, then
+        registerStore(
+                STORE_SAVE_REQUEST,
+                request,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("가게 저장시 Save menu - 음수 가격 입력하면 안됨")
+    public void whenSaveMenuList_WithInputMinusPrice_ThenThrowException()  {
+        registerStore(
+                STORE_SAVE_REQUEST,
+                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_MINUS_VALUE_REQUEST
+        )
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
     }
 
     @Test
@@ -60,10 +193,12 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
                 null, "", "01012312312","0000000000", "홍길동", LocalDate.now()
         );
         //when, then
-        doPost(STORE_URL,
-                ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken(),
-                invalidRequest)
+        registerStore(
+                invalidRequest,
+                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
+                KEYWORD_LIST,
+                MENU_SAVE_LIST_REQUEST
+        )
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
 
@@ -85,6 +220,13 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
                 ownerToken.getAccessToken(),
                 updateRequest).statusCode(HttpStatus.OK.value());
 
+        Store store = storeRepository.findById(storeId).get();
+        Assertions.assertEquals(store.getName(), updateRequest.getStoreName());
+        Assertions.assertEquals(store.getAddress(), updateRequest.getAddress());
+        Assertions.assertEquals(store.getPhone(), updateRequest.getPhone());
+        Assertions.assertEquals(store.getBusinessName(), updateRequest.getBusinessName());
+        Assertions.assertEquals(store.getBusinessNumber(), updateRequest.getBusinessNumber());
+        Assertions.assertEquals(store.getBusinessStartDate(), updateRequest.getBusinessStartDate());
 
     }
 

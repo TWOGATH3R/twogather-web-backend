@@ -464,7 +464,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_get">Get</a></li>
 <li><a href="#_delete">Delete</a></li>
-<li><a href="#_save">Save</a></li>
 <li><a href="#_update">Update</a></li>
 </ul>
 </li>
@@ -472,7 +471,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_get_2">Get</a></li>
 <li><a href="#_delete_2">Delete</a></li>
-<li><a href="#_save_2">Save</a></li>
 <li><a href="#_update_2">Update</a></li>
 </ul>
 </li>
@@ -484,7 +482,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_store">Store</a>
 <ul class="sectlevel2">
-<li><a href="#_save_3">Save</a></li>
+<li><a href="#_save">Save</a></li>
 <li><a href="#_get_one">Get-One</a></li>
 <li><a href="#_get_list_2">Get-List</a></li>
 <li><a href="#_get_list_search">Get-List-Search</a></li>
@@ -496,7 +494,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_store_owner">Store-Owner</a>
 <ul class="sectlevel2">
 <li><a href="#_get_3">Get</a></li>
-<li><a href="#_save_4">Save</a></li>
+<li><a href="#_save_2">Save</a></li>
 <li><a href="#_update_4">Update</a></li>
 <li><a href="#_delete_4">Delete</a></li>
 </ul>
@@ -504,7 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_consumer">Consumer</a>
 <ul class="sectlevel2">
 <li><a href="#_get_4">Get</a></li>
-<li><a href="#_save_5">Save</a></li>
+<li><a href="#_save_3">Save</a></li>
 <li><a href="#_update_5">Update</a></li>
 <li><a href="#_delete_5">Delete</a></li>
 </ul>
@@ -512,21 +510,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_image">Image</a>
 <ul class="sectlevel2">
 <li><a href="#_get_5">Get</a></li>
-<li><a href="#_save_6">Save</a></li>
+<li><a href="#_save_4">Save</a></li>
 <li><a href="#_delete_6">Delete</a></li>
 </ul>
 </li>
 <li><a href="#_review">Review</a>
 <ul class="sectlevel2">
 <li><a href="#_get_my_review_list">Get-My-Review-List</a></li>
-<li><a href="#_save_7">Save</a></li>
+<li><a href="#_save_5">Save</a></li>
 <li><a href="#_update_6">Update</a></li>
 <li><a href="#_delete_7">Delete</a></li>
 </ul>
 </li>
 <li><a href="#_comment">Comment</a>
 <ul class="sectlevel2">
-<li><a href="#_save_8">Save</a></li>
+<li><a href="#_save_6">Save</a></li>
 <li><a href="#_update_7">Update</a></li>
 </ul>
 </li>
@@ -552,27 +550,113 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_login"><a class="link" href="#_login">Login</a></h3>
 <div class="sect3">
 <h4 id="_login_http_request"><a class="link" href="#_login_http_request">HTTP request</a></h4>
-<div class="paragraph">
-<p>Snippet http-request not found for operation::auth/login/</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/login HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 61
+Host: docs.api.com
+
+{
+  "username" : "owner1",
+  "password" : "asd@asd@@123"
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_login_request_fields"><a class="link" href="#_login_request_fields">Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::auth/login/</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인에 필요한 로그인 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인에 필요한 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_login_http_response"><a class="link" href="#_login_http_response">HTTP response</a></h4>
-<div class="paragraph">
-<p>Snippet http-response not found for operation::auth/login/</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2MTE2Mzc1fQ.QyefWpr7O7rivdRLGYJscRnfbuMJu9IRHnooTRHbWHZ4Pw94FYmZvmFCrVBzcbR_t2EICjn_Bge9z_usg42BdA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjEyNTEwNX0.xDWdnfLZ2z1TLH_dMDVzOuERp_ih586MP83Y7S25d0vB0WvkNzu1hch8ztgS2ciE44svXaoN6VYFar7-Rrq4uA
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 43
+
+{
+  "data" : {
+    "memberId" : 1
+  }
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_login_response_fields"><a class="link" href="#_login_response_fields">Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::auth/login/</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인한 회원의 고유 id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1046,155 +1130,6 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save"><a class="link" href="#_save">Save</a></h3>
-<div class="sect3">
-<h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/menus HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 131
-Host: docs.api.com
-
-{
-  "menuSaveList" : [ {
-    "name" : "감자",
-    "price" : 1000
-  }, {
-    "name" : "케찹",
-    "price" : 2000
-  } ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_path_parameters"><a class="link" href="#_save_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/stores/{storeId}/menus</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_save_request_fields"><a class="link" href="#_save_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>menuSaveList[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>menuSaveList[].price</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴의 가격</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_save_http_response"><a class="link" href="#_save_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
-Content-Type: application/json
-Content-Length: 161
-
-{
-  "data" : [ {
-    "menuId" : 1,
-    "name" : "감자",
-    "price" : 1000
-  }, {
-    "menuId" : 2,
-    "name" : "케찹",
-    "price" : 2000
-  } ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_response_fields"><a class="link" href="#_save_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].price</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴의 가격</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].menuId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴의 고유 id</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_update"><a class="link" href="#_update">Update</a></h3>
 <div class="sect3">
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
@@ -1601,282 +1536,6 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
-<div class="sect3">
-<h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/business-hours HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 688
-Host: docs.api.com
-
-{
-  "businessHourList" : [ {
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  } ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_path_parameters"><a class="link" href="#_save_2_path_parameters">Path parameters</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/stores/{storeId}/business-hours</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_save_2_request_fields"><a class="link" href="#_save_2_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].dayOfWeek</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The day of week.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].hasBreakTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakStartTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].breakEndTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourList[].isOpen</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 장사여부</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_save_2_http_response"><a class="link" href="#_save_2_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
-Content-Type: application/json
-Content-Length: 757
-
-{
-  "data" : [ {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  } ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_response_fields"><a class="link" href="#_save_2_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].businessHourId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the businessHour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].storeId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the store</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].dayOfWeek</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MONDAY, TUESDAY, &#8230;&#8203; SUNDAY</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The day of week</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The opening time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The closing time of the business hour</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].hasBreakTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 breakTime 존재 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].breakStartTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime의 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].breakEndTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HH:mm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">breakTime이 끝나는 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].isOpen</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 요일의 장사여부</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_update_2"><a class="link" href="#_update_2">Update</a></h3>
 <div class="sect3">
 <h4 id="_update_2_http_request"><a class="link" href="#_update_2_http_request">HTTP request</a></h4>
@@ -1884,29 +1543,11 @@ Content-Length: 757
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 688
+Content-Length: 250
 Host: docs.api.com
 
 {
   "businessHourList" : [ {
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
     "storeId" : 1,
     "startTime" : "11:30",
     "endTime" : "20:00",
@@ -2256,7 +1897,7 @@ Content-Length: 213
 <h4 id="_set_keyword_store_association_http_request"><a class="link" href="#_set_keyword_store_association_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/keywords/stores/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/keywords/stores/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 67
 Host: docs.api.com
@@ -2302,94 +1943,83 @@ Host: docs.api.com
 <h2 id="_store"><a class="link" href="#_store">Store</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
+<h3 id="_save"><a class="link" href="#_save">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
+<h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 228
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/categories/1 HTTP/1.1
+Content-Type: multipart/form-data; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Host: docs.api.com
 
-{
-  "storeName" : "가게이름",
-  "address" : "전주시 평화동 산동 2길 1-3",
-  "phone" : "010-1234-1234",
-  "businessNumber" : "0000000000",
-  "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-05"
-}</code></pre>
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=storeImageList; filename=image1.jpg
+Content-Type: image/jpeg
+
+test data
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=menuRequest; filename=menuRequest
+Content-Type: application/json
+
+{"menuSaveList":[{"name":"감자","price":1000},{"name":"케찹","price":2000}]}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=businessHourRequest; filename=businessHourRequest
+Content-Type: application/json
+
+{"businessHourList":[{"storeId":1,"startTime":"11:30","endTime":"20:00","dayOfWeek":"MONDAY","isOpen":true,"hasBreakTime":false,"breakStartTime":null,"breakEndTime":null}]}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=keywordList; filename=keywordList
+Content-Type: application/json
+
+["분위기좋은","사진찍기좋은","저렴한"]
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=storeRequest; filename=storeRequest
+Content-Type: application/json
+
+{"storeName":"김가네 닭갈비","address":"전주시 평화동 어쩌고 222-2","phone":"063-231-2222","businessNumber":"0000000000","businessName":"홍길동","businessStartDate":"2023-06-07"}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_3_request_fields"><a class="link" href="#_save_3_request_fields">Request fields</a></h4>
+<h4 id="_save_request_parts"><a class="link" href="#_save_request_parts">Request parts</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">양식</th>
-<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가게이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 영업시간 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>address</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가게주소</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게의 기본적인 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phone</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">xx-xxx-xxxx / xxx-xxxx-xxxx / xxx-xxx-xxxx</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가게전화번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>menuRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">숫자 10자리여야한다</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사업자번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeImageList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 이미지 리스트(Multipartfile형태)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사업자이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessStartDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keywordList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 키워드 목록</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_3_http_response"><a class="link" href="#_save_3_http_response">HTTP response</a></h4>
+<h4 id="_save_http_response"><a class="link" href="#_save_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -2408,7 +2038,7 @@ Content-Length: 165
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_3_response_fields"><a class="link" href="#_save_3_response_fields">Response fields</a></h4>
+<h4 id="_save_response_fields"><a class="link" href="#_save_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3219,7 +2849,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-05"
+  "businessStartDate" : "2023-06-07"
 }</code></pre>
 </div>
 </div>
@@ -3393,7 +3023,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=43df28b0-6f9d-440d-8776-919f3edbe717 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=ff123897-921c-465d-8e47-2a5c93155d76 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3493,12 +3123,12 @@ Content-Length: 138
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
+<h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
+<h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=49b3a143-8feb-4fb3-8e60-b0db3ee36809 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=1beecb7b-3f80-45aa-b48c-bcba3ccd2a20 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -3513,7 +3143,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_4_request_fields"><a class="link" href="#_save_4_request_fields">Request fields</a></h4>
+<h4 id="_save_2_request_fields"><a class="link" href="#_save_2_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3564,7 +3194,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_4_http_response"><a class="link" href="#_save_4_http_response">HTTP response</a></h4>
+<h4 id="_save_2_http_response"><a class="link" href="#_save_2_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -3583,7 +3213,7 @@ Content-Length: 138
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_4_response_fields"><a class="link" href="#_save_4_response_fields">Response fields</a></h4>
+<h4 id="_save_2_response_fields"><a class="link" href="#_save_2_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3960,12 +3590,12 @@ Content-Length: 130
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
+<h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
+<h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=8a035d1c-5969-4d37-be07-0066a44a06b5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=ec8d5f88-9e1b-429e-9df2-1564a2492002 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -3980,7 +3610,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_5_request_fields"><a class="link" href="#_save_5_request_fields">Request fields</a></h4>
+<h4 id="_save_3_request_fields"><a class="link" href="#_save_3_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4031,7 +3661,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_5_http_response"><a class="link" href="#_save_5_http_response">HTTP response</a></h4>
+<h4 id="_save_3_http_response"><a class="link" href="#_save_3_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4050,7 +3680,7 @@ Content-Length: 130
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_5_response_fields"><a class="link" href="#_save_5_response_fields">Response fields</a></h4>
+<h4 id="_save_3_response_fields"><a class="link" href="#_save_3_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4107,7 +3737,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=cf326223-c5c5-4de1-88ff-067f0668f356 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=dc691e95-08fb-4673-b994-cdd7b3d36626 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4409,9 +4039,9 @@ Content-Length: 196
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_6"><a class="link" href="#_save_6">Save</a></h3>
+<h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
+<h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/images HTTP/1.1
@@ -4419,16 +4049,12 @@ Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWA
 Host: docs.api.com
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=_csrf
-
-8211ea74-496f-4184-9652-993311c33766
---6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=fileList; filename=image1.jpg
+Content-Disposition: form-data; name=storeImageList; filename=imageS2.jpg
 Content-Type: image/jpeg
 
 test data
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=fileList; filename=imageS2.jpg
+Content-Disposition: form-data; name=storeImageList; filename=imageS2.jpg
 Content-Type: image/jpeg
 
 test data
@@ -4437,7 +4063,7 @@ test data
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_6_path_parameters"><a class="link" href="#_save_6_path_parameters">Path parameters</a></h4>
+<h4 id="_save_4_path_parameters"><a class="link" href="#_save_4_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/images</caption>
 <colgroup>
@@ -4459,7 +4085,7 @@ test data
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_6_http_response"><a class="link" href="#_save_6_http_response">HTTP response</a></h4>
+<h4 id="_save_4_http_response"><a class="link" href="#_save_4_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4482,7 +4108,7 @@ Content-Length: 196
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_6_response_fields"><a class="link" href="#_save_6_response_fields">Response fields</a></h4>
+<h4 id="_save_4_response_fields"><a class="link" href="#_save_4_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4879,12 +4505,12 @@ Content-Length: 1198
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_7"><a class="link" href="#_save_7">Save</a></h3>
+<h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
+<h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=d1ae31b2-e163-4595-8a10-5f9bc941793b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=fb1cf25a-06db-4987-8ced-d7611ea3bb3d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -4899,7 +4525,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_7_path_parameters"><a class="link" href="#_save_7_path_parameters">Path parameters</a></h4>
+<h4 id="_save_5_path_parameters"><a class="link" href="#_save_5_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews</caption>
 <colgroup>
@@ -4921,7 +4547,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_7_http_response"><a class="link" href="#_save_7_http_response">HTTP response</a></h4>
+<h4 id="_save_5_http_response"><a class="link" href="#_save_5_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4941,7 +4567,7 @@ Content-Length: 163
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_7_response_fields"><a class="link" href="#_save_7_response_fields">Response fields</a></h4>
+<h4 id="_save_5_response_fields"><a class="link" href="#_save_5_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5005,7 +4631,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=f1f4d1c4-0969-4cc5-9aca-52826919d539 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=33e1e075-2d1e-4942-90f0-b777339dad88 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -5130,7 +4756,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=ab4e6dd0-5359-45a4-a2fb-2306fb6c1cd5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=af66a6a0-7fd7-4f54-9e38-079ee241cb11 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5177,9 +4803,9 @@ Host: docs.api.com</code></pre>
 <h2 id="_comment"><a class="link" href="#_comment">Comment</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_save_8"><a class="link" href="#_save_8">Save</a></h3>
+<h3 id="_save_6"><a class="link" href="#_save_6">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_8_http_request"><a class="link" href="#_save_8_http_request">HTTP request</a></h4>
+<h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews/2/comments HTTP/1.1
@@ -5194,7 +4820,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_8_path_parameters"><a class="link" href="#_save_8_path_parameters">Path parameters</a></h4>
+<h4 id="_save_6_path_parameters"><a class="link" href="#_save_6_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments</caption>
 <colgroup>
@@ -5220,7 +4846,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_8_http_response"><a class="link" href="#_save_8_http_response">HTTP response</a></h4>
+<h4 id="_save_6_http_response"><a class="link" href="#_save_6_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -5231,14 +4857,14 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-05"
+    "createDate" : "2023-06-07"
   }
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_8_response_fields"><a class="link" href="#_save_8_response_fields">Response fields</a></h4>
+<h4 id="_save_6_response_fields"><a class="link" href="#_save_6_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5341,7 +4967,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-05"
+    "createDate" : "2023-06-07"
   }
 }</code></pre>
 </div>
@@ -5549,7 +5175,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-01 19:03:59 +0900
+Last updated 2023-06-07 11:53:07 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

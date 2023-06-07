@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
+import com.twogather.twogatherwebbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,12 @@ import javax.validation.Valid;
 @RequestMapping("/api/consumers")
 @RequiredArgsConstructor
 public class ConsumerController {
+    private final MemberService memberService;
     private final ConsumerService consumerService;
 
     @PostMapping("/verify-password")
     public ResponseEntity<Response> verifyPassword(@RequestBody String password) {
-        boolean passwordMatches = consumerService.verifyPassword(password);
+        boolean passwordMatches = memberService.verifyPassword(password);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }
@@ -36,7 +38,7 @@ public class ConsumerController {
     @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberSaveUpdateRequest consumerSaveUpdateRequest){
-        MemberResponse data = consumerService.update(consumerSaveUpdateRequest);
+        MemberResponse data = memberService.update(consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }

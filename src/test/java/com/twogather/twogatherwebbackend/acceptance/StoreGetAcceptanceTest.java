@@ -59,10 +59,10 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         Category category1 = categoryRepository.save(new Category(CATEGORY_NAME_1));
         Category category2 = categoryRepository.save(new Category("중식"));
 
-        store1 = storeRepository.save(new Store(category1, null,null,null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreStatus.APPROVED,null));
-        store2 = storeRepository.save(new Store(category1, null,null,null,"가게2", "서울시 어쩌고 어저고", "010-1234-1234",StoreStatus.APPROVED,null));
-        store3 = storeRepository.save(new Store(category1, null,null,null,"가게3", "대전광역시 어쩌고 어쩌고", "02-232-2222",StoreStatus.APPROVED,null));
-        store4 = storeRepository.save(new Store(category2, null,null,null,"가게4", "서울시 어쩌고 어쩌고", "02-232-2522", StoreStatus.APPROVED,null));
+        store1 = storeRepository.save(Store.builder().category(category1).name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
+        store2 = storeRepository.save(Store.builder().category(category1).name("가게2").address("서울시 어쩌고 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).build());
+        store3 = storeRepository.save(Store.builder().category(category1).name("가게3").address("대전광역시 어쩌고 어쩌고").phone("02-232-2222").status(StoreStatus.APPROVED).build());
+        store4 = storeRepository.save(Store.builder().category(category2).name("가게4").address("서울시 어쩌고 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
 
         reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));

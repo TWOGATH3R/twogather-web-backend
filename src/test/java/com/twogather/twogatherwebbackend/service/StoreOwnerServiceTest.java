@@ -6,7 +6,6 @@ import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -42,7 +39,7 @@ public class StoreOwnerServiceTest {
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final MemberSaveUpdateRequest request = returnRequest();
-        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
+        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(false);
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
         // when
@@ -57,7 +54,7 @@ public class StoreOwnerServiceTest {
         // given
         final MemberSaveUpdateRequest request = returnRequest();
         //when
-        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
+        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(true);
         // when
         Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }

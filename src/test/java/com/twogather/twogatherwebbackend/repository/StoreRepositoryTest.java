@@ -23,24 +23,25 @@ public class StoreRepositoryTest extends RepositoryTest{
 
     @BeforeEach
     public void init(){
-            store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreStatus.APPROVED,null));
-            store2 = storeRepository.save(new Store(null,"가게2", "서울특별시 서초구 신반포로23길 30 반원상가", "010-1234-1234", StoreStatus.APPROVED,null));
-            store3 = storeRepository.save(new Store(null,"가게3", "서울특별시 서초구 올림픽대로 2085-14 솔빛섬 1-2F", "02-232-2222", StoreStatus.APPROVED,null));
-            store4 = storeRepository.save(new Store(null,"가게4", "서울특별시 서초구 신반포로23길 30 반원상가", "02-232-2522", StoreStatus.APPROVED,null));
 
-            Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
-            Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 4.2, LocalDate.of(2022,04,02)));
+        store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
+        store2 = storeRepository.save(Store.builder().name("가게2").address("서울시 서초구 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).build());
+        store3 = storeRepository.save(Store.builder().name("가게3").address("서울특별시 서초구 신반포로23길 30 반원상가").phone("02-232-2222").status(StoreStatus.APPROVED).build());
+        store4 = storeRepository.save(Store.builder().name("가게4").address("서울시 서초구 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
 
-            Review review3 = reviewRepository.save(new Review(store2, null, "분위기가좋아요", 2.2, LocalDate.of(2021,01,12)));
-            Review review4 = reviewRepository.save(new Review(store2, null, "아이들과 오기 좋네요", 2.2, LocalDate.of(2019,01,12)));
+        Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
+        Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 4.2, LocalDate.of(2022,04,02)));
 
-            Review review5 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
-            Review review6 = reviewRepository.save(new Review(store3, null, "분위기가좋아요", 1.4, LocalDate.of(2021,01,12)));
-            Review review7 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
+        Review review3 = reviewRepository.save(new Review(store2, null, "분위기가좋아요", 2.2, LocalDate.of(2021,01,12)));
+        Review review4 = reviewRepository.save(new Review(store2, null, "아이들과 오기 좋네요", 2.2, LocalDate.of(2019,01,12)));
 
-            Review review8 = reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 3.2, LocalDate.of(2019,01,12)));
+        Review review5 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
+        Review review6 = reviewRepository.save(new Review(store3, null, "분위기가좋아요", 1.4, LocalDate.of(2021,01,12)));
+        Review review7 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
 
-            em.flush();
+        Review review8 = reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 3.2, LocalDate.of(2019,01,12)));
+
+        em.flush();
     }
     @Test
     @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")

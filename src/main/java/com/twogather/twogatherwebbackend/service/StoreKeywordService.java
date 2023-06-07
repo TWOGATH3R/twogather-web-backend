@@ -31,6 +31,10 @@ public class StoreKeywordService {
         if(keywordStringList.size()>3){
             throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
         }
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        storeKeywordRepository.deleteByStoreStoreId(storeId);
         for (String keywordString: keywordStringList){
             if(!keywordString.isEmpty()){
                 Optional<Keyword> keywordOptional = keywordRepository.findByName(keywordString);
@@ -40,10 +44,6 @@ public class StoreKeywordService {
                 }else{
                     keyword = keywordRepository.save(new Keyword(keywordString));
                 }
-
-                Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
-                        ()->new StoreException(NO_SUCH_STORE)
-                );
                 storeKeywordRepository.save(new StoreKeyword(store, keyword));
             }
         }
