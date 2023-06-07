@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
+import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
+    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveUpdateRequest storeOwnerSaveUpdateRequest) {
@@ -32,7 +34,7 @@ public class StoreOwnerController {
     @PostMapping("/verify-password")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> verifyPassword(@RequestBody VerifyPasswordRequest request) {
-        boolean passwordMatches = storeOwnerService.verifyPassword(request.getPassword());
+        boolean passwordMatches = memberService.verifyPassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }
@@ -48,7 +50,7 @@ public class StoreOwnerController {
     @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final MemberSaveUpdateRequest storeOwnerSaveUpdateRequest){
-        MemberResponse data = storeOwnerService.update(storeOwnerSaveUpdateRequest);
+        MemberResponse data = memberService.update(storeOwnerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }

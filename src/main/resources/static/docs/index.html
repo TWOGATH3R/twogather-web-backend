@@ -464,7 +464,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_get">Get</a></li>
 <li><a href="#_delete">Delete</a></li>
-<li><a href="#_save">Save</a></li>
 <li><a href="#_update">Update</a></li>
 </ul>
 </li>
@@ -472,7 +471,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_get_2">Get</a></li>
 <li><a href="#_delete_2">Delete</a></li>
-<li><a href="#_save_2">Save</a></li>
 <li><a href="#_update_2">Update</a></li>
 </ul>
 </li>
@@ -484,7 +482,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_store">Store</a>
 <ul class="sectlevel2">
-<li><a href="#_save_3">Save</a></li>
+<li><a href="#_save">Save</a></li>
 <li><a href="#_get_one">Get-One</a></li>
 <li><a href="#_get_list_2">Get-List</a></li>
 <li><a href="#_get_list_search">Get-List-Search</a></li>
@@ -496,7 +494,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_store_owner">Store-Owner</a>
 <ul class="sectlevel2">
 <li><a href="#_get_3">Get</a></li>
-<li><a href="#_save_4">Save</a></li>
+<li><a href="#_save_2">Save</a></li>
 <li><a href="#_update_4">Update</a></li>
 <li><a href="#_delete_4">Delete</a></li>
 </ul>
@@ -504,7 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_consumer">Consumer</a>
 <ul class="sectlevel2">
 <li><a href="#_get_4">Get</a></li>
-<li><a href="#_save_5">Save</a></li>
+<li><a href="#_save_3">Save</a></li>
 <li><a href="#_update_5">Update</a></li>
 <li><a href="#_delete_5">Delete</a></li>
 </ul>
@@ -512,21 +510,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_image">Image</a>
 <ul class="sectlevel2">
 <li><a href="#_get_5">Get</a></li>
-<li><a href="#_save_6">Save</a></li>
+<li><a href="#_save_4">Save</a></li>
 <li><a href="#_delete_6">Delete</a></li>
 </ul>
 </li>
 <li><a href="#_review">Review</a>
 <ul class="sectlevel2">
 <li><a href="#_get_my_review_list">Get-My-Review-List</a></li>
-<li><a href="#_save_7">Save</a></li>
+<li><a href="#_save_5">Save</a></li>
 <li><a href="#_update_6">Update</a></li>
 <li><a href="#_delete_7">Delete</a></li>
 </ul>
 </li>
 <li><a href="#_comment">Comment</a>
 <ul class="sectlevel2">
-<li><a href="#_save_8">Save</a></li>
+<li><a href="#_save_6">Save</a></li>
 <li><a href="#_update_7">Update</a></li>
 </ul>
 </li>
@@ -612,8 +610,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2MTA5ODkyfQ.oPevoBsCHI6pPIgmFvfvyivm1yDjRnj7JiAvZ2C3RgpyPaWMfuyUir7BBRuNSPUujumMMeJwAcrGR1yd7vM25Q
-Refresh-Token: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjExODYyMn0.ITSuqF9CZ9bDLtp_xuOPGp8j_E546RCybE4Iq8OQGfm5-P2dB18d01zHORsiUxryBFLKP_wh1N5u5Zi-5J2s7w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2MTE2Mzc1fQ.QyefWpr7O7rivdRLGYJscRnfbuMJu9IRHnooTRHbWHZ4Pw94FYmZvmFCrVBzcbR_t2EICjn_Bge9z_usg42BdA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjEyNTEwNX0.xDWdnfLZ2z1TLH_dMDVzOuERp_ih586MP83Y7S25d0vB0WvkNzu1hch8ztgS2ciE44svXaoN6VYFar7-Rrq4uA
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1132,39 +1130,6 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save"><a class="link" href="#_save">Save</a></h3>
-<div class="sect3">
-<h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
-<div class="paragraph">
-<p>Snippet http-request not found for operation::menu/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_path_parameters"><a class="link" href="#_save_path_parameters">Path parameters</a></h4>
-<div class="paragraph">
-<p>Snippet path-parameters not found for operation::menu/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_request_fields"><a class="link" href="#_save_request_fields">Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::menu/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_http_response"><a class="link" href="#_save_http_response">HTTP response</a></h4>
-<div class="paragraph">
-<p>Snippet http-response not found for operation::menu/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_response_fields"><a class="link" href="#_save_response_fields">Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::menu/save/</p>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_update"><a class="link" href="#_update">Update</a></h3>
 <div class="sect3">
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
@@ -1567,39 +1532,6 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
 </div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
-<div class="sect3">
-<h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
-<div class="paragraph">
-<p>Snippet http-request not found for operation::business-hour/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_path_parameters"><a class="link" href="#_save_2_path_parameters">Path parameters</a></h4>
-<div class="paragraph">
-<p>Snippet path-parameters not found for operation::business-hour/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_request_fields"><a class="link" href="#_save_2_request_fields">Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::business-hour/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_http_response"><a class="link" href="#_save_2_http_response">HTTP response</a></h4>
-<div class="paragraph">
-<p>Snippet http-response not found for operation::business-hour/save/</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_save_2_response_fields"><a class="link" href="#_save_2_response_fields">Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::business-hour/save/</p>
 </div>
 </div>
 </div>
@@ -2011,9 +1943,9 @@ Host: docs.api.com
 <h2 id="_store"><a class="link" href="#_store">Store</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
+<h3 id="_save"><a class="link" href="#_save">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
+<h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/categories/1 HTTP/1.1
@@ -2050,13 +1982,44 @@ Content-Type: application/json
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_3_request_fields"><a class="link" href="#_save_3_request_fields">Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::store/save/</p>
-</div>
+<h4 id="_save_request_parts"><a class="link" href="#_save_request_parts">Request parts</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessHourRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 영업시간 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게의 기본적인 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>menuRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeImageList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가게 이미지 리스트(Multipartfile형태)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keywordList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 키워드 목록</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
-<h4 id="_save_3_http_response"><a class="link" href="#_save_3_http_response">HTTP response</a></h4>
+<h4 id="_save_http_response"><a class="link" href="#_save_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -2075,7 +2038,7 @@ Content-Length: 165
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_3_response_fields"><a class="link" href="#_save_3_response_fields">Response fields</a></h4>
+<h4 id="_save_response_fields"><a class="link" href="#_save_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2476,8 +2439,8 @@ Content-Length: 647
   "totalPages" : 1,
   "totalElements" : 2,
   "pageSize" : 10,
-  "first" : true,
-  "last" : true
+  "last" : true,
+  "first" : true
 }</code></pre>
 </div>
 </div>
@@ -2698,8 +2661,8 @@ Content-Length: 1000
   "totalPages" : 1,
   "totalElements" : 3,
   "pageSize" : 3,
-  "first" : true,
-  "last" : true
+  "last" : true,
+  "first" : true
 }</code></pre>
 </div>
 </div>
@@ -3060,7 +3023,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=cc4aa665-139b-410d-9138-7b3d092a5a3b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=ff123897-921c-465d-8e47-2a5c93155d76 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3160,12 +3123,12 @@ Content-Length: 138
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
+<h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
+<h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=4e458451-bc6b-4313-b56c-6059ed5ec415 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=1beecb7b-3f80-45aa-b48c-bcba3ccd2a20 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -3180,7 +3143,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_4_request_fields"><a class="link" href="#_save_4_request_fields">Request fields</a></h4>
+<h4 id="_save_2_request_fields"><a class="link" href="#_save_2_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3231,7 +3194,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_4_http_response"><a class="link" href="#_save_4_http_response">HTTP response</a></h4>
+<h4 id="_save_2_http_response"><a class="link" href="#_save_2_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -3250,7 +3213,7 @@ Content-Length: 138
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_4_response_fields"><a class="link" href="#_save_4_response_fields">Response fields</a></h4>
+<h4 id="_save_2_response_fields"><a class="link" href="#_save_2_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3627,12 +3590,12 @@ Content-Length: 130
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
+<h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
+<h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=da5cff53-7b93-4c70-8d10-957fc8e169a5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=ec8d5f88-9e1b-429e-9df2-1564a2492002 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -3647,7 +3610,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_5_request_fields"><a class="link" href="#_save_5_request_fields">Request fields</a></h4>
+<h4 id="_save_3_request_fields"><a class="link" href="#_save_3_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3698,7 +3661,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_5_http_response"><a class="link" href="#_save_5_http_response">HTTP response</a></h4>
+<h4 id="_save_3_http_response"><a class="link" href="#_save_3_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -3717,7 +3680,7 @@ Content-Length: 130
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_5_response_fields"><a class="link" href="#_save_5_response_fields">Response fields</a></h4>
+<h4 id="_save_3_response_fields"><a class="link" href="#_save_3_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3774,7 +3737,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=098e6f59-f0bf-44d0-9076-77cdf4211e70 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=dc691e95-08fb-4673-b994-cdd7b3d36626 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4076,9 +4039,9 @@ Content-Length: 196
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_6"><a class="link" href="#_save_6">Save</a></h3>
+<h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
+<h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/images HTTP/1.1
@@ -4100,7 +4063,7 @@ test data
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_6_path_parameters"><a class="link" href="#_save_6_path_parameters">Path parameters</a></h4>
+<h4 id="_save_4_path_parameters"><a class="link" href="#_save_4_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/images</caption>
 <colgroup>
@@ -4122,7 +4085,7 @@ test data
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_6_http_response"><a class="link" href="#_save_6_http_response">HTTP response</a></h4>
+<h4 id="_save_4_http_response"><a class="link" href="#_save_4_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4145,7 +4108,7 @@ Content-Length: 196
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_6_response_fields"><a class="link" href="#_save_6_response_fields">Response fields</a></h4>
+<h4 id="_save_4_response_fields"><a class="link" href="#_save_4_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4355,8 +4318,8 @@ Content-Length: 1198
       "sorted" : false,
       "unsorted" : true
     },
-    "first" : true,
     "numberOfElements" : 3,
+    "first" : true,
     "empty" : false
   }
 }</code></pre>
@@ -4542,12 +4505,12 @@ Content-Length: 1198
 </div>
 </div>
 <div class="sect2">
-<h3 id="_save_7"><a class="link" href="#_save_7">Save</a></h3>
+<h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
+<h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=90e42ffd-51b7-4189-bcb4-5c4e50caf59d HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=fb1cf25a-06db-4987-8ced-d7611ea3bb3d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -4562,7 +4525,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_7_path_parameters"><a class="link" href="#_save_7_path_parameters">Path parameters</a></h4>
+<h4 id="_save_5_path_parameters"><a class="link" href="#_save_5_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews</caption>
 <colgroup>
@@ -4584,7 +4547,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_7_http_response"><a class="link" href="#_save_7_http_response">HTTP response</a></h4>
+<h4 id="_save_5_http_response"><a class="link" href="#_save_5_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4604,7 +4567,7 @@ Content-Length: 163
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_7_response_fields"><a class="link" href="#_save_7_response_fields">Response fields</a></h4>
+<h4 id="_save_5_response_fields"><a class="link" href="#_save_5_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4668,7 +4631,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=7ad6c897-8f89-433c-b42a-1d2c5d053759 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=33e1e075-2d1e-4942-90f0-b777339dad88 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -4793,7 +4756,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=3a085b28-4165-4694-978f-f7a910172375 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=af66a6a0-7fd7-4f54-9e38-079ee241cb11 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4840,9 +4803,9 @@ Host: docs.api.com</code></pre>
 <h2 id="_comment"><a class="link" href="#_comment">Comment</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_save_8"><a class="link" href="#_save_8">Save</a></h3>
+<h3 id="_save_6"><a class="link" href="#_save_6">Save</a></h3>
 <div class="sect3">
-<h4 id="_save_8_http_request"><a class="link" href="#_save_8_http_request">HTTP request</a></h4>
+<h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews/2/comments HTTP/1.1
@@ -4857,7 +4820,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_8_path_parameters"><a class="link" href="#_save_8_path_parameters">Path parameters</a></h4>
+<h4 id="_save_6_path_parameters"><a class="link" href="#_save_6_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments</caption>
 <colgroup>
@@ -4883,7 +4846,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_save_8_http_response"><a class="link" href="#_save_8_http_response">HTTP response</a></h4>
+<h4 id="_save_6_http_response"><a class="link" href="#_save_6_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -4901,7 +4864,7 @@ Content-Length: 116
 </div>
 </div>
 <div class="sect3">
-<h4 id="_save_8_response_fields"><a class="link" href="#_save_8_response_fields">Response fields</a></h4>
+<h4 id="_save_6_response_fields"><a class="link" href="#_save_6_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5212,7 +5175,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-06 11:45:00 +0900
+Last updated 2023-06-07 11:53:07 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

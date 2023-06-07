@@ -23,7 +23,7 @@ public class ConsumerService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public boolean isConsumer(Long memberId){
+    public boolean isConsumer(final Long memberId){
         if(consumerRepository.findById(memberId).isPresent()) return true;
         else return false;
     }
@@ -33,33 +33,16 @@ public class ConsumerService {
         );
         consumer.leave();
     }
-    public MemberResponse update(final MemberSaveUpdateRequest request){
-        Consumer consumer = consumerRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(
-                ()->new MemberException(NO_SUCH_MEMBER)
-        );
-        consumer.update(
-                request.getUsername(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getName());
 
-        return toResponse(consumer);
-    }
     public MemberResponse join(final MemberSaveUpdateRequest request){
-        validateDuplicateEmail(request.getUsername());
+        validateDuplicateUsername(request.getUsername());
+        validateDuplicateEmail(request.getEmail());
         Consumer consumer
                 = new Consumer(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), AuthenticationType.CONSUMER, true);
         Consumer storedConsumer = consumerRepository.save(consumer);
 
         return toResponse(storedConsumer);
-    }
-    public boolean verifyPassword(String password){
-        String username = SecurityUtils.getUsername();
-        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
-                ()-> new MemberException(NO_SUCH_MEMBER)
-        );
-        return passwordEncoder.matches(password, member.getPassword());
     }
 
     @Transactional(readOnly = true)
@@ -70,9 +53,14 @@ public class ConsumerService {
         return toResponse(consumer);
     }
 
-    private void validateDuplicateEmail(final String username){
-        if (memberRepository.existsByUsername(username)) {
+    private void validateDuplicateUsername(final String username){
+        if (memberRepository.existsByActiveUsername(username)) {
             throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_USERNAME);
+        }
+    }
+    private void validateDuplicateEmail(final String email){
+        if (memberRepository.existsByActiveEmail(email)) {
+            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
         }
     }
     private MemberResponse toResponse(Consumer consumer){
