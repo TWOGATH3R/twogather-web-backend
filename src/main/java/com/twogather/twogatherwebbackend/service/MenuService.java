@@ -3,8 +3,8 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Menu;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
-import com.twogather.twogatherwebbackend.dto.menu.MenuSaveRequest;
-import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveInfo;
+import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateInfo;
 import com.twogather.twogatherwebbackend.exception.MenuException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
@@ -26,8 +26,9 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
-    public List<MenuResponse> saveList(Long storeId, List<MenuSaveRequest> requestList) {
-        Store store = storeRepository.findById(storeId).orElseThrow(
+    public List<MenuResponse> saveList(Long storeId, List<MenuSaveInfo> requestList) {
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+
                 () -> new StoreException(NO_SUCH_STORE)
         );
         List<Menu> menuList = toMenuEntity(requestList, store);
@@ -35,13 +36,13 @@ public class MenuService {
         return toResponseList(savedMenuList);
     }
 
-    public List<MenuResponse> updateList(Long storeId, List<MenuUpdateRequest> menuList) {
-        storeRepository.findById(storeId).orElseThrow(
+    public List<MenuResponse> updateList(Long storeId, List<MenuUpdateInfo> menuList) {
+        storeRepository.findActiveStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
 
         List<Menu> savedMenuList = new ArrayList<>();
-        for(MenuUpdateRequest request: menuList){
+        for(MenuUpdateInfo request: menuList){
             Menu menu = menuRepository.findByStoreStoreIdAndMenuId(storeId,request.getMenuId()).orElseThrow(
                     () -> new MenuException(NO_SUCH_MENU)
             );
@@ -67,9 +68,9 @@ public class MenuService {
         }
     }
 
-    private List<Menu> toMenuEntity(List<MenuSaveRequest> requestList, Store store) {
+    private List<Menu> toMenuEntity(List<MenuSaveInfo> requestList, Store store) {
         List<Menu> menuList = new ArrayList<>();
-        for (MenuSaveRequest request: requestList){
+        for (MenuSaveInfo request: requestList){
             menuList.add(new Menu(store, request.getName(), request.getPrice()));
         }
         return menuList;

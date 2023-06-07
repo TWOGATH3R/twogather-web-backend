@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class MemberResponse {
+public class MemberResponse {
     private Long memberId;
     private String username;
     private String email;

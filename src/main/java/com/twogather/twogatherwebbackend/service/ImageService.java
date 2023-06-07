@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.domain.Image;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
+import com.twogather.twogatherwebbackend.exception.ImageException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NO_SUCH_IMAGE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -27,7 +29,7 @@ public class ImageService {
     private static final String DIRECTORY_NAME = "store";
 
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
-        Store store = storeRepository.findById(storeId).orElseThrow(
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
         List<String> uploadedFileUrlList = s3Uploader.uploadList(DIRECTORY_NAME, fileList);
@@ -37,7 +39,13 @@ public class ImageService {
         return responseList;
     }
     public void delete(ImageIdList idList){
-        //TODO:구현
+        for (Long id :idList.getImageIdList()){
+            Image image = imageRepository.findById(id).orElseThrow(
+                    ()->new ImageException(NO_SUCH_IMAGE)
+            );
+            imageRepository.delete(image);
+            s3Uploader.delete(image.getUrl());
+        }
 
     }
     public List<ImageResponse> getStoreImageInfos(Long storeId){

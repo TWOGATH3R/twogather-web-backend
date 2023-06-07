@@ -138,39 +138,4 @@ public class MenuControllerTest extends ControllerTest{
 
     }
 
-    @Test
-    @DisplayName("메뉴 여러개에 대해 저장을 요청했을때 요청한정보 + id 정보 반환")
-    public void saveMenuList_WhenSaveMenuList_ThenMenuInfoIncludeId() throws Exception {
-        //given
-        when(menuService.saveList(anyLong(), any())).thenReturn(MENU_RESPONSE_LIST);
-        //when
-        //then
-        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .writeValueAsString(MENU_SAVE_LIST_REQUEST))
-                )
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
-                .andDo(document("menu/save",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("storeId").description("가게 고유 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("menuSaveList[].name").type(JsonFieldType.STRING).description("메뉴 이름"),
-                                fieldWithPath("menuSaveList[].price").type(JsonFieldType.NUMBER).description("메뉴의 가격")
-                      ),
-                        responseFields(
-                                fieldWithPath("data[].name").type(JsonFieldType.STRING).description("메뉴 이름"),
-                                fieldWithPath("data[].price").type(JsonFieldType.NUMBER).description("메뉴의 가격"),
-                                fieldWithPath("data[].menuId").type(JsonFieldType.NUMBER).description("메뉴의 고유 id")
-
-                        )
-                ));
-
-    }
 }

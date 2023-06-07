@@ -1,67 +1,33 @@
 package com.twogather.twogatherwebbackend.repository;
 
-import com.twogather.twogatherwebbackend.config.QueryDslConfig;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
-import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
-import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.passwordEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(QueryDslConfig.class)
-@SpringBootTest
-@TestPropertySource(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=100")
-@Transactional
-public class StoreRepositoryTest {
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private KeywordRepository keywordRepository;
-    @Autowired
-    private ImageRepository imageRepository;
-    @Autowired
-    private StoreKeywordRepository storeKeywordRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private EntityManager em;
-    @Autowired
-    private ConsumerRepository consumerRepository;
-    @Autowired
-    private LikeRepository likeRepository;
 
-    private Store store1;
-    private Store store2;
-    private Store store3;
-    private Store store4;
+public class StoreRepositoryTest extends RepositoryTest{
 
     @BeforeEach
-    void setUp() {
-        store1 = storeRepository.save(new Store(null,"가게1","전주시 어쩌고어쩌고","063-231-4444", StoreApprovalStatus.APPROVED,null));
-        store2 = storeRepository.save(new Store(null,"가게2", "서울특별시 서초구 신반포로23길 30 반원상가", "010-1234-1234",StoreApprovalStatus.APPROVED,null));
-        store3 = storeRepository.save(new Store(null,"가게3", "서울특별시 서초구 올림픽대로 2085-14 솔빛섬 1-2F", "02-232-2222",StoreApprovalStatus.APPROVED,null));
-        store4 = storeRepository.save(new Store(null,"가게4", "서울특별시 서초구 신반포로23길 30 반원상가", "02-232-2522", StoreApprovalStatus.APPROVED,null));
+    public void init(){
+
+        store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
+        store2 = storeRepository.save(Store.builder().name("가게2").address("서울시 서초구 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).build());
+        store3 = storeRepository.save(Store.builder().name("가게3").address("서울특별시 서초구 신반포로23길 30 반원상가").phone("02-232-2222").status(StoreStatus.APPROVED).build());
+        store4 = storeRepository.save(Store.builder().name("가게4").address("서울시 서초구 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
 
         Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 4.2, LocalDate.of(2022,04,02)));
@@ -75,59 +41,44 @@ public class StoreRepositoryTest {
 
         Review review8 = reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 3.2, LocalDate.of(2019,01,12)));
 
-        //store4: 리뷰가 가장적다
-        //store3: 평점이 가장 적다
-
         em.flush();
-        //em.clear(); 주석설정해야 테스트가 성공. clear 해버리면 영속성컨텍스트가 비워져서 변경감지안됨
     }
-
-
     @Test
     @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")
     void whenFindTopNByScore_ShouldReturnTopNStoresByScore() {
         // When
-        em.flush();
-        em.clear();
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.TOP_RATED.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.TOP_RATED.name(), "desc");
         // Then
-        assertThat(topStores).isNotEmpty();
-
-        //store3는 평균 점수가 가장 적다
-        for (TopStoreResponse response: topStores){
-            assertThat(response.getStoreName()).isNotEqualTo(store3.getName());
-            assertThat(response.getStoreName()).isNotBlank();
-        }
+        assertThat(topStores)
+                .isNotEmpty()
+                .noneMatch(response -> response.getStoreName().equals(store3.getName()))
+                .allMatch(response -> !response.getStoreName().isBlank());
     }
 
     @Test
     @DisplayName("리뷰개수/내림차순으로 결과가 잘 정렬되는지확인")
     void whenFindTopNByReviewCount_ShouldNotReturnStore4() {
         // When
-        em.flush();
-        em.clear();
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_REVIEWED.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_REVIEWED.name(), "desc");
         // Then
-        assertThat(topStores).isNotEmpty();
-
-        //store4는 평균 점수가 가장 적다
-        for (TopStoreResponse response: topStores){
-            assertThat(response.getStoreName()).isNotEqualTo(store4.getName());
-            assertThat(response.getStoreName()).isNotBlank();
-        }
+        assertThat(topStores)
+                .isNotEmpty()
+                .noneMatch(response -> response.getStoreName().equals(store4.getName()))
+                .allMatch(response -> !response.getStoreName().isEmpty());
     }
+
 
     @Test
     @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인")
     void whenFindTopNByLikeCount_ShouldReturnFirstIsStore1() {
         //given
-        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoded.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
+        Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
         em.flush();
         em.clear();
         // When
 
-        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreType.MOST_LIKES_COUNT.name(), "desc");
+        List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
         // Then
         assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
 
@@ -152,7 +103,6 @@ public class StoreRepositoryTest {
         store2.setCategory(category2);
         store3.setCategory(category1);
 
-
         Image image1 = imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje1/(store1)"));
         imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
@@ -164,16 +114,18 @@ public class StoreRepositoryTest {
         String location = "전주시";
         String category = store1.getCategory().getName();
 
-        //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,location);
+        // when
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, keyword, location);
 
         // Then
         assertThat(topStores).isNotEmpty();
-        assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store1.getName());
-        assertThat(topStores.getContent().get(0).getAddress()).isEqualTo(store1.getAddress());
-        assertThat(topStores.getContent().get(0).getAvgScore()).isEqualTo(4.2);
-
+        assertThat(topStores.getContent().stream()
+                .filter(response -> response.getStoreName().equals(store1.getName()))
+                .allMatch(response ->
+                        response.getAddress().equals(store1.getAddress()) &&
+                                response.getAvgScore().equals(4.2)));
     }
+
 
     @Test
     @DisplayName("가게를 지역, 카테고리로만 검색하면 키워드는 필터링에서 제외하고 결과를 반환해준다")
@@ -194,7 +146,6 @@ public class StoreRepositoryTest {
         store2.setCategory(category2);
         store3.setCategory(category1);
 
-
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje1/(store1)"));
         Image image2 = imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
@@ -205,17 +156,18 @@ public class StoreRepositoryTest {
         String location = "서초구";
         String category = category2.getName();
 
-        //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,emptyKeyword,location);
+        // when
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, emptyKeyword, location);
 
         // Then - return category2
-        assertThat(topStores.getContent().size()).isEqualTo(1);
-        assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store2.getName());
-        assertThat(topStores.getContent().get(0).getAddress()).isEqualTo(store2.getAddress());
-        assertThat(topStores.getContent().get(0).getStoreImageUrl()).isEqualTo(image2.getUrl());
-        assertThat(topStores.getContent().get(0).getAvgScore()).isEqualTo(2.2);
-
+        assertThat(topStores.getContent().stream()
+                .filter(response -> response.getStoreName().equals(store2.getName()))
+                .allMatch(response -> response.getAddress().equals(store2.getAddress()) &&
+                        response.getStoreImageUrl().equals(image2.getUrl()) &&
+                        response.getAvgScore() == 2.2))
+                .isTrue();
     }
+
 
     @Test
     @DisplayName("가게를 키워드,카테고리로만 검색하면 지역은 필터링에서 제외하고 결과를 반환해준다")

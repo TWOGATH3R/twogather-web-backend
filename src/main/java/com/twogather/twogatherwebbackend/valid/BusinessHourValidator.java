@@ -1,5 +1,5 @@
 package com.twogather.twogatherwebbackend.valid;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateInfo;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import static com.twogather.twogatherwebbackend.exception.BusinessHourException.
 @Slf4j
 public class BusinessHourValidator {
 
-    public void validateBusinessHourRequest(BusinessHourSaveUpdateRequest request) {
+    public void validateBusinessHourRequest(BusinessHourSaveUpdateInfo request) {
         if (request.getIsOpen() && (request.getStartTime() == null || request.getEndTime() == null)) {
             throw new BusinessHourException(MUST_HAVE_START_TIME_AND_END_TIME);
         }

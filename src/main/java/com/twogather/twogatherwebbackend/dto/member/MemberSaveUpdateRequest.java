@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.member;
 
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public abstract class MemberSaveUpdateRequest {
+public class MemberSaveUpdateRequest {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
@@ -28,5 +29,5 @@ public abstract class MemberSaveUpdateRequest {
     @Pattern(regexp = "^[가-힣a-zA-Z]+$",  message = "이름은 한글 혹은 영어로만 입력해주세요.")
     private String name;
 
-    
+
 }

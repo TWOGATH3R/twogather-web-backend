@@ -1,6 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
@@ -49,10 +53,6 @@ public class ConsumerControllerTest extends ControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/delete",
@@ -69,7 +69,8 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 정보 조회")
     public void getConsumerInfo_WhenGetConsumerInfo_Then200Ok() throws Exception {
         //given
-        when(consumerService.getConsumerInfo(anyLong())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        when(consumerService.getConsumerInfo(anyLong())).thenReturn(response);
         //when
         //then
 
@@ -79,7 +80,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName())))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/get",
@@ -102,7 +103,9 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 정보 변경")
     public void update_WhenConsumerInfoChange_Then200Ok() throws Exception {
         //given
-        when(consumerService.update(any())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+        when(consumerService.update(any())).thenReturn(response);
         //when
         //then
 
@@ -113,7 +116,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/update",
@@ -142,7 +145,10 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("소비자 가입")
     public void join_WhenConsumerJoin_Then201() throws Exception {
         //given
-        when(consumerService.join(any())).thenReturn(CONSUMER_RESPONSE);
+        MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
+        when(consumerService.join(any())).thenReturn(response);
+        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+
         //when
         //then
 
@@ -153,7 +159,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(CONSUMER_SAVE_UPDATE_REQUEST))
+                                        .writeValueAsString(request))
                 )
                 .andExpect(status().isCreated())
                 .andDo(document("consumer/save",
@@ -170,6 +176,35 @@ public class ConsumerControllerTest extends ControllerTest {
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 검증")
+    public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
+        //given
+        when(consumerService.verifyPassword(any())).thenReturn(true);
+        //when
+        //then
+
+        mockMvc.perform(post("/api/consumers/verify-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .writeValueAsString(new VerifyPasswordRequest("passsword1"))))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("consumer/verify-password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
                         )
                 ));
 

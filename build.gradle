@@ -36,10 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'junit:junit:4.13.2'
-	implementation 'org.projectlombok:lombok:1.18.26'
-	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation group: 'org.json', name: 'json', version: '20230227'
@@ -73,10 +70,20 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 	//mysql
 	implementation 'mysql:mysql-connector-java:8.0.33'
-	//mariadb
-	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 	//s3
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.464'
+	testImplementation 'io.rest-assured:rest-assured:3.3.0'
+	//lombok
+	implementation('org.projectlombok:lombok')
+	annotationProcessor('org.projectlombok:lombok')
+
+	// test 환경
+	testImplementation('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
+
+	// MariaDB
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+
 
 }
 
@@ -124,6 +131,16 @@ bootJar {
 	}
 }
 
+task copyGitSubmoduleWithMain(type: Copy) {
+	from './security'
+	include 'application-prod.properties'
+	into './src/main/resources'
+}
+task copyGitSubmoduleWithTest(type: Copy) {
+	from './security'
+	include 'application-test.properties'
+	into './src/test/resources'
+}
 // build시 copyDocument 테스크를 실행한다
 build {
 	dependsOn copyDocument

@@ -2,7 +2,6 @@ package com.twogather.twogatherwebbackend.repository.review;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.QReview;
-import com.twogather.twogatherwebbackend.domain.Review;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

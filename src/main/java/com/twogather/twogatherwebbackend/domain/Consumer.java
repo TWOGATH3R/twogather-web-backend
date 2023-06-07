@@ -18,4 +18,5 @@ public class Consumer extends Member {
     public Consumer(String username, String email, String password, String name, AuthenticationType authenticationType, boolean isActive) {
         super(username, email, password, name, authenticationType, isActive);
     }
+
 }

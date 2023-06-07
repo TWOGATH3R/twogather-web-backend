@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.dto.member.ConsumerSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -40,7 +40,7 @@ public class ConsumerServiceTest {
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
-        final ConsumerSaveUpdateRequest request = returnRequest();
+        final MemberSaveUpdateRequest request = returnRequest();
         when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
         final Consumer consumer = requestToEntity(request);
         when(consumerRepository.save(any(Consumer.class))).thenReturn(consumer);
@@ -55,20 +55,20 @@ public class ConsumerServiceTest {
     @DisplayName("save: 중복된 이메일로 저장요청이 왔을때 예외를 반환한다")
     public void save_DuplicateEmail_ShouldThrowMemberException() {
         // given
-        final ConsumerSaveUpdateRequest request = returnRequest();
+        final MemberSaveUpdateRequest request = returnRequest();
         //when
         when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
 
         // when
         Assertions.assertThrows(MemberException.class, () -> consumerService.join(request));
     }
-    private Consumer requestToEntity(ConsumerSaveUpdateRequest request){
+    private Consumer requestToEntity(MemberSaveUpdateRequest request){
         return new Consumer(
                 request.getUsername(),
                 request.getEmail(), request.getPassword(), request.getName(),AuthenticationType.CONSUMER, true);
     }
-    private ConsumerSaveUpdateRequest returnRequest(){
-        return new ConsumerSaveUpdateRequest(
+    private MemberSaveUpdateRequest returnRequest(){
+        return new MemberSaveUpdateRequest(
                 "testid1",
                 "test@test.com",
                 "test",

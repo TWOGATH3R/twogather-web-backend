@@ -11,7 +11,9 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuSaveRequest {
+public class MenuUpdateInfo {
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    private Long menuId;
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     private String name;
     @NotNull(message = "비어있는 항목을 입력해주세요.")

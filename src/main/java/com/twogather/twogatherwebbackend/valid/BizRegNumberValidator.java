@@ -1,29 +1,19 @@
 package com.twogather.twogatherwebbackend.valid;
 
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.dto.member.StoreOwnerSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.exception.ClientException;
-import com.twogather.twogatherwebbackend.exception.InvalidArgumentException;
-import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Collections;
-import java.util.Objects;
 
 
 @Slf4j

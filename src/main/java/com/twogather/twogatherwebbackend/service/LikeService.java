@@ -3,9 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Likes;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.exception.LikeException;
-import com.twogather.twogatherwebbackend.exception.MemberException;
-import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.repository.LikeRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -15,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
+import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.LikeException.LikeErrorCode.DUPLICATE_LIKE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
@@ -29,13 +29,13 @@ public class LikeService {
 
     public void addStoreLike(Long storeId){
         String username = SecurityUtils.getUsername();
-        Member member = memberRepository.findByUsername(username).orElseThrow(
-                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME)
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()->new CustomAuthenticationException(UNAUTHORIZED)
         );
-        Store store = storeRepository.findById(storeId).orElseThrow(
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
-        if(likeRepository.findByStoreStoreIdAndMemberMemberId(member.getMemberId(), storeId).isPresent()){
+        if(likeRepository.findByStoreIdAndMemberId(storeId, member.getMemberId()).isPresent()){
             throw new LikeException(DUPLICATE_LIKE);
         }
         likeRepository.save(new Likes(store, member));
@@ -43,8 +43,8 @@ public class LikeService {
 
     public void deleteStoreLike(Long storeId){
         String username = SecurityUtils.getUsername();
-        Member member = memberRepository.findByUsername(username).orElseThrow(
-                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_USERNAME)
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()-> new CustomAuthenticationException(UNAUTHORIZED)
         );
 
         int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(storeId, member.getMemberId());

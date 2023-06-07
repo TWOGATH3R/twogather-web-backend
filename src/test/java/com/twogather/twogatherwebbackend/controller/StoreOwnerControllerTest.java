@@ -1,6 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
@@ -61,7 +65,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보조회")
     public void getOwnerInfo_WhenGetOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.getMemberWithAuthorities(anyLong())).thenReturn(STORE_OWNER_RESPONSE);
+        when(storeOwnerService.getMemberWithAuthorities(anyLong())).thenReturn(
+                new MemberResponse(1l, "nick1", "dda@naver.com",
+                        "가게주인이름"));
         //when
         //then
 
@@ -81,12 +87,8 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
-                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
-                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
-
-                        )
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                      )
                 ));
 
     }
@@ -96,7 +98,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보업데이트")
     public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.update(any())).thenReturn(STORE_OWNER_RESPONSE);
+        when(storeOwnerService.update(any())).thenReturn(
+                new MemberResponse(1l, "nick1", "dda@naver.com",
+                "가게주인이름"));
       //then
         mockMvc.perform(put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +108,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(STORE_OWNER_REQUEST))
+                                        .writeValueAsString(new MemberSaveUpdateRequest(
+                                                "ad@naer.com", "name1","Asdawd213", "홍길동"
+                                        )))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("owner/update",
@@ -117,20 +123,14 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명"),
-                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
-                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
 
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
-                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
-                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
 
                         )
                 ));
@@ -141,7 +141,8 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인등록")
     public void join_WhenOwnerSave_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.join(any())).thenReturn(STORE_OWNER_RESPONSE);
+        when(storeOwnerService.join(any())).thenReturn(new MemberResponse(1l, "nick1", "dda@naver.com",
+                "가게주인이름"));
         //when
         //then
 
@@ -152,7 +153,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(STORE_OWNER_REQUEST))
+                                        .writeValueAsString(new MemberSaveUpdateRequest(
+                                                "ad@naer.com", "name1","Asdawd213", "홍길동"
+                                        )))
                 )
                 .andExpect(status().isCreated())
                 .andDo(document("owner/save",
@@ -162,21 +165,44 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명"),
-                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
-                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
 
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명"),
-                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
-                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat())
 
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 검증")
+    public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
+        //given
+        when(storeOwnerService.verifyPassword(any())).thenReturn(true);
+        //when
+        //then
+
+        mockMvc.perform(post("/api/owners/verify-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(
+                        objectMapper
+                                .writeValueAsString(new VerifyPasswordRequest("passsword1"))))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("owner/verify-password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
                         )
                 ));
 
