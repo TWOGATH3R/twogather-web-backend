@@ -114,6 +114,7 @@ public class Store {
         this.status = StoreStatus.APPROVED;
     }
     public void reapply(){
+        this.requestDate = LocalDate.now();
         this.status = StoreStatus.PENDING;
     }
 

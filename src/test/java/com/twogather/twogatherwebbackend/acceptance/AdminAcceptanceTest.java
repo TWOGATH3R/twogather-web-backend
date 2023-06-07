@@ -2,15 +2,18 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.Store;
+import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.RejectReason;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -22,6 +25,9 @@ import static com.twogather.twogatherwebbackend.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{
+
+    @Autowired
+    private StoreOwnerRepository ownerRepository;
     @BeforeEach
     public void init(){
         super.setUp();
@@ -120,7 +126,6 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     public void whenReapplyRequest_ThenSuccess() {
         // given
         adminLogin();
-        saveStore();
         rejectStore();
         //when
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.DENIED);
@@ -130,6 +135,24 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 ownerToken.getAccessToken());
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
+    }
+
+    @Test
+    @DisplayName("거부된 가게 재요청 시 날짜 업데이트")
+    public void whenReapplyRequest_ThenUpdateDate() {
+        // given
+        adminLogin();
+
+        Long storeId = saveDeniedStore();
+
+        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.of(2020,2,2));
+        //when
+        doPatch("/api/stores/" + storeId,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken());
+
+        //then
+        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
     }
 
     private List<MyStoreResponse> getStoreList(String url){
@@ -148,6 +171,18 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(PagedResponse.class), new TypeReference<List<MyStoreResponse>>() {});
 
+    }
+    private Long saveDeniedStore(){
+        StoreOwner owner = ownerRepository.findByUsername(OWNER_USERNAME).get();
+        Store store = Store.builder()
+                .name("가게")
+                .owner(owner)
+                .address(STORE_ADDRESS)
+                .phone(STORE_PHONE)
+                .status(StoreStatus.DENIED)
+                .requestDate(LocalDate.of(2020,2,2))
+                .build();
+        return storeRepository.save(store).getStoreId();
     }
     private void saveStore(){
         for(int i=0;i<5;i++){
