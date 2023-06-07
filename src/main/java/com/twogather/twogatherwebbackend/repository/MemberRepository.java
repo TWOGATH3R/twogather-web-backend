@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.username =:username and m.isActive = true")
     Optional<Member> findActiveMemberByUsername(@Param("username") String username);
+    @Query("select m from Member m where m.email =:email and m.isActive = true")
+    Optional<Member> findActiveMemberByEmail(@Param("email") String email);
     @Query("select m from Member m where m.memberId = :id and m.isActive = true")
     Optional<Member> findActiveMemberById(@Param("id")Long id);
     @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.username = :username AND c.isActive = true")

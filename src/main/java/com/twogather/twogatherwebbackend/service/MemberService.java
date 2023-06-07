@@ -28,6 +28,10 @@ public class MemberService {
         Member member = memberRepository.findActiveMemberByUsername(SecurityUtils.getUsername()).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
+        String originEmail = member.getEmail();
+        if(request.getEmail()!=originEmail && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
+            throw new MemberException(DUPLICATE_EMAIL);
+        }
         member.update(
                 request.getUsername(),
                 request.getEmail(),
@@ -43,16 +47,7 @@ public class MemberService {
         );
         return passwordEncoder.matches(password, member.getPassword());
     }
-    private void validateDuplicateUsername(final String username){
-        if (memberRepository.existsByActiveUsername(username)) {
-            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_USERNAME);
-        }
-    }
-    private void validateDuplicateEmail(final String email){
-        if (memberRepository.existsByActiveEmail(email)) {
-            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
-        }
-    }
+
     private MemberResponse toResponse(Member member){
         return new MemberResponse(member.getMemberId(), member.getUsername(),member.getEmail(),member.getName());
     }
