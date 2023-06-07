@@ -177,8 +177,8 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     }
     private <T> ValidatableResponse doPostWithFile(List<File> fileList) {
         return given()
-                .multiPart("fileList", fileList.get(0))
-                .multiPart("fileList", fileList.get(1))
+                .multiPart("storeImageList", fileList.get(0))
+                .multiPart("storeImageList", fileList.get(1))
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
                 .when()

@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 public class LikesRepositoryTest extends RepositoryTest{
@@ -17,7 +18,7 @@ public class LikesRepositoryTest extends RepositoryTest{
     public void deleteByStoreIdAndMemberId(){
         //given
         StoreOwner storeOwner = ownerRepository.save(new StoreOwner());
-        Store store = storeRepository.save(new Store(storeOwner, "sad","주소","010-1234-1234"));
+        Store store = storeRepository.save(new Store(storeOwner, "sad","주소","010-1234-1234", "0000000000", "홍길동", LocalDate.now()));
         Consumer consumer = consumerRepository.save(new Consumer("user1","asd@naver.com","asda@1221!#","이름", AuthenticationType.CONSUMER, true));
 
         //when

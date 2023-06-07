@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.DocFlavor;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class StoreService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
     private final CategoryService categoryService;
+    private final BusinessHourService businessHourService;
+
+    //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
 
     public void approveStore(final Long storeId){
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
@@ -55,21 +60,22 @@ public class StoreService {
         store.approve();
     }
     public StoreSaveUpdateResponse save(final Long categoryId,
+                                        final BusinessHourSaveUpdateListRequest businessRequest,
                                         final StoreSaveUpdateRequest storeRequest,
                                         final MenuSaveListRequest menuRequest,
                                         final List<MultipartFile> storeImageList,
                                         final List<String> keywordList){
-    //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
-
         validationBizRegNumber(storeRequest);
-            String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
         validateDuplicateName(storeRequest.getStoreName());
-        Store store = new Store(owner, storeRequest.getStoreName(), storeRequest.getAddress(), storeRequest.getPhone());
+        Store store = new Store(owner, storeRequest.getStoreName(), storeRequest.getAddress(), storeRequest.getPhone(),
+                storeRequest.getBusinessName(), storeRequest.getBusinessNumber(), storeRequest.getBusinessStartDate());
         Store savedStore = storeRepository.save(store);
 
+        businessHourService.saveList(store.getStoreId(), businessRequest.getBusinessHourList());
         storeKeywordService.setStoreKeyword(store.getStoreId(), keywordList);
         menuService.saveList(store.getStoreId(), menuRequest.getMenuSaveList());
         imageService.upload(store.getStoreId(), storeImageList);
@@ -102,12 +108,8 @@ public class StoreService {
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
-        if (request.getStoreName() != null && !request.getStoreName().isEmpty() && !request.getStoreName().equals(store.getName())) {
-            validateDuplicateName(request.getStoreName());
-            store.updateName(request.getStoreName());
-        }
-        store.updateAddress(request.getAddress());
-        store.updatePhone(request.getPhone());
+        store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
+
 
         return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
 

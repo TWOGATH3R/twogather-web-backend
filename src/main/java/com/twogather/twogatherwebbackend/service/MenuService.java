@@ -27,7 +27,7 @@ public class MenuService {
     private final StoreRepository storeRepository;
 
     public List<MenuResponse> saveList(Long storeId, List<MenuSaveInfo> requestList) {
-        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
 
                 () -> new StoreException(NO_SUCH_STORE)
         );

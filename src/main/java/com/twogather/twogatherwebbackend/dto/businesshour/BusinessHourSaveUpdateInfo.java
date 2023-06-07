@@ -11,8 +11,7 @@ import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
-public class BusinessHourSaveUpdateRequest {
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
+public class BusinessHourSaveUpdateInfo {
     protected Long storeId;
 
     @JsonFormat(pattern = "HH:mm")
@@ -40,9 +39,9 @@ public class BusinessHourSaveUpdateRequest {
     @DateTimeFormat(pattern = "HH:mm")
     protected LocalTime breakEndTime;
 
-    public BusinessHourSaveUpdateRequest(Long storeId, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek,
-                                         Boolean isOpen, Boolean hasBreakTime, LocalTime breakStartTime,
-                                         LocalTime breakEndTime) {
+    public BusinessHourSaveUpdateInfo(Long storeId, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek,
+                                      Boolean isOpen, Boolean hasBreakTime, LocalTime breakStartTime,
+                                      LocalTime breakEndTime) {
         this.storeId = storeId;
         this.startTime = startTime;
         this.endTime = endTime;

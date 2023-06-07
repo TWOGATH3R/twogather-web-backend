@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 
@@ -30,10 +31,11 @@ public class StoreController {
         return "test";
     }
 
-    @PostMapping("/categories/{categoryId}")
+    @PostMapping(value = "/categories/{categoryId}")
     @PreAuthorize("hasRole('STORE_OWNER')")
     public ResponseEntity<Response> save(
                                         @PathVariable Long categoryId,
+                                        @RequestPart @Valid final BusinessHourSaveUpdateListRequest businessHourRequest,
                                         @RequestPart @Valid final StoreSaveUpdateRequest storeRequest,
                                         @RequestPart @Valid final MenuSaveListRequest menuRequest,
                                         @RequestPart List<MultipartFile> storeImageList,
@@ -41,6 +43,7 @@ public class StoreController {
                                          ) {
         StoreSaveUpdateResponse data =
                 storeService.save(categoryId,
+                        businessHourRequest,
                         storeRequest,
                         menuRequest,
                         storeImageList,
