@@ -18,6 +18,14 @@ operation::consumer/verify-password/[snippets='http-request,request-fields,http-
 === StoreOwner-Password-Verification
 operation::owner/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
 
+== Admin
+=== Get-Store
+operation::admin/getStore/[snippets='http-request,path-parameters,http-response,response-fields']
+=== Approve-Store
+operation::admin/approve/[snippets='http-request,path-parameters']
+=== Reject-Store
+operation::admin/reject/[snippets='http-request,request-fields,path-parameters']
+
 
 == Email
 === Email-Verification
@@ -55,7 +63,7 @@ operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-
 == Store
 
 === Save
-operation::store/save/[snippets='http-request,request-parts,http-response,response-fields']
+operation::store/save/[snippets='http-request,path-parameters,request-parts,http-response,response-fields']
 
 === Get-One
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']

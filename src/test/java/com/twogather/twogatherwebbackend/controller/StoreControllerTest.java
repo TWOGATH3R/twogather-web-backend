@@ -105,6 +105,28 @@ public class StoreControllerTest extends ControllerTest{
     }
 
     @Test
+    @DisplayName("가게 다시 승인 요청")
+    public void reapply_WhenApplyApproveStore_ThenSuccess() throws Exception {
+        //given
+        doNothing().when(storeService).reapply(anyLong());
+        //when
+        //then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/stores/{storeId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                )
+                .andExpect(status().isOk())
+                .andDo(document("store/reapply",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
+                                pathParameters(
+                                        parameterWithName("storeId").description("가게 고유 id")
+                                )
+                        )
+                );
+    }
+
+    @Test
     @DisplayName("나의가게조회")
     public void getMyStoreInfo_WhenGetMyStoreInfos_ThenReturnStoreInfos() throws Exception {
         //given
@@ -141,8 +163,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
                                 fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
                                 fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
-                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
+                                fieldWithPath("isLast").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
+                                fieldWithPath("isFirst").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
                                 fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재페이지가 몇번인지")
 
                         )
@@ -246,8 +268,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
                                 fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
                                 fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
-                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
+                                fieldWithPath("isFirst").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
+                                fieldWithPath("isLast").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
 
                         )
                 ));
@@ -290,7 +312,7 @@ public class StoreControllerTest extends ControllerTest{
         when(storeService.save(any(), any(), any(), any(), anyList(), anyList())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
-        mockMvc.perform(multipart("/api/stores/categories/{categoryId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/stores/categories/{categoryId}", 1L)
                         .file(IMAGE_REQUEST_PART)
                         .file(MENU_REQUEST_PART)
                         .file(BUSINESS_HOUR_REQUEST_PART)
@@ -301,6 +323,9 @@ public class StoreControllerTest extends ControllerTest{
                 .andDo(document("store/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("categoryId").description("가게가 해당하는 카테고리 id")
+                        ),
                         requestParts(
                                 partWithName("businessHourRequest").description("가게 영업시간 정보"),
                                 partWithName("storeRequest").description("가게의 기본적인 정보"),

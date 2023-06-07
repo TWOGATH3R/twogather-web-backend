@@ -22,22 +22,24 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final StoreService storeService;
     @PatchMapping("/stores/approve/{storeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> approveStore(@PathVariable Long storeId){
         storeService.approveStore(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @PatchMapping("/stores/reject/{storeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> rejectStore(@PathVariable Long storeId,
                                                 @RequestBody RejectReason rejectReason){
         storeService.rejectStore(storeId, rejectReason);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-    //rejectStore
     @GetMapping("/stores/{type}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PagedResponse> getAllStore(@PathVariable StoreStatus type, Pageable pageable){
         Page<MyStoreResponse> response =  storeService.getStores(type, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse<>(response));
+        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(response));
     }
 }

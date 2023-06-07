@@ -71,13 +71,15 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .where(store.status.eq(status))
                 .leftJoin(store.storeImageList, image)
                 .groupBy(store.storeId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<MyStoreResponse> storeResponses = storeQuery
                 .stream()
                 .map(store ->
                         MyStoreResponse.builder()
-                                .storeImageUrl(store.getStoreImageList().get(0).getUrl())
+                                .storeImageUrl(getUrl(store.getStoreImageList()))
                                 .isApproved(store.getStatus().equals(StoreStatus.APPROVED))
                                 .phone(store.getPhone())
                                 .reasonForRejection(store.getReasonForRejection())
@@ -106,6 +108,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .leftJoin(store.storeKeywordList, storeKeyword)
                 .orderBy(createOrderSpecifiers(pageable))
                 .groupBy(store.storeId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<StoreResponseWithKeyword> storeResponses = storeQuery.stream().map(store -> {
@@ -191,6 +195,10 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         } else {
             return store.address.contains(address);
         }
+    }
+    private String getUrl(List<Image> imageList){
+        if(imageList.isEmpty()) return "";
+        return imageList.get(0).getUrl();
     }
 
 }

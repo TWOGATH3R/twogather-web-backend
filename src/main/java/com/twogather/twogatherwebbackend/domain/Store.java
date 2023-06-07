@@ -75,6 +75,7 @@ public class Store {
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;
+        this.requestDate = LocalDate.now();
     }
     public void update(String storeName, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate) {
         if (storeName != null && !storeName.isEmpty()) {
@@ -111,6 +112,9 @@ public class Store {
     }
     public void approve(){
         this.status = StoreStatus.APPROVED;
+    }
+    public void reapply(){
+        this.status = StoreStatus.PENDING;
     }
 
 }

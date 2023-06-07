@@ -9,12 +9,9 @@ import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
-import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
-import com.twogather.twogatherwebbackend.repository.MenuRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -24,9 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.DocFlavor;
@@ -52,13 +46,17 @@ public class StoreService {
     private final CategoryService categoryService;
     private final BusinessHourService businessHourService;
 
-    //TODO: isApproved, reasonForRejection 추가되었으니 아래 메서드 다시 작성
-
     public void approveStore(final Long storeId){
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.approve();
+    }
+    public void reapply(final Long storeId){
+        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        store.reapply();
     }
     public void rejectStore(final Long storeId, final RejectReason rejectReason){
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(

@@ -34,7 +34,7 @@ public class BusinessHourValidationTest {
     public void WhenMissingOpenHours_ThenFalse() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, null, null,
+                null, null,
                 DayOfWeek.MONDAY, true, false, null, null
         );
 
@@ -49,7 +49,7 @@ public class BusinessHourValidationTest {
     public void WhenStartTimeAfterEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(12, 0), LocalTime.of(11, 0),
+                LocalTime.of(12, 0), LocalTime.of(11, 0),
                 DayOfWeek.MONDAY, true, false, null, null
         );
 
@@ -64,7 +64,7 @@ public class BusinessHourValidationTest {
     public void WhenBreakStartTimeAfterEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(9, 0), LocalTime.of(17, 0),
+                LocalTime.of(9, 0), LocalTime.of(17, 0),
                 DayOfWeek.MONDAY, true, true, LocalTime.of(14, 0), LocalTime.of(13, 0)
         );
 
@@ -79,7 +79,7 @@ public class BusinessHourValidationTest {
     public void WhenBreakStartTimeEqualsEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(9, 0), LocalTime.of(17, 0),
+                LocalTime.of(9, 0), LocalTime.of(17, 0),
                 DayOfWeek.MONDAY, true, true, LocalTime.of(14, 0), LocalTime.of(14, 0)
         );
 

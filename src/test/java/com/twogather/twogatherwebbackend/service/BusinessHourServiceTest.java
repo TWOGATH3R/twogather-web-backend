@@ -57,9 +57,9 @@ public class BusinessHourServiceTest {
     void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays() {
         // given
         List<BusinessHourSaveUpdateInfo> onlyOpenDaysRequestList = Arrays.asList(
-                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
-                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
-                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null)
+                new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.TUESDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.WEDNESDAY, true, false, null, null)
         );
         List<BusinessHour> fullWeekBusinessHours = Arrays.asList(
                 new BusinessHour(1l,APPROVED_STORE,  LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
@@ -100,8 +100,8 @@ public class BusinessHourServiceTest {
     void whenDuplicateDaysProvided_thenThrowsException() {
         // Given
        List<BusinessHourSaveUpdateInfo> duplicatedDayOfWeekRequestList = Arrays.asList(
-                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
-                new BusinessHourSaveUpdateInfo(1L, LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
+                new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null),
+                new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
         );
 
         when(storeRepository.findAllStoreById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));

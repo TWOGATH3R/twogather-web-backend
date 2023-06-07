@@ -60,6 +60,13 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
+    @PatchMapping("/{storeId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> reapply(@PathVariable Long storeId) {
+        storeService.reapply(storeId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
     @GetMapping("/{storeId}")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
         StoreSaveUpdateResponse data = storeService.getStore(storeId);

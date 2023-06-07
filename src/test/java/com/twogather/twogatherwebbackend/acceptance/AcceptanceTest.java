@@ -16,6 +16,7 @@ import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -65,6 +66,8 @@ public class AcceptanceTest
     private DatabaseCleanup databaseCleanup;
     @Autowired
     protected CategoryRepository categoryRepository;
+    @Autowired
+    protected StoreRepository storeRepository;
 
     @BeforeEach
     public void setUp() {
@@ -84,6 +87,17 @@ public class AcceptanceTest
 
     protected <T> ValidatableResponse doGet(String path) {
         return given()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(path)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+    protected <T> ValidatableResponse doGet(String path,String refreshToken, String accessToken) {
+        return given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get(path)
@@ -370,7 +384,7 @@ public class AcceptanceTest
         log.info("approve store");
         consumerRepository.save(ADMIN);
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
-        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        String approveStoreUrl = "/api/admin/stores/approve/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
     }
     protected void registerConsumer(){

@@ -19,6 +19,7 @@ public class MyStoreResponse extends StoreBaseResponse {
     private LocalDate requestDate;
     private String storeImageUrl;
 
+
     public MyStoreResponse(Long storeId, String name, String address, String phone, Boolean isApproved, String reasonForRejection, LocalDate requestDate, String storeImageUrl){
         super(storeId,name,address);
         this.phone = phone;
