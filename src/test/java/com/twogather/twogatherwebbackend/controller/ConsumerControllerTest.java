@@ -5,6 +5,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
+import com.twogather.twogatherwebbackend.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -40,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ConsumerControllerTest extends ControllerTest {
     @MockBean
     private ConsumerService consumerService;
+    @MockBean
+    private MemberService memberService;
 
     private static final String URL = "/api/consumers/{memberId}";
     @Test
@@ -105,7 +108,7 @@ public class ConsumerControllerTest extends ControllerTest {
         //given
         MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
         MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
-        when(consumerService.update(any())).thenReturn(response);
+        when(memberService.update(any())).thenReturn(response);
         //when
         //then
 
@@ -185,7 +188,7 @@ public class ConsumerControllerTest extends ControllerTest {
     @DisplayName("비밀번호 검증")
     public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
         //given
-        when(consumerService.verifyPassword(any())).thenReturn(true);
+        when(memberService.verifyPassword(any())).thenReturn(true);
         //when
         //then
 

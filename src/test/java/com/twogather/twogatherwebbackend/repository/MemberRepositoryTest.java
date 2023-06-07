@@ -4,8 +4,6 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -36,7 +34,7 @@ class MemberRepositoryTest extends RepositoryTest {
         memberRepository.save(MEMBER);
 
         // when
-        boolean actual = memberRepository.existsByUsername(MEMBER.getUsername());
+        boolean actual = memberRepository.existsByActiveUsername(MEMBER.getUsername());
 
         // then
         assertThat(actual).isTrue();

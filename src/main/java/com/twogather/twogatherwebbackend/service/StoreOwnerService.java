@@ -39,14 +39,6 @@ public class StoreOwnerService {
         return true;
     }
 
-    public boolean verifyPassword(String password){
-        String username = SecurityUtils.getUsername();
-        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
-                ()-> new MemberException(NO_SUCH_MEMBER)
-        );
-        return passwordEncoder.matches(password, member.getPassword());
-    }
-
 
     public MemberResponse join(final MemberSaveUpdateRequest request){
         validateDuplicateUsername(request.getUsername());
@@ -65,18 +57,6 @@ public class StoreOwnerService {
             store.delete();
         }
         owner.leave();
-    }
-    public MemberResponse update(final MemberSaveUpdateRequest request){
-        StoreOwner owner = storeOwnerRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(
-                ()->new MemberException(NO_SUCH_MEMBER)
-        );
-        owner.update(
-                request.getUsername(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getName());
-
-        return toStoreOwnerResponse(owner);
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +78,7 @@ public class StoreOwnerService {
     }
 
     public void validateDuplicateUsername(final String username){
-        if (memberRepository.existsByUsername(username)) {
+        if (memberRepository.existsByActiveUsername(username)) {
             throw new MemberException(DUPLICATE_USERNAME);
         }
     }

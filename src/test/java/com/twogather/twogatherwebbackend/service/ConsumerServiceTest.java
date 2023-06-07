@@ -41,7 +41,7 @@ public class ConsumerServiceTest {
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final MemberSaveUpdateRequest request = returnRequest();
-        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
+        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(false);
         final Consumer consumer = requestToEntity(request);
         when(consumerRepository.save(any(Consumer.class))).thenReturn(consumer);
 
@@ -57,7 +57,7 @@ public class ConsumerServiceTest {
         // given
         final MemberSaveUpdateRequest request = returnRequest();
         //when
-        when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
+        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(true);
 
         // when
         Assertions.assertThrows(MemberException.class, () -> consumerService.join(request));
