@@ -62,8 +62,7 @@ public class BusinessHourControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("가게 고유 ID")
                         ),
                         requestFields(
-                               fieldWithPath("businessHourList[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
-                                fieldWithPath("businessHourList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
+                               fieldWithPath("businessHourList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
                                 fieldWithPath("businessHourList[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
                                 fieldWithPath("businessHourList[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
                                 fieldWithPath("businessHourList[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),

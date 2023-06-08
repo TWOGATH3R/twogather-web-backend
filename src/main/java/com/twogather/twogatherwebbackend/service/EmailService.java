@@ -24,8 +24,8 @@ public class EmailService {
 
     // Create a rate limiter that allows 1 request per 5 minutes
     //private static final RateLimiter rateLimiter = RateLimiter.create(0.0033);
-    private static final RateLimiter rateLimiter = RateLimiter.create(1);//TODO: 다시 고치기. 테스트에서만 1초에 1개 허용 
-    
+    private static final RateLimiter rateLimiter = RateLimiter.create(1);//TODO: 다시 고치기. 테스트에서만 1초에 1개 허용
+
     public VerificationCodeResponse sendEmail(String to) {
         checkRateLimiter();
 

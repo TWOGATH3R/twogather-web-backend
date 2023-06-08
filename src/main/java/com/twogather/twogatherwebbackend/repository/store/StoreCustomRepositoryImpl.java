@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
+import static com.twogather.twogatherwebbackend.domain.QStoreOwner.storeOwner;
 import static com.twogather.twogatherwebbackend.domain.QLikes.likes;
 import static com.twogather.twogatherwebbackend.domain.QReview.review;
 import static com.twogather.twogatherwebbackend.domain.QStore.store;
@@ -63,7 +65,40 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         return results;
     }
 
+    @Override
+    public Page<MyStoreResponse> findStoresByStatus(StoreStatus status, Pageable pageable){
+        List<Store> storeQuery = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.status.eq(status))
+                .leftJoin(store.storeImageList, image)
+                .groupBy(store.storeId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
+        List<MyStoreResponse> storeResponses = createStore(storeQuery);
+
+        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+    }
+
+    @Override
+    public Page<MyStoreResponse> findMyStore(Long ownerId, Pageable pageable) {
+        List<Store> storeQuery = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.owner.memberId.eq(ownerId))
+                .leftJoin(store.owner, storeOwner)
+                .leftJoin(store.storeImageList, image)
+                .groupBy(store.storeId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<MyStoreResponse> storeResponses = createStore(storeQuery);
+
+        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+    }
+
+    @Override
     public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location) {
         List<Store> storeQuery = jpaQueryFactory
                 .selectFrom(store)
@@ -80,6 +115,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .leftJoin(store.storeKeywordList, storeKeyword)
                 .orderBy(createOrderSpecifiers(pageable))
                 .groupBy(store.storeId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<StoreResponseWithKeyword> storeResponses = storeQuery.stream().map(store -> {
@@ -166,5 +203,23 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
             return store.address.contains(address);
         }
     }
-
+    private String getUrl(List<Image> imageList){
+        if(imageList.isEmpty()) return "";
+        return imageList.get(0).getUrl();
+    }
+    private List<MyStoreResponse> createStore(List<Store> storeQuery){
+        return storeQuery
+                .stream()
+                .map(store ->
+                        MyStoreResponse.builder()
+                                .storeImageUrl(getUrl(store.getStoreImageList()))
+                                .isApproved(store.getStatus().equals(StoreStatus.APPROVED))
+                                .phone(store.getPhone())
+                                .reasonForRejection(store.getReasonForRejection())
+                                .requestDate(store.getRequestDate())
+                                .storeId(store.getStoreId())
+                                .address(store.getAddress())
+                                .name(store.getName())
+                                .build()).collect(Collectors.toList());
+    }
 }
