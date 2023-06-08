@@ -84,6 +84,8 @@ dependencies {
 	// MariaDB
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
+	//logback
+	implementation 'ch.qos.logback:logback-classic:1.2.5'
 
 }
 
