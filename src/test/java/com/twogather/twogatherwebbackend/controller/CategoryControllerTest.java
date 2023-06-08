@@ -36,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CategoryControllerTest extends ControllerTest{
     @MockBean
     private CategoryService categoryService;
-    @MockBean
-    private StoreService storeService;
 
     @Test
     @DisplayName("카테고리 정보 얻어오기")

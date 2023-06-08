@@ -103,6 +103,17 @@ public class AcceptanceTest
                 .log().all()
                 .statusCode(HttpStatus.OK.value());
     }
+    protected <T> ValidatableResponse doGet(String path,String refreshToken, String accessToken) {
+        return given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(path)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
     protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
         return given()
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
@@ -387,7 +398,7 @@ public class AcceptanceTest
         log.info("approve store");
         consumerRepository.save(ADMIN);
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
-        String approveStoreUrl = "/api/admin/stores/" + storeId;
+        String approveStoreUrl = "/api/admin/stores/approve/" + storeId;
         doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
     }
     protected void registerConsumer(){

@@ -45,8 +45,7 @@ public class TestConstants {
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
     public static final String STORE_PHONE = "063-231-2222";
-    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"", "0000000000", "홍길동", LocalDate.now());
-
+    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"",LocalDate.now(), "0000000000", "홍길동", LocalDate.now());
     // Business Hour Constants
     public static final String START_TIME_STRING = "11:30";
     public static final String END_TIME_STRING = "20:00";
@@ -105,10 +104,8 @@ public class TestConstants {
     public static final LoginRequest ADMIN_LOGIN_REQUEST = new LoginRequest( ADMIN_USERNAME, ADMIN_PASSWORD);
 
     // Business Hour Save/Update Request
-    public static final BusinessHourSaveUpdateInfo INVALID_BUSINESS_HOUR_SAVE_INFO =
-            new BusinessHourSaveUpdateInfo(INVALID_STORE_ID, END_TIME, START_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
-    public static final BusinessHourSaveUpdateInfo BUSINESS_HOUR_SAVE_UPDATE_INFO =
-            new BusinessHourSaveUpdateInfo(STORE_ID, START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
+      public static final BusinessHourSaveUpdateInfo BUSINESS_HOUR_SAVE_UPDATE_INFO =
+            new BusinessHourSaveUpdateInfo( START_TIME, END_TIME, DAY_OF_WEEK, IS_OPEN, false, null, null);
 
     // Business Hour Response
     public static final Long BUSINESS_HOUR_ID = 1l;
@@ -300,11 +297,11 @@ public class TestConstants {
     //BusinessHour List
     public static BusinessHourSaveUpdateListRequest createBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour2 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
+                java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
                 false, null,null
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -318,31 +315,31 @@ public class TestConstants {
     public static BusinessHourSaveUpdateListRequest createBusinessHourRequestWithAllDayOfWeek(Long storeId){
         List<BusinessHourSaveUpdateInfo> list = new ArrayList<>();
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour2 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
+               java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.TUESDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour3 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.WEDNESDAY, true,
+                java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.WEDNESDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour4 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.THURSDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour5 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SATURDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SATURDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour6 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.FRIDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.FRIDAY, true,
                 false, null,null
         );
         BusinessHourSaveUpdateInfo businessHour7 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SUNDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), DayOfWeek.SUNDAY, true,
                 false, null,null
         );
         list.add(businessHour1);
@@ -357,7 +354,7 @@ public class TestConstants {
     }
     public static BusinessHourSaveUpdateListRequest createStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(16,0), java.time.LocalTime.of(9,0), java.time.DayOfWeek.MONDAY, true,
+                java.time.LocalTime.of(16,0), java.time.LocalTime.of(9,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -367,7 +364,7 @@ public class TestConstants {
     }
     public static BusinessHourSaveUpdateListRequest createBreakStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(11,0)
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -379,7 +376,7 @@ public class TestConstants {
 
     public static BusinessHourSaveUpdateListRequest createNullTimeBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 true, null,null
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -392,7 +389,7 @@ public class TestConstants {
 
     public static BusinessHourSaveUpdateListRequest createInvalidTimeBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                storeId,null, java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
+                null, java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
                 false, null,null
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -404,31 +401,31 @@ public class TestConstants {
     }
     public static BusinessHourSaveUpdateListRequest createUpdateBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo request1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SUNDAY, true,
+                java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SUNDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request2 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.MONDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request3 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.THURSDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.THURSDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request4 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.TUESDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.TUESDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request5 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SATURDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.SATURDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request6 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.WEDNESDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo request7 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.FRIDAY, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), DayOfWeek.FRIDAY, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -446,11 +443,11 @@ public class TestConstants {
     public static BusinessHourSaveUpdateListRequest createDuplicatedDayOfWeekBusinessHourRequest(Long storeId){
         DayOfWeek duplicatedDayOfWeek = DayOfWeek.MONDAY;
         BusinessHourSaveUpdateInfo duplicatedDayOfWeekRequest1 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
+                java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         BusinessHourSaveUpdateInfo duplicatedDayOfWeekRequest2 = new BusinessHourSaveUpdateInfo(
-                storeId, java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
+                 java.time.LocalTime.of(11,0), java.time.LocalTime.of(17,0), duplicatedDayOfWeek, true,
                 true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(13,0)
         );
         ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
@@ -538,6 +535,42 @@ public class TestConstants {
         }
         return result;
     }
+    //store reject reason
+    public static final RejectReason STORE_REJECT_REASON = new RejectReason("입력 사항 불충족");
+
+    public static final List<MyStoreResponse> MY_STORE_RESPONSES = Arrays.asList(
+            MyStoreResponse.builder()
+                    .storeId(1L)
+                    .phone("010-1234-124")
+                    .requestDate(LocalDate.now())
+                    .reasonForRejection("")
+                    .storeImageUrl("url1")
+                    .isApproved(false)
+                    .name("Store 1")
+                    .address("Address 1")
+                    .build(),
+            MyStoreResponse.builder()
+                    .storeId(2L)
+                    .phone("010-1234-124")
+                    .requestDate(LocalDate.now())
+                    .reasonForRejection("")
+                    .storeImageUrl("url1")
+                    .isApproved(false)
+                    .name("Store 2")
+                    .address("Address 2")
+                    .build(),
+            MyStoreResponse.builder()
+                    .storeId(3L)
+                    .phone("010-1234-124")
+                    .requestDate(LocalDate.now())
+                    .reasonForRejection("")
+                    .storeImageUrl("url1")
+                    .isApproved(false)
+                    .name("Store 3")
+                    .address("Address 3")
+                    .build()
+    );
+    // store
 
 }
 

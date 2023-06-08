@@ -3,24 +3,31 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.TestUtil;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -42,6 +49,8 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
     private LikeRepository likeRepository;
     @Autowired
     private ConsumerRepository consumerRepository;
+    @Autowired
+    private StoreOwnerRepository ownerRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -114,7 +123,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .extract().as(Response.class);
 
         // Then
-        List<TopStoreResponse> response = TestUtil.convert(result, new TypeReference<List<TopStoreResponse>>() {});
+        List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
         //store3는 평점 가장 적다
         for (TopStoreResponse item: response){
@@ -137,7 +146,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .extract().as(Response.class);
 
         // Then
-        List<TopStoreResponse> response = TestUtil.convert(result, new TypeReference<List<TopStoreResponse>>() {});
+        List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
         //store3는 평점 가장 적다
         for (TopStoreResponse item: response){
@@ -162,7 +171,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
 
 
         // Then
-        List<TopStoreResponse> response = TestUtil.convert(result, new TypeReference<List<TopStoreResponse>>() {});
+        List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
         assertThat(response.size()).isEqualTo(STORE_ENTITY_SIZE);
     }
@@ -198,12 +207,70 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
 
 
         // Then
-        List<TopStoreResponse> response = TestUtil.convert(result, new TypeReference<List<TopStoreResponse>>() {});
+        List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
         assertThat(response.get(0).getStoreName()).isEqualTo(store4.getName());
         assertThat(response.get(1).getStoreName()).isEqualTo(store2.getName());
         assertThat(response.get(2).getStoreName()).isEqualTo(store1.getName());
         assertThat(response.get(3).getStoreName()).isEqualTo(store3.getName());
+    }
+    @Test
+    @DisplayName("나의 가게 조회")
+    public void whenFindMyStore_ThenSuccess(){
+        //given
+        registerOwner();
+        saveStore();
+
+        //when
+        List<MyStoreResponse> list = returnMyStoreList();
+
+        Assertions.assertTrue(list.stream().anyMatch(e ->
+                e.getStoreName().equals("가게0") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+        Assertions.assertTrue(list.stream().anyMatch(e ->
+                e.getStoreName().equals("가게1") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+        Assertions.assertTrue(list.stream().anyMatch(e ->
+                e.getStoreName().equals("가게2") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+        Assertions.assertTrue(list.stream().anyMatch(e ->
+                e.getStoreName().equals("가게3") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+        Assertions.assertTrue(list.stream().anyMatch(e ->
+                e.getStoreName().equals("가게4") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+        Assertions.assertFalse(list.stream().anyMatch(e ->
+                e.getStoreName().equals("안승인된 가게") &&
+                        e.getIsApproved().equals(true) &&
+                        e.getPhone().equals(STORE_PHONE) &&
+                        e.getAddress().equals(STORE_ADDRESS)));
+
+    }
+    private List<MyStoreResponse> returnMyStoreList(){
+        Long ownerId = ownerRepository.findByUsername(OWNER_USERNAME).get().getMemberId();
+        String url = "/api/my/stores";
+        List<MyStoreResponse> result = convert(given()
+                        .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
+                        .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
+                        .param("ownerId", ownerId)
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get(url)
+                        .then()
+                        .log().all()
+                        .statusCode(HttpStatus.OK.value()).extract().as(PagedResponse.class),
+                new TypeReference<>() {});
+        return result;
     }
 
     private void addLike(){
@@ -225,6 +292,25 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         likeRepository.save(new Likes(store1, consumer2));
 
         likeRepository.save(new Likes(store3, consumer1));
+    }
+    private void saveStore(){
+        StoreOwner owner = ownerRepository.findByUsername(OWNER_USERNAME).get();
+        for(int i=0;i<5;i++){
+            Store store = Store.builder()
+                    .owner(owner)
+                    .name("가게" + i)
+                    .address(STORE_ADDRESS)
+                    .phone(STORE_PHONE)
+                    .status(StoreStatus.APPROVED).build();
+            storeRepository.save(store);
+        }
+        Store deniedStore = Store.builder()
+                .owner(owner)
+                .name("안승인된 가게")
+                .address(STORE_ADDRESS)
+                .phone(STORE_PHONE)
+                .status(StoreStatus.DENIED).build();
+        storeRepository.save(deniedStore);
     }
     private void settingKeywordCategoryImage(){
         Keyword keyword1 = keywordRepository.save(new Keyword(KEYWORD_NAME_1));

@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/api/stores/**/comments").authenticated()
-                .antMatchers("/api/stores/**/my").authenticated()
+                .antMatchers("/api/my/stores").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/owners").authenticated()
                 .antMatchers("/api/stores/**/business-hours").authenticated()

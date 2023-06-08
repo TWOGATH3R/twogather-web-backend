@@ -17,6 +17,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
 
     @BeforeEach
     public void init(){
+        super.setUp();
         registerOwner();
         registerStore();
         approveStore();
