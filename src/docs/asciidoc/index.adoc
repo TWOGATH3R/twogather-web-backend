@@ -145,6 +145,9 @@ operation::comment/save/[snippets='http-request,path-parameters,http-response,re
 === Update
 operation::comment/update/[snippets='http-request,path-parameters,http-response,response-fields']
 
+=== Delete
+operation::comment/delete/[snippets='http-request,path-parameters,http-response']
+
 == Category
 
 === Get

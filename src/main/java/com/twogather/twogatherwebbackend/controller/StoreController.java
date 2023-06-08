@@ -87,8 +87,7 @@ public class StoreController {
     @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#ownerId)")
     public ResponseEntity<Response> getMyStoreInfo(
             @RequestParam(value = "ownerId") Long ownerId,
-            Pageable pageable
-    ) {
+            Pageable pageable) {
         Page<MyStoreResponse> data = storeService.getStoresByOwner(ownerId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
