@@ -8,6 +8,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.Category;
+import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.domain.Review;
+import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.LoginResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
@@ -16,6 +19,9 @@ import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -40,6 +46,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.TestConstants.*;
@@ -65,7 +72,12 @@ public class AcceptanceTest
     private DatabaseCleanup databaseCleanup;
     @Autowired
     protected CategoryRepository categoryRepository;
-
+    @Autowired
+    protected ReviewRepository reviewRepository;
+    @Autowired
+    protected StoreRepository storeRepository;
+    @Autowired
+    protected MemberRepository memberRepository;
     @BeforeEach
     public void setUp() {
         if(RestAssured.port == UNDEFINED_PORT){
@@ -243,6 +255,11 @@ public class AcceptanceTest
         log.info("register owner");
         memberResponse = doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);
+    }
+    protected Long registerReview(){
+        Store store = storeRepository.findActiveStoreById(storeId).get();
+        Member member = memberRepository.findActiveMemberById(consumerId).get();
+        return reviewRepository.save(new Review(store, member, "맛있어요", 3.2, LocalDate.now())).getReviewId();
     }
     protected void registerStore() {
         log.info("register store");
