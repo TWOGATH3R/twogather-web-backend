@@ -47,6 +47,9 @@ public class MemberService {
         );
         return passwordEncoder.matches(password, member.getPassword());
     }
+    public boolean existsEmail(String email){
+        return memberRepository.findActiveMemberByEmail(email).isPresent();
+    }
 
     private MemberResponse toResponse(Member member){
         return new MemberResponse(member.getMemberId(), member.getUsername(),member.getEmail(),member.getName());

@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.google.common.util.concurrent.RateLimiter;
 import com.twogather.twogatherwebbackend.dto.email.VerificationCodeResponse;
 import com.twogather.twogatherwebbackend.exception.EmailException;
+import com.twogather.twogatherwebbackend.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -14,19 +15,21 @@ import java.security.SecureRandom;
 
 import static com.twogather.twogatherwebbackend.exception.EmailException.EmailErrorCode.EMAIL_SENDING_ERROR;
 import static com.twogather.twogatherwebbackend.exception.EmailException.EmailErrorCode.EMAIL_VERIFICATION_REQUEST_IS_AVAILABLE_ONLY_ONCE_EVERY_5_MINUTES;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class EmailService {
-
     private final JavaMailSender javaMailSender;
+    private final MemberService memberService;
 
     // Create a rate limiter that allows 1 request per 5 minutes
     //private static final RateLimiter rateLimiter = RateLimiter.create(0.0033);
     private static final RateLimiter rateLimiter = RateLimiter.create(1);//TODO: 다시 고치기. 테스트에서만 1초에 1개 허용 
     
     public VerificationCodeResponse sendEmail(String to) {
+        existsEmail(to);
         checkRateLimiter();
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -63,5 +66,10 @@ public class EmailService {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+    private void existsEmail(String email){
+        if(memberService.existsEmail(email)){
+            throw new MemberException(DUPLICATE_EMAIL);
+        }
     }
 }
