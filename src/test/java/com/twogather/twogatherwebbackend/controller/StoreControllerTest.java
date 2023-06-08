@@ -143,7 +143,7 @@ public class StoreControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("owner-id").description("가게 주인의 ID"),
+                                parameterWithName("ownerId").description("가게 주인의 ID"),
                                 parameterWithName("page").description("조회할 페이지의 수"),
                                 parameterWithName("size").description("검사결과 최대 개수"),
                                 parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분해서 전송)")

@@ -34,7 +34,6 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         registerOwner();
         registerStore();
     }
-
     static final String REASON = "조건 불충족";
     @Test
     @DisplayName("가게 승인이 제대로 되었는지 확인")
@@ -125,7 +124,6 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     @DisplayName("승인요청 -> 거부 -> 재요청")
     public void whenReapplyRequest_ThenSuccess() {
         // given
-        adminLogin();
         rejectStore();
         //when
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.DENIED);

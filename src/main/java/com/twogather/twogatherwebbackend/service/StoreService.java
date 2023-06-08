@@ -126,9 +126,8 @@ public class StoreService {
     public Page<MyStoreResponse> getStores(StoreStatus type, Pageable pageable){
         return storeRepository.findStoresByStatus(type, pageable);
     }
-    public Page<MyStoreResponse> getStoresByOwner(Long storeOwnerId, Pageable pageable){
-        //TODO: 구현
-        return null;
+    public Page<MyStoreResponse> getStoresByOwner(Long ownerId, Pageable pageable){
+        return storeRepository.findMyStore(ownerId, pageable);
     }
     public StoreSaveUpdateResponse getStore(Long storeId){
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
