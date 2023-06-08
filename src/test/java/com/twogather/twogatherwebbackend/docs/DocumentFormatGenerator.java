@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.docs;
 
+import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import org.springframework.restdocs.snippet.Attributes;
 
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -31,6 +32,9 @@ public interface DocumentFormatGenerator {
     }
     static Attributes.Attribute getStoreType() {
         return key("format").value("TOP_RATED or MOST_REVIEWED or MOST_LIKES_COUNT");
+    }
+    static Attributes.Attribute getStoreStatus() {
+        return key("format").value("APPROVED, PENDING, DENIED, DELETED");
     }
     static Attributes.Attribute getKeywordFormat() {
         return key("format").value("키워드는 형용사로 입력해주세요");
