@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
@@ -192,6 +193,18 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //then
         failLogin(CONSUMER_LOGIN_REQUEST)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 회원의 email로 email 검증 시도 시 throw exception")
+    public void whenSendMailWithDuplicateEmail_ThenThrowException(){
+        //given
+        registerConsumer();
+        //when,then
+        String url = "/api/email";
+        doPost(url, new EmailRequest(CONSUMER_EMAIL))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
     }
 
     private <T> MemberResponse updateMember(String url, String refreshToken, String accessToken, T request){
