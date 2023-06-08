@@ -41,7 +41,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    @PreAuthorize("isAuthenticated() and @reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
     public ResponseEntity<Response> delete(@PathVariable final Long reviewId, @PathVariable String storeId) {
         reviewService.delete(reviewId);
 
@@ -49,7 +49,7 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}")
-    @PreAuthorize("isAuthenticated() and @reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
     public ResponseEntity<Response> update(@PathVariable final Long reviewId, @PathVariable final Long storeId,
                                            @RequestBody @Valid final ReviewUpdateRequest request){
         ReviewResponse data = reviewService.update(request);
@@ -58,7 +58,6 @@ public class ReviewController {
     }
 
     @GetMapping("/members/{memberId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> getMyReviewInfos(@PathVariable final Long memberId,
                                                      @PathVariable final Long storeId,
                                                      @RequestParam(defaultValue = "desc") final String orderBy,
