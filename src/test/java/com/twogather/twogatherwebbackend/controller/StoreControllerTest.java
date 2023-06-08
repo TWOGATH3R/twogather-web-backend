@@ -134,7 +134,7 @@ public class StoreControllerTest extends ControllerTest{
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.
-                        get("/api/stores/{storeId}/my?owner-id=1&page=1&size=2&sort=reviewsCount,desc",1)
+                        get("/api/my/stores/?ownerId=1&page=1&size=2&sort=reviewsCount,desc",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
@@ -147,9 +147,6 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("page").description("조회할 페이지의 수"),
                                 parameterWithName("size").description("검사결과 최대 개수"),
                                 parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분해서 전송)")
-                        ),
-                        pathParameters(
-                                parameterWithName("storeId").description("가게 고유 id")
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
