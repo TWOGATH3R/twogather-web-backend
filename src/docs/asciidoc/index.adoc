@@ -12,6 +12,13 @@ api spec 문서
 === Login
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
+=== Consumer-Password-Verification
+operation::consumer/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== StoreOwner-Password-Verification
+operation::owner/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+
+
 == Email
 === Email-Verification
 operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
@@ -24,9 +31,6 @@ operation::menu/get/[snippets='http-request,path-parameters,http-response,respon
 === Delete
 operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
 
-=== Save
-operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-
 === Update
 operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
@@ -38,23 +42,23 @@ operation::business-hour/get/[snippets='http-request,path-parameters,http-respon
 === Delete
 operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
 
-=== Save
-operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-
 === Update
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
+== Keyword
+=== Get-List
+operation::keywords/get/[snippets='http-request,request-parameters,http-response,response-fields']
+=== Set-Keyword-Store-Association
+operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
+
 == Store
 
 === Save
-operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
+operation::store/save/[snippets='http-request,request-parts,http-response,response-fields']
 
 === Get-One
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']
-
-=== Get-Keyword
-operation::store/get-keyword/[snippets='http-request,http-response,response-fields']
 
 === Get-List
 operation::store/get-list/[snippets='http-request,path-parameters,http-response,response-fields']
@@ -140,6 +144,13 @@ operation::comment/update/[snippets='http-request,path-parameters,http-response,
 
 === Get
 operation::category/get/[snippets='http-request,http-response,response-fields']
+
+== Like
+=== AddLike
+operation::like/setLike/[snippets='http-request,path-parameters']
+
+=== DeleteLike
+operation::like/deleteLike/[snippets='http-request,path-parameters']
 
 
 :linkattrs:

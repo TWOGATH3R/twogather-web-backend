@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-    private final StoreService storeService;
 
     @GetMapping("/categories")
     public ResponseEntity<Response> getAllCategories() {
@@ -29,7 +28,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> setCategoriesForStore(@PathVariable Long storeId,
                                                              @PathVariable Long categoryId) {
-        CategoryResponse categoryResponse = categoryService.setCategoriesForStore(storeId, categoryId);
-        return ResponseEntity.ok(new Response(categoryResponse));
+        categoryService.setCategoriesForStore(storeId, categoryId);
+        return ResponseEntity.ok().build();
     }
 }

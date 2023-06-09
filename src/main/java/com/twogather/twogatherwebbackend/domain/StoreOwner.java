@@ -17,15 +17,10 @@ public class StoreOwner extends Member {
     @OneToMany(mappedBy = "owner")
     private List<Store> storeList = new ArrayList<>();
 
-    private String businessNumber;
-    private String businessName;
-    private LocalDate businessStartDate;
 
-    public StoreOwner(String email, String loginPw, String name, String businessNumber, String businessName, LocalDate businessStartDate, AuthenticationType authenticationType, boolean isActive) {
-        super(email, loginPw, name, authenticationType, isActive);
-        this.businessName = businessName;
-        this.businessNumber = businessNumber;
-        this.businessStartDate = businessStartDate;
+    public StoreOwner(String username, String email, String loginPw, String name,AuthenticationType authenticationType, boolean isActive) {
+        super(username, email, loginPw, name, authenticationType, isActive);
+
     }
 
 

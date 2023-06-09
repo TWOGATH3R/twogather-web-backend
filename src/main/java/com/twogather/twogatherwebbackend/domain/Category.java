@@ -15,10 +15,11 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 20)
     private String name;
 
     public Category(String name) {
         this.name = name;
     }
+
 }

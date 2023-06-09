@@ -1,89 +1,114 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.category.CategoryResponse;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
-import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import com.twogather.twogatherwebbackend.service.CategoryService;
+import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
 
-import javax.persistence.EntityManager;
+import static com.twogather.twogatherwebbackend.TestConstants.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.twogather.twogatherwebbackend.acceptance.TestHelper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@AutoConfigureMockMvc
-public class CategoryAcceptanceTest {
+public class CategoryAcceptanceTest extends AcceptanceTest{
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private StoreOwnerRepository ownerRepository;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private EntityManager em;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private StoreRepository storeRepository;
 
-    @Test
-    @Transactional
-    public void whenGetAllCategories_ThenAllCategoryList() throws Exception {
-        Category category1 = new Category("category1");
-        Category category2 = new Category("category2");
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(category1);
-        categoryList.add(category2);
-        categoryRepository.saveAll(categoryList);
+    private Category category1;
+    private Category category2;
 
-        mockMvc.perform(get("/api/categories"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].categoryId").exists())
-                .andExpect(jsonPath("$.data[0].name").exists())
-                .andDo(MockMvcResultHandlers.print());
+    @BeforeEach
+    public void initSetting(){
+        super.setUp();
+        registerOwner();
+        registerStore();
+        approveStore();
+        createCategory();
+    }
+
+    @Test
+    public void whenSetCategoriesForStore_ThenAssociateCategoryWithStore() {
+        //given
+        String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
+        //when
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+
+        //then
+        Long savedCategoryId = storeRepository.findById(storeId).get().getCategory().getCategoryId();
+        Assertions.assertEquals(savedCategoryId, category1.getCategoryId());
     }
 
 
     @Test
-    @Transactional
-    public void whenSetCategoriesForStore_ThenAssociateCategoryWithStore() throws Exception {
+    @DisplayName("이미 카테고리가 설정된 가게의 카테고리를 다른걸로 다시 설정했을때 제대로 반영됐는지 확인한다")
+    public void whenUpdateCategory_thenUpdatedCategoryIsReturned()  {
         //given
-        StoreOwner owner = createOwner(ownerRepository, passwordEncoder);
-        Store store = createStore(storeRepository,owner);
+        String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
+        settingStoreCategory(url);
+        String url2 = "/api/stores/" + storeId + "/categories/" + category2.getCategoryId();
+        settingStoreCategory(url2);
 
-        Category category = categoryRepository.save(new Category("categoryName"));
-        Long storeId = store.getStoreId();
-        Long categoryId = category.getCategoryId();
+        Long savedCategoryId = storeRepository.findById(storeId).get().getCategory().getCategoryId();
+        Assertions.assertEquals(savedCategoryId, category2.getCategoryId());
+    }
 
-        createAuthority(owner);
+    /*
+    @Test
+    @DisplayName("똑같은 카테고리로 서로 다른 가게에 대해 두번 setting 요청을 보냈을때 에러가 터지지 않는다")
+    public void whenSecondStoreRequestsSameCategory_thenNoErrorIsThrown() {
+        //given
+        Long storeId2 = registerStore(STORE_SAVE_REQUEST2,null,null,null);
 
-        CategoryResponse response = categoryService.setCategoriesForStore(storeId, categoryId);
-        String url = "/api/stores/" + storeId + "/categories/" + categoryId;
-        mockMvc.perform(patch(url))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.categoryId").value(response.getCategoryId()))
-                .andExpect(jsonPath("$.data.name").value(response.getName()))
-                .andDo(MockMvcResultHandlers.print());
+        approveStore2(storeId2);
+
+
+        String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
+        settingStoreCategory(url);
+        String url2 = "/api/stores/" + storeId2 + "/categories/" + category1.getCategoryId();
+        settingStoreCategory(url2);
+
+    }*/
+
+    @Test
+    @DisplayName("없는 카테고리로 등록시 throw exception")
+    public void whenNoSuchCategory_thenThrowException() throws Exception {
+        //given
+        Long noSuchId = 12313l;
+        String url = "/api/stores/" + storeId + "/categories/" + noSuchId;
+        settingStoreCategory(url)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+
+        Assertions.assertTrue(storeRepository.findById(storeId).isPresent());
+        Assertions.assertFalse(storeRepository.findById(noSuchId).isPresent());
+    }
+
+    @Test
+    @DisplayName("자신의 가게가 아닌 가게 id로 카테고리를 등록시 throw exception")
+    public void whenNoSuchStore_ThenThrowException(){
+        //given
+        Long noSuchStoreId = 123l;
+        String url = "/api/stores/" + noSuchStoreId + "/categories/" + category1.getCategoryId();
+        //when
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken())
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+    }
+    private void approveStore2(Long storeId2){
+        adminToken = doLogin(ADMIN_LOGIN_REQUEST);
+        String approveStoreUrl = "/api/admin/stores/" + storeId2;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+
+    }
+    private void createCategory(){
+        category1 = categoryRepository.save(new Category("양식"));
+        category2 = categoryRepository.save(new Category("일식"));
+    }
+    private ValidatableResponse settingStoreCategory(String url){
+        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
     }
 }

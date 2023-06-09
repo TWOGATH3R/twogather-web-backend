@@ -1,8 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.domain.Consumer;
-import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
-public class LoginFilterTest {
+public class LoginTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,7 +54,7 @@ public class LoginFilterTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("로그인에 필요한 이메일"),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인에 필요한 로그인 아이디"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인에 필요한 비밀번호").attributes(getPasswordFormat())
                         ),
                         responseFields(
@@ -69,4 +68,3 @@ public class LoginFilterTest {
         ownerRepository.save(owner1);
     }
 }
-

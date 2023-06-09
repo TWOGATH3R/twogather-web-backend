@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,8 +17,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.MEMBER_NOT_ACTIVE;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 
 @Component("userDetailsService")
 @RequiredArgsConstructor
@@ -26,17 +27,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        return memberRepository.findByEmail(username)
+        return memberRepository.findActiveMemberByUsername(username)
                 .map(member -> createUser(member))
-                .orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
+                .orElseThrow(()-> new MemberException(NO_SUCH_MEMBER));
     }
     public CustomUser createUser(Member member){
         if (!member.isActive()){
-            throw new MemberException(MEMBER_NOT_ACTIVE);
+            throw new MemberException(NO_SUCH_MEMBER);
         }
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
         grantedAuthorityList.add(new SimpleGrantedAuthority(member.getAuthenticationType().authority()));
-        return new CustomUser(member.getMemberId(), member.getEmail(), member.getName(),
-                member.getEmail(), member.getPassword(), grantedAuthorityList);
+        return new CustomUser(member.getMemberId(), member.getUsername(), member.getName(),
+               member.getPassword(), grantedAuthorityList);
     }
 }

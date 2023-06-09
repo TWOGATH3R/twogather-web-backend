@@ -12,4 +12,8 @@ public class StoreSaveUpdateResponse {
     private String storeName;
     private String address;
     private String phone;
+
+    public static StoreSaveUpdateResponse from(Long storeId, String name, String address, String phone){
+        return new StoreSaveUpdateResponse(storeId,name,address,phone);
+    }
 }

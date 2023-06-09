@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class CategoryException extends ClientException{
     public enum CategoryErrorCode {
-        NO_SUCH_CATEGORY("해당하는 카테고리가 존재하지않습니다");
+        NO_SUCH_CATEGORY("해당하는 카테고리가 존재하지않습니다", HttpStatus.NOT_FOUND);
         private final String message;
         private final HttpStatus status;
 

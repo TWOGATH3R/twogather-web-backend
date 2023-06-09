@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.dto;
 
-public enum StoreType {
+public enum StoreSearchType {
     MOST_REVIEWED,
-    TOP_RATED
+    TOP_RATED,
+    MOST_LIKES_COUNT,
 }

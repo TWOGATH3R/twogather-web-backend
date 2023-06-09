@@ -23,6 +23,7 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class CategoryService {
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+    @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryInfos(){
         List<Category> categoryList = categoryRepository.findAll();
         ArrayList<CategoryResponse> categoryResponseList = new ArrayList<>();
@@ -31,11 +32,11 @@ public class CategoryService {
         }
         return categoryResponseList;
     }
-    public CategoryResponse setCategoriesForStore(Long storeId, Long categoryId){
-        Store store = storeRepository.findById(storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
+    public void setCategoriesForStore(Long storeId, Long categoryId){
+        Store store = storeRepository.findAllStoreById(
+                storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryException(NO_SUCH_CATEGORY));
         store.setCategory(category);
-        return toResponse(category);
     }
     private CategoryResponse toResponse(Category category){
         return new CategoryResponse(category.getCategoryId(), category.getName());

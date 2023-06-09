@@ -2,15 +2,20 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.StoreType;
+import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
+import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
+
 import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,10 +31,23 @@ public class StoreController {
         return "test";
     }
 
-    @PostMapping
+    @PostMapping(value = "/categories/{categoryId}")
     @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeSaveUpdateRequest) {
-        StoreSaveUpdateResponse data = storeService.save(storeSaveUpdateRequest);
+    public ResponseEntity<Response> save(
+                                        @PathVariable Long categoryId,
+                                        @RequestPart @Valid final BusinessHourSaveUpdateListRequest businessHourRequest,
+                                        @RequestPart @Valid final StoreSaveUpdateRequest storeRequest,
+                                        @RequestPart @Valid final MenuSaveListRequest menuRequest,
+                                        @RequestPart List<MultipartFile> storeImageList,
+                                        @RequestPart final List<String> keywordList
+                                         ) {
+        StoreSaveUpdateResponse data =
+                storeService.save(categoryId,
+                        businessHourRequest,
+                        storeRequest,
+                        menuRequest,
+                        storeImageList,
+                        keywordList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -49,9 +67,11 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping("/keyword")
-    public ResponseEntity<Response> getKeywordList() {
-        List<String> data = storeService.getKeyword();
+
+    @GetMapping("/top/{type}/{count}")
+    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreSearchType type,
+                                                     @PathVariable int count) {
+        List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
@@ -61,33 +81,22 @@ public class StoreController {
     public ResponseEntity<Response> getMyStoreInfo(
             @PathVariable Long storeId,
             @RequestParam(value = "owner-id") Long storeOwnerId,
-            @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "offset", required = false) Integer offset
+            Pageable pageable
     ) {
-        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, limit, offset);
+        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
-    @GetMapping("/top/{type}/{count}")
-    public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreType type,
-                                                     @PathVariable int count) {
-        List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
-    }
 
     @GetMapping("/search")
-    public ResponseEntity<Response> getStoreInfos(  @RequestParam(value = "category", required = false) String categoryName,
-                                                    @RequestParam(value = "search", required = false) String keyword,
-                                                    @RequestParam(value = "limit", defaultValue = "10") int limit,
-                                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                                    @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-                                                    @RequestParam(value = "order", defaultValue = "asc") String order,
-                                                    @RequestParam(value = "location", required = false) String location) {
-        List<StoreResponseWithKeyword> data = storeService.getStores(categoryName, keyword, limit, offset, orderBy, order, location);
+    public ResponseEntity<Response> getStoreInfos(Pageable pageable,
+                                                  @RequestParam(value = "category", required = false) String categoryName,
+                                                  @RequestParam(value = "search", required = false) String keyword,
+                                                  @RequestParam(value = "location", required = false) String location) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
+        return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
     @DeleteMapping("/{storeId}")
