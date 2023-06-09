@@ -85,7 +85,11 @@ dependencies {
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
 	//logback
-	implementation 'ch.qos.logback:logback-classic:1.2.5'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+	implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+	implementation 'ch.qos.logback.contrib:logback-json-core:0.1.5'
+	implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
 
 }
 

@@ -1,17 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./application_log/application.log</file>
-        <encoder>
-            <pattern>%d{yyyyMMdd HH:mm:ss.SSS,Asia/Seoul} [%thread] %-5level [%logger{0}:%line] - %msg %n</pattern>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+                <appendLineSeparator>true</appendLineSeparator>
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                    <prettyPrint>true</prettyPrint>
+                </jsonFormatter>
+            </layout>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>application.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>5GB</totalSizeCap>
-        </rollingPolicy>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="file" />
+    <root level="debug">
+        <appender-ref ref="stdout"/>
     </root>
 </configuration>
