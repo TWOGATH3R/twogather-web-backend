@@ -617,8 +617,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2MzA1MzE0fQ.V2ZOYgDSvC-oWfZlslfUdnv_Tr6e-U1jVLrqot7CtE5Fsizipiwn3VCy4kWcB70czVnM7aohozYG8euxoyC7Dg
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjMxNDA0NH0.YR9Q_vlxTMVkC3rSz4mpJ4nSwfx-zzKn2Pnb_KwNT_KPxbi13YoKOtmChOTjPE497RXarjG7YcV1dM_KJMkddQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2MzI3MjU5fQ.-p_nwo89zQxX1cqSowf0ucx7KMdrkndf-49HIqPVWtv4kCYU-tulVQGulj0epUa3rp8W9gTWEdirBxyjpeOUOQ
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjMzNTk4OX0.6H5rI2fGy2xt5fL2y52lAdmFGNqdXpgREb5UPdOG24SW-U5Gp9jFtpil2omoDfxCCOhopOnwSozLla6eBlI7GA
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -911,7 +911,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-09",
+    "requestDate" : "2023-06-10",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 2,
@@ -920,7 +920,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-09",
+    "requestDate" : "2023-06-10",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 3,
@@ -929,7 +929,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-09",
+    "requestDate" : "2023-06-10",
     "storeImageUrl" : "url1"
   } ],
   "currentPage" : 1,
@@ -2316,7 +2316,7 @@ Content-Type: application/json
 Content-Disposition: form-data; name=storeRequest; filename=storeRequest
 Content-Type: application/json
 
-{"storeName":"김가네 닭갈비","address":"전주시 평화동 어쩌고 222-2","phone":"063-231-2222","businessNumber":"0000000000","businessName":"홍길동","businessStartDate":"2023-06-09"}
+{"storeName":"김가네 닭갈비","address":"전주시 평화동 어쩌고 222-2","phone":"063-231-2222","businessNumber":"0000000000","businessName":"홍길동","businessStartDate":"2023-06-10"}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -3202,7 +3202,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-09"
+  "businessStartDate" : "2023-06-10"
 }</code></pre>
 </div>
 </div>
@@ -3379,7 +3379,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=e4b7250a-5df9-4fd9-9d3d-6d1a3c520755 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=b71c45fe-8530-478e-a553-59aa2b76f2f0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3487,7 +3487,7 @@ Content-Length: 138
 <h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=8255340d-0279-499f-bf7e-8769c8d8d419 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=8fdf3f65-5f86-4758-8196-bfa0f96b95cd HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -3963,7 +3963,7 @@ Content-Length: 130
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=1992bad0-d6c8-4412-b558-57344ba01a19 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=03e3fc22-d31e-4dc5-b6ae-bfc68245fb33 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4105,7 +4105,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=2bd91b77-d04b-4370-b7fc-5481bb52ffec HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=64f5d0c1-0f4e-4b27-9125-0f17a931018e HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4897,7 +4897,7 @@ Content-Length: 1198
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=9d5853b5-908e-4ae3-891d-94240453fded HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=af8aa86e-ac99-4c12-8d20-0c4b97158312 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -5021,7 +5021,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=bab475a6-e8d5-4e80-9e53-d4217361420c HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=6d01b26b-a500-40b3-9b0e-83ae3ae9de11 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -5150,7 +5150,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=90a9fdc4-68ad-4534-a2f1-e35fa1a7ce56 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=89ab84a4-d3ab-40f8-9cd5-793ea88802c1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5259,7 +5259,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-09"
+    "createDate" : "2023-06-10"
   }
 }</code></pre>
 </div>
@@ -5374,7 +5374,7 @@ Content-Length: 116
   "data" : {
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-09"
+    "createDate" : "2023-06-10"
   }
 }</code></pre>
 </div>
