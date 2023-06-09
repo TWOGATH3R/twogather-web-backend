@@ -186,7 +186,7 @@ public class StoreControllerTest extends ControllerTest{
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("storeType").description("자세히 볼 페이지의 type").attributes(getStoreType()),
-                                parameterWithName("count").description("자세히 볼 페이지 개수").attributes(getStoreType())
+                                parameterWithName("count").description("자세히 볼 페이지 개수")
 
                         ),
                         responseFields(
