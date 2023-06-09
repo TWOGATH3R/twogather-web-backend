@@ -9,7 +9,7 @@
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
                 <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
-                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+                <timestampFormatTimezoneId>Asia/Seoul</timestampFormatTimezoneId>
                 <appendLineSeparator>true</appendLineSeparator>
                 <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
                     <prettyPrint>true</prettyPrint>
