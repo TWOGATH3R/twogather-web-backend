@@ -89,7 +89,7 @@ public class ReviewControllerTest extends ControllerTest {
                 new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0)
         ));
 
-        when(reviewService.getReviewsByStoreId(anyLong(), any(), any(), anyInt(), anyInt()))
+        when(reviewService.getReviewsByStoreId(anyLong(), any()))
                 .thenReturn(MY_REVIEW_LIST);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}/reviews", 1)
@@ -147,7 +147,7 @@ public class ReviewControllerTest extends ControllerTest {
     @DisplayName("내가 작성한 리뷰 목록")
     public void getMyReviewInfos_WhenGetMyReviews_ThenReturnReviewInfos() throws Exception {
         //given
-        when(reviewService.getMyReviewInfos(anyLong(), any(), any(), anyInt(), anyInt())).thenReturn(MY_REVIEW_LIST);
+        when(reviewService.getMyReviewInfos(anyLong(), any())).thenReturn(MY_REVIEW_LIST);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get(URL + "/members/{memberId}", 1, 2)
@@ -178,7 +178,7 @@ public class ReviewControllerTest extends ControllerTest {
                                 fieldWithPath("data.content[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
                                 fieldWithPath("data.content[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
                                 fieldWithPath("data.content[].storeAddress").type(JsonFieldType.STRING).description("가게 주소"),
-                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰 작성자의 이름"),
+                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 닉네임"),
                                 fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),

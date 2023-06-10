@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Consumer;
+import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Review;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.review.*;
@@ -9,6 +10,7 @@ import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.ReviewException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -24,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_EMAIL;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.ReviewException.ReviewErrorCode.NO_SUCH_REVIEW;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
@@ -34,13 +36,14 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ConsumerRepository consumerRepository;
+    private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
 
-    public boolean isMyReview(Long reviewId){
-        String email = SecurityUtils.getLoginUserEmail();
+    public boolean isMyReview(Long reviewId) {
+        String username = SecurityUtils.getUsername();
 
-        Consumer reviewer = consumerRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(NO_SUCH_EMAIL));
+        Member reviewer = memberRepository.findActiveMemberByUsername(username)
+                .orElseThrow(() -> new MemberException(NO_SUCH_MEMBER));
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewException(NO_SUCH_REVIEW));
 
@@ -51,10 +54,11 @@ public class ReviewService {
         return true;
     }
 
-    public ReviewResponse save(ReviewSaveRequest request){
-        // 추후 NO_SUCH_MEMBER로 수정해야 함
-        Consumer reviewer = consumerRepository.findActiveConsumerById(request.getConsumerId())
-                .orElseThrow(() -> new MemberException(NO_SUCH_EMAIL));
+    public ReviewResponse save(ReviewSaveRequest request) {
+        String username = SecurityUtils.getUsername();
+
+        Member reviewer = memberRepository.findActiveMemberByUsername(username)
+                .orElseThrow(() -> new MemberException(NO_SUCH_MEMBER));
         Store store =  storeRepository.findActiveStoreById(request.getStoreId())
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
@@ -69,8 +73,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(request.getReviewId())
                 .orElseThrow(() -> new ReviewException(NO_SUCH_REVIEW));
 
-        review.updateContent(request.getContent());
-        review.updateScore(request.getScore());
+        review.update(request.getContent(), request.getScore());
 
         return toReviewResponse(review);
     }
@@ -79,34 +82,12 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
     }
 
-    public Page<MyReviewInfoResponse> getMyReviewInfos(Long memberId, String orderBy, String orderColumn, int page, int size){
-        Pageable pageable;
-
-        if(orderBy.equals("desc")) {
-            // 내림차순(default)
-            pageable = PageRequest.of(page, size, Sort.by(orderColumn).descending());
-        } else {
-            // 오름차순
-            pageable = PageRequest.of(page, size, Sort.by(orderColumn));
-        }
-
+    public Page<MyReviewInfoResponse> getMyReviewInfos(Long memberId, Pageable pageable){
         return reviewRepository.findMyReviewsByMemberId(memberId, pageable);
     }
 
-    public Page<StoreDetailReviewResponse> getReviewsByStoreId(Long storeId, String orderBy,
-                                                            String orderColumn, int page, int size) {
-        Pageable pageable;
-        
-        if(orderBy.equals("desc")) {
-            // 내림차순(default)
-            pageable = PageRequest.of(page, size, Sort.by(orderColumn).descending());
-        } else {
-            // 오름차순
-            pageable = PageRequest.of(page, size, Sort.by(orderColumn));
-        }
-
+    public Page<StoreDetailReviewResponse> getReviewsByStoreId(Long storeId, Pageable pageable) {
         return reviewRepository.findReviewsByStoreId(storeId, pageable);
-
     }
 
     public ReviewResponse toReviewResponse(Review review) {

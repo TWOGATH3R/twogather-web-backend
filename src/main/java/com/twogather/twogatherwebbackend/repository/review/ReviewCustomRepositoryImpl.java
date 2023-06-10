@@ -1,19 +1,34 @@
 package com.twogather.twogatherwebbackend.repository.review;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.NullExpression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.QImage;
+import com.twogather.twogatherwebbackend.domain.QMember;
 import com.twogather.twogatherwebbackend.domain.QReview;
+import com.twogather.twogatherwebbackend.domain.QStore;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
+import com.twogather.twogatherwebbackend.exception.SQLException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.twogather.twogatherwebbackend.domain.QImage.image;
+import static com.twogather.twogatherwebbackend.domain.QMember.member;
+import static com.twogather.twogatherwebbackend.domain.QReview.review;
+import static com.twogather.twogatherwebbackend.domain.QStore.store;
+import static com.twogather.twogatherwebbackend.exception.SQLException.SQLErrorCode.INVALID_REQUEST_PARAM;
 
 @Repository
 @AllArgsConstructor
@@ -23,57 +38,77 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
 
     @Override
     public Page<StoreDetailReviewResponse> findReviewsByStoreId(Long storeId, Pageable pageable) {
-        QReview a = QReview.review;
-        QReview b = new QReview("b");
+        QReview subReview = new QReview("subReview");
+        QMember subMember = new QMember("subMember");
 
-        List<Tuple> results = jpaQueryFactory
-                .select(a.reviewId, a.content, a.createdDate, a.score,
-                        a.reviewer.memberId, a.reviewer.name, a.store.storeId, b.score.avg())
-                .from(a)
-                .leftJoin(b)
-                .on(a.reviewer.memberId.eq(b.reviewer.memberId))
-                .groupBy(b.reviewer.memberId, a.reviewId, a.content, a.createdDate,
-                        a.score, a.reviewer.memberId, a.reviewer.name, a.store.storeId)
-                .having(a.store.storeId.eq(storeId))
+        List<StoreDetailReviewResponse> responseList = jpaQueryFactory
+                .select(Projections.constructor(StoreDetailReviewResponse.class,
+                        member.memberId,
+                        review.reviewId,
+                        review.content,
+                        review.score,
+                        review.createdDate,
+                        member.username,
+                        JPAExpressions.select(subReview.score.avg())
+                                .from(subReview)
+                                .join(subReview.reviewer, subMember)
+                                .where(subMember.memberId.eq(member.memberId))
+                        ))
+                .from(review)
+                .join(review.reviewer, member)
+                .join(review.store, store)
+                .where(store.storeId.eq(storeId))
+                .orderBy(reviewSort(pageable))
+                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
                 .fetch();
-
-        List<StoreDetailReviewResponse> responseList = results.stream().map(tuple -> new StoreDetailReviewResponse(
-                tuple.get(a.reviewer.memberId),
-                tuple.get(a.reviewId),
-                tuple.get(a.content),
-                tuple.get(a.score),
-                tuple.get(a.createdDate),
-                tuple.get(a.reviewer.name),
-                tuple.get(b.score.avg())
-        )).collect(Collectors.toList());
 
         return new PageImpl<>(responseList, pageable, responseList.size());
     }
 
     @Override
     public Page<MyReviewInfoResponse> findMyReviewsByMemberId(Long memberId, Pageable pageable) {
-        QReview review = QReview.review;
-        QImage image = new QImage("image");
-
-        List<Tuple> result = jpaQueryFactory
-                .select(review, image.url)
+        List<MyReviewInfoResponse> responseList = jpaQueryFactory
+                .select(Projections.constructor(MyReviewInfoResponse.class,
+                        review.reviewId,
+                        review.content,
+                        review.score,
+                        review.createdDate,
+                        image.url,
+                        store.name,
+                        store.address,
+                        member.username))
                 .from(review)
+                .join(review.reviewer, member)
+                .join(review.store, store)
                 .leftJoin(image)
-                .on(review.store.storeId.eq(image.store.storeId))
-                .where(review.reviewer.memberId.eq(memberId))
+                .on(store.storeId.eq(image.store.storeId))
+                .where(member.memberId.eq(memberId))
+                .orderBy(reviewSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<MyReviewInfoResponse> responseList = result.stream().map(tuple -> new MyReviewInfoResponse(
-                tuple.get(review.reviewId),
-                tuple.get(review.content),
-                tuple.get(review.score),
-                tuple.get(review.createdDate),
-                tuple.get(image.url),
-                tuple.get(review.store.name),
-                tuple.get(review.store.address),
-                tuple.get(review.reviewer.name)
-        )).collect(Collectors.toList());
-
         return new PageImpl<>(responseList, pageable, responseList.size());
+    }
+
+    // 동적 정렬
+    private OrderSpecifier<?> reviewSort(Pageable pageable) {
+        if(!pageable.getSort().isEmpty()) {
+            for(Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch(order.getProperty()) {
+                    case "createdDate":
+                        return new OrderSpecifier<>(direction, review.createdDate);
+                    case "score":
+                        return new OrderSpecifier<>(direction, review.score);
+                    default:
+                        throw new SQLException(INVALID_REQUEST_PARAM);
+                }
+            }
+        }
+        // 동적 정렬 skip
+        return new OrderSpecifier(Order.ASC, NullExpression.DEFAULT, OrderSpecifier.NullHandling.Default);
     }
 }

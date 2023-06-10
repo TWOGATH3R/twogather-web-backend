@@ -3,15 +3,12 @@ package com.twogather.twogatherwebbackend.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@DynamicUpdate  // 변경된 필드만 반영되도록 설정
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,18 +17,18 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Consumer reviewer;
+    private Member reviewer;
 
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
 
-    //이거 string으로 해도되는건가
+    @Column(name = "content", columnDefinition = "VARCHAR(5000)")
     private String content;
     private Double score;
     private LocalDate createdDate;
 
-    public Review(Store store, Consumer reviewer, String content, Double score, LocalDate createdDate){
+    public Review(Store store, Member reviewer, String content, Double score, LocalDate createdDate){
         this.store = store;
         this.reviewer = reviewer;
         this.content = content;
@@ -39,13 +36,10 @@ public class Review {
         this.createdDate = createdDate;
     }
 
-    public void updateContent(String content) {
+    public void update(String content, Double score) {
         if(content != null && !content.isEmpty()) {
             this. content = content;
         }
-    }
-
-    public void updateScore(Double score) {
         if(!score.isNaN() && 0.0 <= score && score <= 5.0) {
             this. content = content;
         }
