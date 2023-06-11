@@ -3,7 +3,6 @@ package com.twogather.twogatherwebbackend.acceptance;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
-import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
@@ -19,13 +18,12 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.empty;
 
 
 public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{

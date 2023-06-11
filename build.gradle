@@ -40,19 +40,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation group: 'org.json', name: 'json', version: '20230227'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 	implementation 'io.rest-assured:rest-assured:4.4.0'
 	implementation 'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.5.RELEASE'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	// .adoc 파일에서 빌드, 스니펫 생성을 자동으로 구성되기 위해 추가하는 의존성
 	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	// restdocs에서 MockMvc를 사용할 때 사용하는 의존성
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -74,16 +68,24 @@ dependencies {
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.464'
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	//lombok
-	implementation('org.projectlombok:lombok')
-	annotationProcessor('org.projectlombok:lombok')
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-	// test 환경
-	testImplementation('org.projectlombok:lombok')
-	testAnnotationProcessor('org.projectlombok:lombok')
+	// Lombok for test scope
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
 	// MariaDB
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
+	//logback
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+	implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+	implementation 'ch.qos.logback.contrib:logback-json-core:0.1.5'
+	implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
+	//mocking s3
+	implementation 'io.findify:s3mock_2.12:0.2.4'
 
 }
 
@@ -166,7 +168,4 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 	querydsl.extendsFrom compileClasspath
-}
-jar {
-	enabled = false
 }

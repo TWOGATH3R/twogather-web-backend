@@ -5,14 +5,10 @@ import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
-import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.RejectReason;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +16,8 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{

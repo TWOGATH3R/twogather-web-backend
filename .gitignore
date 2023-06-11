@@ -41,3 +41,5 @@ out/
 ### Testing with personal information ###
 /src/test/java/com/twogather/twogatherwebbackend/acceptance/SignUpSuccessTest.java
 /src/test/java/com/twogather/twogatherwebbackend/valid/BizRegNumberValidatorTest.java
+# log
+/application_log

@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import static com.twogather.twogatherwebbackend.TestConstants.BUSINESS_HOUR_SAVE_UPDATE_INFO;
+import static com.twogather.twogatherwebbackend.util.TestConstants.BUSINESS_HOUR_SAVE_UPDATE_INFO;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
 import static org.assertj.core.api.Assertions.assertThat;

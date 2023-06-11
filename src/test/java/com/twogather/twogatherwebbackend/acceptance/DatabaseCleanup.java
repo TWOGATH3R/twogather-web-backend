@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class DatabaseCleanup implements InitializingBean {
     @PersistenceContext
-    private EntityManager entityManager;
+    public EntityManager entityManager;
     private List<String> tableNames;
 
     @Override

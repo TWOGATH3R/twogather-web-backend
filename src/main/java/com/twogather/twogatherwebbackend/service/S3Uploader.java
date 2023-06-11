@@ -33,10 +33,13 @@ public class S3Uploader implements StorageUploader {
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
+    @Value("${aws.s3.store.directory}")
+    private String directory;
     @Value("${aws.s3.region}")
     private String region;
     private final AmazonS3 amazonS3Client;
 
+    @Override
     public boolean doesObjectExist(String objectUrl) {
         try {
             String key = extractKeyFromUrl(objectUrl);
@@ -49,7 +52,6 @@ public class S3Uploader implements StorageUploader {
     @Override
     public String upload(String directory, File uploadFile) {
         String fileName = directory + "/" + UUID.randomUUID() + uploadFile.getName();
-
         amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
 
@@ -61,6 +63,15 @@ public class S3Uploader implements StorageUploader {
     }
     @Override
     public List<String> uploadList(String directory, List<MultipartFile> list){
+        ArrayList<String> urlList = new ArrayList<>();
+        for (MultipartFile file: list){
+            String url = upload(directory, file);
+            urlList.add(url);
+        }
+        return urlList;
+    }
+    @Override
+    public List<String> uploadList(List<MultipartFile> list){
         ArrayList<String> urlList = new ArrayList<>();
         for (MultipartFile file: list){
             String url = upload(directory, file);

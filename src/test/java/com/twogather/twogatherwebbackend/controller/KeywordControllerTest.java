@@ -1,12 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.domain.Keyword;
 import com.twogather.twogatherwebbackend.dto.keyword.KeywordResponse;
 import com.twogather.twogatherwebbackend.service.KeywordService;
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
-import com.twogather.twogatherwebbackend.service.StoreService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,13 +11,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.EMAIL_REQUEST;
-import static com.twogather.twogatherwebbackend.TestConstants.KEYWORD_LIST;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getKeywordFormat;

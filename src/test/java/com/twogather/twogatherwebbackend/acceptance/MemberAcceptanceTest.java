@@ -1,14 +1,12 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;

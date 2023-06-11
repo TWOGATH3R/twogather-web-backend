@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +34,13 @@ import io.restassured.specification.MultiPartSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,8 +50,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.UNDEFINED_PORT;
 import static io.restassured.RestAssured.given;
 
@@ -77,7 +78,10 @@ public class AcceptanceTest
     @Autowired
     protected StoreRepository storeRepository;
     @Autowired
+    private AmazonS3 amazonS3;
+    @Autowired
     protected MemberRepository memberRepository;
+
     @BeforeEach
     public void setUp() {
         if(RestAssured.port == UNDEFINED_PORT){
@@ -85,6 +89,7 @@ public class AcceptanceTest
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.execute();
+        amazonS3.createBucket("store");
     }
     protected Tokens adminToken;
     protected Tokens ownerToken;

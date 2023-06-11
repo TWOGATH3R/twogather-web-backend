@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;

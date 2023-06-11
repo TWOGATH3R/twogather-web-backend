@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
+
 
 public class CommentAcceptanceTest extends AcceptanceTest{
     @Autowired

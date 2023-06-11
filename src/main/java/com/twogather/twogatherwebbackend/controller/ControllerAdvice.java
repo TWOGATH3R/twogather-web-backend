@@ -68,10 +68,12 @@ public class ControllerAdvice {
         });
         return ResponseEntity.badRequest().body(ErrorResponse.of(INVALID_ARGUMENT.getMessage(),errors));
     }
+
+    //TODO:나중에 변경
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final HttpServletRequest request, final Exception exception) {
         logWarn(request, exception);
-        return ResponseEntity.internalServerError().body(ErrorResponse.internalServerError());
+        return ResponseEntity.internalServerError().body(ErrorResponse.of(exception));
     }
 
     private void logWarn(HttpServletRequest request, Exception e){

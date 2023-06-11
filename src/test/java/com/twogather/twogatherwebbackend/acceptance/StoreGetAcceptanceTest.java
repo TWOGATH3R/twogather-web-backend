@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.twogather.twogatherwebbackend.TestUtil;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,8 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;

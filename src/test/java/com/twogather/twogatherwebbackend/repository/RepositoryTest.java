@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 
 @DataJpaTest
@@ -33,7 +34,7 @@ public class RepositoryTest {
     protected ConsumerRepository consumerRepository;
     @Autowired
     protected StoreOwnerRepository ownerRepository;
-    @Autowired
+    @PersistenceContext
     protected EntityManager em;
     protected PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
@@ -46,7 +47,6 @@ public class RepositoryTest {
     protected StoreKeywordRepository storeKeywordRepository;
     @Autowired
     protected CategoryRepository categoryRepository;
-
 
     protected Store store1;
     protected Store store2;

@@ -31,7 +31,7 @@ public class ErrorResponse {
         return new ErrorResponse(message, errors);
     }
 
-    public static ErrorResponse of(final RuntimeException exception) {
+    public static ErrorResponse of(final Exception exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
