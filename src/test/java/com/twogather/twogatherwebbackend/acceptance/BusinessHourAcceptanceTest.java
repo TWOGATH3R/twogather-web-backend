@@ -1,13 +1,12 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.twogather.twogatherwebbackend.controller.BusinessHourController;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static io.restassured.RestAssured.given;
