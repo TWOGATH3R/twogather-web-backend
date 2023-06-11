@@ -533,6 +533,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_save_6">Save</a></li>
 <li><a href="#_update_7">Update</a></li>
+<li><a href="#_delete_8">Delete</a></li>
 </ul>
 </li>
 <li><a href="#_category">Category</a>
@@ -617,8 +618,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2NDU4MTYwfQ.1zvz4rUxulWfUPeKKwcnxx50m8QZz05qJnRFdo7cbzmWRNQMBw4YmfH521-VY8slS---w_m22U8LNOiKzURR5w
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjQ2Njg5MH0.mSrNoRTNDRzUEZoaFANDn-Utod3hdKTmQNyjjg7mQ-MCXVo6_1z53Yv-iTKMSwJ0YA_hJ-ZqHZRlt19BADSRjw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2NDU5NTUxfQ.7X2GauLdb38Ktw0S5sTm503lvFOkloSrYm2ifGlxpO1VsIM72RNBjqADE7JHmxmlh0WRyQMYbTFUG1bZL-MmAg
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWQiOjEsImV4cCI6MTY4NjQ2ODI4MX0.aefpRw0hU764XnpqKpqc8d9Zr7qFF_FXeV55XkVRhTMY6huL19PCfLrIVStQGNGtDT2AReDmteCzDaUZ6O7ZfA
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -3379,7 +3380,7 @@ Content-Length: 165
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=ef31acdf-d424-4834-bea1-3e93177ffa7d HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=4a7a2674-daec-48b6-9bef-250576764f91 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -3487,7 +3488,7 @@ Content-Length: 138
 <h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=110e81cc-cfdf-4604-835c-bdce75fc9688 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=e469d757-6c66-4294-8729-56a9cfe437e3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -3963,7 +3964,7 @@ Content-Length: 130
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=19eddc8c-afa9-44e1-ac34-11bc3f62cd7b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=84e99d4e-8d54-4756-9bce-8017c56dc8e9 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4105,7 +4106,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=ff75434c-2585-430d-b6f1-cd46064be534 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=a091a186-0a37-4034-ac58-f3305c94a32f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -4696,8 +4697,8 @@ Content-Length: 1198
     } ],
     "pageable" : "INSTANCE",
     "last" : true,
-    "totalPages" : 1,
     "totalElements" : 3,
+    "totalPages" : 1,
     "size" : 3,
     "number" : 0,
     "sort" : {
@@ -4705,8 +4706,8 @@ Content-Length: 1198
       "sorted" : false,
       "unsorted" : true
     },
-    "first" : true,
     "numberOfElements" : 3,
+    "first" : true,
     "empty" : false
   }
 }</code></pre>
@@ -4897,7 +4898,7 @@ Content-Length: 1198
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=55a70e2a-65fa-45e1-ac55-ff9bae2d71fc HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=0fe27c3e-9532-41c6-a362-a411db98d323 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -5021,7 +5022,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=fc727cb2-12f8-453e-ad98-0564c9f98aa7 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=93aa69e1-d60c-487b-8bea-380460781d54 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -5150,7 +5151,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=42d076b5-7986-4e62-930d-1a6a43b2ece9 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=0df7131c-ebfe-4e02-a70d-44b42c3221e9 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5253,10 +5254,11 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 116
+Content-Length: 138
 
 {
   "data" : {
+    "commentId" : 1,
     "content" : "대댓글내용",
     "isOwner" : false,
     "createDate" : "2023-06-11"
@@ -5285,6 +5287,13 @@ Content-Length: 116
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.commentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 id</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
@@ -5368,10 +5377,11 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 116
+Content-Length: 138
 
 {
   "data" : {
+    "commentId" : 1,
     "content" : "대댓글내용",
     "isOwner" : false,
     "createDate" : "2023-06-11"
@@ -5401,6 +5411,13 @@ Content-Length: 116
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.commentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 id</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
@@ -5423,6 +5440,61 @@ Content-Length: 116
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_delete_8"><a class="link" href="#_delete_8">Delete</a></h3>
+<div class="sect3">
+<h4 id="_delete_8_http_request"><a class="link" href="#_delete_8_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2/comments/3 HTTP/1.1
+Host: docs.api.com</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_delete_8_path_parameters"><a class="link" href="#_delete_8_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments/{commentId}</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">파라미터명</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 가게의 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 댓글의 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentId</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제할 대댓글의 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_delete_8_http_response"><a class="link" href="#_delete_8_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -5588,7 +5660,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-09 13:32:45 +0900
+Last updated 2023-06-11 12:45:53 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
