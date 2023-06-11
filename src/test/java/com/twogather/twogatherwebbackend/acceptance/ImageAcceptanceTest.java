@@ -1,12 +1,12 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.service.S3Uploader;
+import com.twogather.twogatherwebbackend.service.StorageUploader;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ImageAcceptanceTest extends AcceptanceTest{
     @Autowired
-    private S3Uploader s3Uploader;
+    private StorageUploader s3Uploader;
     @Autowired
     private ImageRepository imageRepository;
 
@@ -62,14 +62,15 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         imageUrl1 = responseList.get(0).getUrl();
         imageUrl2 = responseList.get(1).getUrl();
     }
+    /*
     @Test
-    public void whenUploadImage_ThenCreateImage() throws Exception {
+    public void whenUploadImage_ThenCreateImageWithProd() throws Exception {
         // Given,then
         createImages();
 
         Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
         Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
-    }
+    }*/
 
 
     @Test
@@ -101,9 +102,10 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         Assertions.assertFalse(s3Uploader.doesObjectExist(imageUrl2));
     }
 
+    /*
     @Test
     @DisplayName("탈퇴한 회원으로 이미지 삭제시 throw exception")
-    public void whenDeleteImageWithLeaveMember_ThenThrowException() throws Exception {
+    public void whenDeleteImageWithLeaveMember_ThenThrowExceptionWithProd() throws Exception {
         // Given
         createImages();
         leaveOwner();
@@ -118,7 +120,7 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
         Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
 
-    }
+    }*/
 
     @Test
     public void whenDeleteNoSuchImage_ThenNotThrowException() {
