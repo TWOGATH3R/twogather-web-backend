@@ -176,7 +176,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 }
             }
         }
-        return null;
+         return new OrderSpecifier<>(Order.DESC, store.storeId);
 
     }
     private Double roundToTwoDecimal(Double score){
