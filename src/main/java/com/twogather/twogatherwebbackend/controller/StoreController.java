@@ -31,23 +31,10 @@ public class StoreController {
         return "test";
     }
 
-    @PostMapping(value = "/stores/categories/{categoryId}")
+    @PostMapping(value = "/stores")
     @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> save(
-                                        @PathVariable Long categoryId,
-                                        @RequestPart @Valid final BusinessHourSaveUpdateListRequest businessHourRequest,
-                                        @RequestPart @Valid final StoreSaveUpdateRequest storeRequest,
-                                        @RequestPart @Valid final MenuSaveListRequest menuRequest,
-                                        @RequestPart List<MultipartFile> storeImageList,
-                                        @RequestPart final List<String> keywordList
-                                         ) {
-        StoreSaveUpdateResponse data =
-                storeService.save(categoryId,
-                        businessHourRequest,
-                        storeRequest,
-                        menuRequest,
-                        storeImageList,
-                        keywordList);
+    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeRequest) {
+        StoreSaveUpdateResponse data = storeService.save(storeRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -69,7 +56,7 @@ public class StoreController {
     }
     @GetMapping("/stores/{storeId}")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
-        StoreSaveUpdateResponse data = storeService.getStore(storeId);
+        StoreDefaultResponse data = storeService.getStore(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

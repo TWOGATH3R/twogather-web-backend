@@ -9,9 +9,11 @@ import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreDefaultResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
+import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +21,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.twogather.twogatherwebbackend.domain.QCategory.category;
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
 import static com.twogather.twogatherwebbackend.domain.QStoreOwner.storeOwner;
 import static com.twogather.twogatherwebbackend.domain.QLikes.likes;
@@ -34,11 +39,43 @@ import static org.springframework.util.StringUtils.hasText;
 @Repository
 public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
+    private final StoreKeywordRepository storeKeywordRepository;
 
-    public StoreCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+    public StoreCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory,
+                                     StoreKeywordRepository storeKeywordRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
+        this.storeKeywordRepository = storeKeywordRepository;
     }
 
+    @Override
+    public Optional<StoreDefaultResponse> findDefaultActiveStoreInfo(Long storeId){
+         StoreDefaultResponse results =
+                jpaQueryFactory
+                        .select(
+                                Projections.constructor(
+                                        StoreDefaultResponse.class,
+                                        store.storeId,
+                                        store.name,
+                                        store.address,
+                                        store.phone,
+                                        store.category.name
+                                ))
+                        .from(store)
+                        .leftJoin(store.category, category)
+                        .where(store.status.eq(StoreStatus.APPROVED))
+                        .where(store.storeId.eq(storeId))
+                        .groupBy(store.storeId)
+                        .fetchOne();
+        List<Keyword> keywordList = storeKeywordRepository.findKeywordsByStoreId(storeId);
+
+        List<String> keywordNames = keywordList.stream()
+                .limit(3)
+                .map(Keyword::getName)
+                .collect(Collectors.toList());
+        results.setKeywordList(keywordNames);
+
+        return Optional.of(results);
+    }
     @Override
     public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
         List<TopStoreResponse> results =
@@ -219,7 +256,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                 .requestDate(store.getRequestDate())
                                 .storeId(store.getStoreId())
                                 .address(store.getAddress())
-                                .name(store.getName())
+                                .storeName(store.getName())
                                 .build()).collect(Collectors.toList());
     }
 }

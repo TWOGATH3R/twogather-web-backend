@@ -20,7 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
     private final MenuService menuService;
+    @PostMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> saveList(@PathVariable final Long storeId, @RequestBody @Valid final MenuSaveListRequest request) {
+        List<MenuResponse> data = menuService.saveList(storeId, request.getMenuSaveList());
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
+    }
     @PatchMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> updateList(@PathVariable final Long storeId, @RequestBody @Valid final MenuUpdateListRequest request) {

@@ -2,12 +2,14 @@ package com.twogather.twogatherwebbackend.repository.store;
 
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreDefaultResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface StoreCustomRepository {
@@ -15,4 +17,5 @@ public interface StoreCustomRepository {
     Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String categoryName, String keyword, String location);
     Page<MyStoreResponse> findStoresByStatus(StoreStatus status, Pageable pageable);
     Page<MyStoreResponse> findMyStore(Long ownerId, Pageable pageable);
+    Optional<StoreDefaultResponse> findDefaultActiveStoreInfo(Long storeId);
 }

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
@@ -60,143 +61,24 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         Assertions.assertTrue(categoryRepository.findById(store.getCategory().getCategoryId()).isPresent());
         Assertions.assertTrue(!businessHourRepository.findByStoreStoreId(storeId).isEmpty());
         Assertions.assertTrue(businessHourRepository.findByStoreStoreId(storeId).size() == 7);
-        Assertions.assertTrue(!imageRepository.findByStoreStoreId(storeId).isEmpty());
         Assertions.assertTrue(!menuRepository.findByStoreStoreId(storeId).isEmpty());
         Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
     }
 
 
     @Test
-    @DisplayName("가게 저장시 Save menu 시에 유효성 실패 - null 입력하면 안됨")
-    public void whenSaveMenuList_WithInputNull_ThenThrowException(){
-
-        registerStore(
-                STORE_SAVE_REQUEST,
-                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_NULL_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
-
-    }
-
-    @Test
-    @DisplayName("save: 탈퇴한 회원의 경우 throw exception")
-    public void whenLeavedUserRequest_thenThrowException(){
-        // given
-        leaveOwner();
-
-        //when, then
-        registerStore(
-                STORE_SAVE_REQUEST,
-                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_NULL_REQUEST
-        )
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(UNAUTHORIZED.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("save: 영업시작시간이 영업종료시간보다 나중이라면 exception throw")
-    public void whenStartTimeIsLaterThanEndTime_thenThrowException() {
-        //given
-        BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
-
-        //when, then
-        registerStore(
-                STORE_SAVE_REQUEST,
-                request,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
-
-    }
-    @Test
-    @DisplayName("save: 브레이크시작시간이 브레이크종료시간보다 나중이라면 exception을 throw해야한다")
-    public void whenBreakStartTimeIsLaterThanEndTime_thenThrowException() {
-        //given
-        BusinessHourSaveUpdateListRequest request = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
-
-        //when, then
-        registerStore(
-                STORE_SAVE_REQUEST,
-                request,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("save: 만약 hasbreaktime을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
-    public void whenValidateBreakTimeNull_thenThrowException() {
-        //given
-        BusinessHourSaveUpdateListRequest request = createNullTimeBusinessHourRequest(storeId);
-
-        //when, then
-        registerStore(
-                STORE_SAVE_REQUEST,
-                request,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("save: 만약 isopen을 true로 설정해놨는데 starttime이나 endtime중에 하나를 null넣으면 exception throw")
-    public void whenValidateOpenEndTimeNull_thenThrowException() {
-        //given
-        BusinessHourSaveUpdateListRequest request = createInvalidTimeBusinessHourRequest(storeId);
-
-        //when, then
-        registerStore(
-                STORE_SAVE_REQUEST,
-                request,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("가게 저장시 Save menu - 음수 가격 입력하면 안됨")
-    public void whenSaveMenuList_WithInputMinusPrice_ThenThrowException()  {
-        registerStore(
-                STORE_SAVE_REQUEST,
-                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_MINUS_VALUE_REQUEST
-        )
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
-    }
-
-    @Test
     @DisplayName("가게 저장시 빈값, null, 올바르지않은 전화번호 형식에 대한 예외 throw")
     public void whenSaveIncludeNullFieldStore_ThenThrowsException()  {
         //given
         StoreSaveUpdateRequest invalidRequest = new StoreSaveUpdateRequest(
-                null, "", "01012312312","0000000000", "홍길동", LocalDate.now()
+                null, "", "01012312312","0000000000", "홍길동", LocalDate.now(),
+                new ArrayList<>(), 1l
         );
         //when, then
-        registerStore(
-                invalidRequest,
-                BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST,
-                KEYWORD_LIST,
-                MENU_SAVE_LIST_REQUEST
-        )
+        doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                invalidRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
 
@@ -210,7 +92,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 "updateName", "updateAddress", "063-231-4999",
-                "0000000001", "홍길당", LocalDate.now()
+                "0000000001", "홍길당", LocalDate.now(), new ArrayList<>(),1l
         );
         //when, then
         doPut(URL+"/"+storeId,
@@ -236,7 +118,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 null, "updateAddress", "063-231-4999",
-                "0000000001", "홍길당", LocalDate.now()
+                "0000000001", "홍길당", LocalDate.now(), null,1l
         );
         //when, then
         doPut(URL+"/"+storeId,
@@ -255,7 +137,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 null, "updateAddress", "061233-231-4999",
-                "0000000001", "홍길당", LocalDate.now()
+                "0000000001", "홍길당", LocalDate.now(), null, 1l
         );
         //when, then
         doPut(URL+"/"+storeId,

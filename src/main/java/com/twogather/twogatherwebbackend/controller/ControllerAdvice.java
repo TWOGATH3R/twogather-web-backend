@@ -1,10 +1,12 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import akka.http.javadsl.Http;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +37,10 @@ public class ControllerAdvice {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(ex.getStatus()).body(errorResponse);
     }
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<?> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ex));
+    }
 
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
@@ -45,6 +51,11 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException e) {
         logInfo(request,e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.of(e));
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpServletRequest request,HttpMessageNotReadableException ex) {
+        logInfo(request,ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ex));
     }
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> authenticationExceptionHandler(HttpServletRequest request, AuthenticationException e) {
@@ -77,11 +88,13 @@ public class ControllerAdvice {
     }
 
     private void logWarn(HttpServletRequest request, Exception e){
+        e.printStackTrace();
         log.warn("An error occurred while processing the request", e);
         log.warn("Request URL: {}", request.getRequestURL());
         log.warn("Request method: {}", request.getMethod());
     }
     private void logInfo(HttpServletRequest request, Exception e){
+        e.printStackTrace();
         log.info("error message: {}", e.getMessage());
         log.info("An error occurred while processing the request", e);
         log.info("Request URL: {}", request.getRequestURL());
