@@ -3,7 +3,7 @@
 PROJECT_ROOT="/home/ubuntu/app"
 JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
 
-APP_LOG="$PROJECT_ROOT/application.log"
+APP_LOG="$PROJECT_ROOT/application-out.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
