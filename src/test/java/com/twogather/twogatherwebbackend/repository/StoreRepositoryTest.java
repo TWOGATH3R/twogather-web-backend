@@ -88,7 +88,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드, 지역, 카테고리로 검색하면 그에 해당하는 결과를 페이징을 사용해서 반환해준다")
     void WhenSearchStoresWithKeywordLocationCategory_ThenReturnStore1() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
         Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
         Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
         Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
@@ -131,7 +131,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 지역, 카테고리로만 검색하면 키워드는 필터링에서 제외하고 결과를 반환해준다")
     void WhenSearchStoresWithLocationCategoryExcludeKeyword_ThenReturnStore2WithAllKeywords() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
         Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
         Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
         Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
@@ -173,7 +173,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,카테고리로만 검색하면 지역은 필터링에서 제외하고 결과를 반환해준다")
     void WhenSearchStoresWithKeywordCategoryExcludeLocation_ThenReturnStore1WithAllLocations() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
         Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
         Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
         Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
@@ -216,7 +216,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,지역로만 검색하면 카테고리는 필터링에서 제외하고 결과를 반환해준다")
     void WhenSearchStoresWithKeywordLocationExcludeCategory_ThenReturnStore1WithAllCategories() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
         Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
         Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
         Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
@@ -260,7 +260,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,지역, 카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - reviewCount, 내림차순")
     void whenSortingParametersPassed_thenFindStoresByReviewCountDESCSortsResults() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, StoreSearchType.MOST_REVIEWED.name());
 
         reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
@@ -284,7 +284,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - reviewCount, 오름차순")
     void whenSortingParametersPassed_thenFindStoresByReviewCountASCCSortsResults() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "reviewsCount");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
 
         reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
         reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
@@ -308,7 +308,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - avgScore, 내림차순")
     void whenSortingParametersPassed_thenFindStoresByAvgScoreDESCSortsResults() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "avgScore");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, StoreSearchType.TOP_RATED.name());
 
         String emptyKeyword = "";
         String emptyLocation = "";
@@ -331,7 +331,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게를 키워드,지역,카테고리 필터링 제외시키고 결과리스트의 정렬됨만을 확인 - avgScore, 오름차순")
     void whenSortingParametersPassed_thenFindStoresByAvgScoreASCSortsResults() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "avgScore");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.TOP_RATED.name());
 
         String emptyKeyword = "";
         String emptyLocation = "";
