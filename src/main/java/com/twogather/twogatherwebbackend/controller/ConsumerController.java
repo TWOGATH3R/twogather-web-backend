@@ -19,15 +19,17 @@ public class ConsumerController {
     private final MemberService memberService;
     private final ConsumerService consumerService;
 
-    @PostMapping("/verify-password")
-    public ResponseEntity<Response> verifyPassword(@RequestBody String password) {
+    @PostMapping("/{memberId}/verify-password")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,@RequestBody String password) {
         boolean passwordMatches = memberService.verifyPassword(password);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }
 
-    @PutMapping("/password")
-    public ResponseEntity<Response> changePassword(@RequestBody PasswordRequest request) {
+    @PutMapping("/{memberId}/password")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> changePassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
         memberService.changePassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -41,14 +43,14 @@ public class ConsumerController {
     }
 
     @PutMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberUpdateRequest consumerSaveUpdateRequest){
         MemberResponse data = memberService.update(consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }
     @DeleteMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> leave(@PathVariable Long memberId) {
         consumerService.delete(memberId);
 
@@ -56,7 +58,7 @@ public class ConsumerController {
     }
 
     @GetMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> getConsumerInfo(@PathVariable final Long memberId) {
         MemberResponse data = consumerService.getConsumerInfo(memberId);
         return ResponseEntity.ok(new Response(data));

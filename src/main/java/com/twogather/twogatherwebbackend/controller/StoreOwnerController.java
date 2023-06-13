@@ -28,22 +28,24 @@ public class StoreOwnerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
-    @PostMapping("/verify-password")
-    public ResponseEntity<Response> verifyPassword(@RequestBody PasswordRequest request) {
+    @PostMapping("/{memberId}/verify-password")
+    @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
+    public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
         boolean passwordMatches = memberService.verifyPassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }
 
-    @PutMapping("/password")
-    public ResponseEntity<Response> changePassword(@RequestBody PasswordRequest request) {
+    @PutMapping("/{memberId}/password")
+    @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
+    public ResponseEntity<Response> changePassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
         memberService.changePassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{memberId}")
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
+    @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> getOwnerInfo(@PathVariable Long memberId){
         MemberResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
 
@@ -51,7 +53,7 @@ public class StoreOwnerController {
     }
 
     @PutMapping("/{memberId}")
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
+    @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final MemberUpdateRequest storeOwnerSaveUpdateRequest){
         MemberResponse data = memberService.update(storeOwnerSaveUpdateRequest);
 
@@ -59,7 +61,7 @@ public class StoreOwnerController {
     }
 
     @DeleteMapping("/{memberId}")
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#memberId)")
+    @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> leave(@PathVariable Long memberId) {
         storeOwnerService.delete(memberId);
 

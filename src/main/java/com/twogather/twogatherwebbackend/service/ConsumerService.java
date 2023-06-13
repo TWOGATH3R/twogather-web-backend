@@ -55,7 +55,7 @@ public class ConsumerService {
 
     @Transactional(readOnly = true)
     public MemberResponse getConsumerInfo(final Long memberId) {
-        Consumer consumer = consumerRepository.findById(memberId).orElseThrow(
+        Consumer consumer = consumerRepository.findActiveMemberById(memberId).orElseThrow(
                 ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID)
         );
         return toResponse(consumer);

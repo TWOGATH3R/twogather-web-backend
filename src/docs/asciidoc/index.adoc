@@ -13,10 +13,16 @@ api spec 문서
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Consumer-Password-Verification
-operation::consumer/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+operation::consumer/verify-password/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === StoreOwner-Password-Verification
-operation::owner/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+operation::owner/verify-password/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
+=== Consumer-Password-Verification
+operation::consumer/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
+
+=== StoreOwner-Password-Verification
+operation::owner/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
 
 == Admin
 === Get-Store

@@ -16,8 +16,8 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     boolean existsByUsername(String username);
     Optional<Consumer> findByUsername(String username);
     @Query("select m from Consumer m where m.username =:username and m.isActive = true")
-    Optional<Member> findActiveMemberByUsername(@Param("username") String username);
+    Optional<Consumer> findActiveMemberByUsername(@Param("username") String username);
     @Query("select m from Consumer m where m.memberId =:memberId and m.isActive = true")
-    Optional<Member> findActiveMemberById(@Param("memberId") Long memberId);
+    Optional<Consumer> findActiveMemberById(@Param("memberId") Long memberId);
 
 }

@@ -191,7 +191,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(post("/api/owners/verify-password")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/owners/{memberId}/verify-password",1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(
@@ -202,6 +202,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                 .andDo(document("owner/verify-password",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("사업자의 고유 id")
+                        ),
                         requestFields(
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
                         ),
@@ -220,7 +223,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
         //when
         //then
 
-        mockMvc.perform(put("/api/owners/password")
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/owners/{memberId}/password",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
@@ -231,6 +234,9 @@ public class StoreOwnerControllerTest extends ControllerTest{
                 .andDo(document("owner/change-password",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("사업자의 고유 id")
+                        ),
                         requestFields(
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("바꿀 비밀번호")
                         )

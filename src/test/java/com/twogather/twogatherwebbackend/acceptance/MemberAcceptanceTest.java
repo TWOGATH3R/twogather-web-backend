@@ -155,7 +155,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenOwnerChangePassword_ThenSuccess(){
         //given
         registerOwner();
-        String UPDATE_URL = OWNER_URL + "/password";
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId + "/password";
         String newPassword = "newnew123";
         //when
         doPut(UPDATE_URL,
@@ -175,7 +175,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenConsumerChangePassword_ThenSuccess(){
         //given
         registerConsumer();
-        String UPDATE_URL = CONSUMER_URL  + "/password";
+        String UPDATE_URL = CONSUMER_URL + "/" + loginMemberId + "/password";
         String newPassword = "newnew123";
         //when
         doPut(UPDATE_URL,
