@@ -58,7 +58,7 @@ public class StoreService {
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validationBizRegNumber(storeRequest);
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
@@ -83,7 +83,7 @@ public class StoreService {
 
     }
     public boolean isMyStore(Long storeId) {
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 () ->new CustomAccessDeniedException(ACCESS_DENIED)
         );

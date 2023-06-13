@@ -46,16 +46,16 @@ public class Member {
         this.isActive = isActive;
     }
     public void update(String username, String email, String password, String name){
-        if(!username.isEmpty()){
+        if(username!=null && !username.isEmpty()){
             this.username = username;
         }
-        if(!email.isEmpty()){
+        if(email!=null &&!email.isEmpty()){
             this.email = email;
         }
-        if(!password.isEmpty()){
+        if(password!=null &&!password.isEmpty()){
             this.password = password;
         }
-        if(!name.isEmpty()){
+        if(name!=null &&!name.isEmpty()){
             this.name = name;
         }
     }

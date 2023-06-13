@@ -2,13 +2,12 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
-import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
+import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -28,19 +28,18 @@ public class StoreOwnerService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public boolean isStoreOwner(Long memberId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Member member = memberRepository.findActiveMemberByUsername(currentUsername).orElseThrow(
+    public boolean isStoreOwner(Long requestMemberId){
+        String currentUsername = getLoginUsername();
+        Member requestMember = storeOwnerRepository.findActiveMemberById(requestMemberId).orElseThrow(
                 ()->  new CustomAuthenticationException(UNAUTHORIZED));
-        if (!currentUsername.equals(member.getUsername())) {
+        if (!currentUsername.equals(requestMember.getUsername())) {
             throw new CustomAccessDeniedException(ACCESS_DENIED);
         }
         return true;
     }
 
 
-    public MemberResponse join(final MemberSaveUpdateRequest request){
+    public MemberResponse join(final MemberSaveRequest request){
         validateDuplicateUsername(request.getUsername());
         StoreOwner owner = new StoreOwner(
                 request.getUsername(),

@@ -2,8 +2,8 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +82,7 @@ public class ConsumerControllerTest extends ControllerTest {
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName())))
+                                        .writeValueAsString(new MemberSaveRequest(response.getEmail(), response.getUsername(), "password1", response.getName())))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("consumer/get",
@@ -106,7 +106,7 @@ public class ConsumerControllerTest extends ControllerTest {
     public void update_WhenConsumerInfoChange_Then200Ok() throws Exception {
         //given
         MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
-        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+        MemberSaveRequest request = new MemberSaveRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
         when(memberService.update(any())).thenReturn(response);
         //when
         //then
@@ -128,10 +128,10 @@ public class ConsumerControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("고객의 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()).optional(),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional()
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
@@ -149,7 +149,7 @@ public class ConsumerControllerTest extends ControllerTest {
         //given
         MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
         when(consumerService.join(any())).thenReturn(response);
-        MemberSaveUpdateRequest request = new MemberSaveUpdateRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
+        MemberSaveRequest request = new MemberSaveRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
 
         //when
         //then
@@ -191,12 +191,12 @@ public class ConsumerControllerTest extends ControllerTest {
         //when
         //then
 
-        mockMvc.perform(post("/api/consumers/verify-password")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/consumers/verify-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
                                 objectMapper
-                                        .writeValueAsString(new VerifyPasswordRequest("passsword1"))))
+                                        .writeValueAsString(new PasswordRequest("passsword1"))))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document("consumer/verify-password",
@@ -207,6 +207,32 @@ public class ConsumerControllerTest extends ControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경")
+    public void WhenChangePassword_ThenSuccess() throws Exception {
+        //given
+        doNothing().when(memberService).changePassword(any());
+        //when
+        //then
+
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/consumers/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .writeValueAsString(new PasswordRequest("passsword1"))))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("consumer/change-password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("바꿀 비밀번호")
                         )
                 ));
 

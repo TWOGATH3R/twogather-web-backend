@@ -2,7 +2,7 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -38,7 +38,7 @@ public class StoreOwnerServiceTest {
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
-        final MemberSaveUpdateRequest request = returnRequest();
+        final MemberSaveRequest request = returnRequest();
         when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(false);
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
@@ -52,21 +52,21 @@ public class StoreOwnerServiceTest {
     @DisplayName("save: 중복되는 이메일로 두번 가입했을때 예외가 터진다")
     public void save_DuplicateEmail_ShouldThrowMemberException() {
         // given
-        final MemberSaveUpdateRequest request = returnRequest();
+        final MemberSaveRequest request = returnRequest();
         //when
         when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(true);
         // when
         Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }
-    private MemberSaveUpdateRequest returnRequest(){
-        return new MemberSaveUpdateRequest(
+    private MemberSaveRequest returnRequest(){
+        return new MemberSaveRequest(
                 "testid1",
                 "test@test.com",
                 "test131",
                 "김사업"
         );
     }
-    private StoreOwner requestToEntity(MemberSaveUpdateRequest request){
+    private StoreOwner requestToEntity(MemberSaveRequest request){
         return new StoreOwner(
                 request.getUsername(),
                 request.getEmail(), request.getPassword(), request.getName(),

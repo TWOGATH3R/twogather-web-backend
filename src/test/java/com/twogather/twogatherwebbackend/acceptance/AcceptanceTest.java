@@ -215,7 +215,7 @@ public class AcceptanceTest
     protected void registerOwner(){
         log.info("register owner");
         memberResponse = convert(
-                doPost(OWNER_URL, null,null,OWNER_SAVE_UPDATE_REQUEST)
+                doPost(OWNER_URL, null,null,OWNER_SAVE_REQUEST)
                         .extract().as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<MemberResponse>(){}
                         );
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);

@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
 import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.LikeException.LikeErrorCode.DUPLICATE_LIKE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
@@ -28,7 +27,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     public void addStoreLike(Long storeId){
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new CustomAuthenticationException(UNAUTHORIZED)
         );
@@ -42,7 +41,7 @@ public class LikeService {
     }
 
     public void deleteStoreLike(Long storeId){
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()-> new CustomAuthenticationException(UNAUTHORIZED)
         );

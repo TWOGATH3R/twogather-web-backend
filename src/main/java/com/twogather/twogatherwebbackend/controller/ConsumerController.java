@@ -1,9 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
+import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,15 @@ public class ConsumerController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }
 
+    @PutMapping("/password")
+    public ResponseEntity<Response> changePassword(@RequestBody PasswordRequest request) {
+        memberService.changePassword(request.getPassword());
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @PostMapping
-    public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveUpdateRequest consumerSaveRequest) {
+    public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveRequest consumerSaveRequest) {
         MemberResponse data = consumerService.join(consumerSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
@@ -37,7 +42,7 @@ public class ConsumerController {
 
     @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
-    public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberSaveUpdateRequest consumerSaveUpdateRequest){
+    public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberUpdateRequest consumerSaveUpdateRequest){
         MemberResponse data = memberService.update(consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
