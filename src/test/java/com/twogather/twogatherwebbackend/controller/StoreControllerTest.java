@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.TestConstants;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.service.StoreService;
@@ -20,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
@@ -68,14 +67,21 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
                                 fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
                                 fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
-                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat())
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
+                                fieldWithPath("categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
+                                fieldWithPath("keywordIdList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
 
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
+                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
 
                         )
                 ));
@@ -278,7 +284,7 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("가게 단건 조회")
     public void getStoreInfoMethod_WhenGetStoreInfo_ThenReturnStoreInfo() throws Exception {
         //given
-        when(storeService.getStore(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
+        when(storeService.getStore(any())).thenReturn(STORE_DEFAULT_RESPONSE);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}", 1)
@@ -297,7 +303,10 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("가게 키워드 리스트")
+
                         )
                 ));
 
@@ -306,36 +315,43 @@ public class StoreControllerTest extends ControllerTest{
     @DisplayName("가게저장시에 요청한정보 + id 정보 반환")
     public void saveStoreMethod_WhenSaveStore_ThenReturnIdAndInfo() throws Exception {
         //given
-        when(storeService.save(any(), any(), any(), any(), anyList(), anyList())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
+        when(storeService.save(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/stores/categories/{categoryId}", 1L)
-                        .file(IMAGE_REQUEST_PART)
-                        .file(MENU_REQUEST_PART)
-                        .file(BUSINESS_HOUR_REQUEST_PART)
-                        .file(KEYWORD_REQUEST_PART)
-                        .file(STORE_REQUEST_PART))
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/stores")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .registerModule(new JavaTimeModule())
+                                        .writeValueAsString(STORE_SAVE_REQUEST))
+                )
                 .andExpect(status().isCreated())
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document("store/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("categoryId").description("가게가 해당하는 카테고리 id")
-                        ),
-                        requestParts(
-                                partWithName("businessHourRequest").description("가게 영업시간 정보"),
-                                partWithName("storeRequest").description("가게의 기본적인 정보"),
-                                partWithName("menuRequest").description("메뉴 목록"),
-                                partWithName("storeImageList").description("가게 이미지 리스트(Multipartfile형태)"),
-                                partWithName("keywordList").description("조회할 키워드 목록")
+                        requestFields(
+                                fieldWithPath("storeName").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("address").type(JsonFieldType.STRING).description("가게주소"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
+                                fieldWithPath("categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
+                                fieldWithPath("keywordIdList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
 
                         ),
                         responseFields(
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat())
+                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
+                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
 
                         )
                 ));

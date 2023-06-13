@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
 import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateInfo;
 import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateListRequest;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
@@ -14,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 
 import static org.hamcrest.Matchers.*;

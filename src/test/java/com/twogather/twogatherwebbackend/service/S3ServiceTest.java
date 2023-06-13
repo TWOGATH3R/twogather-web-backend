@@ -16,8 +16,6 @@ import java.nio.charset.StandardCharsets;
 
 @SpringBootTest
 public class S3ServiceTest {
-    @Autowired
-    private S3Uploader s3Uploader;
 
     /*
     @Test

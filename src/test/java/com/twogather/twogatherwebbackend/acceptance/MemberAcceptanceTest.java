@@ -1,14 +1,12 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -47,7 +45,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     @DisplayName("owner 회원가입 성공")
     public void whenOwnerSignup_ThenSuccess(){
         //given, when
-        Response result = doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST)
+        Response result = doPost(OWNER_URL, null,null,OWNER_SAVE_UPDATE_REQUEST)
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().as(Response.class);
 
@@ -61,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     @DisplayName("consumer 회원가입")
     public void WhenConsumerSignup_ThenSuccess() {
         //given, when
-        Response result = doPost(CONSUMER_URL, CONSUMER_SAVE_UPDATE_REQUEST)
+        Response result = doPost(CONSUMER_URL, null,null,CONSUMER_SAVE_UPDATE_REQUEST)
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().as(Response.class);
 
@@ -76,11 +74,11 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     @DisplayName("동일한 loginId 회원가입 시도시 에러 응답이 잘 반환돼야 함")
     public void WhenSignupWithDuplicateEmail_ThenBadRequest() {
         //given
-        doPost(CONSUMER_URL, CONSUMER_SAVE_UPDATE_REQUEST)
+        doPost(CONSUMER_URL, null,null,CONSUMER_SAVE_UPDATE_REQUEST)
                 .statusCode(HttpStatus.CREATED.value());
 
         // When, then
-        doPost(CONSUMER_URL, CONSUMER_SAVE_UPDATE_REQUEST)
+        doPost(CONSUMER_URL, null,null,CONSUMER_SAVE_UPDATE_REQUEST)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -91,7 +89,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         MemberSaveUpdateRequest invalidRequest = new MemberSaveUpdateRequest("ascom","us1","pw","홍길@@동");
 
         // when, then
-        doPost(OWNER_URL, invalidRequest)
+        doPost(OWNER_URL,null,null, invalidRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
@@ -102,10 +100,10 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         MemberSaveUpdateRequest request = new MemberSaveUpdateRequest("asd@naver.com","user1","pw1asd2312","홍길동");
 
         //when, then
-        doPost(OWNER_URL, request)
+        doPost(OWNER_URL, null,null,request)
                 .statusCode(HttpStatus.CREATED.value());
 
-        doPost(CONSUMER_URL, request)
+        doPost(CONSUMER_URL, null,null,request)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
     }
@@ -117,10 +115,10 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         MemberSaveUpdateRequest request2 = new MemberSaveUpdateRequest("asd@naver.com","user12","pw1asd2312","홍길동");
 
         //when, then
-        doPost(OWNER_URL, request1)
+        doPost(OWNER_URL, null,null,request1)
                 .statusCode(HttpStatus.CREATED.value());
 
-        doPost(CONSUMER_URL, request2)
+        doPost(CONSUMER_URL,null,null, request2)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
 
@@ -202,7 +200,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         registerConsumer();
         //when,then
         String url = "/api/email";
-        doPost(url, new EmailRequest(CONSUMER_EMAIL))
+        doPost(url, null,null,new EmailRequest(CONSUMER_EMAIL))
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
     }

@@ -84,6 +84,8 @@ dependencies {
 	implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
 	implementation 'ch.qos.logback.contrib:logback-json-core:0.1.5'
 	implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
+	//mocking s3
+	implementation 'io.findify:s3mock_2.12:0.2.4'
 
 }
 

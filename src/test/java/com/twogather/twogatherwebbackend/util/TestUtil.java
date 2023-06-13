@@ -1,9 +1,8 @@
-package com.twogather.twogatherwebbackend;
+package com.twogather.twogatherwebbackend.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import io.restassured.response.ValidatableResponse;
 import org.springframework.http.HttpStatus;

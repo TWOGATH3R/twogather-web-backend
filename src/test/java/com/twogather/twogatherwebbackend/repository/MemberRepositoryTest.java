@@ -5,7 +5,7 @@ import com.twogather.twogatherwebbackend.exception.MemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {

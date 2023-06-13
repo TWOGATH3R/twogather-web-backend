@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -38,6 +38,53 @@ public class BusinessHourControllerTest extends ControllerTest{
     @MockBean
     private StoreService storeService;
     private static final String URL = "/api/stores/{storeId}/business-hours";
+
+    @Test
+    @DisplayName("영업시간 정보 여러개에 대해 저장을 요청했을때 요청한정보 + id 정보 반환")
+    public void saveList_WhenSaveBusinessHours_Then201Status() throws Exception {
+        //given
+        when(businessHourService.saveList(any(), any())).thenReturn(BUSINESS_HOUR_RESPONSE_LIST);
+        //when
+        //then
+        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .registerModule(new JavaTimeModule())
+                                        .writeValueAsString(BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST))
+                )
+                .andExpect(status().isCreated())
+                .andDo(document("business-hour/save",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("businessHourList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
+                                fieldWithPath("businessHourList[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourList[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourList[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
+                                fieldWithPath("businessHourList[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourList[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("businessHourList[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+                        ),
+                        responseFields(
+                                fieldWithPath("data[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
+                                fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
+                                fieldWithPath("data[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week").attributes(getDayOfWeekFormat()),
+                                fieldWithPath("data[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("data[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("data[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
+                                fieldWithPath("data[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("data[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
+                                fieldWithPath("data[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
+
+                        )
+                ));
+
+    }
 
     @Test
     @DisplayName("영업시간 정보 여러개에 대해 업데이트를 요청했을때 변경된 정보 반환")

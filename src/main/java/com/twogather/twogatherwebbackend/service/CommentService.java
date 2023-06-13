@@ -1,26 +1,78 @@
 package com.twogather.twogatherwebbackend.service;
 
+import com.twogather.twogatherwebbackend.domain.Comment;
+import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.domain.Review;
+import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.exception.CommentException;
+import com.twogather.twogatherwebbackend.exception.MemberException;
+import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.repository.CommentRepository;
+import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.twogather.twogatherwebbackend.exception.CommentException.CommentErrorCode.NO_SUCH_COMMENT;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CommentService {
-    public CommentResponse save(CommentSaveUpdateRequest request){
-        //TODO:구현
-        return null;
+    private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+    private final ReviewRepository reviewRepository;
+    private final StoreRepository storeRepository;
+    public CommentResponse save(Long storeId, Long reviewId, CommentSaveUpdateRequest request){
+        //TODO: Review exception 추가
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        Boolean isOwner = isOwner(storeId, member);
+        Review review = reviewRepository.findById(reviewId).get();
+        Comment comment = new Comment(request.getContent(), review, member);
+        Comment savedComment = commentRepository.save(comment);
+        return new CommentResponse(savedComment.getCommentId(), savedComment.getContent(), isOwner, savedComment.getCreatedDate());
     }
-    public CommentResponse update(CommentSaveUpdateRequest request){
-        //TODO:구현
-        return null;
+    public CommentResponse update(Long storeId, Long commentId, CommentSaveUpdateRequest request){
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        Boolean isOwner = isOwner(storeId, member);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                ()->new CommentException(NO_SUCH_COMMENT)
+        );
+        comment.update(request.getContent());
+        return new CommentResponse(comment.getCommentId(), comment.getContent(), isOwner, comment.getCreatedDate());
+    }
+    public void delete(Long commentId){
+        commentRepository.deleteById(commentId);
     }
     public Boolean isMyComment(Long commentId){
-        //TODO:구현
-        return false;
+        String username = SecurityUtils.getUsername();
+        Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                ()->new CommentException(NO_SUCH_COMMENT)
+        );
+        return (member.getMemberId() == comment.getCommenter().getMemberId());
+    }
+    private Boolean isOwner(Long storeId, Member member){
+        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
+                ()->new StoreException(NO_SUCH_STORE)
+        );
+        Long ownerId = store.getOwner().getMemberId();
+        return ownerId == member.getMemberId();
     }
 }

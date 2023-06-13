@@ -9,6 +9,7 @@ import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,14 +26,13 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class ImageService {
     private final StoreRepository storeRepository;
     private final ImageRepository imageRepository;
-    private final S3Uploader s3Uploader;
-    private static final String DIRECTORY_NAME = "store";
+    private final StorageUploader s3Uploader;
 
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
-        List<String> uploadedFileUrlList = s3Uploader.uploadList(DIRECTORY_NAME, fileList);
+        List<String> uploadedFileUrlList = s3Uploader.uploadList(fileList);
         List<Image> imageList = toImageEntityList(uploadedFileUrlList, store);
         List<Image> savedImageList = imageRepository.saveAll(imageList);
         List<ImageResponse> responseList = toImageResponseList(savedImageList);

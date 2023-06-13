@@ -1,8 +1,6 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateInfo;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
@@ -17,16 +15,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.twogather.twogatherwebbackend.TestConstants.APPROVED_STORE;
+import static com.twogather.twogatherwebbackend.util.TestConstants.APPROVED_STORE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

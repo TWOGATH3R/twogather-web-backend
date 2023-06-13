@@ -30,7 +30,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //then
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
 
         Assertions.assertTrue(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
@@ -41,7 +41,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //given
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
 
         //when
         //then
@@ -59,11 +59,11 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //given
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
         //when,then
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.BAD_REQUEST.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.BAD_REQUEST.value());
 
         Assertions.assertTrue(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
@@ -73,7 +73,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
     @DisplayName("인증되지 않은자가 가게 좋아요를 누르는 경우 throw exception")
     public void whenSetStoreLikeWithAnonymousUser_ThenThrowException() {
         //given
-        doPost(url).statusCode(HttpStatus.UNAUTHORIZED.value());
+        doPost(url,null,null,null).statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
 
