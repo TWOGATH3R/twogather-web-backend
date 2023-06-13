@@ -290,25 +290,4 @@ public class AcceptanceTest
         String leaveMemberUrl = CONSUMER_URL+"/" + loginMemberId;
         doDelete(leaveMemberUrl, consumerToken.getRefreshToken(), consumerToken.getAccessToken());
     }
-
-    private File createFile(){
-        File file = null;
-        try {
-            // Create temp file
-            file = File.createTempFile("tempfile", ".txt");
-
-            // Write to temp file
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            bw.write("This is a dummy file");
-            bw.close();
-
-            // Delete file when program ends
-            file.deleteOnExit();
-
-        } catch (IOException e) {
-            // Handle the exception
-            e.printStackTrace();
-        }
-        return file;
-    }
 }
