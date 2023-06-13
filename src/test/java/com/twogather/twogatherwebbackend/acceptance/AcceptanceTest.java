@@ -29,6 +29,7 @@ import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.MultiPartSpecification;
+import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -102,26 +104,6 @@ public class AcceptanceTest
     protected Long loginMemberId;
     protected List<Keyword> keywordList;
 
-    protected <T> ValidatableResponse doGet(String path) {
-        return given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
-    }
-    protected <T> ValidatableResponse doGet(String path,String refreshToken, String accessToken) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
-    }
     protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
         return given()
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
@@ -131,105 +113,62 @@ public class AcceptanceTest
                 .then()
                 .log().all();
     }
-    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
+    protected <T> ValidatableResponse doGet(String path, String refreshToken, String accessToken) {
+
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+
+        return requestSpec
                 .when()
-                .patch(path)
+                .get(path)
                 .then()
                 .log().all();
     }
-    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken, T request) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+    protected <T> ValidatableResponse doPost(String path, String refreshToken, String accessToken, T requestBody) {
+
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .body(request)
-                .patch(path)
-                .then()
-                .log().all();
-    }
-    protected <T, R> R doPost(String path, String refreshToken, String accessToken, T request, Class<R> responseClass) {
-
-        com.twogather.twogatherwebbackend.dto.Response response = given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .body(request)
-                .post(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class);
-
-        return objectMapper.convertValue(response.getData(), responseClass);
-    }
-
-
-    protected <T> ValidatableResponse doPost(String path, String refreshToken, String accessToken, T request) {
-
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .body(request)
                 .post(path)
                 .then()
                 .log().all();
-
     }
-    protected <T> ValidatableResponse doPut(String path, String refreshToken, String accessToken, T request) {
+    protected <T> ValidatableResponse doPut(String path, String refreshToken, String accessToken, T requestBody) {
 
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .body(request)
                 .put(path)
                 .then()
                 .log().all();
+    }
+    protected <T> ValidatableResponse doPatch(String path, String refreshToken, String accessToken, T requestBody) {
 
-    }
-    protected <T, R> R doPost(String path, T request, Class<R> responseClass) {
-        com.twogather.twogatherwebbackend.dto.Response response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when()
-                .post(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class);
-        return objectMapper.convertValue(response.getData(), responseClass);
-    }
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
 
-    protected <T> ValidatableResponse doPost(String path, T request) {
-        return given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .post(path)
-                .then()
-                .log().all();
-    }
-    protected <T> ValidatableResponse doPost(String path) {
-        return given()
-                .when()
-                .post(path)
-                .then()
-                .log().all();
-    }
-    protected <T> ValidatableResponse doPost(String path,  String refreshToken, String accessToken) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .when()
-                .post(path)
+                .patch(path)
                 .then()
                 .log().all();
     }
@@ -275,7 +214,10 @@ public class AcceptanceTest
 
     protected void registerOwner(){
         log.info("register owner");
-        memberResponse = doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        memberResponse = convert(
+                doPost(OWNER_URL, null,null,OWNER_SAVE_UPDATE_REQUEST)
+                        .extract().as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<MemberResponse>(){}
+                        );
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);
     }
     protected Long registerReview(){
@@ -332,7 +274,8 @@ public class AcceptanceTest
         consumerRepository.save(ADMIN);
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/approve/" + storeId;
-        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken(),null)
+                .statusCode(HttpStatus.OK.value());
     }
     protected void registerConsumer(){
         loginMemberId = consumerId = consumerRepository.save(CONSUMER).getMemberId();

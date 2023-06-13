@@ -36,7 +36,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         //given
         String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
 
         //then
         Long savedCategoryId = storeRepository.findById(storeId).get().getCategory().getCategoryId();
@@ -94,14 +94,14 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         Long noSuchStoreId = 123l;
         String url = "/api/stores/" + noSuchStoreId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken())
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null)
                 .statusCode(HttpStatus.FORBIDDEN.value());
 
     }
     private void approveStore2(Long storeId2){
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId2;
-        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken(),null);
 
     }
     private void createCategory(){
@@ -109,6 +109,6 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         category2 = categoryRepository.save(new Category("일식"));
     }
     private ValidatableResponse settingStoreCategory(String url){
-        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
     }
 }

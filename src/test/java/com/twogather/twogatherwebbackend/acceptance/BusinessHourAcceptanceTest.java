@@ -177,7 +177,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenGetBusinessHourByStoreId_thenReturnAllDayOfWeekBusinessHour() {
         //given
         //then
-        doGet(url)
+        doGet(url,null,null)
                 .body("data", hasSize(7))
                 .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '11:30' && it.endTime == '20:00' }", notNullValue())
                 .body("data.find { it.dayOfWeek == 'TUESDAY' && it.isOpen == false }", notNullValue())
@@ -194,7 +194,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenNoTokenRequest_thenThrowException() {
         String url = "/api/stores/" + 1 + "/business-hours";
         //when, then
-        doPost(url, createBusinessHourRequest(1l))
+        doPost(url,null,null, createBusinessHourRequest(1l))
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .body("message", equalTo(UNAUTHORIZED.getMessage()));
     }

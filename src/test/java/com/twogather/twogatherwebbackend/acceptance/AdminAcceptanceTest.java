@@ -126,7 +126,8 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
 
         doPatch("/api/stores/" + storeId,
                 ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken());
+                ownerToken.getAccessToken(),
+                null);
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
     }
@@ -143,7 +144,9 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         //when
         doPatch("/api/stores/" + storeId,
                 ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken());
+                ownerToken.getAccessToken(),
+
+                null);
 
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
