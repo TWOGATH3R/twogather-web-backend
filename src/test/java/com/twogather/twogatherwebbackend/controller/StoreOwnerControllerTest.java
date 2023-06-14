@@ -69,7 +69,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보조회")
     public void getOwnerInfo_WhenGetOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.getMemberWithAuthorities(anyLong())).thenReturn(
+        when(storeOwnerService.getOwnerInfo(anyLong())).thenReturn(
                 new MemberResponse(1l, "nick1", "dda@naver.com",
                         "가게주인이름"));
         //when

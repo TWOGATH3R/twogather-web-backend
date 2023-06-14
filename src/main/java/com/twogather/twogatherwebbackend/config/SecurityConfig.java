@@ -4,14 +4,12 @@ package com.twogather.twogatherwebbackend.config;
 import com.twogather.twogatherwebbackend.auth.*;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -63,6 +61,7 @@ public class SecurityConfig {
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler).and()// access denied 시 JwtAccessDeniedHandler 실행
                 .build();
     }
@@ -85,8 +84,8 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
-                    .addFilterAfter(new JwtAuthenticationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthenticationFilter.class);
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
+                    .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthorizationFilter.class);
         }
 
     }

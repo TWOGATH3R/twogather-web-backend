@@ -47,7 +47,7 @@ public class StoreOwnerController {
     @GetMapping("/{memberId}")
     @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
     public ResponseEntity<Response> getOwnerInfo(@PathVariable Long memberId){
-        MemberResponse data = storeOwnerService.getMemberWithAuthorities(memberId);
+        MemberResponse data = storeOwnerService.getOwnerInfo(memberId);
 
         return ResponseEntity.ok(new Response(data));
     }

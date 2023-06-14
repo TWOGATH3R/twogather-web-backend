@@ -3,18 +3,16 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
-import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID;
 import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsername;
 
@@ -29,9 +27,9 @@ public class ConsumerService {
     public boolean isConsumer(final Long requestMemberId){
         String currentUsername = getLoginUsername();
         Member requestMember = consumerRepository.findActiveMemberById(requestMemberId).orElseThrow(
-                ()->  new CustomAuthenticationException(UNAUTHORIZED));
+                ()-> new MemberException(NO_SUCH_MEMBER));
         if (!currentUsername.equals(requestMember.getUsername())) {
-            throw new CustomAccessDeniedException(ACCESS_DENIED);
+            throw new MemberException(NO_SUCH_MEMBER);
         }
         return true;
     }

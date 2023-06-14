@@ -2,10 +2,10 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.*;
@@ -23,15 +23,11 @@ import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
-import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,13 +37,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -289,5 +281,18 @@ public class AcceptanceTest
     protected void leaveConsumer(){
         String leaveMemberUrl = CONSUMER_URL+"/" + loginMemberId;
         doDelete(leaveMemberUrl, consumerToken.getRefreshToken(), consumerToken.getAccessToken());
+    }
+    protected String generateExpiredToken() {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() - 3600000);  // set the expiry date to 1 hour before now
+
+        return JWT.create()
+                .withSubject("Test User")
+                .withExpiresAt(expiryDate)   // expiry date is in the past
+                .withIssuedAt(now)
+                .withClaim("id", 123)   // replace this with actual user's id
+                .withClaim("role", "ROLE_CONSUMER")   // replace this with actual user's role
+                .sign(Algorithm.HMAC512(constants.JWT_SECRET));
+
     }
 }

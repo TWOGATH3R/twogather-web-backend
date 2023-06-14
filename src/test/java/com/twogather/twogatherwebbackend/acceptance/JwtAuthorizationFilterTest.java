@@ -2,37 +2,24 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationEntryPoint;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationFilter;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
-import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -50,7 +37,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class JwtAuthenticationFilterTest {
+public class JwtAuthorizationFilterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -118,7 +105,7 @@ public class JwtAuthenticationFilterTest {
                 new ArrayList<>(){{
                     add(new SimpleGrantedAuthority("CUSTOMER"));
                 }});
-        return JWT.create()
+        return constants.TOKEN_PREFIX + JWT.create()
                 .withSubject(customUser.getMemberId().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + constants.REFRESH_TOKEN_EXPIRATION_TIME))
                 .withClaim("id", customUser.getMemberId())

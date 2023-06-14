@@ -21,8 +21,8 @@ public class ConsumerController {
 
     @PostMapping("/{memberId}/verify-password")
     @PreAuthorize("@consumerService.isConsumer(#memberId)")
-    public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,@RequestBody String password) {
-        boolean passwordMatches = memberService.verifyPassword(password);
+    public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
+        boolean passwordMatches = memberService.verifyPassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
     }

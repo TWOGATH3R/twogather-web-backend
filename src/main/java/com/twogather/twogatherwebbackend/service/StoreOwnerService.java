@@ -3,20 +3,16 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
-import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsername;
 
@@ -31,9 +27,9 @@ public class StoreOwnerService {
     public boolean isStoreOwner(Long requestMemberId){
         String currentUsername = getLoginUsername();
         Member requestMember = storeOwnerRepository.findActiveMemberById(requestMemberId).orElseThrow(
-                ()->  new CustomAuthenticationException(UNAUTHORIZED));
+                ()-> new MemberException(NO_SUCH_MEMBER));
         if (!currentUsername.equals(requestMember.getUsername())) {
-            throw new CustomAccessDeniedException(ACCESS_DENIED);
+            throw new MemberException(NO_SUCH_MEMBER);
         }
         return true;
     }
@@ -59,21 +55,11 @@ public class StoreOwnerService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse getMemberWithAuthorities(Long id){
-        //TODO: 구현
-
-        return new MemberResponse();
-    }
-
-
-    @Transactional(readOnly = true)
-    public MemberResponse getMemberWithAuthorities(){
-        /*
-        Optional<StoreOwner> optionalOwner = SecurityUtils.getCurrentUsername().flatMap(storeOwnerRepository::findByEmail);
-        optionalOwner.orElseThrow(()-> new MemberException(NO_SUCH_EMAIL));
-        StoreOwner owner = optionalOwner.get();
-        return toStoreOwnerResponse(owner);*/
-        return null;
+    public MemberResponse getOwnerInfo(Long memberId){
+        StoreOwner owner = storeOwnerRepository.findActiveMemberById(memberId).orElseThrow(
+                ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID)
+        );
+        return toStoreOwnerResponse(owner);
     }
 
     public void validateDuplicateUsername(final String username){
