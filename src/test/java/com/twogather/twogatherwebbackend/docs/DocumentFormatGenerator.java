@@ -42,6 +42,8 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getUsernameFormat() {
         return key("format").value("아이디는 영어와 숫자를 포함해서 8자 이상 15자 이내로");
     }
-
+    static Attributes.Attribute getSortFormat() {
+        return key("format").value("<TOP_RATED,desc> or <MOST_REVIEWED,asc> or <MOST_LIKES_COUNT,asc>... 등");
+    }
 
 }

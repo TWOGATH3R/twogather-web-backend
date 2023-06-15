@@ -98,7 +98,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .param("location", "전주시")
                 .param("page", "0")
                 .param("size", "2")
-                .param("sort", "reviewsCount,desc")
+                .param("sort", StoreSearchType.MOST_REVIEWED.name()+",desc")
                 .get("/api/stores/search")
                 .then()
                 .statusCode(HttpStatus.OK.value())

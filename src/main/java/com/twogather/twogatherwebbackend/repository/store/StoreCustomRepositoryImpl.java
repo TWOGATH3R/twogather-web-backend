@@ -227,18 +227,18 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
             for (Sort.Order order : page.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 switch (order.getProperty()){
-                    case "reviewsCount":
+                    case "MOST_REVIEWED":
                         return new OrderSpecifier(direction, store.reviewList.size());
-                    case "avgScore":
+                    case "TOP_RATED":
                         return new OrderSpecifier(direction, review.score.avg());
-                    case "likesCount":
+                    case "MOST_LIKES_COUNT":
                         return new OrderSpecifier(direction, store.likesList.size());
                     default:
                         throw new SQLException(INVALID_REQUEST_PARAM);
                 }
             }
         }
-        return null;
+        return new OrderSpecifier<>(Order.DESC, store.storeId);
 
     }
     private Double roundToTwoDecimal(Double score){
