@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +72,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo("아이디나 비밀번호가 틀렸습니다"));
+                .body("message", equalTo(NO_SUCH_MEMBER));
     }
     @Test
     @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
@@ -86,7 +87,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo("아이디나 비밀번호가 틀렸습니다"));
+                .body("message", equalTo(NO_SUCH_MEMBER));
 
     }
 
@@ -102,7 +103,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo("아이디나 비밀번호가 틀렸습니다"));
+                .body("message", equalTo(NO_SUCH_MEMBER));
 
 
 

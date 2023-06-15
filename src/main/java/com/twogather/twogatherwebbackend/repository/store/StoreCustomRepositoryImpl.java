@@ -113,9 +113,16 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        int count = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.status.eq(status))
+                .groupBy(store.storeId)
+                .fetch().size();
+
+
         List<MyStoreResponse> storeResponses = createStore(storeQuery);
 
-        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+        return new PageImpl<>(storeResponses, pageable, count);
     }
 
     @Override
@@ -130,9 +137,16 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        int count = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.owner.memberId.eq(ownerId))
+                .groupBy(store.storeId)
+                .fetch()
+                .size();
+
         List<MyStoreResponse> storeResponses = createStore(storeQuery);
 
-        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+        return new PageImpl<>(storeResponses, pageable, count);
     }
 
     @Override
@@ -155,6 +169,17 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        int count = jpaQueryFactory
+                .selectFrom(store)
+                .where(store.status.eq(StoreStatus.APPROVED))
+                .where(
+                        categoryEq(category),
+                        keywordContain(keyword),
+                        addressContain(location)
+                )
+                .groupBy(store.storeId)
+                .fetch().size();
 
         List<StoreResponseWithKeyword> storeResponses = storeQuery.stream().map(store -> {
                     Long storeId = store.getStoreId();
@@ -180,7 +205,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .collect(Collectors.toList());
 
 
-        return new PageImpl<>(storeResponses, pageable, storeResponses.size());
+        return new PageImpl<>(storeResponses, pageable, count);
     }
     private OrderSpecifier<?> createOrderSpecifiersWithTopN(String order, String orderBy) {
         Order direction = orderBy.equals("asc") ? Order.ASC : Order.DESC;

@@ -56,7 +56,7 @@ public class AdminControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("type").description("읽어올 가게의 타입")
+                                parameterWithName("type").description("읽어올 가게의 타입").attributes(getStoreStatus())
                         ),
                         requestParameters(
                                 parameterWithName("page").description("조회할 페이지"),

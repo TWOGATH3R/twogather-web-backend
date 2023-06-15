@@ -19,11 +19,9 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
-import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
-import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
-import static io.restassured.RestAssured.given;
+
 import static org.hamcrest.Matchers.*;
 
 
@@ -172,6 +170,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         doDelete(URL+"/"+noSuchId,
                 ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken())
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(NO_SUCH_STORE.getMessage()));
     }
 }

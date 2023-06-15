@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import io.restassured.response.ValidatableResponse;
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class CategoryAcceptanceTest extends AcceptanceTest{
     @Autowired
@@ -95,7 +98,8 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         String url = "/api/stores/" + noSuchStoreId + "/categories/" + category1.getCategoryId();
         //when
         doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null)
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message",equalTo(NO_SUCH_STORE.getMessage()));
 
     }
     private void approveStore2(Long storeId2){

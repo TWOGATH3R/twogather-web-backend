@@ -1,13 +1,16 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
+import com.twogather.twogatherwebbackend.exception.StoreException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.INVALID_TOKEN;
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.hamcrest.Matchers.*;
 
@@ -63,7 +66,8 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         removeStore();
         //then
         doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(NO_SUCH_STORE.getMessage()));
 
     }
 
@@ -149,7 +153,8 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
 
         //when, then
         doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), updateRequest)
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(NO_SUCH_STORE.getMessage()));
 
     }
 
@@ -167,7 +172,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         //when, then
         doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+                .body("message", equalTo(NO_SUCH_MEMBER));
 
     }
 
@@ -196,7 +201,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         //when, then
         doPost(url,null,null, createBusinessHourRequest(1l))
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(UNAUTHORIZED.getMessage()));
+                .body("message", equalTo(INVALID_TOKEN));
     }
 
 

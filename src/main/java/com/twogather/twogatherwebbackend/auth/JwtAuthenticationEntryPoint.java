@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.auth;
 
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -19,12 +18,15 @@ import java.nio.charset.StandardCharsets;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException){
-        ErrorResponse errorResponse = new ErrorResponse(authException.getMessage());
+        authException.printStackTrace();
+        ErrorResponse errorResponse = ErrorResponse.of(authException);
         response.setContentType("application/json");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setStatus(((CustomAuthenticationException)authException).getStatus().value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         try {
             response.getWriter().write(errorResponse.toJson());
+            response.getWriter().flush();
+            response.getWriter().close();
         } catch (IOException e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

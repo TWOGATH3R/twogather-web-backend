@@ -73,7 +73,8 @@ public class LikeAcceptanceTest extends AcceptanceTest{
     @DisplayName("인증되지 않은자가 가게 좋아요를 누르는 경우 throw exception")
     public void whenSetStoreLikeWithAnonymousUser_ThenThrowException() {
         //given
-        doPost(url,null,null,null).statusCode(HttpStatus.UNAUTHORIZED.value());
+        doPost(url,null,null,null)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
 

@@ -2,8 +2,8 @@ package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -30,6 +31,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StoreOwnerController.class)
@@ -67,7 +69,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보조회")
     public void getOwnerInfo_WhenGetOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(storeOwnerService.getMemberWithAuthorities(anyLong())).thenReturn(
+        when(storeOwnerService.getOwnerInfo(anyLong())).thenReturn(
                 new MemberResponse(1l, "nick1", "dda@naver.com",
                         "가게주인이름"));
         //when
@@ -104,13 +106,13 @@ public class StoreOwnerControllerTest extends ControllerTest{
                 new MemberResponse(1l, "nick1", "dda@naver.com",
                 "가게주인이름"));
       //then
-        mockMvc.perform(put(URL,1)
+        mockMvc.perform(RestDocumentationRequestBuilders.put(URL,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(new MemberSaveUpdateRequest(
+                                        .writeValueAsString(new MemberSaveRequest(
                                                 "ad@naer.com", "name1","Asdawd213", "홍길동"
                                         )))
                 )
@@ -122,10 +124,10 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 parameterWithName("memberId").description("사업자의 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()).optional(),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional()
 
                         ),
                         responseFields(
@@ -155,7 +157,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(new MemberSaveUpdateRequest(
+                                        .writeValueAsString(new MemberSaveRequest(
                                                 "ad@naer.com", "name1","Asdawd213", "홍길동"
                                         )))
                 )
@@ -180,35 +182,5 @@ public class StoreOwnerControllerTest extends ControllerTest{
                 ));
 
     }
-
-    @Test
-    @DisplayName("비밀번호 검증")
-    public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
-        //given
-        when(memberService.verifyPassword(any())).thenReturn(true);
-        //when
-        //then
-
-        mockMvc.perform(post("/api/owners/verify-password")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(
-                        objectMapper
-                                .writeValueAsString(new VerifyPasswordRequest("passsword1"))))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andDo(document("owner/verify-password",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
-                        ),
-                        responseFields(
-                                fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
-                        )
-                ));
-
-    }
-
 
 }
