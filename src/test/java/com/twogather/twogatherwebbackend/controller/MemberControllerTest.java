@@ -18,6 +18,7 @@ import javax.sound.sampled.Control;
 
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ public class MemberControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("고객의 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호").attributes(getPasswordFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
@@ -90,7 +91,7 @@ public class MemberControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("고객의 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("바꿀 비밀번호")
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("바꿀 비밀번호").attributes(getPasswordFormat())
                         )
                 ));
 
