@@ -19,22 +19,6 @@ public class ConsumerController {
     private final MemberService memberService;
     private final ConsumerService consumerService;
 
-    @PostMapping("/{memberId}/verify-password")
-    @PreAuthorize("@consumerService.isConsumer(#memberId)")
-    public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
-        boolean passwordMatches = memberService.verifyPassword(request.getPassword());
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
-    }
-
-    @PutMapping("/{memberId}/password")
-    @PreAuthorize("@consumerService.isConsumer(#memberId)")
-    public ResponseEntity<Response> changePassword(@PathVariable Long memberId,@RequestBody PasswordRequest request) {
-        memberService.changePassword(request.getPassword());
-
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PostMapping
     public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveRequest consumerSaveRequest) {
         MemberResponse data = consumerService.join(consumerSaveRequest);

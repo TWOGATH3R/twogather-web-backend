@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
@@ -41,6 +42,12 @@ public class MemberService {
 
         return toResponse(member);
     }
+    public String findMyUsername(FindUsernameRequest request){
+        Member member = memberRepository.findActiveMemberByEmail(request.getEmail()).orElseThrow(()->new MemberException(NO_SUCH_MEMBER));
+        if(!member.getName().equals(request.getName())) throw new MemberException(NO_SUCH_MEMBER_ID);
+
+        return encodeUsername(member.getUsername());
+    }
     public void changePassword(String password){
         String username = getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
@@ -55,6 +62,15 @@ public class MemberService {
         );
         return passwordEncoder.matches(password, member.getPassword());
     }
+    public boolean isMyId(Long memberId){
+        String currentUsername = getLoginUsername();
+        Member requestMember = memberRepository.findActiveMemberById(memberId).orElseThrow(
+                ()-> new MemberException(NO_SUCH_MEMBER));
+        if (!currentUsername.equals(requestMember.getUsername())) {
+            throw new MemberException(NO_SUCH_MEMBER);
+        }
+        return true;
+    }
     public boolean existsEmail(String email){
         return memberRepository.findActiveMemberByEmail(email).isPresent();
     }
@@ -62,8 +78,12 @@ public class MemberService {
     private MemberResponse toResponse(Member member){
         return new MemberResponse(member.getMemberId(), member.getUsername(),member.getEmail(),member.getName());
     }
-    private String getEncodedPassword(String password){
-        if(password==null || password.isEmpty()) return null;
-        else return passwordEncoder.encode(password);
+    private String encodeUsername(String username){
+        if (username.length() >= 3) {
+            int startIndex = username.length() - 3;
+            String encodedUsername = username.substring(0, startIndex) + "***";
+            return encodedUsername;
+        }
+        return username;
     }
 }

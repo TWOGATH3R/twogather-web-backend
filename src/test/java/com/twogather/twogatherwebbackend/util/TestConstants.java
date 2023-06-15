@@ -299,6 +299,7 @@ public class TestConstants {
     //API
     public static final String OWNER_URL = "/api/owners";
     public static final String CONSUMER_URL = "/api/consumers";
+    public static final String MEMBER_URL = "/api/members";
     public static final String STORE_URL = "/api/stores";
     public static final String CATEGORY_URL = "/api/categories";
 

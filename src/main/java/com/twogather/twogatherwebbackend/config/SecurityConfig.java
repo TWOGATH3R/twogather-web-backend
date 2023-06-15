@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/owners")
                 .antMatchers(HttpMethod.POST,"/api/consumers")
                 .antMatchers("/api/email")
+                .antMatchers("/api/**/my-id")
                 .antMatchers("/api/categories")
                 .antMatchers(HttpMethod.GET,"/api/keywords")
                 .antMatchers(HttpMethod.GET,"/api/stores/**/menus")

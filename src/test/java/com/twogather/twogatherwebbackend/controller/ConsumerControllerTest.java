@@ -183,66 +183,7 @@ public class ConsumerControllerTest extends ControllerTest {
 
     }
 
-    @Test
-    @DisplayName("비밀번호 검증")
-    public void WhenVerifyPassword_ThenReturnTrueOrFalse() throws Exception {
-        //given
-        when(memberService.verifyPassword(any())).thenReturn(true);
-        //when
-        //then
 
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/consumers/{memberId}/verify-password",1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .writeValueAsString(new PasswordRequest("passsword1"))))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andDo(document("consumer/verify-password",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("memberId").description("고객의 고유 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호")
-                        ),
-                        responseFields(
-                                fieldWithPath("data.isValid").type(JsonFieldType.BOOLEAN).description("비밀번호 일치 여부")
-                        )
-                ));
-
-    }
-
-    @Test
-    @DisplayName("비밀번호 변경")
-    public void WhenChangePassword_ThenSuccess() throws Exception {
-        //given
-        doNothing().when(memberService).changePassword(any());
-        //when
-        //then
-
-        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/consumers/{memberId}/password",1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .writeValueAsString(new PasswordRequest("passsword1"))))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andDo(document("consumer/change-password",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("memberId").description("고객의 고유 id")
-                        ),
-                        requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("바꿀 비밀번호")
-                        )
-                ));
-
-    }
 
 
 

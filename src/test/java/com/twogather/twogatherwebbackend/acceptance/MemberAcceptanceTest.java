@@ -149,7 +149,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenOwnerChangePassword_ThenSuccess(){
         //given
         registerOwner();
-        String UPDATE_URL = OWNER_URL + "/" + loginMemberId + "/password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
         String newPassword = "newnew123";
         //when
         doPut(UPDATE_URL,
@@ -169,7 +169,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenOwnerVerityPassword_ThenSuccess(){
         //given
         registerOwner();
-        String UPDATE_URL = OWNER_URL + "/" + loginMemberId + "/verify-password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
         //when
         VerifyPasswordResponse response =convert(doPost(UPDATE_URL,
                 ownerToken.getRefreshToken(),
@@ -186,7 +186,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenOwnerVerityPassword_ThenFail(){
         //given
         registerOwner();
-        String UPDATE_URL = OWNER_URL + "/" + loginMemberId + "/verify-password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
         String password = "notreal";
         //when
         VerifyPasswordResponse response = convert(doPost(UPDATE_URL,
@@ -200,11 +200,43 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("owner id 찾기")
+    public void whenFindMyId_ThenSuccess(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/my-id";
+        //when
+        String data = convert(doPost(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new FindUsernameRequest(OWNER_EMAIL, OWNER_NAME))
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Response.class), new TypeReference<>() {});
+        //then
+        Assertions.assertEquals(data, "own***");
+    }
+
+    @Test
+    @DisplayName("owner id를 잘못된 정보로 찾으면 실패한다")
+    public void whenFindMyId_ThenFail(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/my-id";
+        //when
+        doPost(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new FindUsernameRequest(OWNER_EMAIL, "wrongName"))
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        //then
+    }
+
+    @Test
     @DisplayName("consumer 비밀번호 검증 성공")
     public void whenConsumerVerityPassword_ThenSuccess(){
         //given
         registerConsumer();
-        String UPDATE_URL = CONSUMER_URL + "/" + loginMemberId + "/verify-password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
         //when
         VerifyPasswordResponse response =convert(doPost(UPDATE_URL,
                 consumerToken.getRefreshToken(),
@@ -223,7 +255,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenConsumerVerityPassword_ThenFail(){
         //given
         registerConsumer();
-        String UPDATE_URL = CONSUMER_URL + "/" + loginMemberId + "/verify-password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
         String password = "notreal";
         //when
         VerifyPasswordResponse response =convert(doPost(UPDATE_URL,
@@ -241,7 +273,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     public void whenConsumerChangePassword_ThenSuccess(){
         //given
         registerConsumer();
-        String UPDATE_URL = CONSUMER_URL + "/" + loginMemberId + "/password";
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
         String newPassword = "newnew123";
         //when
         doPut(UPDATE_URL,

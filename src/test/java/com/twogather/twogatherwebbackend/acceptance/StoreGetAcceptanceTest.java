@@ -275,7 +275,6 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("나의 가게 조회")
     public void whenFindMyStore_ThenSuccess(){
         //given
-        registerOwner();
         saveStore();
 
         //when
