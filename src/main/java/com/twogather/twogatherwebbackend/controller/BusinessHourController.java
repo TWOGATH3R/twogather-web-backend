@@ -21,6 +21,13 @@ import java.util.List;
 public class BusinessHourController {
     private final BusinessHourService businessHourService;
 
+    @PostMapping
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> saveList(@PathVariable final Long storeId, @RequestBody @Valid final BusinessHourSaveUpdateListRequest request) {
+        List<BusinessHourResponse> data = businessHourService.saveList(storeId, request.getBusinessHourList());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
+    }
     @PutMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> updateList(@PathVariable final Long storeId, @RequestBody @Valid final BusinessHourSaveUpdateListRequest request) {

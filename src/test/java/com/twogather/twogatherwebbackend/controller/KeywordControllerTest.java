@@ -42,12 +42,10 @@ public class KeywordControllerTest extends ControllerTest{
     public void setStoreKeywordAssociation() throws Exception {
         //given
         long storeId = 1;
-        List<String> keywordList = new ArrayList<>(){{
-            add("맛있는");
-            add("친구랑 가기좋은");
-            add( "가족과 함께하는");
+        List<Long> keywordList = new ArrayList<>(){{
+           add(1l); add(2l);
         }};
-        doNothing().when(storeKeywordService).setStoreKeyword(1l, keywordList);
+        when(storeKeywordService.setStoreKeyword(1l, keywordList)).thenReturn(new ArrayList<>());
         //when
         //then
         mockMvc.perform(put("/api/keywords/stores/{storeId}", storeId)
@@ -67,7 +65,7 @@ public class KeywordControllerTest extends ControllerTest{
                               parameterWithName("storeId").description("해당 키워드랑 연결할 가게의 고유 ID")
                         ),
                         requestFields(
-                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("조회할 키워드 목록")
+                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("조회할 키워드 id 목록")
                         )
                 ));
 

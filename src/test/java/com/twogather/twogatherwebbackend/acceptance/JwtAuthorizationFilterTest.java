@@ -2,37 +2,24 @@ package com.twogather.twogatherwebbackend.acceptance;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationEntryPoint;
-import com.twogather.twogatherwebbackend.auth.JwtAuthenticationFilter;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
-import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.exception.CustomAuthenticationException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -50,7 +37,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class JwtAuthenticationFilterTest {
+public class JwtAuthorizationFilterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,15 +58,13 @@ public class JwtAuthenticationFilterTest {
 
 
     @Test
-    @DisplayName("When access token expires, use refresh token to generate new access token")
+    @DisplayName("refresh token만 유효할 경우 새로운 access토큰을 발급받아서 해당 access토큰이 로그인을 성공시키는지 확인")
     public void whenAccessTokenExpires_UseRefreshTokenToGenerateNewAccessToken() throws Exception {
-        // Generate a valid refresh token
+        //given
         String refreshToken = generateRefreshToken();
-
-        // Set the expired access token
         String expiredAccessToken = generateExpiredAccessToken();
 
-        // Mock the authentication manager to return a successful authentication
+        //when
         when(authenticationManager.authenticate(any(Authentication.class))).
                 thenReturn(getMockAuthentication());
         when(memberRepository.findActiveMemberById(1l)).thenReturn(
@@ -88,18 +73,15 @@ public class JwtAuthenticationFilterTest {
                        AuthenticationType.CONSUMER,true)));
         when(consumerService.isConsumer(1l)).thenReturn(true);
 
-        // Send a request with the expired access token
+        //then
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/consumers/1")
                         .header(constants.ACCESS_TOKEN_HEADER, expiredAccessToken)
                         .header(constants.REFRESH_TOKEN_HEADER, refreshToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-
-        // Extract the new access token from the response headers
         String newAccessToken = mvcResult.getResponse().getHeader(constants.ACCESS_TOKEN_HEADER);
 
-        // Verify that the new access token is valid and can be used to access protected resources
         mockMvc.perform(MockMvcRequestBuilders.get("/api/consumers/1")
                         .header(constants.ACCESS_TOKEN_HEADER, newAccessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -118,7 +100,7 @@ public class JwtAuthenticationFilterTest {
                 new ArrayList<>(){{
                     add(new SimpleGrantedAuthority("CUSTOMER"));
                 }});
-        return JWT.create()
+        return constants.TOKEN_PREFIX + JWT.create()
                 .withSubject(customUser.getMemberId().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + constants.REFRESH_TOKEN_EXPIRATION_TIME))
                 .withClaim("id", customUser.getMemberId())

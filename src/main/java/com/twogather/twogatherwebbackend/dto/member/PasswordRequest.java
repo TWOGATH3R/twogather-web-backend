@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class VerifyPasswordRequest {
+public class PasswordRequest {
     private String password;
 }

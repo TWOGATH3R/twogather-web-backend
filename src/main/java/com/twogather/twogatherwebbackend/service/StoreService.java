@@ -4,11 +4,8 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
-import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
-import com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -21,14 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.DocFlavor;
-import javax.validation.Valid;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.exception.CustomAccessDeniedException.AccessDeniedExceptionErrorCode.ACCESS_DENIED;
-import static com.twogather.twogatherwebbackend.exception.CustomAuthenticationException.AuthenticationExceptionErrorCode.UNAUTHORIZED;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
@@ -38,13 +30,11 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
-    private final MenuService menuService;
-    private final ImageService imageService;
     private final StoreKeywordService storeKeywordService;
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
     private final CategoryService categoryService;
-    private final BusinessHourService businessHourService;
+    private final KeywordService keywordService;
 
     public void approveStore(final Long storeId){
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
@@ -64,14 +54,9 @@ public class StoreService {
         );
         store.reject(rejectReason.getReason());
     }
-    public StoreSaveUpdateResponse save(final Long categoryId,
-                                        final BusinessHourSaveUpdateListRequest businessRequest,
-                                        final StoreSaveUpdateRequest storeRequest,
-                                        final MenuSaveListRequest menuRequest,
-                                        final List<MultipartFile> storeImageList,
-                                        final List<String> keywordList){
+    public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validationBizRegNumber(storeRequest);
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
@@ -80,25 +65,31 @@ public class StoreService {
                 storeRequest.getBusinessName(), storeRequest.getBusinessNumber(), storeRequest.getBusinessStartDate());
         Store savedStore = storeRepository.save(store);
 
-        businessHourService.saveList(store.getStoreId(), businessRequest.getBusinessHourList());
-        storeKeywordService.setStoreKeyword(store.getStoreId(), keywordList);
-        menuService.saveList(store.getStoreId(), menuRequest.getMenuSaveList());
-        imageService.upload(store.getStoreId(), storeImageList);
-        categoryService.setCategoriesForStore(store.getStoreId(), categoryId);
+        List<String> keywordNameList = storeKeywordService.setStoreKeyword(store.getStoreId(), storeRequest.getKeywordIdList());
+        categoryService.setCategoriesForStore(store.getStoreId(), storeRequest.getCategoryId());
 
-        return StoreSaveUpdateResponse.from(savedStore.getStoreId(), savedStore.getName(), savedStore.getAddress(), savedStore.getPhone());
+        return StoreSaveUpdateResponse.builder()
+                .address(savedStore.getAddress())
+                .storeId(savedStore.getStoreId())
+                .businessName(savedStore.getBusinessName())
+                .businessNumber(savedStore.getBusinessNumber())
+                .categoryId(storeRequest.getCategoryId())
+                .keywordList(keywordNameList)
+                .phone(savedStore.getPhone())
+                .businessStartDate(savedStore.getBusinessStartDate())
+                .storeName(savedStore.getName()).build();
 
     }
     public boolean isMyStore(Long storeId) {
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
-                () ->new CustomAccessDeniedException(ACCESS_DENIED)
+                () -> new MemberException(NO_SUCH_MEMBER)
         );
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(()->
-                new CustomAccessDeniedException(ACCESS_DENIED)
+                new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
-            throw new CustomAccessDeniedException(ACCESS_DENIED);
+            throw new StoreException(NO_SUCH_STORE);
         }
         return true;
     }
@@ -116,8 +107,16 @@ public class StoreService {
         store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
 
 
-        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
-
+        return StoreSaveUpdateResponse.builder()
+                .address(store.getAddress())
+                .storeId(store.getStoreId())
+                .businessName(store.getBusinessName())
+                .businessNumber(store.getBusinessNumber())
+                .categoryId(request.getCategoryId())
+                .keywordList(keywordService.getKeywordNameList(request.getKeywordIdList()))
+                .phone(store.getPhone())
+                .businessStartDate(store.getBusinessStartDate())
+                .storeName(store.getName()).build();
     }
     public Page<StoreResponseWithKeyword> getStores(
             Pageable pageable, String categoryName, String keyword,String location){
@@ -129,10 +128,8 @@ public class StoreService {
     public Page<MyStoreResponse> getStoresByOwner(Long ownerId, Pageable pageable){
         return storeRepository.findMyStore(ownerId, pageable);
     }
-    public StoreSaveUpdateResponse getStore(Long storeId){
-        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
-
-        return StoreSaveUpdateResponse.from(store.getStoreId(), store.getName(), store.getAddress(), store.getPhone());
+    public StoreDefaultResponse getStore(Long storeId){
+        return storeRepository.findDefaultActiveStoreInfo(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
     }
 
     private void validateDuplicateName(String name){

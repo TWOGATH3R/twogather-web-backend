@@ -1,9 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
+import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,29 +19,22 @@ public class ConsumerController {
     private final MemberService memberService;
     private final ConsumerService consumerService;
 
-    @PostMapping("/verify-password")
-    public ResponseEntity<Response> verifyPassword(@RequestBody String password) {
-        boolean passwordMatches = memberService.verifyPassword(password);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
-    }
-
     @PostMapping
-    public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveUpdateRequest consumerSaveRequest) {
+    public ResponseEntity<Response> join(@RequestBody @Valid final MemberSaveRequest consumerSaveRequest) {
         MemberResponse data = consumerService.join(consumerSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
     @PutMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
-    public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberSaveUpdateRequest consumerSaveUpdateRequest){
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberUpdateRequest consumerSaveUpdateRequest){
         MemberResponse data = memberService.update(consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }
     @DeleteMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> leave(@PathVariable Long memberId) {
         consumerService.delete(memberId);
 
@@ -51,7 +42,7 @@ public class ConsumerController {
     }
 
     @GetMapping("/{memberId}")
-    @PreAuthorize("hasRole('CONSUMER') and @consumerService.isConsumer(#memberId)")
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> getConsumerInfo(@PathVariable final Long memberId) {
         MemberResponse data = consumerService.getConsumerInfo(memberId);
         return ResponseEntity.ok(new Response(data));

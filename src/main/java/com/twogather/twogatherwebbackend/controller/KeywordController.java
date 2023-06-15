@@ -31,7 +31,7 @@ public class KeywordController {
     @PutMapping("/stores/{storeId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> setStoreKeywordAssociation(@PathVariable Long storeId,
-                                                                @RequestBody final List<String> keywordList){
+                                                                @RequestBody final List<Long> keywordList){
         storeKeywordService.setStoreKeyword(storeId, keywordList);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

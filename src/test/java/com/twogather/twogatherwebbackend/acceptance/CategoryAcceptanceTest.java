@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import io.restassured.response.ValidatableResponse;
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class CategoryAcceptanceTest extends AcceptanceTest{
     @Autowired
@@ -36,7 +39,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         //given
         String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
 
         //then
         Long savedCategoryId = storeRepository.findById(storeId).get().getCategory().getCategoryId();
@@ -94,14 +97,15 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         Long noSuchStoreId = 123l;
         String url = "/api/stores/" + noSuchStoreId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken())
-                .statusCode(HttpStatus.FORBIDDEN.value());
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null)
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message",equalTo(NO_SUCH_STORE.getMessage()));
 
     }
     private void approveStore2(Long storeId2){
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
         String approveStoreUrl = "/api/admin/stores/" + storeId2;
-        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken(),null);
 
     }
     private void createCategory(){
@@ -109,6 +113,6 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         category2 = categoryRepository.save(new Category("일식"));
     }
     private ValidatableResponse settingStoreCategory(String url){
-        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
     }
 }

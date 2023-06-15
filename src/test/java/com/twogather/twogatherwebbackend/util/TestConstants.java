@@ -1,8 +1,6 @@
 package com.twogather.twogatherwebbackend.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourIdList;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
@@ -28,7 +26,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -63,7 +60,7 @@ public class TestConstants {
     public static final String OWNER_EMAIL = "asd@naver.com";
     public static final String OWNER_PASSWORD = "asd@asd@@123";
     public static final String OWNER_NAME = "루터";
-    public static final MemberSaveUpdateRequest OWNER_SAVE_UPDATE_REQUEST = new MemberSaveUpdateRequest(
+    public static final MemberSaveRequest OWNER_SAVE_REQUEST = new MemberSaveRequest(
             OWNER_EMAIL, OWNER_USERNAME, OWNER_PASSWORD, OWNER_NAME
     );
 
@@ -78,8 +75,8 @@ public class TestConstants {
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
     public static final String CONSUMER_PASSWORD = "asd!asd123";
     public static final String CONSUMER_NAME = "김소비";
-    public static final MemberSaveUpdateRequest CONSUMER_SAVE_UPDATE_REQUEST =
-            new MemberSaveUpdateRequest(CONSUMER_EMAIL, CONSUMER_USERNAME, CONSUMER_PASSWORD, CONSUMER_NAME);
+    public static final MemberSaveRequest CONSUMER_SAVE_REQUEST =
+            new MemberSaveRequest(CONSUMER_EMAIL, CONSUMER_USERNAME, CONSUMER_PASSWORD, CONSUMER_NAME);
     public static final Consumer CONSUMER = new Consumer(CONSUMER_USERNAME, CONSUMER_EMAIL,
             passwordEncoder.encode(CONSUMER_PASSWORD), CONSUMER_NAME, AuthenticationType.CONSUMER, true);
 
@@ -97,6 +94,13 @@ public class TestConstants {
     public static final Member MEMBER =
             new Member(1l, MEMBER_USERNAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, AuthenticationType.STORE_OWNER, true);
 
+    // Store Response with Keyword
+    public static final ArrayList<String> KEYWORD_LIST = new ArrayList<>(Arrays.asList(
+            "분위기좋은", "사진찍기좋은", "저렴한"
+    ));
+    public static final List<Long> KEYWORD_ID_LIST = new ArrayList<>(Arrays.asList(
+            1l,2l,3l
+    ));
     // Login Requests
     public static final LoginRequest OWNER_LOGIN_REQUEST = new LoginRequest( OWNER_USERNAME, OWNER_PASSWORD);
     public static final LoginRequest OWNER_INVALID_LOGIN_REQUEST = new LoginRequest(OWNER_USERNAME, WRONG_PASSWORD);
@@ -114,16 +118,27 @@ public class TestConstants {
 
     // Store Save/Update Request
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
-            new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now());
+            new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(),  KEYWORD_ID_LIST,1L);
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST2 =
-            new StoreSaveUpdateRequest("other store", STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now());
+            new StoreSaveUpdateRequest("other store", STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(), KEYWORD_ID_LIST, 1L);
 
     public static final StoreOwner STORE_OWNER =
             new StoreOwner(OWNER_USERNAME, OWNER_EMAIL, passwordEncoder.encode(OWNER_PASSWORD), OWNER_NAME,
                     AuthenticationType.STORE_OWNER, true);
     public static final StoreSaveUpdateResponse STORE_SAVE_UPDATE_RESPONSE =
-            new StoreSaveUpdateResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234");
+            new StoreSaveUpdateResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "000000000","김길공",LocalDate.now(),KEYWORD_LIST, 1L);
 
+    //default store response
+    public static final StoreDefaultResponse STORE_DEFAULT_RESPONSE =
+            StoreDefaultResponse
+                    .builder()
+                    .storeId(1L)
+                    .storeName(STORE_NAME)
+                    .categoryName("양식")
+                    .keywordList(KEYWORD_LIST)
+                    .address(STORE_ADDRESS)
+                    .phone(STORE_PHONE)
+                    .build();
     // My Store Response
     public static final LocalDate DATE = LocalDate.parse("2020-02-02");
     public static final MyStoreResponse MY_STORES_RESPONSE =
@@ -184,10 +199,6 @@ public class TestConstants {
     public static final CategoryResponse CATEGORY_RESPONSE =
             new CategoryResponse(1l, "양식");
 
-    // Store Response with Keyword
-    public static final ArrayList<String> KEYWORD_LIST = new ArrayList<>(Arrays.asList(
-            "분위기좋은", "사진찍기좋은", "저렴한"
-    ));
     public static final StoreResponseWithKeyword STORES_RESPONSE =
             new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3", 4.2, KEYWORD_LIST, "imageurl1");
     public static final ArrayList STORES_RESPONSE_LIST =
@@ -199,9 +210,9 @@ public class TestConstants {
 
     // Store Save/Update Request
     public static final StoreSaveUpdateRequest STORE_REQUEST =
-            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "0000000000", "홍길동", LocalDate.now());
+            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "0000000000", "홍길동", LocalDate.now(), KEYWORD_ID_LIST, 1L);
     public static final StoreSaveUpdateRequest STORE_UPDATE_REQUEST =
-            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "0000000000", "홍길동", LocalDate.now());
+            new StoreSaveUpdateRequest("가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "0000000000", "홍길동", LocalDate.now(), KEYWORD_ID_LIST, 1L);
 
     // My Store Response Page
     public static final Page<MyStoreResponse> MY_STORES_RESPONSE_PAGE =
@@ -288,6 +299,7 @@ public class TestConstants {
     //API
     public static final String OWNER_URL = "/api/owners";
     public static final String CONSUMER_URL = "/api/consumers";
+    public static final String MEMBER_URL = "/api/members";
     public static final String STORE_URL = "/api/stores";
     public static final String CATEGORY_URL = "/api/categories";
 
@@ -465,76 +477,6 @@ public class TestConstants {
     public static final MockMultipartFile IMAGE_REQUEST_PART2 =
             new MockMultipartFile("storeImageList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
 
-    public static MockMultipartFile MENU_REQUEST_PART;
-
-    static {
-        try {
-            MENU_REQUEST_PART = new MockMultipartFile("menuRequest", "menuRequest", "application/json",  (new ObjectMapper()).writeValueAsString(MENU_SAVE_LIST_REQUEST).getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static MockMultipartFile KEYWORD_REQUEST_PART;
-
-    static {
-        try {
-            KEYWORD_REQUEST_PART = new MockMultipartFile("keywordList", "keywordList", "application/json",   (new ObjectMapper()).writeValueAsString(KEYWORD_LIST).getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static MockMultipartFile STORE_REQUEST_PART;
-
-    static {
-        try {
-            STORE_REQUEST_PART = new MockMultipartFile(
-            "storeRequest",
-                    "storeRequest",
-                    "application/json",
-    (new ObjectMapper())
-                    .registerModule(new JavaTimeModule())
-                    .writeValueAsString(STORE_SAVE_REQUEST)
-                    .getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static MockMultipartFile BUSINESS_HOUR_REQUEST_PART;
-
-    static {
-        try {
-            BUSINESS_HOUR_REQUEST_PART = new MockMultipartFile(
-                            "businessHourRequest",
-                    "businessHourRequest",
-                        "application/json",
-    (new ObjectMapper())
-                    .registerModule(new JavaTimeModule())
-                    .writeValueAsString(BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST)
-                    .getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static MockMultipartFile toRequestPart(StoreSaveUpdateRequest request){
-        MockMultipartFile result = null;
-        try {
-            result = new MockMultipartFile(
-                        "storeRequest",
-                    "storeRequest",
-                    "application/json",
-                    (new ObjectMapper())
-                            .registerModule(new JavaTimeModule())
-                            .writeValueAsString(request)
-                            .getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
     //store reject reason
     public static final RejectReason STORE_REJECT_REASON = new RejectReason("입력 사항 불충족");
 
@@ -546,7 +488,7 @@ public class TestConstants {
                     .reasonForRejection("")
                     .storeImageUrl("url1")
                     .isApproved(false)
-                    .name("Store 1")
+                    .storeName("Store 1")
                     .address("Address 1")
                     .build(),
             MyStoreResponse.builder()
@@ -556,7 +498,7 @@ public class TestConstants {
                     .reasonForRejection("")
                     .storeImageUrl("url1")
                     .isApproved(false)
-                    .name("Store 2")
+                    .storeName("Store 2")
                     .address("Address 2")
                     .build(),
             MyStoreResponse.builder()
@@ -566,7 +508,7 @@ public class TestConstants {
                     .reasonForRejection("")
                     .storeImageUrl("url1")
                     .isApproved(false)
-                    .name("Store 3")
+                    .storeName("Store 3")
                     .address("Address 3")
                     .build()
     );

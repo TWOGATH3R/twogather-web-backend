@@ -15,7 +15,6 @@ import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ public class CommentService {
     private final StoreRepository storeRepository;
     public CommentResponse save(Long storeId, Long reviewId, CommentSaveUpdateRequest request){
         //TODO: Review exception 추가
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
@@ -44,7 +43,7 @@ public class CommentService {
         return new CommentResponse(savedComment.getCommentId(), savedComment.getContent(), isOwner, savedComment.getCreatedDate());
     }
     public CommentResponse update(Long storeId, Long commentId, CommentSaveUpdateRequest request){
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
@@ -59,7 +58,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
     public Boolean isMyComment(Long commentId){
-        String username = SecurityUtils.getUsername();
+        String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );

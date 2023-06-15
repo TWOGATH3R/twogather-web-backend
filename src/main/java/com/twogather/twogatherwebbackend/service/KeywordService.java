@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.DUPLICATE_KEYWORD;
 import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.NO_SUCH_KEYWORD;
@@ -29,6 +30,12 @@ public class KeywordService {
             response.add(new KeywordResponse(keyword.getKeywordId(), keyword.getName()));
         }
         return response;
+    }
+    public List<String> getKeywordNameList(List<Long> idList){
+        return keywordRepository.findAllById(idList)
+                .stream()
+                .map(Keyword::getName)
+                .collect(Collectors.toList());
     }
 
     private KeywordResponse toResponse(Keyword keyword){

@@ -12,11 +12,14 @@ api spec 문서
 === Login
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
-=== Consumer-Password-Verification
-operation::consumer/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+=== Password-Verification
+operation::member/verify-password/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
-=== StoreOwner-Password-Verification
-operation::owner/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+=== Password-Change
+operation::member/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
+
+=== Find-Username
+operation::member/get-username/[snippets='http-request,request-fields,http-response,response-fields']
 
 == Admin
 === Get-Store
@@ -42,6 +45,9 @@ operation::menu/delete/[snippets='http-request,path-parameters,request-fields,ht
 === Update
 operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
+=== Save
+operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
 == BusinessHour
 
 === Get
@@ -53,6 +59,9 @@ operation::business-hour/delete/[snippets='http-request,path-parameters,request-
 === Update
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
+=== Save
+operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
 
 == Keyword
 === Get-List
@@ -63,7 +72,7 @@ operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-
 == Store
 
 === Save
-operation::store/save/[snippets='http-request,path-parameters,request-parts,http-response,response-fields']
+operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Get-One
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']

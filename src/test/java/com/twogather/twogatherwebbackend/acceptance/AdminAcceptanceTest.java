@@ -19,6 +19,7 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{
 
@@ -31,6 +32,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         registerStore();
     }
     static final String REASON = "조건 불충족";
+
     @Test
     @DisplayName("가게 승인이 제대로 되었는지 확인")
     public void whenApproveStore_ThenSuccess() {
@@ -42,7 +44,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 거부 제대로 되었는지 확인")
+    @DisplayName("가게 거부 제대로 되었는지 거부 내용, 가게 상태 확인")
     public void whenRejectStore_ThenSuccess() {
         // given,when
         rejectStore();
@@ -54,7 +56,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("승인된 가게 목록 찾아오기")
+    @DisplayName("<type: 승인된> 가게 목록 찾아오기")
     public void whenFindApprovedStore_ThenSuccess() {
         // given
         adminLogin();
@@ -117,7 +119,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("승인요청 -> 거부 -> 재요청")
+    @DisplayName("가게 승인 요청 -> 거부 -> 재요청의 시나리오에 대한 테스트")
     public void whenReapplyRequest_ThenSuccess() {
         // given
         rejectStore();
@@ -126,13 +128,14 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
 
         doPatch("/api/stores/" + storeId,
                 ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken());
+                ownerToken.getAccessToken(),
+                null);
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
     }
 
     @Test
-    @DisplayName("거부된 가게 재요청 시 날짜 업데이트")
+    @DisplayName("거부된 가게 재요청 시 날짜 업데이트되었는지 확인")
     public void whenReapplyRequest_ThenUpdateDate() {
         // given
         adminLogin();
@@ -143,7 +146,9 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         //when
         doPatch("/api/stores/" + storeId,
                 ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken());
+                ownerToken.getAccessToken(),
+
+                null);
 
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
@@ -162,6 +167,12 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .get(url)
                 .then()
                 .log().all()
+                .body("currentPage", equalTo(page))
+                .body("totalPages", equalTo(3))
+                .body("totalElements", equalTo(5))
+                .body("pageSize", equalTo(size))
+                .body("isFirst", equalTo(false))
+                .body("isLast", equalTo(true))
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(PagedResponse.class), new TypeReference<List<MyStoreResponse>>() {});
 

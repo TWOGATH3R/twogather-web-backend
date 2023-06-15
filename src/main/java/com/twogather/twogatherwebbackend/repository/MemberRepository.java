@@ -17,4 +17,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByActiveUsername(@Param("username") String username);
     @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.email = :email AND c.isActive = true")
     boolean existsByActiveEmail(@Param("email") String email);
+
 }

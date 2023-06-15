@@ -17,7 +17,7 @@ public class PagedResponse<T> extends Response{
 
     public PagedResponse(Page<T> page) {
         super(page.getContent());
-        this.currentPage = page.getNumber() + 1;
+        this.currentPage = page.getNumber();
         this.totalPages = page.getTotalPages();
         this.totalElements = page.getTotalElements();
         this.isFirst = page.isFirst();
