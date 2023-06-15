@@ -210,6 +210,7 @@ public class AcceptanceTest
                 doPost(OWNER_URL, null,null,OWNER_SAVE_REQUEST)
                         .extract().as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<MemberResponse>(){}
                         );
+        loginMemberId = memberResponse.getMemberId();
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);
     }
     protected Long registerReview(){

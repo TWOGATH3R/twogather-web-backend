@@ -18,10 +18,10 @@ operation::consumer/verify-password/[snippets='http-request,path-parameters,requ
 === StoreOwner-Password-Verification
 operation::owner/verify-password/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
-=== Consumer-Password-Verification
+=== Consumer-Password-Change
 operation::consumer/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
 
-=== StoreOwner-Password-Verification
+=== StoreOwner-Password-Change
 operation::owner/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
 
 == Admin

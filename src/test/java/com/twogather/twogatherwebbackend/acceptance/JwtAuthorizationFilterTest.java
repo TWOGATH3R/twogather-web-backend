@@ -58,15 +58,13 @@ public class JwtAuthorizationFilterTest {
 
 
     @Test
-    @DisplayName("When access token expires, use refresh token to generate new access token")
+    @DisplayName("refresh token만 유효할 경우 새로운 access토큰을 발급받아서 해당 access토큰이 로그인을 성공시키는지 확인")
     public void whenAccessTokenExpires_UseRefreshTokenToGenerateNewAccessToken() throws Exception {
-        // Generate a valid refresh token
+        //given
         String refreshToken = generateRefreshToken();
-
-        // Set the expired access token
         String expiredAccessToken = generateExpiredAccessToken();
 
-        // Mock the authentication manager to return a successful authentication
+        //when
         when(authenticationManager.authenticate(any(Authentication.class))).
                 thenReturn(getMockAuthentication());
         when(memberRepository.findActiveMemberById(1l)).thenReturn(
@@ -75,18 +73,15 @@ public class JwtAuthorizationFilterTest {
                        AuthenticationType.CONSUMER,true)));
         when(consumerService.isConsumer(1l)).thenReturn(true);
 
-        // Send a request with the expired access token
+        //then
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/consumers/1")
                         .header(constants.ACCESS_TOKEN_HEADER, expiredAccessToken)
                         .header(constants.REFRESH_TOKEN_HEADER, refreshToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-
-        // Extract the new access token from the response headers
         String newAccessToken = mvcResult.getResponse().getHeader(constants.ACCESS_TOKEN_HEADER);
 
-        // Verify that the new access token is valid and can be used to access protected resources
         mockMvc.perform(MockMvcRequestBuilders.get("/api/consumers/1")
                         .header(constants.ACCESS_TOKEN_HEADER, newAccessToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
