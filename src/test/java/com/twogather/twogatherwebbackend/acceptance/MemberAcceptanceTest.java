@@ -133,7 +133,12 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
 
         //when
-        MemberResponse response = updateMember(UPDATE_URL, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), UPDATE_REQUEST);
+        MemberResponse response = updateMember(
+                UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                UPDATE_REQUEST
+        );
 
         //then
         Member member = memberRepository.findById(response.getMemberId()).get();
@@ -142,6 +147,37 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         Assertions.assertEquals(member.getName(), UPDATE_REQUEST.getName());
 
                 ;
+    }
+
+    @Test
+    @DisplayName("개인정보를 변경할시에 같은정보를 그대로 전송하는경우 bug 없이 잘 동작해야한다")
+    public void whenOwnerChangeInfoWithSameInfo_ThenNoChange(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+        MemberSaveRequest UPDATE_REQUEST
+                = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        //when
+        MemberResponse response = updateMember(
+                UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                UPDATE_REQUEST
+        );
+
+        //then
+        Member member = memberRepository.findById(response.getMemberId()).get();
+
+        Assertions.assertEquals(member.getEmail(), UPDATE_REQUEST.getEmail());
+        Assertions.assertEquals(member.getName(), UPDATE_REQUEST.getName());
+
+        doLogin(new LoginRequest(UPDATE_REQUEST.getUsername(), UPDATE_REQUEST.getPassword()));
+
     }
 
     @Test
@@ -331,17 +367,6 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("이미 존재하는 회원의 email로 email 검증 시도 시 throw exception")
-    public void whenSendMailWithDuplicateEmail_ThenThrowException(){
-        //given
-        registerConsumer();
-        //when,then
-        String url = "/api/email";
-        doPost(url, null,null,new EmailRequest(CONSUMER_EMAIL))
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
-    }
-    @Test
     @DisplayName("토큰 만료 시 Unauthorized")
     public void whenTokenExpired_ThenUnauthorized(){
         //given
@@ -361,6 +386,38 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Response.class);
         return convert(result, new TypeReference<MemberResponse>() {});
+    }
+
+    @Test
+    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - 존재한다")
+    public void whenVerityEmail_ThenReturnTrue(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/checks-email";
+        //when
+        Boolean response =convert(doPost(UPDATE_URL,
+                null,null,
+                new EmailRequest(OWNER_EMAIL))
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Response.class), new TypeReference<>() {});
+        //then
+        Assertions.assertTrue(response);
+    }
+
+    @Test
+    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - false")
+    public void whenVerityEmail_ThenReturnFalse(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/checks-email";
+        //when
+        Boolean response =convert(doPost(UPDATE_URL,
+                null,null,
+                new EmailRequest("no-user@email.com"))
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Response.class), new TypeReference<>() {});
+        //then
+        Assertions.assertFalse(response);
     }
 
 }

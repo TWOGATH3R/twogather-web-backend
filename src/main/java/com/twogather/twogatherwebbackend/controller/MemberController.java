@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
@@ -16,8 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    @PostMapping("/checks-email")
+    public ResponseEntity<Response> checkEmailIsExist(@RequestBody EmailRequest request) {
+        Boolean isExist = memberService.isExist(request);
 
-
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(isExist));
+    }
     @PostMapping("/my-id")
     public ResponseEntity<Response> findMyUsername(@RequestBody FindUsernameRequest request) {
         String username = memberService.findMyUsername(request);

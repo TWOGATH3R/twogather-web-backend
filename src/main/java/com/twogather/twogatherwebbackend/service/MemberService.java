@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
@@ -24,14 +25,14 @@ public class MemberService {
 
     public MemberResponse update(final MemberUpdateRequest request){
         String originUsername = getLoginUsername();
-        if(request.getUsername()!=originUsername && memberRepository.findActiveMemberByUsername(request.getUsername()).isPresent()){
+        if(!request.getUsername().equals(originUsername) && memberRepository.findActiveMemberByUsername(request.getUsername()).isPresent()){
             throw new MemberException(DUPLICATE_USERNAME);
         }
         Member member = memberRepository.findActiveMemberByUsername(getLoginUsername()).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
         String originEmail = member.getEmail();
-        if(request.getEmail()!=originEmail && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
+        if(!request.getEmail().equals(originEmail) && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
             throw new MemberException(DUPLICATE_EMAIL);
         }
         member.update(
@@ -47,6 +48,10 @@ public class MemberService {
         if(!member.getName().equals(request.getName())) throw new MemberException(NO_SUCH_MEMBER_ID);
 
         return encodeUsername(member.getUsername());
+    }
+    public Boolean isExist(EmailRequest request){
+        if(memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()) return true;
+        else return false;
     }
     public void changePassword(String password){
         String username = getLoginUsername();

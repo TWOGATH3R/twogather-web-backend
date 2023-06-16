@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.service.MemberService;
@@ -122,6 +123,35 @@ public class MemberControllerTest extends ControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("data").type(JsonFieldType.STRING).description("아이디")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("이메일 조회")
+    public void WhenExistEmail_ThenTrue() throws Exception {
+        //given
+        when(memberService.isExist(any())).thenReturn(true);
+        //when
+        //then
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/members/checks-email")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .writeValueAsString(new EmailRequest("fias@naver.com"))))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("member/checks-email",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("존재하는지 확인할 이메일")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("해당 이메일로 가입된 사용자의 유무")
                         )
                 ));
 
