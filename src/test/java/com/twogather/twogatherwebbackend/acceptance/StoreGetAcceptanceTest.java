@@ -123,7 +123,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .param("location", "")
                 .param("page", "0")
                 .param("size", "2")
-                .param("sort", "reviewsCount,desc")
+                .param("sort", StoreSearchType.MOST_REVIEWED.name()+",desc")
                 .get("/api/stores/search")
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -221,7 +221,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
 
     @Test
     @DisplayName("likes 개수대로 정렬이 잘되는지 확인")
-    void WhenFindTopNByMostLikesCount_ThenReturnSortedValues() throws Exception {
+    void WhenFindTopNByMostLikesCount_ThenReturnSortedValues() {
         StoreSearchType type = StoreSearchType.MOST_LIKES_COUNT;
         int count = 4;
         addLike();

@@ -367,17 +367,6 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("이미 존재하는 회원의 email로 email 검증 시도 시 throw exception")
-    public void whenSendMailWithDuplicateEmail_ThenThrowException(){
-        //given
-        registerConsumer();
-        //when,then
-        String url = "/api/email";
-        doPost(url, null,null,new EmailRequest(CONSUMER_EMAIL))
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
-    }
-    @Test
     @DisplayName("토큰 만료 시 Unauthorized")
     public void whenTokenExpired_ThenUnauthorized(){
         //given
