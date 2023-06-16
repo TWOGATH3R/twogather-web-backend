@@ -24,14 +24,14 @@ public class MemberService {
 
     public MemberResponse update(final MemberUpdateRequest request){
         String originUsername = getLoginUsername();
-        if(request.getUsername()!=originUsername && memberRepository.findActiveMemberByUsername(request.getUsername()).isPresent()){
+        if(!request.getUsername().equals(originUsername) && memberRepository.findActiveMemberByUsername(request.getUsername()).isPresent()){
             throw new MemberException(DUPLICATE_USERNAME);
         }
         Member member = memberRepository.findActiveMemberByUsername(getLoginUsername()).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
         String originEmail = member.getEmail();
-        if(request.getEmail()!=originEmail && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
+        if(!request.getEmail().equals(originEmail) && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
             throw new MemberException(DUPLICATE_EMAIL);
         }
         member.update(

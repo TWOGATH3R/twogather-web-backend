@@ -133,7 +133,12 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
 
         //when
-        MemberResponse response = updateMember(UPDATE_URL, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), UPDATE_REQUEST);
+        MemberResponse response = updateMember(
+                UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                UPDATE_REQUEST
+        );
 
         //then
         Member member = memberRepository.findById(response.getMemberId()).get();
@@ -142,6 +147,37 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         Assertions.assertEquals(member.getName(), UPDATE_REQUEST.getName());
 
                 ;
+    }
+
+    @Test
+    @DisplayName("owner 개인정보 변경 성공 - 동일한 정보는 그대로 전송한다")
+    public void whenOwnerChangeInfoWithSameInfo_ThenNoChange(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+        MemberSaveRequest UPDATE_REQUEST
+                = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        //when
+        MemberResponse response = updateMember(
+                UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                UPDATE_REQUEST
+        );
+
+        //then
+        Member member = memberRepository.findById(response.getMemberId()).get();
+
+        Assertions.assertEquals(member.getEmail(), UPDATE_REQUEST.getEmail());
+        Assertions.assertEquals(member.getName(), UPDATE_REQUEST.getName());
+
+        doLogin(new LoginRequest(UPDATE_REQUEST.getUsername(), UPDATE_REQUEST.getPassword()));
+
     }
 
     @Test
