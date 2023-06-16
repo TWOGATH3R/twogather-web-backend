@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
+import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
@@ -47,6 +48,10 @@ public class MemberService {
         if(!member.getName().equals(request.getName())) throw new MemberException(NO_SUCH_MEMBER_ID);
 
         return encodeUsername(member.getUsername());
+    }
+    public Boolean isExist(EmailRequest request){
+        if(memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()) return true;
+        else return false;
     }
     public void changePassword(String password){
         String username = getLoginUsername();

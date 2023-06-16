@@ -150,7 +150,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 개인정보 변경 성공 - 동일한 정보는 그대로 전송한다")
+    @DisplayName("개인정보를 변경할시에 같은정보를 그대로 전송하는경우 bug 없이 잘 동작해야한다")
     public void whenOwnerChangeInfoWithSameInfo_ThenNoChange(){
         //given
         registerOwner();
@@ -397,6 +397,38 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Response.class);
         return convert(result, new TypeReference<MemberResponse>() {});
+    }
+
+    @Test
+    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - 존재한다")
+    public void whenVerityEmail_ThenReturnTrue(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/checks-email";
+        //when
+        Boolean response =convert(doPost(UPDATE_URL,
+                null,null,
+                new EmailRequest(OWNER_EMAIL))
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Response.class), new TypeReference<>() {});
+        //then
+        Assertions.assertTrue(response);
+    }
+
+    @Test
+    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - false")
+    public void whenVerityEmail_ThenReturnFalse(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/checks-email";
+        //when
+        Boolean response =convert(doPost(UPDATE_URL,
+                null,null,
+                new EmailRequest("no-user@email.com"))
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Response.class), new TypeReference<>() {});
+        //then
+        Assertions.assertFalse(response);
     }
 
 }

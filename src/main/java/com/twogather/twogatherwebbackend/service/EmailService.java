@@ -22,14 +22,10 @@ import static com.twogather.twogatherwebbackend.exception.MemberException.Member
 @Slf4j
 public class EmailService {
     private final JavaMailSender javaMailSender;
-    private final MemberService memberService;
 
-    // Create a rate limiter that allows 1 request per 5 minutes
-    //private static final RateLimiter rateLimiter = RateLimiter.create(0.0033);
     private static final RateLimiter rateLimiter = RateLimiter.create(1);//TODO: 다시 고치기. 테스트에서만 1초에 1개 허용
 
     public VerificationCodeResponse sendEmail(String to) {
-        existsEmail(to);
         checkRateLimiter();
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -66,10 +62,5 @@ public class EmailService {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
         return sb.toString();
-    }
-    private void existsEmail(String email){
-        if(memberService.existsEmail(email)){
-            throw new MemberException(DUPLICATE_EMAIL);
-        }
     }
 }
