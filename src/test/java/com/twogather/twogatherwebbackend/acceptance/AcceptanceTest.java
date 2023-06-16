@@ -15,6 +15,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
+import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
 import com.twogather.twogatherwebbackend.repository.KeywordRepository;
@@ -48,6 +49,7 @@ import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.UNDEFINED_PORT;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -203,7 +205,6 @@ public class AcceptanceTest
     protected void validatorWillPass(){
         org.mockito.Mockito.when(validator.validateBizRegNumber(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any())).thenReturn(true);
     }
-
     protected void registerOwner(){
         log.info("register owner");
         memberResponse = convert(
@@ -230,6 +231,18 @@ public class AcceptanceTest
                 .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
         registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
+
+    }
+    protected void registerStoreWithValidatorFail(){
+        Long categoryId = registerCategory();
+        registerKeyword();
+
+        doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(StoreException.StoreErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage()));
 
     }
     private void registerBusinessHour(Long storeId, BusinessHourSaveUpdateListRequest request){

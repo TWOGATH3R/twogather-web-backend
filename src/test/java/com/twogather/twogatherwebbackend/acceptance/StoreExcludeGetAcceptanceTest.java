@@ -1,9 +1,11 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static org.hamcrest.Matchers.*;
 
 
@@ -31,8 +34,6 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     private StoreRepository storeRepository;
     @Autowired
     private BusinessHourRepository businessHourRepository;
-    @Autowired
-    private ImageRepository imageRepository;
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
@@ -63,6 +64,13 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
     }
 
+    @Test
+    @DisplayName("유효하지않은 사업자등록번호정보로 저장은 실패한다")
+    public void whenSaveInvalidBusinessInfo_ThenThrowException() {
+        //when,then
+        registerStoreWithValidatorFail();
+
+    }
 
     @Test
     @DisplayName("가게 저장시 빈값, null, 올바르지않은 전화번호 형식에 대한 예외 throw")
