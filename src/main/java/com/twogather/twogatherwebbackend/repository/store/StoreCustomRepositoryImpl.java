@@ -170,9 +170,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .from(likes)
                 .join(likes.store, store)
                 .join(likes.member, member)
-                .leftJoin(store.storeImageList, image).fetchJoin()
-                .leftJoin(store.storeKeywordList, storeKeyword)
-                .leftJoin(storeKeyword.keyword, keyword)
+                .where(member.memberId.eq(memberId))
                 .fetch()
                 .size();
         return new PageImpl<>(response, pageable, count);
