@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.review.ReviewUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class ReviewService {
         //TODO:구현
 
     }
-    public Page<MyReviewInfoResponse> getMyReviewInfos(Long memberId, String orderBy, String orderColumn, int page, int size){
+    public Page<MyReviewInfoResponse> getMyReviewInfos(Long memberId, Long storeId, Pageable pageable){
         //TODO:구현
         return null;
     }

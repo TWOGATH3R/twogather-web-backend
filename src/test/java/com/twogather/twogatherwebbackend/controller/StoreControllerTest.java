@@ -152,7 +152,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("ownerId").description("가게 주인의 ID"),
                                 parameterWithName("page").description("조회할 페이지의 수").optional(),
                                 parameterWithName("size").description("검사결과 최대 개수").optional(),
-                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat()).optional()
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getStoreSortFormat()).optional()
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
@@ -259,7 +259,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("storeName").description("가게이름").optional(),
                                 parameterWithName("page").description("조회할 페이지의 수").optional(),
                                 parameterWithName("size").description("검사결과 최대 개수").optional(),
-                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat()).optional()
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getStoreSortFormat()).optional()
 
                         ),
                         responseFields(
