@@ -8,10 +8,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreDefaultResponse;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
-import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.SQLException;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
 import org.springframework.data.domain.Page;
@@ -21,13 +18,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QCategory.category;
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
+import static com.twogather.twogatherwebbackend.domain.QKeyword.keyword;
+import static com.twogather.twogatherwebbackend.domain.QMember.member;
 import static com.twogather.twogatherwebbackend.domain.QStoreOwner.storeOwner;
 import static com.twogather.twogatherwebbackend.domain.QLikes.likes;
 import static com.twogather.twogatherwebbackend.domain.QReview.review;
@@ -120,7 +118,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .fetch().size();
 
 
-        List<MyStoreResponse> storeResponses = createStore(storeQuery);
+        List<MyStoreResponse> storeResponses = createMyStoreResponse(storeQuery);
 
         return new PageImpl<>(storeResponses, pageable, count);
     }
@@ -144,9 +142,38 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .fetch()
                 .size();
 
-        List<MyStoreResponse> storeResponses = createStore(storeQuery);
+        List<MyStoreResponse> storeResponses = createMyStoreResponse(storeQuery);
 
         return new PageImpl<>(storeResponses, pageable, count);
+    }
+
+    @Override
+    public Page<MyLikeStoreResponse> findMyLikeStore(Long memberId, Pageable pageable) {
+        List<Store> storeQuery =
+                jpaQueryFactory
+                        .select(likes.store)
+                        .from(likes)
+                        .join(likes.store, store)
+                        .join(likes.member, member)
+                        .leftJoin(store.storeImageList, image).fetchJoin()
+                        .leftJoin(store.storeKeywordList, storeKeyword)
+                        .leftJoin(storeKeyword.keyword, keyword)
+                        .where(member.memberId.eq(memberId))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetch();
+
+        List<MyLikeStoreResponse> response = createMyLikeStoreResponse(storeQuery);
+
+        int count = jpaQueryFactory
+                .select(store)
+                .from(likes)
+                .join(likes.store, store)
+                .join(likes.member, member)
+                .where(member.memberId.eq(memberId))
+                .fetch()
+                .size();
+        return new PageImpl<>(response, pageable, count);
     }
 
     @Override
@@ -269,7 +296,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         if(imageList.isEmpty()) return "";
         return imageList.get(0).getUrl();
     }
-    private List<MyStoreResponse> createStore(List<Store> storeQuery){
+    private List<MyStoreResponse> createMyStoreResponse(List<Store> storeQuery){
         return storeQuery
                 .stream()
                 .map(store ->
@@ -283,5 +310,23 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                 .address(store.getAddress())
                                 .storeName(store.getName())
                                 .build()).collect(Collectors.toList());
+    }
+    private List<MyLikeStoreResponse> createMyLikeStoreResponse(List<Store> storeQuery){
+        return storeQuery
+                .stream()
+                .map(store ->
+                        MyLikeStoreResponse
+                                .builder()
+                                .storeImageUrl(getUrl(store.getStoreImageList()))
+                                .phone(store.getPhone())
+                                .storeId(store.getStoreId())
+                                .address(store.getAddress())
+                                .storeName(store.getName())
+                                .keywordList(store.getStoreKeywordList().stream()
+                                        .limit(3)
+                                        .map(storeKeyword -> storeKeyword.getKeyword().getName())
+                                        .collect(Collectors.toList()))
+                                .build()
+                ).collect(Collectors.toList());
     }
 }

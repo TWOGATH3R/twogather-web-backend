@@ -2,8 +2,11 @@ package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.store.MyLikeStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
+import org.checkerframework.checker.units.qual.K;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.util.TestConstants.CONSUMER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class StoreRepositoryTest extends RepositoryTest{
@@ -349,5 +354,62 @@ public class StoreRepositoryTest extends RepositoryTest{
                     );
         }
     }
+    @Test
+    @DisplayName("내가 좋아요 누른 가게에 대해 올바르게 결과가 나오는지 확인")
+    void whenFindMyLikesStore_ThenSuccess() {
+        // given
+        Pageable pageable = PageRequest.of(0, 4);
+        Member member = createLiker();
+        createLike(member);
+        createImage();
+        createKeyword();
 
+
+        Page<MyLikeStoreResponse> myLikeStore = storeRepository.findMyLikeStore(member.getMemberId(), pageable);
+
+        Assertions.assertEquals(myLikeStore.getTotalElements(),3);
+        Assertions.assertEquals(myLikeStore.getTotalPages(),1);
+        Assertions.assertTrue(myLikeStore.stream().anyMatch(sk ->
+                        sk.getStoreName().equals(store1.getName())
+                        && !sk.getStoreImageUrl().isEmpty()
+                        && sk.getKeywordList().size()!=0
+                        && sk.getPhone().equals(store1.getPhone())
+                        && sk.getAddress().equals(store1.getAddress())));
+        Assertions.assertTrue(myLikeStore.stream().anyMatch(sk ->
+                         sk.getStoreName().equals(store2.getName())
+                                 && !sk.getStoreImageUrl().isEmpty()
+                                 && sk.getKeywordList().size()!=0
+                        && sk.getPhone().equals(store2.getPhone())
+                        && sk.getAddress().equals(store2.getAddress())));
+        Assertions.assertTrue(myLikeStore.stream().anyMatch(sk ->
+                sk.getStoreName().equals(store3.getName())
+                        && !sk.getStoreImageUrl().isEmpty()
+                        && sk.getKeywordList().size()!=0
+                        && sk.getPhone().equals(store3.getPhone())
+                        && sk.getAddress().equals(store3.getAddress())));
+    }
+    private Member createLiker(){
+        return memberRepository.save(CONSUMER);
+    }
+    private void createLike(Member member){
+        likeRepository.save(new Likes(store1, member));
+        likeRepository.save(new Likes(store2, member));
+        likeRepository.save(new Likes(store3, member));
+    }
+    private void createImage(){
+        imageRepository.save(new Image(store1, "url1"));
+        imageRepository.save(new Image(store1, "url123"));
+        imageRepository.save(new Image(store2, "url2"));
+        imageRepository.save(new Image(store3, "url3"));
+    }
+    private void createKeyword(){
+        Keyword keyword1 = keywordRepository.save(new Keyword("맛있는"));
+        Keyword keyword2 = keywordRepository.save(new Keyword("분위기좋은"));
+        Keyword keyword3 = keywordRepository.save(new Keyword("아이들과 오기 좋은"));
+        Keyword keyword4 = keywordRepository.save(new Keyword("청결한"));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword1));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword2));
+        storeKeywordRepository.save(new StoreKeyword(store3, keyword3));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword4));
+    }
 }

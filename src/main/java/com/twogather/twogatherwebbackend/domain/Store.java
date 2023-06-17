@@ -102,6 +102,24 @@ public class Store {
             this.category = category;
         }
     }
+    public void addImage(Image image){
+        if(storeImageList==null){
+            storeImageList = new ArrayList<>();
+        }
+        storeImageList.add(image);
+    }
+    public void addLikes(Likes likes){
+        if(likesList==null){
+            likesList = new ArrayList<>();
+        }
+        likesList.add(likes);
+    }
+    public void addStoreKeyword(StoreKeyword storeKeyword){
+        if(storeKeywordList==null){
+            storeKeywordList = new ArrayList<>();
+        }
+        storeKeywordList.add(storeKeyword);
+    }
     public void reject(String reasonForRejection) {
         this.status = StoreStatus.DENIED;
         this.reasonForRejection = reasonForRejection;

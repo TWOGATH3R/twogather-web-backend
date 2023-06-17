@@ -43,3 +43,4 @@ out/
 /src/test/java/com/twogather/twogatherwebbackend/valid/BizRegNumberValidatorTest.java
 # log
 /application-log
+/application_log

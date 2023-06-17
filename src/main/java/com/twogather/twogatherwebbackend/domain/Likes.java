@@ -27,6 +27,7 @@ public class Likes {
 
     public Likes(Store store, Member member){
         this.store =store;
+        store.addLikes(this);
         this.member = member;
     }
 }

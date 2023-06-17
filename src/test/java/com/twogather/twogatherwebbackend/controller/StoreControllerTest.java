@@ -153,7 +153,6 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("page").description("조회할 페이지의 수"),
                                 parameterWithName("size").description("검사결과 최대 개수"),
                                 parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat())
-
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
