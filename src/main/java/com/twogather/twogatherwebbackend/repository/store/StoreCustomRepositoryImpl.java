@@ -177,14 +177,15 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     }
 
     @Override
-    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location) {
+    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location, String storeName) {
         List<Store> storeQuery = jpaQueryFactory
                 .selectFrom(store)
                 .where(store.status.eq(StoreStatus.APPROVED))
                 .where(
                         categoryEq(category),
                         keywordContain(keyword),
-                        addressContain(location)
+                        addressContain(location),
+                        storeNameContain(storeName)
                 )
                 .leftJoin(store.reviewList, review)
                 .leftJoin(store.storeImageList, image)
@@ -276,6 +277,13 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
             return Expressions.asBoolean(true).isTrue();
         } else {
             return store.storeKeywordList.any().keyword.name.eq(keyword);
+        }
+    }
+    private BooleanExpression storeNameContain(String storeName){
+        if (!StringUtils.hasText(storeName)) {
+            return Expressions.asBoolean(true).isTrue();
+        } else {
+            return store.name.contains(storeName);
         }
     }
     private BooleanExpression categoryEq(String category) {

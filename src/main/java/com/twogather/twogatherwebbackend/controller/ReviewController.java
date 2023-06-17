@@ -9,6 +9,7 @@ import com.twogather.twogatherwebbackend.dto.review.ReviewUpdateRequest;
 import com.twogather.twogatherwebbackend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,12 +51,8 @@ public class ReviewController {
     }
     @GetMapping("/members/{memberId}")
     public ResponseEntity<Response> getMyReviewInfos(@PathVariable final Long memberId,
-                                                     @PathVariable final Long storeId,
-                                                     @RequestParam(defaultValue = "desc") final String orderBy,
-                                                     @RequestParam(defaultValue = "createdAt") final String orderColumn,
-                                                     @RequestParam(defaultValue = "1") final int page,
-                                                     @RequestParam(defaultValue = "5") final int size) {
-        Page<MyReviewInfoResponse> reviews = reviewService.getMyReviewInfos(memberId, orderBy, orderColumn, page, size);
+                                                     @PathVariable final Long storeId, Pageable pageable) {
+        Page<MyReviewInfoResponse> reviews = reviewService.getMyReviewInfos(memberId, storeId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(reviews));
     }

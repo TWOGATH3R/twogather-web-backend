@@ -122,8 +122,8 @@ public class StoreService {
                 .storeName(store.getName()).build();
     }
     public Page<StoreResponseWithKeyword> getStores(
-            Pageable pageable, String categoryName, String keyword,String location){
-        return storeRepository.findStoresByCondition(pageable, categoryName, keyword, location);
+            Pageable pageable, String categoryName, String keyword,String location, String storeName){
+        return storeRepository.findStoresByCondition(pageable, categoryName, keyword, location, storeName);
     }
     public Page<MyStoreResponse> getStores(StoreStatus type, Pageable pageable){
         return storeRepository.findStoresByStatus(type, pageable);

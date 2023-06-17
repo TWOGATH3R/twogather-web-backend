@@ -25,8 +25,7 @@ import java.util.List;
 
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getSortFormat;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -129,7 +128,7 @@ public class MemberControllerTest extends ControllerTest {
                         getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명(닉네임)").attributes(getMemberNameFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data").type(JsonFieldType.STRING).description("아이디")
@@ -185,8 +184,8 @@ public class MemberControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("고객의 고유 id")
                         ),
                         requestParameters(
-                                parameterWithName("page").description("조회할 페이지의 수"),
-                                parameterWithName("size").description("검사결과 최대 개수")
+                                parameterWithName("page").description("조회할 페이지의 수").optional(),
+                                parameterWithName("size").description("검사결과 최대 개수").optional()
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 고유 ID"),

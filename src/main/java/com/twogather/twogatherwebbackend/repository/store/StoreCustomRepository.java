@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface StoreCustomRepository {
     List<TopStoreResponse> findTopNByType(int n, String order, String orderBy);
-    Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String categoryName, String keyword, String location);
+    Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String categoryName, String keyword, String location, String storeName);
     Page<MyStoreResponse> findStoresByStatus(StoreStatus status, Pageable pageable);
     Page<MyStoreResponse> findMyStore(Long ownerId, Pageable pageable);
     Page<MyLikeStoreResponse> findMyLikeStore(Long memberId, Pageable pageable);

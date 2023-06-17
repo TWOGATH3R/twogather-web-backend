@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.docs;
 
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import org.springframework.restdocs.snippet.Attributes;
 
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -42,8 +41,11 @@ public interface DocumentFormatGenerator {
     static Attributes.Attribute getUsernameFormat() {
         return key("format").value("아이디는 영어와 숫자를 포함해서 8자 이상 15자 이내로");
     }
-    static Attributes.Attribute getSortFormat() {
+    static Attributes.Attribute getStoreSortFormat() {
         return key("format").value("<TOP_RATED,desc> or <MOST_REVIEWED,asc> or <MOST_LIKES_COUNT,asc>... 등");
+    }
+    static Attributes.Attribute getMemberNameFormat() {
+        return key("format").value("한글 혹은 영어로만 입력해주세요");
     }
 
 }

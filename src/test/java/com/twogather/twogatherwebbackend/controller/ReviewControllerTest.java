@@ -40,12 +40,11 @@ public class ReviewControllerTest extends ControllerTest{
     @DisplayName("내가 작성한 리뷰 목록")
     public void getMyReviewInfos_WhenGetMyReviews_ThenReturnReviewInfos() throws Exception {
         //given
-        when(reviewService.getMyReviewInfos(anyLong(), any(),any(),anyInt(), anyInt())).thenReturn(MY_REVIEW_LIST);
+        when(reviewService.getMyReviewInfos(anyLong(), any(),any())).thenReturn(MY_REVIEW_LIST);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get(URL+"/members/{memberId}", 1,2)
-                        .param("orderBy", "desc")
-                        .param("orderColumn", "createdAt")
+                        .param("sort", "createdAt,desc")
                         .param("page", "1")
                         .param("size", "5")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -60,10 +59,9 @@ public class ReviewControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
                         ),
                         requestParameters(
-                                parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
-                                parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdAt입니다."),
-                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 1입니다."),
-                                parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").optional(),
+                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 1입니다.").optional(),
+                                parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.").optional()
                         ),
                         responseFields(
                                 fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("조회한 리뷰 목록"),
