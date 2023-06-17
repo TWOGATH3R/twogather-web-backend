@@ -52,7 +52,7 @@ public class LikeControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("storeId").description("좋아요를 누를 대상 가게 id")
+                                parameterWithName("storeId").description("좋아요 취소할 대상 가게 id")
                         )
                 ));
     }

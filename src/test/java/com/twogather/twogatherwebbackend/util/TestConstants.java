@@ -58,7 +58,7 @@ public class TestConstants {
     // Owner Constants
     public static final String OWNER_USERNAME = "owner1";
     public static final String OWNER_EMAIL = "asd@naver.com";
-    public static final String OWNER_PASSWORD = "asd@asd@@123";
+    public static final String OWNER_PASSWORD = "asdqwea123";
     public static final String OWNER_NAME = "루터";
     public static final MemberSaveRequest OWNER_SAVE_REQUEST = new MemberSaveRequest(
             OWNER_EMAIL, OWNER_USERNAME, OWNER_PASSWORD, OWNER_NAME
@@ -73,7 +73,7 @@ public class TestConstants {
     // Consumer Constants
     public static final String CONSUMER_USERNAME = "consumer1";
     public static final String CONSUMER_EMAIL = "consumer@naver.com";
-    public static final String CONSUMER_PASSWORD = "asd!asd123";
+    public static final String CONSUMER_PASSWORD = "asdasd123";
     public static final String CONSUMER_NAME = "김소비";
     public static final MemberSaveRequest CONSUMER_SAVE_REQUEST =
             new MemberSaveRequest(CONSUMER_EMAIL, CONSUMER_USERNAME, CONSUMER_PASSWORD, CONSUMER_NAME);
@@ -82,7 +82,7 @@ public class TestConstants {
 
     // Member Constants
     public static final String MEMBER_EMAIL = "pobi@email.com";
-    public static final String MEMBER_PASSWORD = "test1234!!!";
+    public static final String MEMBER_PASSWORD = "testasd1234";
     public static final String MEMBER_NAME = "루터";
 
     // Common Constants

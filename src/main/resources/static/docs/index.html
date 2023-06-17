@@ -448,6 +448,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_error">Error</a></li>
 <li><a href="#_auth">Auth</a>
 <ul class="sectlevel2">
 <li><a href="#_login">Login</a></li>
@@ -470,7 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_email">Email</a>
 <ul class="sectlevel2">
-<li><a href="#_email_verification">Email-Verification</a></li>
+<li><a href="#_email_send">Email-Send</a></li>
 </ul>
 </li>
 <li><a href="#_menu">Menu</a>
@@ -560,22 +561,47 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
+<h2 id="_error"><a class="link" href="#_error">Error</a></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "message": "예외 메시지"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_auth"><a class="link" href="#_auth">Auth</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_login"><a class="link" href="#_login">Login</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인을 완료하면 RefreshToken과 AccessToken을 발급합니다</p>
+</li>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_login_http_request"><a class="link" href="#_login_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 61
+Content-Length: 59
 Host: docs.api.com
 
 {
   "username" : "owner1",
-  "password" : "asd@asd@@123"
+  "password" : "asdqwea123"
 }</code></pre>
 </div>
 </div>
@@ -626,8 +652,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTc4NjE0fQ.d-Tly4KJilN8JCPKGu-1L3-2w1QsSw58vfEWRMUji0arFNkvj6BcDM5731hqS42Q1cOmf4A5bbEp5UuzHeq3qQ
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg3MzQ0fQ.TWD0mAD7mVYM5G_uG4F7MaaA2UIXWc0sYNmfvTTccIbmLfM_U6aAyJGp-4iEqaD1uM3NfL6UDUFt6FV_JoSQlA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTkwNDM4fQ.P96Jc3Ozj5xJoZMGPgyX9fHyX5aQIorRYwaf8KuirfMn75m222NqCLFiRts_vpLb6rDAo5eVs3YWiHAk2tuPKA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk5MTY4fQ.XDOgbXG_xsGG9jllEzBgCo87Wddi7xKF5NhV70X7Um6-QGonqymhYD4Z2YMgyY0QFbYEnMPHu8j1GmCoBu1n7w
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -682,6 +708,13 @@ Content-Length: 43
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_password_verification"><a class="link" href="#_password_verification">Password-Verification</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_password_verification_http_request"><a class="link" href="#_password_verification_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -702,14 +735,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/members/{memberId}/verify-password</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -717,6 +752,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -801,6 +837,16 @@ Content-Length: 45
 </div>
 <div class="sect2">
 <h3 id="_password_change"><a class="link" href="#_password_change">Password-Change</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+<li>
+<p>인증을 거친 사용자만이 비밀번호를 변경할 수 있습니다</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_password_change_http_request"><a class="link" href="#_password_change_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -821,14 +867,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/members/{memberId}/password</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -836,6 +884,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -882,18 +931,25 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_find_username"><a class="link" href="#_find_username">Find-Username</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_find_username_http_request"><a class="link" href="#_find_username_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/members/my-id HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 59
+Content-Length: 62
 Host: docs.api.com
 
 {
   "email" : "fias@naver.com",
-  "name" : "홍길동"
+  "name" : "김뿌웅치"
 }</code></pre>
 </div>
 </div>
@@ -982,6 +1038,13 @@ Content-Length: 24
 </div>
 <div class="sect2">
 <h3 id="_find_like_store"><a class="link" href="#_find_like_store">Find-Like-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_find_like_store_http_request"><a class="link" href="#_find_like_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -996,14 +1059,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/members/{memberId}/likes/</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1011,6 +1076,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -1205,6 +1271,13 @@ Content-Length: 827
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_store"><a class="link" href="#_get_store">Get-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_store_http_request"><a class="link" href="#_get_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1219,14 +1292,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/admin/stores/{type}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1234,6 +1309,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">APPROVED, PENDING, DENIED, DELETED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">읽어올 가게의 타입</p></td>
 </tr>
 </tbody>
@@ -1410,6 +1486,13 @@ Content-Length: 876
 </div>
 <div class="sect2">
 <h3 id="_approve_store"><a class="link" href="#_approve_store">Approve-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_approve_store_http_request"><a class="link" href="#_approve_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1424,14 +1507,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/admin/stores/approve/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1439,6 +1524,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -1447,6 +1533,13 @@ Host: docs.api.com</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_reject_store"><a class="link" href="#_reject_store">Reject-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_reject_store_http_request"><a class="link" href="#_reject_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1497,14 +1590,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/admin/stores/reject/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1512,6 +1607,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -1524,9 +1620,16 @@ Host: docs.api.com
 <h2 id="_email"><a class="link" href="#_email">Email</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_email_verification"><a class="link" href="#_email_verification">Email-Verification</a></h3>
+<h3 id="_email_send"><a class="link" href="#_email_send">Email-Send</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
-<h4 id="_email_verification_http_request"><a class="link" href="#_email_verification_http_request">HTTP request</a></h4>
+<h4 id="_email_send_http_request"><a class="link" href="#_email_send_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/email HTTP/1.1
@@ -1541,7 +1644,7 @@ Host: docs.api.com
 </div>
 </div>
 <div class="sect3">
-<h4 id="_email_verification_request_fields"><a class="link" href="#_email_verification_request_fields">Request fields</a></h4>
+<h4 id="_email_send_request_fields"><a class="link" href="#_email_send_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1571,7 +1674,7 @@ Host: docs.api.com
 </table>
 </div>
 <div class="sect3">
-<h4 id="_email_verification_http_response"><a class="link" href="#_email_verification_http_response">HTTP response</a></h4>
+<h4 id="_email_send_http_response"><a class="link" href="#_email_send_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1587,7 +1690,7 @@ Content-Length: 58
 </div>
 </div>
 <div class="sect3">
-<h4 id="_email_verification_response_fields"><a class="link" href="#_email_verification_response_fields">Response fields</a></h4>
+<h4 id="_email_send_response_fields"><a class="link" href="#_email_send_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1624,6 +1727,13 @@ Content-Length: 58
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get"><a class="link" href="#_get">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_http_request"><a class="link" href="#_get_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1638,14 +1748,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/menus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1653,6 +1765,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -1727,6 +1840,13 @@ Content-Length: 161
 </div>
 <div class="sect2">
 <h3 id="_delete"><a class="link" href="#_delete">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_http_request"><a class="link" href="#_delete_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1747,14 +1867,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/menus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1762,6 +1884,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -1808,6 +1931,13 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_update"><a class="link" href="#_update">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1836,14 +1966,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/menus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -1851,6 +1983,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -1969,6 +2102,13 @@ Content-Length: 161
 </div>
 <div class="sect2">
 <h3 id="_save"><a class="link" href="#_save">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1995,14 +2135,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/menus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -2010,6 +2152,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -2126,6 +2269,13 @@ Content-Length: 161
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_2"><a class="link" href="#_get_2">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_2_http_request"><a class="link" href="#_get_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2141,14 +2291,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/business-hours</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -2156,6 +2308,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -2294,6 +2447,13 @@ Content-Length: 757
 </div>
 <div class="sect2">
 <h3 id="_delete_2"><a class="link" href="#_delete_2">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_2_http_request"><a class="link" href="#_delete_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2314,14 +2474,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/business-hours</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -2329,6 +2491,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -2375,20 +2538,35 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_update_2"><a class="link" href="#_update_2">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_2_http_request"><a class="link" href="#_update_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 230
+Content-Length: 430
 Host: docs.api.com
 
 {
   "businessHourList" : [ {
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "10:00",
+    "endTime" : "17:00",
     "dayOfWeek" : "MONDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "10:00",
+    "endTime" : "17:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2403,14 +2581,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/business-hours</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -2418,6 +2598,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -2501,35 +2682,25 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 757
+Content-Length: 512
 
 {
   "data" : [ {
     "businessHourId" : 1,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "10:00",
+    "endTime" : "17:00",
     "dayOfWeek" : "MONDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 2,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2628,20 +2799,62 @@ Content-Length: 757
 </div>
 <div class="sect2">
 <h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
+<li>
+<p>영업하는 요일에 대해서 저장을 요청하면 미요청된 요일에 대해서는 "영업안함"으로 표시하여 되돌려줍니다</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_2_http_request"><a class="link" href="#_save_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 230
+Content-Length: 1032
 Host: docs.api.com
 
 {
   "businessHourList" : [ {
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
     "dayOfWeek" : "MONDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "WEDNESDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "THURSDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "FRIDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2656,14 +2869,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/business-hours</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -2671,6 +2886,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 ID</p></td>
 </tr>
 </tbody>
@@ -2754,36 +2970,76 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 757
+Content-Length: 1739
 
 {
   "data" : [ {
     "businessHourId" : 1,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
     "dayOfWeek" : "MONDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 2,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 3,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "WEDNESDAY",
     "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 4,
+    "storeId" : 1,
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "THURSDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 5,
+    "storeId" : 1,
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "FRIDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 6,
+    "storeId" : 1,
+    "startTime" : null,
+    "endTime" : null,
+    "dayOfWeek" : "SATURDAY",
+    "isOpen" : false,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 7,
+    "storeId" : 1,
+    "startTime" : null,
+    "endTime" : null,
+    "dayOfWeek" : "SUNDAY",
+    "isOpen" : false,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
@@ -2886,6 +3142,13 @@ Content-Length: 757
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_list"><a class="link" href="#_get_list">Get-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_http_request"><a class="link" href="#_get_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2985,6 +3248,16 @@ Content-Length: 213
 </div>
 <div class="sect2">
 <h3 id="_set_keyword_store_association"><a class="link" href="#_set_keyword_store_association">Set-Keyword-Store-Association</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>특정 키워드를 가게에 등록하는 일을 합니다</p>
+</li>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_set_keyword_store_association_http_request"><a class="link" href="#_set_keyword_store_association_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3011,14 +3284,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/keywords/stores/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -3026,6 +3301,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 키워드랑 연결할 가게의 고유 ID</p></td>
 </tr>
 </tbody>
@@ -3039,6 +3315,13 @@ Host: docs.api.com
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3253,6 +3536,13 @@ Content-Length: 380
 </div>
 <div class="sect2">
 <h3 id="_get_one"><a class="link" href="#_get_one">Get-One</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_one_http_request"><a class="link" href="#_get_one_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3268,14 +3558,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -3283,6 +3575,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -3377,6 +3670,13 @@ Content-Length: 282
 </div>
 <div class="sect2">
 <h3 id="_get_list_2"><a class="link" href="#_get_list_2">Get-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_2_http_request"><a class="link" href="#_get_list_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3392,14 +3692,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/top/{storeType}/{count}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -3407,11 +3709,13 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TOP_RATED or MOST_REVIEWED or MOST_LIKES_COUNT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">자세히 볼 페이지의 type</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>count</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">자세히 볼 페이지 개수</p></td>
 </tr>
 </tbody>
@@ -3546,6 +3850,13 @@ Content-Length: 1303
 </div>
 <div class="sect2">
 <h3 id="_get_list_search"><a class="link" href="#_get_list_search">Get-List-Search</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_search_http_request"><a class="link" href="#_get_list_search_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3762,6 +4073,13 @@ Content-Length: 651
 </div>
 <div class="sect2">
 <h3 id="_get_my_store_list"><a class="link" href="#_get_my_store_list">Get-My-Store-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_my_store_list_http_request"><a class="link" href="#_get_my_store_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3988,6 +4306,13 @@ Content-Length: 1004
 </div>
 <div class="sect2">
 <h3 id="_delete_3"><a class="link" href="#_delete_3">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_3_http_request"><a class="link" href="#_delete_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4003,14 +4328,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4018,6 +4345,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -4034,6 +4362,13 @@ Host: docs.api.com</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_update_3"><a class="link" href="#_update_3">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_3_http_request"><a class="link" href="#_update_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4061,14 +4396,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4076,6 +4413,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 고유 id</p></td>
 </tr>
 </tbody>
@@ -4278,11 +4616,18 @@ Content-Length: 380
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_3"><a class="link" href="#_get_3">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=16516a62-8e40-4369-a2be-ddb9f8e4a9af HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=51ac0797-c3c4-4809-bc50-b43c75bcca3d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4293,14 +4638,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/owners/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4308,6 +4655,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업자의 고유 id</p></td>
 </tr>
 </tbody>
@@ -4386,11 +4734,18 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=db831787-a79f-4832-a450-12ffa0dd2bae HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=b4ae0a48-0017-4c63-80ed-0bf11648d1ae HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -4528,6 +4883,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_update_4"><a class="link" href="#_update_4">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_4_http_request"><a class="link" href="#_update_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4551,14 +4913,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/owners/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4566,6 +4930,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업자의 고유 id</p></td>
 </tr>
 </tbody>
@@ -4695,6 +5060,16 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_delete_4"><a class="link" href="#_delete_4">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>탈퇴</p>
+</li>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_4_http_request"><a class="link" href="#_delete_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4710,14 +5085,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/owners/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4725,6 +5102,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업자의 고유 id</p></td>
 </tr>
 </tbody>
@@ -4746,6 +5124,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_4"><a class="link" href="#_get_4">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_4_http_request"><a class="link" href="#_get_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4769,14 +5154,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/consumers/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -4784,6 +5171,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -4862,11 +5250,18 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=ce587d58-39f5-4205-81d6-70f9ffbd3372 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=d44f12f0-06fa-42da-8a9d-e7688c633c30 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5004,11 +5399,18 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_update_5"><a class="link" href="#_update_5">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=9f12f4c6-4ca1-4de0-a0af-710a1d54d90f HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=67bc394f-db05-4138-8fdb-62ffd153f3e2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5027,14 +5429,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/consumers/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5042,6 +5446,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -5171,6 +5576,16 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_delete_5"><a class="link" href="#_delete_5">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>탈퇴</p>
+</li>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_5_http_request"><a class="link" href="#_delete_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5186,14 +5601,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/consumers/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5201,6 +5618,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">고객의 고유 id</p></td>
 </tr>
 </tbody>
@@ -5222,6 +5640,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_5"><a class="link" href="#_get_5">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_5_http_request"><a class="link" href="#_get_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5237,14 +5662,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/images</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5252,6 +5679,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보</p></td>
 </tr>
 </tbody>
@@ -5320,6 +5748,16 @@ Content-Length: 196
 </div>
 <div class="sect2">
 <h3 id="_save_6"><a class="link" href="#_save_6">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>이미지를 넘겨주면 백엔드 측에서 스토리지에 저장하고 외부에서 접근가능한 public url을 발급해줍니다</p>
+</li>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5347,14 +5785,16 @@ test data
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/images</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5362,6 +5802,7 @@ test data
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보</p></td>
 </tr>
 </tbody>
@@ -5430,6 +5871,13 @@ Content-Length: 196
 </div>
 <div class="sect2">
 <h3 id="_delete_6"><a class="link" href="#_delete_6">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_6_http_request"><a class="link" href="#_delete_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5450,14 +5898,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/images</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5465,6 +5915,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 storeId에 대해 모든 가게 이미지를 조회해오기 위해 필요한 정보</p></td>
 </tr>
 </tbody>
@@ -5486,6 +5937,13 @@ Host: docs.api.com
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_my_review_list"><a class="link" href="#_get_my_review_list">Get-My-Review-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_my_review_list_http_request"><a class="link" href="#_get_my_review_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5501,14 +5959,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/members/{memberId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5516,11 +5976,13 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰를 조회할 사용자의 고유 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰다는 가게의 고유 ID</p></td>
 </tr>
 </tbody>
@@ -5604,9 +6066,9 @@ Content-Length: 1198
       "consumerName" : "김지은"
     } ],
     "pageable" : "INSTANCE",
-    "last" : true,
     "totalPages" : 1,
     "totalElements" : 3,
+    "last" : true,
     "size" : 3,
     "number" : 0,
     "sort" : {
@@ -5802,11 +6264,18 @@ Content-Length: 1198
 </div>
 <div class="sect2">
 <h3 id="_save_7"><a class="link" href="#_save_7">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=262e352f-c7f8-4b76-89fc-b63063889736 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=cb94993b-cc50-4a47-868a-65af9d66118f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -5825,14 +6294,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5840,6 +6311,7 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰다는 가게의 고유 ID</p></td>
 </tr>
 </tbody>
@@ -5926,11 +6398,18 @@ Content-Length: 163
 </div>
 <div class="sect2">
 <h3 id="_update_6"><a class="link" href="#_update_6">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=f9da3508-0a60-4c84-9000-341d89758641 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=4be676cd-ee1e-4064-bfdd-a5f0790d20ef HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -5949,14 +6428,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{writerId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -5964,11 +6445,13 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>writerId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성한사람의 고유 id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰다는 가게의 고유 ID</p></td>
 </tr>
 </tbody>
@@ -6055,11 +6538,18 @@ Content-Length: 163
 </div>
 <div class="sect2">
 <h3 id="_delete_7"><a class="link" href="#_delete_7">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=d739c202-9475-4488-ae7c-fca5ac67ad17 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=0af45942-e25c-4ef9-a744-6e3f5afebea8 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -6070,14 +6560,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6085,11 +6577,13 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 단 가게의 고유 id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰의 고유 id</p></td>
 </tr>
 </tbody>
@@ -6111,6 +6605,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_save_8"><a class="link" href="#_save_8">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_8_http_request"><a class="link" href="#_save_8_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6131,14 +6632,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6146,11 +6649,13 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 가게의 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 댓글의 ID</p></td>
 </tr>
 </tbody>
@@ -6229,6 +6734,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_update_7"><a class="link" href="#_update_7">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_7_http_request"><a class="link" href="#_update_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6249,14 +6761,16 @@ Host: docs.api.com
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments/{commentId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6264,16 +6778,19 @@ Host: docs.api.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 가게의 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 댓글의 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">수정할 대댓글의 ID</p></td>
 </tr>
 </tbody>
@@ -6352,6 +6869,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_delete_8"><a class="link" href="#_delete_8">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_8_http_request"><a class="link" href="#_delete_8_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6366,14 +6890,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/reviews/{reviewId}/comments/{commentId}</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6381,16 +6907,19 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 가게의 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 달 댓글의 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">삭제할 대댓글의 ID</p></td>
 </tr>
 </tbody>
@@ -6412,6 +6941,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_6"><a class="link" href="#_get_6">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_6_http_request"><a class="link" href="#_get_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6490,6 +7026,13 @@ Content-Length: 181
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_addlike"><a class="link" href="#_addlike">AddLike</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_addlike_http_request"><a class="link" href="#_addlike_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6504,14 +7047,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/likes</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6519,6 +7064,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">좋아요를 누를 대상 가게 id</p></td>
 </tr>
 </tbody>
@@ -6527,6 +7073,16 @@ Host: docs.api.com</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_deletelike"><a class="link" href="#_deletelike">DeleteLike</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+<li>
+<p>좋아요를 취소할 수 있습니다</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_deletelike_http_request"><a class="link" href="#_deletelike_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6541,14 +7097,16 @@ Host: docs.api.com</code></pre>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/stores/{storeId}/likes</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">파라미터명</th>
 <th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">필수값</th>
 <th class="tableblock halign-left valign-top">설명</th>
 </tr>
 </thead>
@@ -6556,7 +7114,8 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요를 누를 대상 가게 id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 취소할 대상 가게 id</p></td>
 </tr>
 </tbody>
 </table>
@@ -6568,7 +7127,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-17 12:48:28 +0900
+Last updated 2023-06-17 16:24:25 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
