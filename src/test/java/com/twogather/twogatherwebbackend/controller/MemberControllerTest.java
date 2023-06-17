@@ -120,7 +120,7 @@ public class MemberControllerTest extends ControllerTest {
                         .characterEncoding("UTF-8")
                         .content(
                                 objectMapper
-                                        .writeValueAsString(new FindUsernameRequest("fias@naver.com", "홍길동"))))
+                                        .writeValueAsString(new FindUsernameRequest("fias@naver.com", "김뿌웅치"))))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(document("member/get-username",
