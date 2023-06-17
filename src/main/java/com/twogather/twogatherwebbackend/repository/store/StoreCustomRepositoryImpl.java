@@ -168,8 +168,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         int count = jpaQueryFactory
                 .select(store)
                 .from(likes)
-                .where(likes.member.memberId.eq(memberId))
-                .groupBy(likes.likesId)
+                .join(likes.store, store)
+                .join(likes.member, member)
+                .leftJoin(store.storeImageList, image).fetchJoin()
+                .leftJoin(store.storeKeywordList, storeKeyword)
+                .leftJoin(storeKeyword.keyword, keyword)
                 .fetch()
                 .size();
         return new PageImpl<>(response, pageable, count);
