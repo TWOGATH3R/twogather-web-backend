@@ -448,6 +448,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_error">Error</a></li>
 <li><a href="#_auth">Auth</a>
 <ul class="sectlevel2">
 <li><a href="#_login">Login</a></li>
@@ -560,6 +561,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
+<h2 id="_error"><a class="link" href="#_error">Error</a></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "message": "예외 메시지"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_auth"><a class="link" href="#_auth">Auth</a></h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -580,12 +596,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 61
+Content-Length: 59
 Host: docs.api.com
 
 {
   "username" : "owner1",
-  "password" : "asd@asd@@123"
+  "password" : "asdqwea123"
 }</code></pre>
 </div>
 </div>
@@ -636,8 +652,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg4OTM4fQ.kXteb5yQm2HGFZDlnrNWF69NoB2yOS-Vc-JR8wDZD9Ekdp5jVBYvhSYMBHP5T0SGbUyc0qzbPh8gLcdWoG3nvQ
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk3NjY4fQ.fNnil_u78wZpht3fPw-2kKQKfQylAbbiD0Yojtak7fEwWnNwcqoS7gxy11gALNvpEwRgcYiw4gNI8oOPb1mB-w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTkwNDM4fQ.P96Jc3Ozj5xJoZMGPgyX9fHyX5aQIorRYwaf8KuirfMn75m222NqCLFiRts_vpLb6rDAo5eVs3YWiHAk2tuPKA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk5MTY4fQ.XDOgbXG_xsGG9jllEzBgCo87Wddi7xKF5NhV70X7Um6-QGonqymhYD4Z2YMgyY0QFbYEnMPHu8j1GmCoBu1n7w
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -928,12 +944,12 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/members/my-id HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 59
+Content-Length: 62
 Host: docs.api.com
 
 {
   "email" : "fias@naver.com",
-  "name" : "홍길동"
+  "name" : "김뿌웅치"
 }</code></pre>
 </div>
 </div>
@@ -4611,7 +4627,7 @@ Content-Length: 380
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=0a787e50-e262-4eb3-9208-ace271ee0212 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=51ac0797-c3c4-4809-bc50-b43c75bcca3d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4729,7 +4745,7 @@ Content-Length: 138
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=b3cc97e3-55a1-4dd6-9d2b-415777dcbde2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=b4ae0a48-0017-4c63-80ed-0bf11648d1ae HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -5245,7 +5261,7 @@ Content-Length: 130
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=1af6233d-abbc-456a-ab8b-468c73302bf0 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=d44f12f0-06fa-42da-8a9d-e7688c633c30 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5394,7 +5410,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=ac127793-2ac1-4d35-bec9-6de5d9749db5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=67bc394f-db05-4138-8fdb-62ffd153f3e2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -6050,9 +6066,9 @@ Content-Length: 1198
       "consumerName" : "김지은"
     } ],
     "pageable" : "INSTANCE",
-    "last" : true,
-    "totalElements" : 3,
     "totalPages" : 1,
+    "totalElements" : 3,
+    "last" : true,
     "size" : 3,
     "number" : 0,
     "sort" : {
@@ -6259,7 +6275,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=3ff06e27-8ab6-4f98-82ed-eb35a50b7549 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=cb94993b-cc50-4a47-868a-65af9d66118f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -6393,7 +6409,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=9e9c4d17-904b-4268-a47a-504023ea0846 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=4be676cd-ee1e-4064-bfdd-a5f0790d20ef HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -6533,7 +6549,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=b779f376-bd7f-4cdf-a169-c388e030c5d3 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=0af45942-e25c-4ef9-a744-6e3f5afebea8 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -7111,7 +7127,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-17 16:01:12 +0900
+Last updated 2023-06-17 16:24:25 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

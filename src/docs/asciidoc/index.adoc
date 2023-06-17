@@ -7,6 +7,16 @@ api spec 문서
 :toclevels: 2
 :sectlinks:
 
+== Error
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "message": "예외 메시지"
+}
+```
+
 == Auth
 
 === Login
