@@ -80,6 +80,9 @@ public class StoreService {
                 .storeName(savedStore.getName()).build();
 
     }
+    public Page<MyLikeStoreResponse> findMyLikeStore(Long memberId, Pageable pageable){
+        return storeRepository.findMyLikeStore(memberId, pageable);
+    }
     public boolean isMyStore(Long storeId) {
         String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(

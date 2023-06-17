@@ -22,6 +22,7 @@ public class Image {
 
     public Image(Store store, String url){
         this.store = store;
+        store.addImage(this);
         this.url = url;
     }
 }
