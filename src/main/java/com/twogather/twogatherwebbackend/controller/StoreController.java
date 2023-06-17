@@ -85,9 +85,10 @@ public class StoreController {
     public ResponseEntity<Response> getStoreInfos(Pageable pageable,
                                                   @RequestParam(value = "category", required = false) String categoryName,
                                                   @RequestParam(value = "search", required = false) String keyword,
+                                                  @RequestParam(value = "storeName", required = false) String storeName,
                                                   @RequestParam(value = "location", required = false) String location) {
 
-        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
+        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location, storeName);
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 

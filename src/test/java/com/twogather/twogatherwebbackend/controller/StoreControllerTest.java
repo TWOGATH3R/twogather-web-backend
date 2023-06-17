@@ -150,9 +150,9 @@ public class StoreControllerTest extends ControllerTest{
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("ownerId").description("가게 주인의 ID"),
-                                parameterWithName("page").description("조회할 페이지의 수"),
-                                parameterWithName("size").description("검사결과 최대 개수"),
-                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat())
+                                parameterWithName("page").description("조회할 페이지의 수").optional(),
+                                parameterWithName("size").description("검사결과 최대 개수").optional(),
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat()).optional()
                         ),
                         responseFields(
                                 fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
@@ -235,12 +235,13 @@ public class StoreControllerTest extends ControllerTest{
         Page<StoreResponseWithKeyword> page =
                 new PageImpl<>(list, pageable, list.size());
 
-        when(storeService.getStores(any(), any(), any(), any())).thenReturn(page);
+        when(storeService.getStores(any(), any(), any(), any(), any())).thenReturn(page);
         //when
         //then
         mockMvc.perform(get("/api/stores/search")
                         .param("category", "양식")
                         .param("search", "분위기가 좋은")
+                        .param("storeName", "")
                         .param("location", "전주시 어쩌고 어쩌고")
                         .param("page", "0")
                         .param("size", "10")
@@ -252,12 +253,13 @@ public class StoreControllerTest extends ControllerTest{
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("category").description("조회할 가게 카테고리 이름"),
-                                parameterWithName("search").description("검색할 가게 이름 키워드"),
-                                parameterWithName("location").description("검색하기위한 지역정보(한글이 인코딩되어있을것임)"),
-                                parameterWithName("page").description("조회할 페이지의 수"),
-                                parameterWithName("size").description("검사결과 최대 개수"),
-                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat())
+                                parameterWithName("category").description("조회할 가게 카테고리 이름").optional(),
+                                parameterWithName("search").description("검색할 가게 이름 키워드").optional(),
+                                parameterWithName("location").description("검색하기위한 지역정보(한글이 인코딩되어있을것임)").optional(),
+                                parameterWithName("storeName").description("가게이름").optional(),
+                                parameterWithName("page").description("조회할 페이지의 수").optional(),
+                                parameterWithName("size").description("검사결과 최대 개수").optional(),
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").attributes(getSortFormat()).optional()
 
                         ),
                         responseFields(
