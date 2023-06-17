@@ -569,6 +569,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>로그인을 완료하면 RefreshToken과 AccessToken을 발급합니다</p>
 </li>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
 </ul>
 </div>
 <div class="sect3">
@@ -633,8 +636,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg2ODE4fQ.Rk9YCvI2Vf-7Z3e5TSbpPGYWZizS8-GfeivEUqkybhYGeTY576qGbRlxREvc-qRJMTvZT6kcVOWB-eLB-ukEqQ
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk1NTQ4fQ.bHluLzqyprU2KL52wx16_ZoUVr493Sp4CeRbh1Mmm9HZkuQIQIaSna-bWLSfoaMoQu9Kn1bUOg5OcWPm0GNhqQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg4OTM4fQ.kXteb5yQm2HGFZDlnrNWF69NoB2yOS-Vc-JR8wDZD9Ekdp5jVBYvhSYMBHP5T0SGbUyc0qzbPh8gLcdWoG3nvQ
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk3NjY4fQ.fNnil_u78wZpht3fPw-2kKQKfQylAbbiD0Yojtak7fEwWnNwcqoS7gxy11gALNvpEwRgcYiw4gNI8oOPb1mB-w
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -689,6 +692,13 @@ Content-Length: 43
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_password_verification"><a class="link" href="#_password_verification">Password-Verification</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_password_verification_http_request"><a class="link" href="#_password_verification_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -811,6 +821,16 @@ Content-Length: 45
 </div>
 <div class="sect2">
 <h3 id="_password_change"><a class="link" href="#_password_change">Password-Change</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+<li>
+<p>인증을 거친 사용자만이 비밀번호를 변경할 수 있습니다</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_password_change_http_request"><a class="link" href="#_password_change_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -895,6 +915,13 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_find_username"><a class="link" href="#_find_username">Find-Username</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_find_username_http_request"><a class="link" href="#_find_username_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -995,6 +1022,13 @@ Content-Length: 24
 </div>
 <div class="sect2">
 <h3 id="_find_like_store"><a class="link" href="#_find_like_store">Find-Like-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_find_like_store_http_request"><a class="link" href="#_find_like_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1221,6 +1255,13 @@ Content-Length: 827
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_store"><a class="link" href="#_get_store">Get-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_store_http_request"><a class="link" href="#_get_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1429,6 +1470,13 @@ Content-Length: 876
 </div>
 <div class="sect2">
 <h3 id="_approve_store"><a class="link" href="#_approve_store">Approve-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_approve_store_http_request"><a class="link" href="#_approve_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1469,6 +1517,13 @@ Host: docs.api.com</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_reject_store"><a class="link" href="#_reject_store">Reject-Store</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ADMIN</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_reject_store_http_request"><a class="link" href="#_reject_store_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1550,6 +1605,13 @@ Host: docs.api.com
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_email_send"><a class="link" href="#_email_send">Email-Send</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_email_send_http_request"><a class="link" href="#_email_send_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1649,6 +1711,13 @@ Content-Length: 58
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get"><a class="link" href="#_get">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_http_request"><a class="link" href="#_get_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1755,6 +1824,13 @@ Content-Length: 161
 </div>
 <div class="sect2">
 <h3 id="_delete"><a class="link" href="#_delete">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_http_request"><a class="link" href="#_delete_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -1839,6 +1915,13 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_update"><a class="link" href="#_update">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2003,6 +2086,13 @@ Content-Length: 161
 </div>
 <div class="sect2">
 <h3 id="_save"><a class="link" href="#_save">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_http_request"><a class="link" href="#_save_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2163,6 +2253,13 @@ Content-Length: 161
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_2"><a class="link" href="#_get_2">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_2_http_request"><a class="link" href="#_get_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2334,6 +2431,13 @@ Content-Length: 757
 </div>
 <div class="sect2">
 <h3 id="_delete_2"><a class="link" href="#_delete_2">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_2_http_request"><a class="link" href="#_delete_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2418,6 +2522,13 @@ Host: docs.api.com
 </div>
 <div class="sect2">
 <h3 id="_update_2"><a class="link" href="#_update_2">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_2_http_request"><a class="link" href="#_update_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -2674,6 +2785,9 @@ Content-Length: 512
 <h3 id="_save_2"><a class="link" href="#_save_2">Save</a></h3>
 <div class="ulist">
 <ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
 <li>
 <p>영업하는 요일에 대해서 저장을 요청하면 미요청된 요일에 대해서는 "영업안함"으로 표시하여 되돌려줍니다</p>
 </li>
@@ -3012,6 +3126,13 @@ Content-Length: 1739
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_list"><a class="link" href="#_get_list">Get-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_http_request"><a class="link" href="#_get_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3116,6 +3237,9 @@ Content-Length: 213
 <li>
 <p>특정 키워드를 가게에 등록하는 일을 합니다</p>
 </li>
+<li>
+<p>필요권한: <code>MY-STORE</code></p>
+</li>
 </ul>
 </div>
 <div class="sect3">
@@ -3175,6 +3299,13 @@ Host: docs.api.com
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_save_3"><a class="link" href="#_save_3">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>OWNER</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3389,6 +3520,13 @@ Content-Length: 380
 </div>
 <div class="sect2">
 <h3 id="_get_one"><a class="link" href="#_get_one">Get-One</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_one_http_request"><a class="link" href="#_get_one_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3516,6 +3654,13 @@ Content-Length: 282
 </div>
 <div class="sect2">
 <h3 id="_get_list_2"><a class="link" href="#_get_list_2">Get-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_2_http_request"><a class="link" href="#_get_list_2_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3689,6 +3834,13 @@ Content-Length: 1303
 </div>
 <div class="sect2">
 <h3 id="_get_list_search"><a class="link" href="#_get_list_search">Get-List-Search</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_list_search_http_request"><a class="link" href="#_get_list_search_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -3905,6 +4057,13 @@ Content-Length: 651
 </div>
 <div class="sect2">
 <h3 id="_get_my_store_list"><a class="link" href="#_get_my_store_list">Get-My-Store-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_my_store_list_http_request"><a class="link" href="#_get_my_store_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4131,6 +4290,13 @@ Content-Length: 1004
 </div>
 <div class="sect2">
 <h3 id="_delete_3"><a class="link" href="#_delete_3">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_3_http_request"><a class="link" href="#_delete_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4180,6 +4346,13 @@ Host: docs.api.com</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_update_3"><a class="link" href="#_update_3">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_3_http_request"><a class="link" href="#_update_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4427,11 +4600,18 @@ Content-Length: 380
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_3"><a class="link" href="#_get_3">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=04ecae7f-ee73-4876-b0de-0a08a707fecc HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=0a787e50-e262-4eb3-9208-ace271ee0212 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4538,11 +4718,18 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_save_4"><a class="link" href="#_save_4">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=880c504e-0210-4d0a-9079-c53e0a8d8b4e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=b3cc97e3-55a1-4dd6-9d2b-415777dcbde2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -4680,6 +4867,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_update_4"><a class="link" href="#_update_4">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_4_http_request"><a class="link" href="#_update_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4850,6 +5044,16 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_delete_4"><a class="link" href="#_delete_4">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>탈퇴</p>
+</li>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_4_http_request"><a class="link" href="#_delete_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -4904,6 +5108,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_4"><a class="link" href="#_get_4">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_4_http_request"><a class="link" href="#_get_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5023,11 +5234,18 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_save_5"><a class="link" href="#_save_5">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=885cfaca-72a5-462d-8625-32aa60fb3af5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=1af6233d-abbc-456a-ab8b-468c73302bf0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5165,11 +5383,18 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_update_5"><a class="link" href="#_update_5">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=838c8635-9349-4174-ae85-962dcaede608 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=ac127793-2ac1-4d35-bec9-6de5d9749db5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5335,6 +5560,16 @@ Content-Length: 130
 </div>
 <div class="sect2">
 <h3 id="_delete_5"><a class="link" href="#_delete_5">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>탈퇴</p>
+</li>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_5_http_request"><a class="link" href="#_delete_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5389,6 +5624,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_5"><a class="link" href="#_get_5">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_5_http_request"><a class="link" href="#_get_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5494,6 +5736,9 @@ Content-Length: 196
 <ul>
 <li>
 <p>이미지를 넘겨주면 백엔드 측에서 스토리지에 저장하고 외부에서 접근가능한 public url을 발급해줍니다</p>
+</li>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
 </li>
 </ul>
 </div>
@@ -5610,6 +5855,13 @@ Content-Length: 196
 </div>
 <div class="sect2">
 <h3 id="_delete_6"><a class="link" href="#_delete_6">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_STORE</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_6_http_request"><a class="link" href="#_delete_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5669,6 +5921,13 @@ Host: docs.api.com
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_my_review_list"><a class="link" href="#_get_my_review_list">Get-My-Review-List</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_my_review_list_http_request"><a class="link" href="#_get_my_review_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -5989,11 +6248,18 @@ Content-Length: 1198
 </div>
 <div class="sect2">
 <h3 id="_save_7"><a class="link" href="#_save_7">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=f448eb53-3770-4f30-aa00-64b11e462530 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=3ff06e27-8ab6-4f98-82ed-eb35a50b7549 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -6116,11 +6382,18 @@ Content-Length: 163
 </div>
 <div class="sect2">
 <h3 id="_update_6"><a class="link" href="#_update_6">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=8b635d41-8331-4745-b080-2f662fb57d4c HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=9e9c4d17-904b-4268-a47a-504023ea0846 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -6249,11 +6522,18 @@ Content-Length: 163
 </div>
 <div class="sect2">
 <h3 id="_delete_7"><a class="link" href="#_delete_7">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=761e6cdc-b5a6-47bd-a39b-540f17976fb4 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=b779f376-bd7f-4cdf-a169-c388e030c5d3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -6309,6 +6589,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_save_8"><a class="link" href="#_save_8">Save</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_save_8_http_request"><a class="link" href="#_save_8_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6431,6 +6718,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_update_7"><a class="link" href="#_update_7">Update</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_update_7_http_request"><a class="link" href="#_update_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6559,6 +6853,13 @@ Content-Length: 138
 </div>
 <div class="sect2">
 <h3 id="_delete_8"><a class="link" href="#_delete_8">Delete</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>MY_ID</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_delete_8_http_request"><a class="link" href="#_delete_8_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6624,6 +6925,13 @@ Host: docs.api.com</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_get_6"><a class="link" href="#_get_6">Get</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>ALL</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_get_6_http_request"><a class="link" href="#_get_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6702,6 +7010,13 @@ Content-Length: 181
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_addlike"><a class="link" href="#_addlike">AddLike</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_addlike_http_request"><a class="link" href="#_addlike_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -6744,6 +7059,9 @@ Host: docs.api.com</code></pre>
 <h3 id="_deletelike"><a class="link" href="#_deletelike">DeleteLike</a></h3>
 <div class="ulist">
 <ul>
+<li>
+<p>필요권한: <code>인증</code></p>
+</li>
 <li>
 <p>좋아요를 취소할 수 있습니다</p>
 </li>
@@ -6793,7 +7111,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-17 15:15:49 +0900
+Last updated 2023-06-17 16:01:12 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
