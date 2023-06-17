@@ -564,6 +564,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_login"><a class="link" href="#_login">Login</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인을 완료하면 RefreshToken과 AccessToken을 발급합니다</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="_login_http_request"><a class="link" href="#_login_http_request">HTTP request</a></h4>
 <div class="listingblock">
@@ -626,8 +633,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTc4NjE0fQ.d-Tly4KJilN8JCPKGu-1L3-2w1QsSw58vfEWRMUji0arFNkvj6BcDM5731hqS42Q1cOmf4A5bbEp5UuzHeq3qQ
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg3MzQ0fQ.TWD0mAD7mVYM5G_uG4F7MaaA2UIXWc0sYNmfvTTccIbmLfM_U6aAyJGp-4iEqaD1uM3NfL6UDUFt6FV_JoSQlA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTg0NjM2fQ.wL0-5-RL4asE4_GGX22DvuYJ_tHIv1_PGRH4MrLg8qmSVvhm0C2xHB4tmie0gWKjsBgrHHlqCRbVBBUnk-bb0Q
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTkzMzY2fQ.9ufRMtVo5kTeElpfMXChqN3Q4w2Uzr-4J7dXYyLTYgarCK8uWICzZmcPtxzTH2h-_OESGSpQNqNchBmH2xZB1Q
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -2381,14 +2388,22 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 230
+Content-Length: 430
 Host: docs.api.com
 
 {
   "businessHourList" : [ {
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "10:00",
+    "endTime" : "17:00",
     "dayOfWeek" : "MONDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "10:00",
+    "endTime" : "17:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2501,35 +2516,25 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 757
+Content-Length: 512
 
 {
   "data" : [ {
     "businessHourId" : 1,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "10:00",
+    "endTime" : "17:00",
     "dayOfWeek" : "MONDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 2,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
-    "isOpen" : true,
-    "hasBreakTime" : false,
-    "breakStartTime" : null,
-    "breakEndTime" : null
-  }, {
-    "businessHourId" : 1,
-    "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2634,14 +2639,46 @@ Content-Length: 757
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/business-hours HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 230
+Content-Length: 1032
 Host: docs.api.com
 
 {
   "businessHourList" : [ {
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
     "dayOfWeek" : "MONDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "WEDNESDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "THURSDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "FRIDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
@@ -2754,36 +2791,76 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 757
+Content-Length: 1739
 
 {
   "data" : [ {
     "businessHourId" : 1,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
     "dayOfWeek" : "MONDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 2,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "TUESDAY",
     "isOpen" : true,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
   }, {
-    "businessHourId" : 1,
+    "businessHourId" : 3,
     "storeId" : 1,
-    "startTime" : "11:30",
-    "endTime" : "20:00",
-    "dayOfWeek" : "MONDAY",
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "WEDNESDAY",
     "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 4,
+    "storeId" : 1,
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "THURSDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 5,
+    "storeId" : 1,
+    "startTime" : "09:00",
+    "endTime" : "18:00",
+    "dayOfWeek" : "FRIDAY",
+    "isOpen" : true,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 6,
+    "storeId" : 1,
+    "startTime" : null,
+    "endTime" : null,
+    "dayOfWeek" : "SATURDAY",
+    "isOpen" : false,
+    "hasBreakTime" : false,
+    "breakStartTime" : null,
+    "breakEndTime" : null
+  }, {
+    "businessHourId" : 7,
+    "storeId" : 1,
+    "startTime" : null,
+    "endTime" : null,
+    "dayOfWeek" : "SUNDAY",
+    "isOpen" : false,
     "hasBreakTime" : false,
     "breakStartTime" : null,
     "breakEndTime" : null
@@ -4282,7 +4359,7 @@ Content-Length: 380
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=16516a62-8e40-4369-a2be-ddb9f8e4a9af HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=4fd0c0bb-ec56-47e4-8271-758238973649 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4390,7 +4467,7 @@ Content-Length: 138
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=db831787-a79f-4832-a450-12ffa0dd2bae HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=c12a6db8-c5d0-4220-92e9-629a6d9cb3c2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -4866,7 +4943,7 @@ Content-Length: 130
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=ce587d58-39f5-4205-81d6-70f9ffbd3372 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=1924f79b-fc79-4ab1-955f-21371ccd82e5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5008,7 +5085,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=9f12f4c6-4ca1-4de0-a0af-710a1d54d90f HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=52cffda8-ed1d-42b4-b9f6-621f7bbdaed9 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5605,8 +5682,8 @@ Content-Length: 1198
     } ],
     "pageable" : "INSTANCE",
     "last" : true,
-    "totalPages" : 1,
     "totalElements" : 3,
+    "totalPages" : 1,
     "size" : 3,
     "number" : 0,
     "sort" : {
@@ -5806,7 +5883,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=262e352f-c7f8-4b76-89fc-b63063889736 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=44c512f4-990b-4111-8f17-a15a8388cba1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -5930,7 +6007,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=f9da3508-0a60-4c84-9000-341d89758641 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=80d715ac-1269-4e42-8e36-73c14feb91c3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -6059,7 +6136,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=d739c202-9475-4488-ae7c-fca5ac67ad17 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=89a51384-b7ab-479f-ba6b-2deff6a51356 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -6556,7 +6633,7 @@ Host: docs.api.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>storeId</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요를 누를 대상 가게 id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 취소할 대상 가게 id</p></td>
 </tr>
 </tbody>
 </table>
@@ -6568,7 +6645,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-17 12:48:28 +0900
+Last updated 2023-06-17 14:47:38 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

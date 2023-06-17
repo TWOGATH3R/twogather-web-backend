@@ -10,6 +10,8 @@ api spec 문서
 == Auth
 
 === Login
+- 로그인을 완료하면 RefreshToken과 AccessToken을 발급합니다
+
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
 == Member
@@ -35,35 +37,29 @@ operation::admin/reject/[snippets='http-request,request-fields,path-parameters']
 
 
 == Email
-=== Email-Verification
+=== Email-Send
 operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
 
 == Menu
-
 === Get
 operation::menu/get/[snippets='http-request,path-parameters,http-response,response-fields']
-
 === Delete
 operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
-
 === Update
 operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-
 === Save
 operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 == BusinessHour
-
 === Get
 operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
-
 === Delete
 operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
-
 === Update
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-
 === Save
+- 영업하는 요일에 대해서 저장을 요청하면 미요청된 요일에 대해서는 "영업안함"으로 표시하여 되돌려줍니다
+
 operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
@@ -71,6 +67,8 @@ operation::business-hour/save/[snippets='http-request,path-parameters,request-fi
 === Get-List
 operation::keywords/get/[snippets='http-request,request-parameters,http-response,response-fields']
 === Set-Keyword-Store-Association
+- 특정 키워드를 가게에 등록하는 일을 합니다
+
 operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
 
 == Store
@@ -131,6 +129,8 @@ operation::consumer/delete/[snippets='http-request,path-parameters,http-response
 operation::image/get/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Save
+- 이미지를 넘겨주면 백엔드 측에서 스토리지에 저장하고 외부에서 접근가능한 public url을 발급해줍니다
+
 operation::image/save/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Delete
@@ -171,6 +171,8 @@ operation::category/get/[snippets='http-request,http-response,response-fields']
 operation::like/setLike/[snippets='http-request,path-parameters']
 
 === DeleteLike
+- 좋아요를 취소할 수 있습니다
+
 operation::like/deleteLike/[snippets='http-request,path-parameters']
 
 

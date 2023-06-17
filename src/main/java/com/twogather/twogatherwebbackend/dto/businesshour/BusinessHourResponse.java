@@ -2,6 +2,7 @@ package com.twogather.twogatherwebbackend.dto.businesshour;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BusinessHourResponse {
     private Long businessHourId;
     private Long storeId;
