@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.BusinessHour;
+import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateInfo;
 import com.twogather.twogatherwebbackend.exception.BusinessHourException;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -78,7 +80,7 @@ public class BusinessHourServiceTest {
 
         // when
         doNothing().when(validator).validateBusinessHourRequest(any());
-        when(storeRepository.findAllStoreById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
+        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
         when(businessHourRepository.saveAll(any())).thenReturn(fullWeekBusinessHours);
 
         List<BusinessHourResponse> responseList = businessHourService.saveList(1L, onlyOpenDaysRequestList);
@@ -99,11 +101,45 @@ public class BusinessHourServiceTest {
                 new BusinessHourSaveUpdateInfo( LocalTime.of(9, 0), LocalTime.of(18, 0), DayOfWeek.MONDAY, true, false, null, null)
         );
 
-        when(storeRepository.findAllStoreById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
+        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(APPROVED_STORE));
 
         // When & Then
         assertThrows(BusinessHourException.class, () -> {
             businessHourService.saveList(1L, duplicatedDayOfWeekRequestList);
         });
     }
+
+    @Test
+    @DisplayName("연관관계 메서드 테스트")
+    @Transactional
+    void whenUseAddStore_thenSuccessInjection() {
+        // Given
+        Store store = Store.builder().name("가게1").build();
+        BusinessHour businessHour = BusinessHour.builder().build();
+        //when
+
+        businessHour.addStore(store);
+
+        //then
+        assertEquals(store, businessHour.getStore());
+
+    }
+
+    @Test
+    @DisplayName("연관관계 메서드는 두번 연속으로 store이 주입되더라도 마지막 으로 넣은 개체와 연관관계를 가지고 있어야한다")
+    @Transactional
+    void whenUseAddStoreBy2Change_thenSuccessInjection() {
+        // Given
+        Store store1 = Store.builder().name("가게1").build();
+        Store store2 = Store.builder().name("가게2").build();
+        BusinessHour businessHour = BusinessHour.builder().build();
+        //when
+        businessHour.addStore(store1);
+        businessHour.addStore(store2);
+
+        //then
+        assertEquals(store2, businessHour.getStore());
+
+    }
+
 }

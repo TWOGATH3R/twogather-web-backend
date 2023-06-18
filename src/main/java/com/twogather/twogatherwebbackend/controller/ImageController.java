@@ -22,7 +22,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    @PreAuthorize("@storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestPart List<MultipartFile> storeImageList) {
         List<ImageResponse> data = imageService.upload(storeId, storeImageList);
 

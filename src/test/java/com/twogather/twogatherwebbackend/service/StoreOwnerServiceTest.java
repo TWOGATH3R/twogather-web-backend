@@ -8,6 +8,7 @@ import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,12 +34,14 @@ public class StoreOwnerServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private MemberService memberService;
+    @Mock
+    private StoreRepository storeRepository;
     private StoreOwnerService storeOwnerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberService, passwordEncoder);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository,storeRepository,  memberService, passwordEncoder);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")

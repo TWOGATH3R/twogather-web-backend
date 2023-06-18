@@ -33,7 +33,7 @@ public class CategoryService {
         return categoryResponseList;
     }
     public void setCategoriesForStore(Long storeId, Long categoryId){
-        Store store = storeRepository.findAllStoreById(
+        Store store = storeRepository.findById(
                 storeId).orElseThrow(()->  new StoreException(NO_SUCH_STORE));
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryException(NO_SUCH_CATEGORY));
         store.setCategory(category);

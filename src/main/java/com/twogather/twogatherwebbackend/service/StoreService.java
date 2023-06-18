@@ -37,19 +37,19 @@ public class StoreService {
     private final KeywordService keywordService;
 
     public void approveStore(final Long storeId){
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.approve();
     }
     public void reapply(final Long storeId){
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.reapply();
     }
     public void rejectStore(final Long storeId, final RejectReason rejectReason){
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.reject(rejectReason.getReason());
@@ -89,7 +89,7 @@ public class StoreService {
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 () -> new MemberException(NO_SUCH_MEMBER)
         );
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(()->
+        Store store = storeRepository.findById(storeId).orElseThrow(()->
                 new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
@@ -102,8 +102,7 @@ public class StoreService {
     }
 
     public void delete(Long storeId) {
-        Store store =  storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
-        store.delete();;
+        storeRepository.deleteById(storeId);
     }
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {

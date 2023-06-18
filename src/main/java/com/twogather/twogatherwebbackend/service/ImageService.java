@@ -37,7 +37,7 @@ public class ImageService {
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
         isImageFiles(fileList);
 
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
         List<String> uploadedFileUrlList = s3Uploader.uploadList(fileList);

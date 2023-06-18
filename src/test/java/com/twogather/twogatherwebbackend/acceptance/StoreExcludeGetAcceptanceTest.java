@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -165,18 +166,28 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 삭제 요청 후 진짜 삭제되었는지 확인해보는 test")
+    @DisplayName("가게 삭제 요청 후 가게 관련 요소(메뉴, 영업시간, 이미지) 삭제되었는지 확인해보는 test")
     public void whenDeleteStore_ThenNotExistStore() {
         //given
         registerStore();
         approveStore();
 
-        //when,then
+        Assertions.assertFalse(businessHourRepository.findAll().isEmpty());
+        Assertions.assertFalse(menuRepository.findAll().isEmpty());
+        Assertions.assertFalse(storeKeywordRepository.findAll().isEmpty());
+        Assertions.assertFalse(imageRepository.findAll().isEmpty());
+
+        //when
         doDelete(URL+"/"+storeId,
                 ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
 
-        Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(), StoreStatus.DELETED);
+        //then
+        Assertions.assertFalse(storeRepository.findById(storeId).isPresent());
+        Assertions.assertTrue(businessHourRepository.findAll().isEmpty());
+        Assertions.assertTrue(menuRepository.findAll().isEmpty());
+        Assertions.assertTrue(storeKeywordRepository.findAll().isEmpty());
+        Assertions.assertTrue(imageRepository.findAll().isEmpty());
     }
     @Test
     @DisplayName("오직 자신의 가게만 삭제할 수 있다")

@@ -16,10 +16,7 @@ import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.StoreException;
-import com.twogather.twogatherwebbackend.repository.CategoryRepository;
-import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.KeywordRepository;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
@@ -37,7 +34,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +78,8 @@ public class AcceptanceTest
     protected MemberRepository memberRepository;
     @Autowired
     protected KeywordRepository keywordRepository;
+    @Autowired
+    protected ImageRepository imageRepository;
 
     @BeforeEach
     public void setUp() {
@@ -232,6 +233,7 @@ public class AcceptanceTest
                 .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
         registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
+        registerImage(storeId);
 
     }
     protected void registerStoreWithValidatorFail(){
@@ -270,6 +272,20 @@ public class AcceptanceTest
         keywordList.add(keyword1);
         keywordList.add(keyword2);
         keywordList.add(keyword3);
+    }
+    protected void registerImage(Long storeId){
+        String url = "/api/stores/"+ storeId +"/images";
+        List<File> fileList =  createMockFiles();
+        given()
+                .multiPart("storeImageList", fileList.get(0))
+                .multiPart("storeImageList", fileList.get(1))
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
+                .when()
+                .post(url)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     protected Long registerCategory(){
@@ -310,5 +326,15 @@ public class AcceptanceTest
                 .withClaim("role", "ROLE_CONSUMER")   // replace this with actual user's role
                 .sign(Algorithm.HMAC512(constants.JWT_SECRET));
 
+    }
+    private List<File> createMockFiles() {
+        List<File> fileList = new ArrayList<>();
+
+        File multipartFile = new File("src\\test\\resources\\files\\image.jpg");
+
+        fileList.add(multipartFile);
+        fileList.add(multipartFile);
+
+        return fileList;
     }
 }

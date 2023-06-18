@@ -6,6 +6,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +22,7 @@ import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsern
 @Transactional
 public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
+    private final StoreRepository storeRepository;
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
@@ -49,7 +51,7 @@ public class StoreOwnerService {
                 ()-> new MemberException(NO_SUCH_MEMBER_ID)
         );
         for (Store store:owner.getStoreList()) {
-            store.delete();
+            storeRepository.deleteById(store.getStoreId());
         }
         owner.leave();
     }

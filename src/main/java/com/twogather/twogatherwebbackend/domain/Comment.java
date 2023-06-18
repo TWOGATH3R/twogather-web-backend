@@ -29,7 +29,9 @@ public class Comment {
 
     public Comment(String content, Review review, Member member){
         this.review = review;
+        this.review.addComment(this);
         this.commenter = member;
+        commenter.addComment(this);
         this.content = content;
         this.createdDate = LocalDate.now();
         review.addComment(this);

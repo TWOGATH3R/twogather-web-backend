@@ -281,27 +281,27 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         List<MyStoreResponse> list = returnMyStoreList();
 
         Assertions.assertTrue(list.stream().anyMatch(e ->
-                e.getStoreName().equals("가게0") &&
+                e.getStoreName().equals("가게10") &&
                         e.getIsApproved().equals(true) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
-                e.getStoreName().equals("가게1") &&
+                e.getStoreName().equals("가게11") &&
                         e.getIsApproved().equals(true) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
-                e.getStoreName().equals("가게2") &&
+                e.getStoreName().equals("가게12") &&
                         e.getIsApproved().equals(true) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
-                e.getStoreName().equals("가게3") &&
+                e.getStoreName().equals("가게13") &&
                         e.getIsApproved().equals(true) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
-                e.getStoreName().equals("가게4") &&
+                e.getStoreName().equals("가게14") &&
                         e.getIsApproved().equals(true) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
@@ -352,7 +352,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
     }
     private void saveStore(){
         StoreOwner owner = ownerRepository.findByUsername(OWNER_USERNAME).get();
-        for(int i=0;i<5;i++){
+        for(int i=10;i<15;i++){
             Store store = Store.builder()
                     .owner(owner)
                     .name("가게" + i)
