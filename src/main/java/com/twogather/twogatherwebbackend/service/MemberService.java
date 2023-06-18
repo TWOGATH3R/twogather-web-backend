@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
+import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -53,6 +54,17 @@ public class MemberService {
         if(memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()) return true;
         else return false;
     }
+    public void checkMemberOverlap(MemberSaveRequest request){
+        if (memberRepository.existsByUsername(request.getUsername())) {
+            throw new MemberException(DUPLICATE_USERNAME);
+        }
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new MemberException(DUPLICATE_EMAIL);
+        }
+        if(memberRepository.existsByName(request.getName())){
+            throw new MemberException(DUPLICATE_NICKNAME);
+        }
+    }
     public void changePassword(String password){
         String username = getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
@@ -60,6 +72,7 @@ public class MemberService {
         );
         member.update("","",passwordEncoder.encode(password),"");
     }
+
     public boolean verifyPassword(String password){
         String username = getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(

@@ -22,7 +22,8 @@ public class MemberSaveRequest {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로 입력해주세요.")
     private String password;
 
-    @Pattern(regexp = "^[가-힣a-zA-Z]+$",  message = "이름은 한글 혹은 영어로만 입력해주세요.")
+    @Pattern(regexp = "^[가-힣a-zA-Z]{0,10}$",  message = "이름은 한글 혹은 영어로만 10자이내로 입력해주세요.")
     private String name;
+
 
 }

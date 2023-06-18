@@ -19,9 +19,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import java.util.Date;
 
 import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -351,6 +351,52 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //then
         failLogin(OWNER_LOGIN_REQUEST)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입하고 나서 같은 email로 회원가입을 시도하면 중복된 이메일이라는 4xx error가 떠야한다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateEmail(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                OWNER_EMAIL, "notdupID12", OWNER_PASSWORD, "notdupp"
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
+    }
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입할때 이전과 같은 username을 가지고 재가입하는 경우 중복된값이라는 4xx error가 뜬다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateUsenname(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                "notdupl@naver.com", OWNER_USERNAME, OWNER_PASSWORD, "notdupp"
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_USERNAME.getMessage()));
+    }
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입을 하는데 이전과 같은 nickname을 사용할 시 중복 4xx error가 터진다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateNickName(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                "notdupl@naver.com", "notdupID12", OWNER_PASSWORD, OWNER_NAME
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_NICKNAME.getMessage()));
     }
 
 

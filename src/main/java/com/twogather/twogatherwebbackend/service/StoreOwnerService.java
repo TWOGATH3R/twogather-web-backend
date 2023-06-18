@@ -21,7 +21,7 @@ import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsern
 @Transactional
 public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
     public boolean isStoreOwner(Long requestMemberId){
@@ -36,7 +36,7 @@ public class StoreOwnerService {
 
 
     public MemberResponse join(final MemberSaveRequest request){
-        validateDuplicateUsername(request.getUsername());
+        memberService.checkMemberOverlap(request);
         StoreOwner owner = new StoreOwner(
                 request.getUsername(),
                 request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(), AuthenticationType.STORE_OWNER,true);
@@ -62,11 +62,6 @@ public class StoreOwnerService {
         return toStoreOwnerResponse(owner);
     }
 
-    public void validateDuplicateUsername(final String username){
-        if (memberRepository.existsByActiveUsername(username)) {
-            throw new MemberException(DUPLICATE_USERNAME);
-        }
-    }
     private MemberResponse toStoreOwnerResponse(StoreOwner owner){
         return new MemberResponse(owner.getMemberId(),
                 owner.getUsername(),

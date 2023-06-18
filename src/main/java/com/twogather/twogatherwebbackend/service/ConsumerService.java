@@ -22,7 +22,7 @@ import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsern
 public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     public boolean isConsumer(final Long requestMemberId){
         String currentUsername = getLoginUsername();
@@ -41,8 +41,7 @@ public class ConsumerService {
     }
 
     public MemberResponse join(final MemberSaveRequest request){
-        validateDuplicateUsername(request.getUsername());
-        validateDuplicateEmail(request.getEmail());
+        memberService.checkMemberOverlap(request);
         Consumer consumer
                 = new Consumer(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), AuthenticationType.CONSUMER, true);
@@ -57,17 +56,6 @@ public class ConsumerService {
                 ()->new MemberException(MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID)
         );
         return toResponse(consumer);
-    }
-
-    private void validateDuplicateUsername(final String username){
-        if (memberRepository.existsByActiveUsername(username)) {
-            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_USERNAME);
-        }
-    }
-    private void validateDuplicateEmail(final String email){
-        if (memberRepository.existsByActiveEmail(email)) {
-            throw new MemberException(MemberException.MemberErrorCode.DUPLICATE_EMAIL);
-        }
     }
     private MemberResponse toResponse(Consumer consumer){
         return new MemberResponse(consumer.getMemberId(), consumer.getUsername(),consumer.getEmail(),consumer.getName());
