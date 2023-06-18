@@ -12,11 +12,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NOT_IMAGE;
 import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NO_SUCH_IMAGE;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
@@ -29,6 +35,8 @@ public class ImageService {
     private final StorageUploader s3Uploader;
 
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
+        isImageFiles(fileList);
+
         Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
@@ -49,8 +57,11 @@ public class ImageService {
 
     }
     public List<ImageResponse> getStoreImageInfos(Long storeId){
-        //TODO:구현
-        return new ArrayList<>();
+        List<Image> imageList = imageRepository.findByStoreStoreId(storeId);
+
+        return imageList.stream()
+                .map(image -> new ImageResponse(image.getImageId(), image.getUrl()))
+                .collect(Collectors.toList());
     }
 
     private List<ImageResponse> toImageResponseList(List<Image> imageList){
@@ -66,5 +77,31 @@ public class ImageService {
             imageList.add(new Image(store, url));
         }
         return imageList;
+    }
+    private boolean isImageFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+
+        String contentType = file.getContentType();
+
+        if (StringUtils.hasText(contentType) && contentType.startsWith("image/")) {
+            return true;
+        }
+
+        String fileName = file.getOriginalFilename();
+        if (StringUtils.hasText(fileName)) {
+            String fileExtension = StringUtils.getFilenameExtension(fileName);
+            if (StringUtils.hasText(fileExtension) && fileExtension.matches("(?i)^(jpg|jpeg|png|gif|bmp)$")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    private void isImageFiles(List<MultipartFile> fileList){
+        for (MultipartFile file: fileList){
+            if(!isImageFile(file)) throw new ImageException(NOT_IMAGE);
+        }
     }
 }

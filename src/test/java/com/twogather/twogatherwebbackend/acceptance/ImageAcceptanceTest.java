@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
+import com.twogather.twogatherwebbackend.exception.ImageException;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.service.S3Uploader;
 import com.twogather.twogatherwebbackend.service.StorageUploader;
@@ -13,18 +14,35 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NOT_IMAGE;
+import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NO_SUCH_IMAGE;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,7 +53,8 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     private StorageUploader s3Uploader;
     @Autowired
     private ImageRepository imageRepository;
-
+    @Autowired
+    private  ResourceLoader loader;
     @BeforeEach
     public void initSetting(){
         super.setUp();
@@ -74,6 +93,22 @@ public class ImageAcceptanceTest extends AcceptanceTest{
 
 
     @Test
+    @DisplayName("특정 가게의 모든 이미지를 권한없이 얻어올수있다")
+    public void whenFindStoreImage_ThenSuccess() {
+        // Given
+        String url = "/api/stores/" + storeId + "/images";
+        //when
+        createImages();
+        //then
+        doGet(url,null,null)
+                .statusCode(HttpStatus.OK.value())
+                .body("data.imageId", notNullValue())
+                .body("data.url", hasItem(imageUrl1))
+                .body("data.url", hasItem(imageUrl2));
+
+    }
+
+    @Test
     @DisplayName("탈퇴한 회원으로 이미지 업로드시 권한 exception")
     public void whenUploadImageWithLeaveMember_ThenThrowException() {
         // Given
@@ -84,10 +119,24 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         //then
         doPostWithFile(fileList)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("이미지가 아닌 사진을 올릴 경우 throw exception")
+    public void whenUploadNotImage_ThenThrowException() {
+        // Given
+        List<File> fileList = createNonImageFile();
+
+        //then
+        doPostWithFile(fileList)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(NOT_IMAGE.getMessage()));
 
     }
+
     @Test
-    public void whenDeleteImage_ThenCreateImage() {
+    @DisplayName("이미지를 삭제하는 요청을 보냈을떄, 스토리지와 데이터베이스 모두에서 삭제되어야한다")
+    public void whenDeleteImage_ThenSuccessDelete() {
         // Given
         createImages();
         ImageIdList request = createImageIdRequest();
@@ -123,32 +172,24 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     }*/
 
     @Test
+    @DisplayName("존재하지않는 id로 이미지를 삭제했을때 4xx error 가 터져야한다")
     public void whenDeleteNoSuchImage_ThenNotThrowException() {
         // Given
         createImages();
         ImageIdList request = createNoSuchImageIdRequest();
         // When
         doDeleteWithFile(request)
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(NO_SUCH_IMAGE.getMessage()));
     }
     private List<File> createMockFiles() {
         List<File> fileList = new ArrayList<>();
-        try {
-            File tempFile1 = File.createTempFile("tempFile1", ".txt");
-            FileWriter writer1 = new FileWriter(tempFile1);
-            writer1.write("This is a temporary file content for tempFile1");
-            writer1.close();
-            fileList.add(tempFile1);
 
-            File tempFile2 = File.createTempFile("tempFile2", ".txt");
-            FileWriter writer2 = new FileWriter(tempFile2);
-            writer2.write("This is a temporary file content for tempFile2");
-            writer2.close();
-            fileList.add(tempFile2);
+        File multipartFile = new File("src\\test\\resources\\files\\image.jpg");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileList.add(multipartFile);
+        fileList.add(multipartFile);
+
         return fileList;
     }
     private ImageIdList createImageIdRequest(){
@@ -178,7 +219,8 @@ public class ImageAcceptanceTest extends AcceptanceTest{
                 .log().all();
     }
     private <T> ValidatableResponse doPostWithFile(List<File> fileList) {
-        return given()
+        ValidatableResponse response = null;
+        response  = given()
                 .multiPart("storeImageList", fileList.get(0))
                 .multiPart("storeImageList", fileList.get(1))
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
@@ -187,6 +229,17 @@ public class ImageAcceptanceTest extends AcceptanceTest{
                 .post(url)
                 .then()
                 .log().all();
+        return response;
+    }
+    private List<File> createNonImageFile(){
+        List<File> fileList = new ArrayList<>();
+
+        File multipartFile = new File("src\\test\\resources\\files\\text.txt");
+
+        fileList.add(multipartFile);
+        fileList.add(multipartFile);
+
+        return fileList;
     }
 
 }
