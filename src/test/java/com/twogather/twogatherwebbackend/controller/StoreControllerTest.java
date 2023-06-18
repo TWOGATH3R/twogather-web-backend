@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.service.StoreService;
@@ -140,7 +141,7 @@ public class StoreControllerTest extends ControllerTest{
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.
-                        get("/api/my/stores/?ownerId=1&page=1&size=2&sort=reviewsCount,desc",1)
+                        get("/api/my/stores/?ownerId=1&page=1&size=2&sort=MOST_REVIEWED,desc",1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
@@ -245,7 +246,7 @@ public class StoreControllerTest extends ControllerTest{
                         .param("location", "전주시 어쩌고 어쩌고")
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sort", "reviewsCount,desc")
+                        .param("sort", "MOST_REVIEWED,desc")
                         .characterEncoding("UTF-8")
                 )
                 .andExpect(status().isOk())

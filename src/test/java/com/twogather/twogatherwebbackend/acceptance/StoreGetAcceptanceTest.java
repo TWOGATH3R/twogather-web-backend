@@ -254,7 +254,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .param("ownerId", loginMemberId)
                 .param("page", "0")
                 .param("size", "2")
-                .param("sort", "reviewsCount,desc")
+                .param("sort", "MOST_REVIEWED,desc")
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
                 .get(url)

@@ -652,8 +652,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTkwNDM4fQ.P96Jc3Ozj5xJoZMGPgyX9fHyX5aQIorRYwaf8KuirfMn75m222NqCLFiRts_vpLb6rDAo5eVs3YWiHAk2tuPKA
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg2OTk5MTY4fQ.XDOgbXG_xsGG9jllEzBgCo87Wddi7xKF5NhV70X7Um6-QGonqymhYD4Z2YMgyY0QFbYEnMPHu8j1GmCoBu1n7w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3MDgzMzE0fQ.uRkHphyGeftXoY7lshNnmMSfSpz-3rVV0ub63C5SeHN6uh_3GDcjtjvVA1qOrPPHRWm70uKE4wzShbgZV1jCBA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3MDkyMDQ0fQ._Qp6Ossji_-k-poJcLuqjNeRsaHaKTfnJFXVC8PaJkGIPW9c7hgxJN19jabV3d1jOqk9f17EWzPZXZoBgWbYYg
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1331,7 +1331,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-17",
+    "requestDate" : "2023-06-18",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 2,
@@ -1340,7 +1340,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-17",
+    "requestDate" : "2023-06-18",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 3,
@@ -1349,7 +1349,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-17",
+    "requestDate" : "2023-06-18",
     "storeImageUrl" : "url1"
   } ],
   "currentPage" : 0,
@@ -3337,7 +3337,7 @@ Host: docs.api.com
   "phone" : "063-231-2222",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-17",
+  "businessStartDate" : "2023-06-18",
   "keywordIdList" : [ 1, 2, 3 ],
   "categoryId" : 1
 }</code></pre>
@@ -3439,7 +3439,7 @@ Content-Length: 380
     "phone" : "010-1234-1234",
     "businessNumber" : "000000000",
     "businessName" : "김길공",
-    "businessStartDate" : "2023-06-17",
+    "businessStartDate" : "2023-06-18",
     "keywordList" : [ "분위기좋은", "사진찍기좋은", "저렴한" ],
     "categoryId" : 1
   }
@@ -3861,7 +3861,7 @@ Content-Length: 1303
 <h4 id="_get_list_search_http_request"><a class="link" href="#_get_list_search_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/stores/search?category=%EC%96%91%EC%8B%9D&amp;search=%EB%B6%84%EC%9C%84%EA%B8%B0%EA%B0%80+%EC%A2%8B%EC%9D%80&amp;storeName=&amp;location=%EC%A0%84%EC%A3%BC%EC%8B%9C+%EC%96%B4%EC%A9%8C%EA%B3%A0+%EC%96%B4%EC%A9%8C%EA%B3%A0&amp;page=0&amp;size=10&amp;sort=reviewsCount%2Cdesc HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/stores/search?category=%EC%96%91%EC%8B%9D&amp;search=%EB%B6%84%EC%9C%84%EA%B8%B0%EA%B0%80+%EC%A2%8B%EC%9D%80&amp;storeName=&amp;location=%EC%A0%84%EC%A3%BC%EC%8B%9C+%EC%96%B4%EC%A9%8C%EA%B3%A0+%EC%96%B4%EC%A9%8C%EA%B3%A0&amp;page=0&amp;size=10&amp;sort=MOST_REVIEWED%2Cdesc HTTP/1.1
 Host: docs.api.com</code></pre>
 </div>
 </div>
@@ -4084,7 +4084,7 @@ Content-Length: 651
 <h4 id="_get_my_store_list_http_request"><a class="link" href="#_get_my_store_list_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/my/stores/?ownerId=1&amp;page=1&amp;size=2&amp;sort=reviewsCount,desc HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/my/stores/?ownerId=1&amp;page=1&amp;size=2&amp;sort=MOST_REVIEWED,desc HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4384,7 +4384,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-17",
+  "businessStartDate" : "2023-06-18",
   "keywordIdList" : [ 1, 2, 3 ],
   "categoryId" : 1
 }</code></pre>
@@ -4514,7 +4514,7 @@ Content-Length: 380
     "phone" : "010-1234-1234",
     "businessNumber" : "000000000",
     "businessName" : "김길공",
-    "businessStartDate" : "2023-06-17",
+    "businessStartDate" : "2023-06-18",
     "keywordList" : [ "분위기좋은", "사진찍기좋은", "저렴한" ],
     "categoryId" : 1
   }
@@ -4627,7 +4627,7 @@ Content-Length: 380
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=51ac0797-c3c4-4809-bc50-b43c75bcca3d HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=9a8b83ee-ada5-42bb-aed7-fd17bc76286e HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -4745,7 +4745,7 @@ Content-Length: 138
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=b4ae0a48-0017-4c63-80ed-0bf11648d1ae HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=c07113c2-e9f6-4311-adec-8e6befe80af5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -5261,7 +5261,7 @@ Content-Length: 130
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=d44f12f0-06fa-42da-8a9d-e7688c633c30 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=b9f6a5f2-3e83-4fb1-bb33-1043deccffbe HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5410,7 +5410,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=67bc394f-db05-4138-8fdb-62ffd153f3e2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=058abb8c-183c-4a94-9d93-9a9ed429fd9f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -6066,8 +6066,8 @@ Content-Length: 1198
       "consumerName" : "김지은"
     } ],
     "pageable" : "INSTANCE",
-    "totalPages" : 1,
     "totalElements" : 3,
+    "totalPages" : 1,
     "last" : true,
     "size" : 3,
     "number" : 0,
@@ -6275,7 +6275,7 @@ Content-Length: 1198
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=cb94993b-cc50-4a47-868a-65af9d66118f HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=18d4008e-b28c-4ef5-a5c5-90ee0240e93f HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -6409,7 +6409,7 @@ Content-Length: 163
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=4be676cd-ee1e-4064-bfdd-a5f0790d20ef HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/1/reviews/2?_csrf=7d030750-0e0d-4f2d-84c2-819bed778bfa HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 99
 Host: docs.api.com
@@ -6549,7 +6549,7 @@ Content-Length: 163
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=0af45942-e25c-4ef9-a744-6e3f5afebea8 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=89ab6467-40c2-4717-b201-28004dec4e17 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -6674,7 +6674,7 @@ Content-Length: 138
     "commentId" : 1,
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-17"
+    "createDate" : "2023-06-18"
   }
 }</code></pre>
 </div>
@@ -6809,7 +6809,7 @@ Content-Length: 138
     "commentId" : 1,
     "content" : "대댓글내용",
     "isOwner" : false,
-    "createDate" : "2023-06-17"
+    "createDate" : "2023-06-18"
   }
 }</code></pre>
 </div>
@@ -7127,7 +7127,7 @@ Host: docs.api.com</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-17 16:24:25 +0900
+Last updated 2023-06-17 16:49:39 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
