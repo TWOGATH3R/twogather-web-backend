@@ -25,17 +25,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public MemberResponse update(final MemberUpdateRequest request){
-        String originUsername = getLoginUsername();
-        if(!request.getUsername().equals(originUsername) && memberRepository.findActiveMemberByUsername(request.getUsername()).isPresent()){
-            throw new MemberException(DUPLICATE_USERNAME);
-        }
-        Member member = memberRepository.findActiveMemberByUsername(getLoginUsername()).orElseThrow(
-                ()->new MemberException(NO_SUCH_MEMBER)
-        );
-        String originEmail = member.getEmail();
-        if(!request.getEmail().equals(originEmail) && memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()){
-            throw new MemberException(DUPLICATE_EMAIL);
-        }
+        Member member = checkMemberOverlapByUpdate(request);
+
         member.update(
                 request.getUsername(),
                 request.getEmail(),
@@ -64,6 +55,24 @@ public class MemberService {
         if(memberRepository.existsByName(request.getName())){
             throw new MemberException(DUPLICATE_NICKNAME);
         }
+    }
+    public Member checkMemberOverlapByUpdate(MemberUpdateRequest request){
+        String originUsername = getLoginUsername();
+        if(!request.getUsername().equals(originUsername) && memberRepository.existsByUsername(request.getUsername())){
+            throw new MemberException(DUPLICATE_USERNAME);
+        }
+        Member member = memberRepository.findActiveMemberByUsername(getLoginUsername()).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        String originEmail = member.getEmail();
+        if(!request.getEmail().equals(originEmail) && memberRepository.existsByEmail(request.getEmail())){
+            throw new MemberException(DUPLICATE_EMAIL);
+        }
+        String originNickname = member.getName();
+        if(!request.getName().equals(originNickname) && memberRepository.existsByName(request.getName())){
+            throw new MemberException(DUPLICATE_NICKNAME);
+        }
+        return member;
     }
     public void changePassword(String password){
         String username = getLoginUsername();

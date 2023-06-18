@@ -150,6 +150,69 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("탈퇴한 외원의 ID 로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberID_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest("noerror@naver.com", CONSUMER_USERNAME, "noerror");
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_USERNAME.getMessage()));
+        ;
+    }
+    @Test
+    @DisplayName("탈퇴한 외원의 이메일로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberEmail_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest(CONSUMER_EMAIL, "noerror1", "noerror");
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
+        ;
+    }
+    @Test
+    @DisplayName("탈퇴한 외원의 닉네임으로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberNickname_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest("noerror@naver.com", "noerror1", CONSUMER_NAME);
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_NICKNAME.getMessage()));
+        ;
+    }
+    @Test
     @DisplayName("개인정보를 변경할시에 같은정보를 그대로 전송하는경우 bug 없이 잘 동작해야한다")
     public void whenOwnerChangeInfoWithSameInfo_ThenNoChange(){
         //given

@@ -55,6 +55,7 @@ public class StoreService {
         store.reject(rejectReason.getReason());
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
+        validateDuplicateName(storeRequest.getStoreName());
         validationBizRegNumber(storeRequest);
         String username = SecurityUtils.getLoginUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(

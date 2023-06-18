@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.DUPLICATE_NAME;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 
@@ -154,6 +155,14 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
                 .body("message", equalTo("유효하지않은 값을 입력하였습니다"));;
     }
 
+    @Test
+    @DisplayName("똑같은 가게 이름으로 두번 등록시 4xx error가 터진다")
+    public void whenRegisterSameStoreName_ThenThrowException() {
+        //given
+        registerStore();
+        //when
+        registerStoreDuplicate();
+    }
 
     @Test
     @DisplayName("가게 삭제 요청 후 진짜 삭제되었는지 확인해보는 test")
@@ -180,5 +189,18 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
                 ownerToken.getAccessToken())
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("message", equalTo(NO_SUCH_STORE.getMessage()));
+    }
+
+    public void registerStoreDuplicate() {
+        validatorWillPass();
+
+        doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_NAME.getMessage()));
+
+
     }
 }

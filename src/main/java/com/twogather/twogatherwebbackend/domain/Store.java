@@ -53,6 +53,7 @@ public class Store {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Column(unique = true)
     private String name;
     private String address;
     private String phone;

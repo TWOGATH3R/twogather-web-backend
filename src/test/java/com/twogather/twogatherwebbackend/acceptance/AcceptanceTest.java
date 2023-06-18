@@ -96,6 +96,7 @@ public class AcceptanceTest
     protected Long storeId;
     protected Long consumerId;
     protected Long loginMemberId;
+    protected Long categoryId;
     protected List<Keyword> keywordList;
 
     protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
@@ -257,7 +258,7 @@ public class AcceptanceTest
                 ownerToken.getAccessToken(), request)
                 .statusCode(HttpStatus.CREATED.value());
     }
-    private StoreSaveUpdateRequest createStoreRequest(List<Keyword> keywordList, Long categoryId){
+    public StoreSaveUpdateRequest createStoreRequest(List<Keyword> keywordList, Long categoryId){
         List<Long> keywordIdList = keywordList.stream().map(Keyword::getKeywordId).collect(Collectors.toList());
         return new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(),  keywordIdList,categoryId);
     }
@@ -273,6 +274,7 @@ public class AcceptanceTest
 
     protected Long registerCategory(){
         Category category = categoryRepository.save(new Category("기타"));
+        categoryId = category.getCategoryId();
         return category.getCategoryId();
     }
     protected void approveStore(){
