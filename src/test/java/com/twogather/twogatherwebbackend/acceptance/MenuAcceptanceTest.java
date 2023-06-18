@@ -35,7 +35,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("update menu 성공")
+    @DisplayName("update menu시 제약사항을 만족했다면 성공해야한다")
     public void updateMenuList_WithValidMenuList_ThenMenuSaved()  {
         // given,when
         // Then
@@ -51,7 +51,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("update menu 시에 유효성 실패 - null 입력하면 안됨")
+    @DisplayName("update menu 시에 null을 입력하면 유효성 실패해야한다")
     public void updateMenuList_WithInputNull_ThenThrowException() {
         // Given
         // When, Then
@@ -64,7 +64,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("update menu 시에 유효성 실패 - 음수 가격 입력하면 안됨")
+    @DisplayName("update menu 시에 음수가격을 입력해서 유효성검사에 실패해야한다")
     public void updateMenuList_WithInputMinusPrice_ThenThrowException(){
         // Given
         // When, Then

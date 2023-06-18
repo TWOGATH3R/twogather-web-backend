@@ -50,7 +50,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 저장 성공")
+    @DisplayName("가게의 기본적인 정보를 저장하는데 제약사항을 만족했다면 성공해야한다")
     public void whenSaveValidStore_ThenReturnStoreInfo() {
         //when
         registerStore();
@@ -67,7 +67,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("유효하지않은 사업자등록번호정보로 저장은 실패한다")
+    @DisplayName("유효하지않은 사업자등록번호정보로 저장은 실패해야한다")
     public void whenSaveInvalidBusinessInfo_ThenThrowException() {
         //when,then
         registerStoreWithValidatorFail();
@@ -93,7 +93,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("유효한 값으로 가게 업데이트 성공 및 확인 test")
+    @DisplayName("유효한 값으로 가게 업데이트 시 데이터베이스를 조회해서 제대로 업데이트가 되었는지 값일치를 확인해봤을때 일치해야한다")
     public void whenUpdateValidStore_ThenReturnStoreInfo()  {
         //given
         registerStore();
@@ -119,7 +119,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("유효하지않은 값(null field)으로 가게 업데이트 시도 시 실패하면서 롤백되는 test")
+    @DisplayName("유효하지않은 값(null field)으로 가게 업데이트 시도 시 실패하면서 롤백돼야한다")
     public void whenUpdateStoreIncludeNullField_ThenThrowException()  {
         //given
         registerStore();
@@ -138,7 +138,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("유효하지않은 전화번호로 가게 업데이트 시도 시 실패하면서 롤백되는 test")
+    @DisplayName("유효하지않은 전화번호로 가게 업데이트 시도 시 실패하면서 롤백돼야한다 ")
     public void whenUpdateStoreIncludePhoneField_ThenThrowException() {
         //given
         registerStore();
@@ -166,7 +166,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 삭제 요청 후 가게 관련 요소(메뉴, 영업시간, 이미지) 삭제되었는지 확인해보는 test")
+    @DisplayName("가게 삭제 요청 후 가게 관련 요소(메뉴, 영업시간, 이미지)도 다 삭제되어야한다")
     public void whenDeleteStore_ThenNotExistStore() {
         //given
         registerStore();

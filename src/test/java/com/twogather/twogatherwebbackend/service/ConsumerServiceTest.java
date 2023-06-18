@@ -3,9 +3,7 @@ package com.twogather.twogatherwebbackend.service;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
-import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +40,7 @@ public class ConsumerServiceTest {
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final MemberSaveRequest request = returnRequest();
-        doNothing().when(memberService).checkMemberOverlap(any());
+        doNothing().when(memberService).checkMemberOverlapBySave(any());
         final Consumer consumer = requestToEntity(request);
         when(consumerRepository.save(any(Consumer.class))).thenReturn(consumer);
 

@@ -8,7 +8,6 @@ import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
-import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class MemberService {
         if(memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()) return true;
         else return false;
     }
-    public void checkMemberOverlap(MemberSaveRequest request){
+    public void checkMemberOverlapBySave(MemberSaveRequest request){
         if (memberRepository.existsByUsername(request.getUsername())) {
             throw new MemberException(DUPLICATE_USERNAME);
         }

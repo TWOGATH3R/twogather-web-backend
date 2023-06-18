@@ -264,7 +264,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 비밀번호 검증 성공")
+    @DisplayName("owner 는 자신의 비밀번호를 입력해서 비밀번호 검증에 성공해야한다")
     public void whenOwnerVerityPassword_ThenSuccess(){
         //given
         registerOwner();
@@ -281,7 +281,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 비밀번호 검증 실패")
+    @DisplayName("owner 는 자신의 비밀번호와 일치하지 않는 비밀번호를 입력해서 비밀번호 검증 실패해야한다")
     public void whenOwnerVerityPassword_ThenFail(){
         //given
         registerOwner();
@@ -299,7 +299,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner id 찾기")
+    @DisplayName("owner는 자신의 이메일과 닉네임을 활용해서 아이디를 찾을 수 있다")
     public void whenFindMyId_ThenSuccess(){
         //given
         registerOwner();
@@ -387,7 +387,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
 
     }
     @Test
-    @DisplayName("consumer 개인정보 변경 성공, 변경된 정보로 로그인 성공")
+    @DisplayName("consumer 개인정보 변경이 성공해서, 변경된 정보로 로그인 성공해야한다")
     public void whenConsumerChangeInfo_ThenSuccess(){
         //given
         registerConsumer();
@@ -405,7 +405,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 탈퇴 후 로그인 실패")
+    @DisplayName("owner 탈퇴 후 로그인 실패해야한다")
     public void whenAfterOwnerLeaved_ThenThrowException(){
         //given
         registerOwner();
@@ -464,7 +464,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("consumer 탈퇴 후 로그인 실패")
+    @DisplayName("consumer 탈퇴 후 로그인 실패해야한다")
     public void whenAfterConsumerLeaved_ThenThrowException(){
         //given
         registerConsumer();
@@ -476,7 +476,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("토큰 만료 시 Unauthorized")
+    @DisplayName("토큰 만료 시 Unauthorized error를 반환해야한다")
     public void whenTokenExpired_ThenUnauthorized(){
         //given
         registerConsumer();
@@ -498,7 +498,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - 존재한다")
+    @DisplayName("존재하는 이메일을 가지고 해당 이메일로 가입된 사용자가 있는지 확인했을때 존재한다고 나와야한다")
     public void whenVerityEmail_ThenReturnTrue(){
         //given
         registerOwner();
@@ -514,7 +514,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - false")
+    @DisplayName("해당 이메일로 가입된 사용자가 없을떄 확인의 결과로 없다고 나와야한다")
     public void whenVerityEmail_ThenReturnFalse(){
         //given
         registerOwner();

@@ -45,7 +45,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("save: 탈퇴한 회원의 경우 throw exception")
+    @DisplayName("save: 탈퇴한 회원의 경우 영업시간을 저장할때 401 throw exception")
     public void whenLeavedUserRequest_thenThrowException(){
         // given
         BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);
@@ -58,7 +58,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("save: 탈퇴한 회원은 아니지만 삭제된 가게의 경우 throw exception")
+    @DisplayName("save: 탈퇴한 회원은 아니지만 삭제된 가게의 경우에도 throw exception")
     public void whenDeletedStoreRequest_thenThrowException()  {
         // given
         BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);

@@ -63,7 +63,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("가게의 키워드 세개 설정")
+    @DisplayName("가게의 키워드를 세개 설정할 수 있다")
     public void whenSettingThreeKeywordsForStore_thenTheyAreSavedInStoreKeywordTable()  {
         //given
         registerOwner();

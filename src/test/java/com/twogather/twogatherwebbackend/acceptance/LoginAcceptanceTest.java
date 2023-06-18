@@ -36,7 +36,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 로그인 성공 시, 토큰에 owner 권한 정보와 memberId가 들어있는지 확인")
+    @DisplayName("owner 로그인 성공 시, 토큰에 owner 권한 정보와 memberId가 들어있어야한다")
     public void WhenOwnerLogin_ThenSuccess() {
 
         given()
@@ -51,7 +51,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("consumer 로그인 성공 시, 토큰에 consumer 권한 정보와 memberId가 들어있는지 확인")
+    @DisplayName("consumer 로그인 성공 시, 토큰에 consumer 권한 정보와 memberId가 들어있어야한다")
     public void WhenConsumerLogin_ThenSuccess() {
         given()
                 .contentType(ContentType.JSON)
@@ -64,7 +64,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
 
     }
     @Test
-    @DisplayName("잘못된 비밀번호로 로그인 시도 시, 오류 메시지 반환 확인")
+    @DisplayName("잘못된 비밀번호로 로그인 시도 시, 오류 메시지 반환해야한다")
     public void WhenAttemptToLoginWithInvalidPassword_ThenUnauthorizedException() {
         given()
                 .contentType(ContentType.JSON)
@@ -75,7 +75,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .body("message", equalTo(NO_SUCH_MEMBER));
     }
     @Test
-    @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
+    @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환해야한다")
     public void WhenAttemptToLoginWithInvalidId_ThenUnauthorizedException() {
         // Given
         LoginRequest invalidLoginRequest = new LoginRequest( "username1","sss313213");
@@ -92,7 +92,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("탈퇴한 아이디로 로그인 시도 시, 오류 메시지 반환 확인")
+    @DisplayName("탈퇴한 아이디로 로그인 시도 시, 오류 메시지 반환해야한다")
     public void WhenAttemptLoginDeletedId_ThenUnauthorizedException() {
         // Given
         leaveOwner();

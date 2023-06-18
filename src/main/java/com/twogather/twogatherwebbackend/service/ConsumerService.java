@@ -5,9 +5,7 @@ import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +39,7 @@ public class ConsumerService {
     }
 
     public MemberResponse join(final MemberSaveRequest request){
-        memberService.checkMemberOverlap(request);
+        memberService.checkMemberOverlapBySave(request);
         Consumer consumer
                 = new Consumer(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()),
                 request.getName(), AuthenticationType.CONSUMER, true);
