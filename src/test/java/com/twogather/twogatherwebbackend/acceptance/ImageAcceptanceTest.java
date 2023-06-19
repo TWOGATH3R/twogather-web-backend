@@ -186,7 +186,7 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     private List<File> createMockFiles() {
         List<File> fileList = new ArrayList<>();
 
-        File multipartFile = new File(".\\src\\test\\resources\\files\\image.jpg");
+        File multipartFile = new File("src/test/resources/files/image.jpg");
 
 
         fileList.add(multipartFile);
@@ -235,8 +235,8 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     }
     private List<File> createNonImageFile(){
         List<File> fileList = new ArrayList<>();
-
-        File multipartFile = new File(".\\src\\test\\resources\\files\\text.txt");
+        
+        File multipartFile = new File("src/test/resources/files/text.txt");
 
         fileList.add(multipartFile);
         fileList.add(multipartFile);
