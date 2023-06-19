@@ -150,6 +150,24 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("owner username(id)를 숫자로만 입력하면 예외가 발생한다")
+    public void whenOwnerChangeWithOnlyNumber_ThenThrowBadRequest(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+        MemberUpdateRequest request = MemberUpdateRequest.builder()
+                .username("12341234")
+                .email("fire@naver.com")
+                .name("김김치").build();
+
+        //when, then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+    }
+
+    @Test
     @DisplayName("탈퇴한 외원의 ID 로는 업데이트할 수 없다")
     public void whenChangeInfoWithLeaveMemberID_ThenReturnErrorDuplicateInfo(){
         //given
@@ -242,7 +260,76 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         doLogin(new LoginRequest(UPDATE_REQUEST.getUsername(), UPDATE_REQUEST.getPassword()));
 
     }
+    @Test
+    @DisplayName("개인정보를 저장할시에 유효하지 않은 필드와 함께라면 유효성 검사 테스트에서 실패해야한다")
+    public void whenOwnerChangeInvalid_ThenThrowException(){
+        //given
+        String url = OWNER_URL;
 
+        MemberSaveRequest
+               pwLessThan8 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "as1",
+                OWNER_NAME);
+
+        MemberSaveRequest
+                pwMoreThan20 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "aasdasdasdasdasdasdasdasdasdsadads1",
+                OWNER_NAME);
+        MemberSaveRequest
+                pwOnlyNum = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "123123123",
+                OWNER_NAME);
+        MemberSaveRequest
+                pwOnlyEng = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "asdasdaad",
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UsernameOnlyNum = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "1231",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UsernameOnlyEng = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "asdasda",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UserLessThan4 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "as1",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        //when
+        doPost(url,null,null, pwLessThan8)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwMoreThan20)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwOnlyNum)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwOnlyEng)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UsernameOnlyNum)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UsernameOnlyEng)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UserLessThan4)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
     @Test
     @DisplayName("owner 비밀번호 변경 성공, 이전 회원정보로는 로그인 실패, 변경된 정보로 로그인 성공")
     public void whenOwnerChangePassword_ThenSuccess(){
@@ -260,6 +347,45 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //then
         doLogin(new LoginRequest(OWNER_USERNAME, newPassword));
         failLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
+
+    }
+    @Test
+    @DisplayName("owner 숫자로만 비밀번호 변경은 실패해야한다")
+    public void whenOwnerChangePasswordOnlyNumber_ThenSuccess(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
+        String newPassword = "12341234";
+        //when
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new PasswordRequest(newPassword))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+
+        //then
+        doLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
+
+    }
+
+    @Test
+    @DisplayName("owner 영어로만 비밀번호 변경은 실패해야한다")
+    public void whenOwnerChangePasswordOnlyNoNumber_ThenSuccess(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
+        String newPassword = "asdasdas";
+        //when
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new PasswordRequest(newPassword))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+
+        //then
+        doLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
 
     }
 
@@ -286,7 +412,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //given
         registerOwner();
         String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
-        String password = "notreal";
+        String password = "notreal1231";
         //when
         VerifyPasswordResponse response = convert(doPost(UPDATE_URL,
                 ownerToken.getRefreshToken(),
@@ -355,7 +481,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //given
         registerConsumer();
         String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
-        String password = "notreal";
+        String password = "notreal122";
         //when
         VerifyPasswordResponse response =convert(doPost(UPDATE_URL,
                 consumerToken.getRefreshToken(),

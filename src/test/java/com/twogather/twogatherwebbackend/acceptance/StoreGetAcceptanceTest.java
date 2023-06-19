@@ -74,16 +74,35 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         store3 = storeRepository.save(Store.builder().category(category1).name("가게3").address("대전광역시 어쩌고 어쩌고").phone("02-232-2222").status(StoreStatus.APPROVED).owner(owner).build());
         store4 = storeRepository.save(Store.builder().category(category2).name("가게4").address("서울시 어쩌고 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).owner(owner).build());
 
-        reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
-        reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
-        reviewRepository.save(new Review(store2, null, "분위기가좋아요", 4.4, LocalDate.of(2021,01,12)));
-        reviewRepository.save(new Review(store2, null, "아이들과 오기 좋네요", 3.2, LocalDate.of(2019,01,12)));
+        Review review1 = Review.builder().content("맛잇어요").score(4.2).createdDate(LocalDate.of(2020,02,02)).build();
+        Review review2 = Review.builder().content("위생이안좋군요").score(2.2).createdDate(LocalDate.of(2022,04,02)).build();
+        review1.addStore(store1);
+        review2.addStore(store1);
+        
+        Review review3 = Review.builder().content("분위기가좋아요").score(4.4).createdDate(LocalDate.of(2021,01,12)).build();
+        Review review4 =Review.builder().content("아이들과 오기 좋네요").score(3.2).createdDate(LocalDate.of(2019,01,12)).build();
+        review3.addStore(store2);
+        review4.addStore(store2);
+        
+        Review review5 = Review.builder().content("아이들과 오기 좋네요").score(1.2).createdDate(LocalDate.of(2019,01,12)).build();
+        Review review6 = Review.builder().content("분위기가좋아요").score(1.4).createdDate(LocalDate.of(2021,01,12)).build();
+        Review review7 = Review.builder().content("아이들과 오기 좋네요").score(1.2).createdDate(LocalDate.of(2019,01,12)).build();
+        review5.addStore(store3);
+        review6.addStore(store3);
+        review7.addStore(store3);
+        
+        Review review8 =  Review.builder().content("아이들과 오기 좋네요").score(4.2).createdDate(LocalDate.of(2019,01,12)).build();
+        review8.addStore(store4);
 
-        reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
-        reviewRepository.save(new Review(store3, null, "분위기가좋아요", 1.4, LocalDate.of(2021,01,12)));
-        reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+        reviewRepository.save(review3);
+        reviewRepository.save(review4);
+        reviewRepository.save(review5);
+        reviewRepository.save(review6);
+        reviewRepository.save(review7);
+        reviewRepository.save(review8);
 
-        reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 4.2, LocalDate.of(2019,01,12)));
     }
 
     @Test

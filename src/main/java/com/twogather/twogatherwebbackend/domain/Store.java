@@ -115,6 +115,12 @@ public class Store {
         }
         storeImageList.add(image);
     }
+    public void addReview(Review review){
+        if(reviewList==null){
+            reviewList = new ArrayList<>();
+        }
+        reviewList.add(review);
+    }
     public void addLikes(Likes likes){
         if(likesList==null){
             likesList = new ArrayList<>();

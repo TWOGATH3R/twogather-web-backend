@@ -19,7 +19,7 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{
 
@@ -105,7 +105,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
 
     @Test
     @DisplayName("승인된 가게 목록을 페이징이 잘 적용돼서 원하는 개수의 데이터만 전달해 오는지 확인해본다.")
-    public void whenPagingWorking_ThenSuccess() {
+    public void whenApprovedStorePagingWorking_ThenSuccess() {
         // given
         adminLogin();
         saveStore();
@@ -116,6 +116,69 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         List<MyStoreResponse> list = getStoreList(url);
         //then
         Assertions.assertEquals(list.size(),1);
+    }
+
+    @Test
+    @DisplayName("승인된 가게목록을 불러올때 이미지도 불러올 수 있어야한다")
+    public void whenCanFindApprovedStoreWithImage_ThenSuccess() {
+        // given
+        approveStore();
+
+        String url = "/api/admin/stores/" + StoreStatus.APPROVED;
+
+        //when
+        int page = 0;
+        int size = 2;
+        given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", page)
+                .param("size", size)
+                .when()
+                .get(url)
+                .then()
+                .log().all()
+                .body("currentPage", equalTo(page))
+                .body("totalPages", equalTo(1))
+                .body("totalElements", equalTo(1))
+                .body("pageSize", equalTo(size))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(true))
+                .body("data.storeImageUrl", not(emptyOrNullString()))
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("거부된 가게 목록을 페이징이 잘 적용돼서 원하는 개수의 데이터만 전달해 오는지 확인해본다.")
+    public void whenRejectStorePagingWorking_ThenSuccess() {
+        // given
+        adminLogin();
+        saveDeniedStore();
+
+        String url = "/api/admin/stores/" + StoreStatus.DENIED;
+
+        //when
+        int page = 0;
+        int size = 2;
+        given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", page)
+                .param("size", size)
+                .when()
+                .get(url)
+                .then()
+                .log().all()
+                .body("currentPage", equalTo(page))
+                .body("totalPages", equalTo(1))
+                .body("totalElements", equalTo(1))
+                .body("pageSize", equalTo(size))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(true))
+                .statusCode(HttpStatus.OK.value());
+
     }
 
     @Test
@@ -167,6 +230,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .address(STORE_ADDRESS)
                 .phone(STORE_PHONE)
                 .status(StoreStatus.DENIED)
+                .reasonForRejection("요구사항 불충족")
                 .requestDate(LocalDate.of(2020,2,2))
                 .build();
         return storeRepository.save(store).getStoreId();

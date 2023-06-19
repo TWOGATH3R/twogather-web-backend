@@ -3,10 +3,14 @@ package com.twogather.twogatherwebbackend.auth;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -26,7 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.*;
 
 @Slf4j
 public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter{
@@ -50,6 +54,8 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
 
         LoginRequest loginRequest = parseLoginRequest(request);
         log.info("JwtAuthorizationFilter: {}", loginRequest);
+
+        validateLoginRequest(request, response, loginRequest);
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(
@@ -124,5 +130,14 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         response.addHeader(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken);
         response.addHeader(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX +  refreshToken);
         response.getWriter().write(loginResponseJson);
+    }
+    private void validateLoginRequest(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest) {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<LoginRequest>> violations = validator.validate(loginRequest);
+
+        if (!violations.isEmpty()) {
+            commenceAuthenticationFailure(request, response, new BadCredentialsException(INVALID_FORMAT));
+
+       }
     }
 }

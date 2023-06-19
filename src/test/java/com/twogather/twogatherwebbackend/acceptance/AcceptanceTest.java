@@ -219,7 +219,10 @@ public class AcceptanceTest
     protected Long registerReview(){
         Store store = storeRepository.findActiveStoreById(storeId).get();
         Member member = memberRepository.findActiveMemberById(consumerId).get();
-        return reviewRepository.save(new Review(store, member, "맛있어요", 3.2, LocalDate.now())).getReviewId();
+        Review review = reviewRepository.save(Review.builder().content("맛있어요").score(3.2).createdDate(LocalDate.now()).build());
+        review.addStore(store);
+        review.addReviewer(member);
+        return review.getReviewId();
     }
     protected void registerStore() {
         log.info("register store");
@@ -227,8 +230,10 @@ public class AcceptanceTest
         Long categoryId = registerCategory();
         registerKeyword();
 
-        storeId = convert(doPost(STORE_URL,ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken(), createStoreRequest(keywordList, categoryId))
+        storeId = convert(doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);

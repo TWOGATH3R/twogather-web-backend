@@ -101,7 +101,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
                 .statusCode(HttpStatus.OK.value());
 
         //when, then
-        Assertions.assertTrue(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
+        Assertions.assertFalse(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
     }
     @Test
