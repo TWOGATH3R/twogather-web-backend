@@ -34,7 +34,7 @@ public class StoreKeywordService {
         if(keywordStringList.size()>3){
             throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
         }
-        Store store = storeRepository.findAllStoreById(storeId).orElseThrow(
+        Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
         storeKeywordRepository.deleteByStoreStoreId(storeId);

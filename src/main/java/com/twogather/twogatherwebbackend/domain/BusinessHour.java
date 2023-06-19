@@ -1,5 +1,7 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class BusinessHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,38 +57,11 @@ public class BusinessHour {
         }
 
     }
-    public BusinessHour(Long id, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
-                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
-        this.businessHourId = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.dayOfWeek = dayOfWeek;
-        this.isOpen = isOpen;
-        this.hasBreakTime = hasBreakTime;
-        this.breakStartTime = breakStartTime;
-        this.breakEndTime = breakEndTime;
-    }
-    public BusinessHour(Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
-                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
+    public void addStore(Store store){
+        if (this.store != null) {
+            this.store.getBusinessHourList().remove(this);
+        }
         this.store = store;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.dayOfWeek = dayOfWeek;
-        this.isOpen = isOpen;
-        this.hasBreakTime = hasBreakTime;
-        this.breakStartTime = breakStartTime;
-        this.breakEndTime = breakEndTime;
-    }
-    public BusinessHour(Long id,Store store, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
-                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
-        this.businessHourId = id;
-        this.store = store;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.dayOfWeek = dayOfWeek;
-        this.isOpen = isOpen;
-        this.hasBreakTime = hasBreakTime;
-        this.breakStartTime = breakStartTime;
-        this.breakEndTime = breakEndTime;
+        store.addBusinessHour(this);
     }
 }

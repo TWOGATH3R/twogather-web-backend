@@ -19,9 +19,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import java.util.Date;
 
 import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.DUPLICATE_EMAIL;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -150,6 +150,87 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("owner username(id)를 숫자로만 입력하면 예외가 발생한다")
+    public void whenOwnerChangeWithOnlyNumber_ThenThrowBadRequest(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+        MemberUpdateRequest request = MemberUpdateRequest.builder()
+                .username("12341234")
+                .email("fire@naver.com")
+                .name("김김치").build();
+
+        //when, then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+    }
+
+    @Test
+    @DisplayName("탈퇴한 외원의 ID 로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberID_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest("noerror@naver.com", CONSUMER_USERNAME, "noerror");
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_USERNAME.getMessage()));
+        ;
+    }
+    @Test
+    @DisplayName("탈퇴한 외원의 이메일로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberEmail_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest(CONSUMER_EMAIL, "noerror1", "noerror");
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
+        ;
+    }
+    @Test
+    @DisplayName("탈퇴한 외원의 닉네임으로는 업데이트할 수 없다")
+    public void whenChangeInfoWithLeaveMemberNickname_ThenReturnErrorDuplicateInfo(){
+        //given
+        registerOwner();
+        String UPDATE_URL = OWNER_URL + "/" + loginMemberId;
+
+        //when
+        registerConsumer();
+        leaveConsumer();
+        MemberUpdateRequest request
+                = new MemberUpdateRequest("noerror@naver.com", "noerror1", CONSUMER_NAME);
+        //then
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_NICKNAME.getMessage()));
+        ;
+    }
+    @Test
     @DisplayName("개인정보를 변경할시에 같은정보를 그대로 전송하는경우 bug 없이 잘 동작해야한다")
     public void whenOwnerChangeInfoWithSameInfo_ThenNoChange(){
         //given
@@ -179,7 +260,76 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         doLogin(new LoginRequest(UPDATE_REQUEST.getUsername(), UPDATE_REQUEST.getPassword()));
 
     }
+    @Test
+    @DisplayName("개인정보를 저장할시에 유효하지 않은 필드와 함께라면 유효성 검사 테스트에서 실패해야한다")
+    public void whenOwnerChangeInvalid_ThenThrowException(){
+        //given
+        String url = OWNER_URL;
 
+        MemberSaveRequest
+               pwLessThan8 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "as1",
+                OWNER_NAME);
+
+        MemberSaveRequest
+                pwMoreThan20 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "aasdasdasdasdasdasdasdasdasdsadads1",
+                OWNER_NAME);
+        MemberSaveRequest
+                pwOnlyNum = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "123123123",
+                OWNER_NAME);
+        MemberSaveRequest
+                pwOnlyEng = new MemberSaveRequest(
+                OWNER_EMAIL,
+                OWNER_USERNAME,
+                "asdasdaad",
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UsernameOnlyNum = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "1231",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UsernameOnlyEng = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "asdasda",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        MemberSaveRequest
+                UserLessThan4 = new MemberSaveRequest(
+                OWNER_EMAIL,
+                "as1",
+                OWNER_PASSWORD,
+                OWNER_NAME);
+
+        //when
+        doPost(url,null,null, pwLessThan8)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwMoreThan20)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwOnlyNum)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, pwOnlyEng)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UsernameOnlyNum)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UsernameOnlyEng)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        doPost(url,null,null, UserLessThan4)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
     @Test
     @DisplayName("owner 비밀번호 변경 성공, 이전 회원정보로는 로그인 실패, 변경된 정보로 로그인 성공")
     public void whenOwnerChangePassword_ThenSuccess(){
@@ -199,9 +349,48 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         failLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
 
     }
+    @Test
+    @DisplayName("owner 숫자로만 비밀번호 변경은 실패해야한다")
+    public void whenOwnerChangePasswordOnlyNumber_ThenSuccess(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
+        String newPassword = "12341234";
+        //when
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new PasswordRequest(newPassword))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+
+        //then
+        doLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
+
+    }
 
     @Test
-    @DisplayName("owner 비밀번호 검증 성공")
+    @DisplayName("owner 영어로만 비밀번호 변경은 실패해야한다")
+    public void whenOwnerChangePasswordOnlyNoNumber_ThenSuccess(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/password";
+        String newPassword = "asdasdas";
+        //when
+        doPut(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new PasswordRequest(newPassword))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+
+        //then
+        doLogin(new LoginRequest(OWNER_USERNAME, OWNER_PASSWORD));
+
+    }
+
+    @Test
+    @DisplayName("owner 는 자신의 비밀번호를 입력해서 비밀번호 검증에 성공해야한다")
     public void whenOwnerVerityPassword_ThenSuccess(){
         //given
         registerOwner();
@@ -218,12 +407,12 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 비밀번호 검증 실패")
+    @DisplayName("owner 는 자신의 비밀번호와 일치하지 않는 비밀번호를 입력해서 비밀번호 검증 실패해야한다")
     public void whenOwnerVerityPassword_ThenFail(){
         //given
         registerOwner();
         String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
-        String password = "notreal";
+        String password = "notreal1231";
         //when
         VerifyPasswordResponse response = convert(doPost(UPDATE_URL,
                 ownerToken.getRefreshToken(),
@@ -236,7 +425,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner id 찾기")
+    @DisplayName("owner는 자신의 이메일과 닉네임을 활용해서 아이디를 찾을 수 있다")
     public void whenFindMyId_ThenSuccess(){
         //given
         registerOwner();
@@ -292,7 +481,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
         //given
         registerConsumer();
         String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
-        String password = "notreal";
+        String password = "notreal122";
         //when
         VerifyPasswordResponse response =convert(doPost(UPDATE_URL,
                 consumerToken.getRefreshToken(),
@@ -324,7 +513,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
 
     }
     @Test
-    @DisplayName("consumer 개인정보 변경 성공, 변경된 정보로 로그인 성공")
+    @DisplayName("consumer 개인정보 변경이 성공해서, 변경된 정보로 로그인 성공해야한다")
     public void whenConsumerChangeInfo_ThenSuccess(){
         //given
         registerConsumer();
@@ -342,7 +531,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("owner 탈퇴 후 로그인 실패")
+    @DisplayName("owner 탈퇴 후 로그인 실패해야한다")
     public void whenAfterOwnerLeaved_ThenThrowException(){
         //given
         registerOwner();
@@ -353,9 +542,55 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입하고 나서 같은 email로 회원가입을 시도하면 중복된 이메일이라는 4xx error가 떠야한다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateEmail(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                OWNER_EMAIL, "notdupID12", OWNER_PASSWORD, "notdupp"
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_EMAIL.getMessage()));
+    }
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입할때 이전과 같은 username을 가지고 재가입하는 경우 중복된값이라는 4xx error가 뜬다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateUsenname(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                "notdupl@naver.com", OWNER_USERNAME, OWNER_PASSWORD, "notdupp"
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_USERNAME.getMessage()));
+    }
+    @Test
+    @DisplayName("owner 탈퇴 후 재가입을 하는데 이전과 같은 nickname을 사용할 시 중복 4xx error가 터진다")
+    public void whenAfterOwnerLeavedAndRejoin_ThenDuplicateNickName(){
+        //given
+        registerOwner();
+        MemberSaveRequest request = new MemberSaveRequest(
+                "notdupl@naver.com", "notdupID12", OWNER_PASSWORD, OWNER_NAME
+        );
+        //when
+        leaveOwner();
+        //then
+        doPost(OWNER_URL, null,null,request)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(DUPLICATE_NICKNAME.getMessage()));
+    }
+
 
     @Test
-    @DisplayName("consumer 탈퇴 후 로그인 실패")
+    @DisplayName("consumer 탈퇴 후 로그인 실패해야한다")
     public void whenAfterConsumerLeaved_ThenThrowException(){
         //given
         registerConsumer();
@@ -367,7 +602,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("토큰 만료 시 Unauthorized")
+    @DisplayName("토큰 만료 시 Unauthorized error를 반환해야한다")
     public void whenTokenExpired_ThenUnauthorized(){
         //given
         registerConsumer();
@@ -389,7 +624,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - 존재한다")
+    @DisplayName("존재하는 이메일을 가지고 해당 이메일로 가입된 사용자가 있는지 확인했을때 존재한다고 나와야한다")
     public void whenVerityEmail_ThenReturnTrue(){
         //given
         registerOwner();
@@ -405,7 +640,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("해당 이메일로 가입된 사용자가 있는지 확인 - false")
+    @DisplayName("해당 이메일로 가입된 사용자가 없을떄 확인의 결과로 없다고 나와야한다")
     public void whenVerityEmail_ThenReturnFalse(){
         //given
         registerOwner();

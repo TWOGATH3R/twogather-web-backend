@@ -45,7 +45,7 @@ public interface DocumentFormatGenerator {
         return key("format").value("<TOP_RATED,desc> or <MOST_REVIEWED,asc> or <MOST_LIKES_COUNT,asc>... 등");
     }
     static Attributes.Attribute getMemberNameFormat() {
-        return key("format").value("한글 혹은 영어로만 입력해주세요");
+        return key("format").value("한글 혹은 영어로만 10자 이내로 입력해주세요");
     }
 
 }

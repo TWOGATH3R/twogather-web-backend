@@ -38,8 +38,8 @@ public class StoreOwnerController {
 
     @PutMapping("/{memberId}")
     @PreAuthorize("@storeOwnerService.isStoreOwner(#memberId)")
-    public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final MemberUpdateRequest storeOwnerSaveUpdateRequest){
-        MemberResponse data = memberService.update(storeOwnerSaveUpdateRequest);
+    public ResponseEntity<Response> updateOwnerInfo(@PathVariable Long memberId, @RequestBody @Valid final MemberUpdateRequest request){
+        MemberResponse data = memberService.update(request);
 
         return ResponseEntity.ok(new Response(data));
     }

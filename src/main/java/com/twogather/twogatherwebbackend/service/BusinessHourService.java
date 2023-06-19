@@ -29,8 +29,8 @@ public class BusinessHourService {
     private final StoreRepository storeRepository;
     private final BusinessHourValidator validator;
 
-    public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveUpdateInfo> requestList){
-        Store store = storeRepository.findAllStoreById(storeId)
+    public List<BusinessHourResponse> saveList(Long storeId, List<BusinessHourSaveUpdateInfo> requestList) {
+        Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
         Set<DayOfWeek> uniqueDays = checkDuplicateDays(requestList);
@@ -41,8 +41,8 @@ public class BusinessHourService {
         return toBusinessHourResponseList(savedBusinessHourList);
     }
 
-    public void deleteList(List<Long> businessHourIdList){
-        for (Long id: businessHourIdList){
+    public void deleteList(List<Long> businessHourIdList) {
+        for (Long id : businessHourIdList) {
             delete(id);
         }
     }
@@ -54,13 +54,13 @@ public class BusinessHourService {
             throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID);
         }
         ArrayList<BusinessHourResponse> responses = new ArrayList<>();
-        for (BusinessHour businessHour: businessHours) {
+        for (BusinessHour businessHour : businessHours) {
             responses.add(toBusinessHourResponse(businessHour));
         }
         return responses;
     }
 
-    public List<BusinessHourResponse> updateList(Long storeId, List<BusinessHourSaveUpdateInfo> requestList){
+    public List<BusinessHourResponse> updateList(Long storeId, List<BusinessHourSaveUpdateInfo> requestList) {
         Store store = storeRepository.findActiveStoreById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
@@ -69,17 +69,18 @@ public class BusinessHourService {
         createBusinessHourListByUpdateList(requestList, store);
         List<BusinessHour> businessHourList = businessHourRepository.findByStoreStoreId(storeId);
 
-        if(businessHourList.size()!=7){
+        if (businessHourList.size() != 7) {
             throw new BusinessHourException(INVALID_BUSINESS_HOUR);
         }
 
         ArrayList<BusinessHourResponse> responseList = new ArrayList<>();
-        for (BusinessHour businessHour: businessHourList){
+        for (BusinessHour businessHour : businessHourList) {
             responseList.add(toBusinessHourResponse(businessHour));
         }
         return responseList;
     }
-    public void delete(Long businessHourId){
+
+    public void delete(Long businessHourId) {
         try {
             businessHourRepository.deleteById(businessHourId);
         } catch (EmptyResultDataAccessException ex) {
@@ -87,10 +88,20 @@ public class BusinessHourService {
             throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_BUSINESS_HOUR_ID);
         }
     }
-    private BusinessHour saveRequestToEntity(BusinessHourSaveUpdateInfo request, Store store){
-        return new BusinessHour(store, request.getStartTime(), request.getEndTime(),
-                request.getDayOfWeek(), request.getIsOpen(), request.getHasBreakTime(),
-                request.getBreakStartTime(), request.getBreakEndTime());
+
+    private BusinessHour saveRequestToEntity(BusinessHourSaveUpdateInfo request, Store store) {
+        BusinessHour businessHour =
+                BusinessHour
+                .builder()
+                        .startTime(request.getStartTime())
+                        .endTime(request.getEndTime())
+                        .dayOfWeek(request.getDayOfWeek())
+                        .hasBreakTime(request.getHasBreakTime())
+                        .breakEndTime(request.getBreakEndTime())
+                        .breakStartTime(request.getBreakStartTime())
+                        .isOpen(request.getIsOpen()).build();
+        businessHour.addStore(store);
+        return businessHour;
     }
 
     private Set<DayOfWeek> checkDuplicateDays(List<BusinessHourSaveUpdateInfo> requestList) {
@@ -120,6 +131,7 @@ public class BusinessHourService {
 
         return entityList;
     }
+
     private void createBusinessHourListByUpdateList(List<BusinessHourSaveUpdateInfo> requestList, Store store) {
 
         for (BusinessHourSaveUpdateInfo request : requestList) {
@@ -133,11 +145,11 @@ public class BusinessHourService {
 
         }
     }
+
     private BusinessHour createClosedBusinessHour(DayOfWeek dayOfWeek, Store store) {
-        return new BusinessHour(
-                store, null, null, dayOfWeek, false,
-                false, null, null
-        );
+        BusinessHour businessHour = BusinessHour.builder().isOpen(false).dayOfWeek(dayOfWeek).hasBreakTime(false).build();
+        businessHour.addStore(store);
+        return businessHour;
     }
 
     private List<BusinessHourResponse> toBusinessHourResponseList(List<BusinessHour> businessHourList) {

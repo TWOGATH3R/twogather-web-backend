@@ -69,6 +69,41 @@ public class LikeAcceptanceTest extends AcceptanceTest{
 
 
     }
+
+    @Test
+    @DisplayName("가게 좋아요 취소하는 요청을 두번 보냈을땐 아무일도 일어나지 않는다")
+    public void whenDuplicateDeleteStoreLike_ThenNoException() {
+        //given
+        doPost(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
+
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+        //when,then
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+
+        Assertions.assertFalse(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
+
+    }
+    @Test
+    @DisplayName("가게 좋아요 누르지 않고 취소하는 경우 no exception")
+    public void whenDeleteStoreLikeWithNoEntity_ThenNoException() {
+        //given
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+
+        //when, then
+        Assertions.assertFalse(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
+
+    }
     @Test
     @DisplayName("인증되지 않은자가 가게 좋아요를 누르는 경우 throw exception")
     public void whenSetStoreLikeWithAnonymousUser_ThenThrowException() {

@@ -38,18 +38,18 @@ public class Review {
     private Double score;
     private LocalDate createdDate;
 
-    public Review(Store store, Member reviewer, String content, Double score, LocalDate createdDate){
+    public void addStore(Store store){
         this.store = store;
-        this.reviewer = reviewer;
-        this.content = content;
-        this.score = score;
-        this.createdDate = createdDate;
+        this.store.addReview(this);
     }
     public void addComment(Comment comment){
         if(commentList==null){
             commentList = new ArrayList<>();
         }
         this.commentList.add(comment);
+    }
+    public void addReviewer(Member member){
+        reviewer = member;
     }
 
 }

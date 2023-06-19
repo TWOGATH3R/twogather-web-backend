@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -25,13 +27,13 @@ public class MemberController {
     private final MemberService memberService;
     private final StoreService storeService;
     @PostMapping("/checks-email")
-    public ResponseEntity<Response> checkEmailIsExist(@RequestBody EmailRequest request) {
+    public ResponseEntity<Response> checkEmailIsExist(@Valid @RequestBody EmailRequest request) {
         Boolean isExist = memberService.isExist(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(isExist));
     }
     @PostMapping("/my-id")
-    public ResponseEntity<Response> findMyUsername(@RequestBody FindUsernameRequest request) {
+    public ResponseEntity<Response> findMyUsername(@Valid @RequestBody FindUsernameRequest request) {
         String username = memberService.findMyUsername(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(username));
@@ -49,7 +51,7 @@ public class MemberController {
     @PostMapping("/{memberId}/verify-password")
     @PreAuthorize("@memberService.isMyId(#memberId)")
     public ResponseEntity<Response> verifyPassword(@PathVariable Long memberId,
-                                                   @RequestBody PasswordRequest request) {
+                                                   @Valid @RequestBody PasswordRequest request) {
         boolean passwordMatches = memberService.verifyPassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(new VerifyPasswordResponse(passwordMatches)));
@@ -58,7 +60,7 @@ public class MemberController {
     @PutMapping("/{memberId}/password")
     @PreAuthorize("@memberService.isMyId(#memberId)")
     public ResponseEntity<Response> changePassword(@PathVariable Long memberId,
-                                                   @RequestBody PasswordRequest request) {
+                                                   @Valid @RequestBody PasswordRequest request) {
         memberService.changePassword(request.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK).build();

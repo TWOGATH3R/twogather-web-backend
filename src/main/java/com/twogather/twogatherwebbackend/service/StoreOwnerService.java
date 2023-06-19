@@ -4,11 +4,9 @@ import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
 import com.twogather.twogatherwebbackend.exception.MemberException;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +19,8 @@ import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsern
 @Transactional
 public class StoreOwnerService {
     private final StoreOwnerRepository storeOwnerRepository;
-    private final MemberRepository memberRepository;
+    private final StoreRepository storeRepository;
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
     public boolean isStoreOwner(Long requestMemberId){
@@ -36,7 +35,7 @@ public class StoreOwnerService {
 
 
     public MemberResponse join(final MemberSaveRequest request){
-        validateDuplicateUsername(request.getUsername());
+        memberService.checkMemberOverlapBySave(request);
         StoreOwner owner = new StoreOwner(
                 request.getUsername(),
                 request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getName(), AuthenticationType.STORE_OWNER,true);
@@ -49,7 +48,7 @@ public class StoreOwnerService {
                 ()-> new MemberException(NO_SUCH_MEMBER_ID)
         );
         for (Store store:owner.getStoreList()) {
-            store.delete();
+            storeRepository.deleteById(store.getStoreId());
         }
         owner.leave();
     }
@@ -62,11 +61,6 @@ public class StoreOwnerService {
         return toStoreOwnerResponse(owner);
     }
 
-    public void validateDuplicateUsername(final String username){
-        if (memberRepository.existsByActiveUsername(username)) {
-            throw new MemberException(DUPLICATE_USERNAME);
-        }
-    }
     private MemberResponse toStoreOwnerResponse(StoreOwner owner){
         return new MemberResponse(owner.getMemberId(),
                 owner.getUsername(),

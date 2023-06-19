@@ -1,13 +1,10 @@
 package com.twogather.twogatherwebbackend.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
-import com.twogather.twogatherwebbackend.exception.MemberException;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static com.twogather.twogatherwebbackend.util.TestConstants.*;
-import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,20 +26,22 @@ public class StoreOwnerServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
+    @Mock
+    private StoreRepository storeRepository;
     private StoreOwnerService storeOwnerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        storeOwnerService = new StoreOwnerService(storeOwnerRepository, memberRepository, passwordEncoder);
+        storeOwnerService = new StoreOwnerService(storeOwnerRepository,storeRepository,  memberService, passwordEncoder);
     }
     @Test
     @DisplayName("save: 유효한 요청이 왔을때 유효한 응답을 반환한다")
     public void save_ValidMemberSaveRequest_ShouldReturnTrue() {
         // given
         final MemberSaveRequest request = returnRequest();
-        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(false);
+        doNothing().when(memberService).checkMemberOverlapBySave(any());
         final StoreOwner storeOwner = requestToEntity(request);
         when(storeOwnerRepository.save(any(StoreOwner.class))).thenReturn(storeOwner);
         // when
@@ -52,16 +49,6 @@ public class StoreOwnerServiceTest {
 
         // then
         Assertions.assertTrue(true);
-    }
-    @Test
-    @DisplayName("save: 중복되는 이메일로 두번 가입했을때 예외가 터진다")
-    public void save_DuplicateEmail_ShouldThrowMemberException() {
-        // given
-        final MemberSaveRequest request = returnRequest();
-        //when
-        when(memberRepository.existsByActiveUsername(request.getUsername())).thenReturn(true);
-        // when
-        Assertions.assertThrows(MemberException.class, () -> storeOwnerService.join(request));
     }
     private MemberSaveRequest returnRequest(){
         return new MemberSaveRequest(

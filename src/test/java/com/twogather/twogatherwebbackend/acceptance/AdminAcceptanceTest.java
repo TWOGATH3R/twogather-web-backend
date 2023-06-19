@@ -19,7 +19,7 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{
 
@@ -34,7 +34,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     static final String REASON = "조건 불충족";
 
     @Test
-    @DisplayName("가게 승인이 제대로 되었는지 확인")
+    @DisplayName("가게 승인이 제대로 된경우 데이터베이스에도 승인이라는 정보가 남겨져있어야한다")
     public void whenApproveStore_ThenSuccess() {
         // when
         approveStore();
@@ -44,7 +44,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 거부 제대로 되었는지 거부 내용, 가게 상태 확인")
+    @DisplayName("가게 거부 제대로 되었는지 데이터베이스를 조회해서 상태와 거부이유를 확인해본다")
     public void whenRejectStore_ThenSuccess() {
         // given,when
         rejectStore();
@@ -56,7 +56,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("<type: 승인된> 가게 목록 찾아오기")
+    @DisplayName("승인 타입에 대한 가게목록을 불러와서 예상한 값과 일치하는지 확인한다")
     public void whenFindApprovedStore_ThenSuccess() {
         // given
         adminLogin();
@@ -104,8 +104,8 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("승인된 가게 목록 찾아오기 - 페이징이 잘 적용되는지")
-    public void whenPagingWorking_ThenSuccess() {
+    @DisplayName("승인된 가게 목록을 페이징이 잘 적용돼서 원하는 개수의 데이터만 전달해 오는지 확인해본다.")
+    public void whenApprovedStorePagingWorking_ThenSuccess() {
         // given
         adminLogin();
         saveStore();
@@ -119,7 +119,70 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("가게 승인 요청 -> 거부 -> 재요청의 시나리오에 대한 테스트")
+    @DisplayName("승인된 가게목록을 불러올때 이미지도 불러올 수 있어야한다")
+    public void whenCanFindApprovedStoreWithImage_ThenSuccess() {
+        // given
+        approveStore();
+
+        String url = "/api/admin/stores/" + StoreStatus.APPROVED;
+
+        //when
+        int page = 0;
+        int size = 2;
+        given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", page)
+                .param("size", size)
+                .when()
+                .get(url)
+                .then()
+                .log().all()
+                .body("currentPage", equalTo(page))
+                .body("totalPages", equalTo(1))
+                .body("totalElements", equalTo(1))
+                .body("pageSize", equalTo(size))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(true))
+                .body("data.storeImageUrl", not(emptyOrNullString()))
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("거부된 가게 목록을 페이징이 잘 적용돼서 원하는 개수의 데이터만 전달해 오는지 확인해본다.")
+    public void whenRejectStorePagingWorking_ThenSuccess() {
+        // given
+        adminLogin();
+        saveDeniedStore();
+
+        String url = "/api/admin/stores/" + StoreStatus.DENIED;
+
+        //when
+        int page = 0;
+        int size = 2;
+        given()
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + adminToken.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", page)
+                .param("size", size)
+                .when()
+                .get(url)
+                .then()
+                .log().all()
+                .body("currentPage", equalTo(page))
+                .body("totalPages", equalTo(1))
+                .body("totalElements", equalTo(1))
+                .body("pageSize", equalTo(size))
+                .body("isFirst", equalTo(true))
+                .body("isLast", equalTo(true))
+                .statusCode(HttpStatus.OK.value());
+
+    }
+
+    @Test
+    @DisplayName("가게 승인 요청 -> 거부 -> 재요청의 시나리오의 경우 데이터베이스에서 재요청상태/신청날짜를 확인할 수 있다")
     public void whenReapplyRequest_ThenSuccess() {
         // given
         rejectStore();
@@ -132,27 +195,9 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 null);
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
-    }
-
-    @Test
-    @DisplayName("거부된 가게 재요청 시 날짜 업데이트되었는지 확인")
-    public void whenReapplyRequest_ThenUpdateDate() {
-        // given
-        adminLogin();
-
-        Long storeId = saveDeniedStore();
-
-        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.of(2020,2,2));
-        //when
-        doPatch("/api/stores/" + storeId,
-                ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken(),
-
-                null);
-
-        //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
     }
+
 
     private List<MyStoreResponse> getStoreList(String url){
         int page = 2;
@@ -185,6 +230,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .address(STORE_ADDRESS)
                 .phone(STORE_PHONE)
                 .status(StoreStatus.DENIED)
+                .reasonForRejection("요구사항 불충족")
                 .requestDate(LocalDate.of(2020,2,2))
                 .build();
         return storeRepository.save(store).getStoreId();

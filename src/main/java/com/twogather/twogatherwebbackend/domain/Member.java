@@ -1,9 +1,13 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -16,12 +20,16 @@ public class Member {
     @Column(name="member_id")
     protected Long memberId;
 
-    @Column(unique = true, length = 20)
+
+    @OneToMany(mappedBy = "commenter", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @Column(unique = true, length = 15)
     protected String username;
     @Column(unique = true, length = 30)
     protected String email;
     protected String password;
-    @Column(length = 10)
+    @Column(unique = true, length = 10)
     protected String name;
     protected boolean isActive;
 
@@ -44,6 +52,12 @@ public class Member {
         this.name = name;
         this.authenticationType = authenticationType;
         this.isActive = isActive;
+    }
+    public void addComment(Comment comment){
+        if(commentList==null){
+            commentList = new ArrayList<>();
+        }
+        this.commentList.add(comment);
     }
     public void update(String username, String email, String password, String name){
         if(username!=null && !username.isEmpty()){

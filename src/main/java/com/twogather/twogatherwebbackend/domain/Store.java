@@ -53,6 +53,7 @@ public class Store {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Column(unique = true)
     private String name;
     private String address;
     private String phone;
@@ -102,17 +103,35 @@ public class Store {
             this.category = category;
         }
     }
+    public void addBusinessHour(BusinessHour businessHour){
+        if(businessHourList==null){
+            businessHourList = new ArrayList<>();
+        }
+        businessHourList.add(businessHour);
+    }
     public void addImage(Image image){
         if(storeImageList==null){
             storeImageList = new ArrayList<>();
         }
         storeImageList.add(image);
     }
+    public void addReview(Review review){
+        if(reviewList==null){
+            reviewList = new ArrayList<>();
+        }
+        reviewList.add(review);
+    }
     public void addLikes(Likes likes){
         if(likesList==null){
             likesList = new ArrayList<>();
         }
         likesList.add(likes);
+    }
+    public void addMenu(Menu menu){
+        if(menuList==null){
+            menuList = new ArrayList<>();
+        }
+        menuList.add(menu);
     }
     public void addStoreKeyword(StoreKeyword storeKeyword){
         if(storeKeywordList==null){
@@ -123,10 +142,6 @@ public class Store {
     public void reject(String reasonForRejection) {
         this.status = StoreStatus.DENIED;
         this.reasonForRejection = reasonForRejection;
-    }
-
-    public void delete(){
-        this.status = StoreStatus.DELETED;
     }
     public void approve(){
         this.status = StoreStatus.APPROVED;

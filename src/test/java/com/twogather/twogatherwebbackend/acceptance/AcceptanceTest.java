@@ -16,10 +16,7 @@ import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
 import com.twogather.twogatherwebbackend.exception.StoreException;
-import com.twogather.twogatherwebbackend.repository.CategoryRepository;
-import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
-import com.twogather.twogatherwebbackend.repository.KeywordRepository;
-import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.*;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
@@ -37,7 +34,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +78,8 @@ public class AcceptanceTest
     protected MemberRepository memberRepository;
     @Autowired
     protected KeywordRepository keywordRepository;
+    @Autowired
+    protected ImageRepository imageRepository;
 
     @BeforeEach
     public void setUp() {
@@ -96,6 +97,7 @@ public class AcceptanceTest
     protected Long storeId;
     protected Long consumerId;
     protected Long loginMemberId;
+    protected Long categoryId;
     protected List<Keyword> keywordList;
 
     protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
@@ -217,7 +219,10 @@ public class AcceptanceTest
     protected Long registerReview(){
         Store store = storeRepository.findActiveStoreById(storeId).get();
         Member member = memberRepository.findActiveMemberById(consumerId).get();
-        return reviewRepository.save(new Review(store, member, "맛있어요", 3.2, LocalDate.now())).getReviewId();
+        Review review = reviewRepository.save(Review.builder().content("맛있어요").score(3.2).createdDate(LocalDate.now()).build());
+        review.addStore(store);
+        review.addReviewer(member);
+        return review.getReviewId();
     }
     protected void registerStore() {
         log.info("register store");
@@ -225,12 +230,15 @@ public class AcceptanceTest
         Long categoryId = registerCategory();
         registerKeyword();
 
-        storeId = convert(doPost(STORE_URL,ownerToken.getRefreshToken(),
-                ownerToken.getAccessToken(), createStoreRequest(keywordList, categoryId))
+        storeId = convert(doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
         registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
+        registerImage(storeId);
 
     }
     protected void registerStoreWithValidatorFail(){
@@ -257,7 +265,7 @@ public class AcceptanceTest
                 ownerToken.getAccessToken(), request)
                 .statusCode(HttpStatus.CREATED.value());
     }
-    private StoreSaveUpdateRequest createStoreRequest(List<Keyword> keywordList, Long categoryId){
+    public StoreSaveUpdateRequest createStoreRequest(List<Keyword> keywordList, Long categoryId){
         List<Long> keywordIdList = keywordList.stream().map(Keyword::getKeywordId).collect(Collectors.toList());
         return new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(),  keywordIdList,categoryId);
     }
@@ -270,9 +278,24 @@ public class AcceptanceTest
         keywordList.add(keyword2);
         keywordList.add(keyword3);
     }
+    protected void registerImage(Long storeId){
+        String url = "/api/stores/"+ storeId +"/images";
+        List<File> fileList =  createMockFiles();
+        given()
+                .multiPart("storeImageList", fileList.get(0))
+                .multiPart("storeImageList", fileList.get(1))
+                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
+                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
+                .when()
+                .post(url)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.CREATED.value());
+    }
 
     protected Long registerCategory(){
         Category category = categoryRepository.save(new Category("기타"));
+        categoryId = category.getCategoryId();
         return category.getCategoryId();
     }
     protected void approveStore(){
@@ -308,5 +331,15 @@ public class AcceptanceTest
                 .withClaim("role", "ROLE_CONSUMER")   // replace this with actual user's role
                 .sign(Algorithm.HMAC512(constants.JWT_SECRET));
 
+    }
+    private List<File> createMockFiles() {
+        List<File> fileList = new ArrayList<>();
+
+        File multipartFile = new File("src\\test\\resources\\files\\image.jpg");
+
+        fileList.add(multipartFile);
+        fileList.add(multipartFile);
+
+        return fileList;
     }
 }

@@ -28,25 +28,30 @@ public class StoreRepositoryTest extends RepositoryTest{
 
     @BeforeEach
     public void init(){
-
         store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
         store2 = storeRepository.save(Store.builder().name("가게2").address("서울시 서초구 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).build());
         store3 = storeRepository.save(Store.builder().name("가게3").address("서울특별시 서초구 신반포로23길 30 반원상가").phone("02-232-2222").status(StoreStatus.APPROVED).build());
         store4 = storeRepository.save(Store.builder().name("가게4").address("서울시 서초구 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
 
-        Review review1 = reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
-        Review review2 = reviewRepository.save(new Review(store1, null, "위생이안좋군요", 4.2, LocalDate.of(2022,04,02)));
+        Review review1 = reviewRepository.save(Review.builder().content("맛잇어요").score(4.2).createdDate(LocalDate.of(2020,02,02)).build());
+        Review review2 = reviewRepository.save(Review.builder().content("위생이안좋군요").score(4.2).createdDate(LocalDate.of(2022,04,02)).build());
+        review1.addStore(store1);
+        review2.addStore(store1);
 
-        Review review3 = reviewRepository.save(new Review(store2, null, "분위기가좋아요", 2.2, LocalDate.of(2021,01,12)));
-        Review review4 = reviewRepository.save(new Review(store2, null, "아이들과 오기 좋네요", 2.2, LocalDate.of(2019,01,12)));
+        Review review3 = reviewRepository.save(Review.builder().content("분위기가좋아요").score(2.2).createdDate(LocalDate.of(2021,01,12)).build());
+        Review review4 = reviewRepository.save(Review.builder().content("아이들과 오기 좋네요").score(2.2).createdDate(LocalDate.of(2019,01,12)).build());
+        review3.addStore(store2);
+        review4.addStore(store2);
 
-        Review review5 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
-        Review review6 = reviewRepository.save(new Review(store3, null, "분위기가좋아요", 1.4, LocalDate.of(2021,01,12)));
-        Review review7 = reviewRepository.save(new Review(store3, null, "아이들과 오기 좋네요", 1.2, LocalDate.of(2019,01,12)));
+        Review review5 = reviewRepository.save(Review.builder().content("아이들과 오기 좋네요").score(1.2).createdDate(LocalDate.of(2019,01,12)).build());
+        Review review6 = reviewRepository.save(Review.builder().content("분위기가좋아요").score(1.4).createdDate(LocalDate.of(2021,01,12)).build());
+        Review review7 = reviewRepository.save(Review.builder().content("아이들과 오기 좋네요").score(1.2).createdDate(LocalDate.of(2019,01,12)).build());
+        review5.addStore(store3);
+        review6.addStore(store3);
+        review7.addStore(store3);
 
-        Review review8 = reviewRepository.save(new Review(store4, null, "아이들과 오기 좋네요", 3.2, LocalDate.of(2019,01,12)));
-
-        em.flush();
+        Review review8 = reviewRepository.save(Review.builder().content("아이들과 오기 좋네요").score(3.2).createdDate(LocalDate.of(2019,01,12)).build());
+        review8.addStore(store4);
     }
     @Test
     @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")
@@ -79,8 +84,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         //given
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
-        em.flush();
-        em.clear();
+
         // When
 
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
@@ -112,8 +116,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
 
-        em.flush();
-        em.clear();
+
 
         String keyword = keyword1.getName();
         String location = "전주시";
@@ -128,7 +131,55 @@ public class StoreRepositoryTest extends RepositoryTest{
                 .filter(response -> response.getStoreName().equals(store1.getName()))
                 .allMatch(response ->
                         response.getAddress().equals(store1.getAddress()) &&
-                                response.getAvgScore().equals(4.2)));
+                                response.getAvgScore().equals(4.2)
+                && !response.getStoreImageUrl().isEmpty()
+                && !response.getAddress().isEmpty()
+                && !response.getKeywordList().isEmpty()));
+    }
+
+    @Test
+    @DisplayName("가게를 키워드, 지역, 카테고리, 가게이름으로 검색하면 그에 해당하는 결과를 반환해준다")
+    void WhenSearchStoresWithAllKeyword_ThenReturnStore1() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
+        Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
+        Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
+        Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword2));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword3));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword1));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword1));
+
+        Category category1 = categoryRepository.save(new Category("양식"));
+        Category category2 = categoryRepository.save(new Category("한식"));
+        store1.setCategory(category1);
+        store2.setCategory(category2);
+        store3.setCategory(category1);
+
+        Image image1 = imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje1/(store1)"));
+        imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
+        imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
+
+        String keyword = keyword1.getName();
+        String location = "전주시";
+        String category = store1.getCategory().getName();
+
+        // when
+        Page<StoreResponseWithKeyword> topStores1 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
+        Page<StoreResponseWithKeyword> topStores2 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
+
+        // Then
+        assertThat(topStores2.getSize()==1);
+        assertThat(topStores1).isNotEmpty();
+        assertThat(topStores1.getContent().stream()
+                .filter(response -> response.getStoreName().equals(store1.getName()))
+                .allMatch(response ->
+                        response.getAddress().equals(store1.getAddress())
+                                && response.getAvgScore().equals(4.2)
+                                && !response.getStoreImageUrl().isEmpty()
+                                && !response.getAddress().isEmpty()
+                                && !response.getKeywordList().isEmpty())
+        );
     }
 
 
@@ -155,8 +206,6 @@ public class StoreRepositoryTest extends RepositoryTest{
         Image image2 = imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
 
-        em.flush();
-        em.clear();
         String emptyKeyword = "";
         String location = "서초구";
         String category = category2.getName();
@@ -198,9 +247,6 @@ public class StoreRepositoryTest extends RepositoryTest{
         imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
 
-        em.flush();
-        em.clear();//이거 주석처리하면 n관계인 entity들이 안불러와짐 왜그러지?
-
         String keyword = keyword3.getName();
         String emptyLocation = "";
         String category = category1.getName();
@@ -241,9 +287,6 @@ public class StoreRepositoryTest extends RepositoryTest{
         imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
 
-        em.flush();
-        em.clear();
-
         String keyword = keyword3.getName();
         String location = "전주시";
         String emptyCategory = "";
@@ -276,9 +319,6 @@ public class StoreRepositoryTest extends RepositoryTest{
         Image image1 = imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje1/(store1)"));
         imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
 
-        em.flush();
-        em.clear();
-
         String keyword = keyword1.getName();
         String location = "전주시";
         String category = category1.getName();
@@ -303,8 +343,10 @@ public class StoreRepositoryTest extends RepositoryTest{
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, StoreSearchType.MOST_REVIEWED.name());
 
-        reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
-        reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
+        Review review1 = reviewRepository.save(Review.builder().content("맛잇어요").score(4.2).createdDate(LocalDate.of(2020,02,02)).build());
+        Review review2 = reviewRepository.save(Review.builder().content("위생이안좋군요").score(2.2).createdDate(LocalDate.of(2022,04,02)).build());
+        review1.addStore(store1);
+        review2.addStore(store1);
 
         String keyword = "";
         String location = "";
@@ -327,8 +369,10 @@ public class StoreRepositoryTest extends RepositoryTest{
         // given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, StoreSearchType.MOST_REVIEWED.name());
 
-        reviewRepository.save(new Review(store1, null, "맛잇어요", 4.2, LocalDate.of(2020,02,02)));
-        reviewRepository.save(new Review(store1, null, "위생이안좋군요", 2.2, LocalDate.of(2022,04,02)));
+        Review review1 = reviewRepository.save(Review.builder().content("맛잇어요").score(4.2).createdDate(LocalDate.of(2020,02,02)).build());
+        Review review2 = reviewRepository.save(Review.builder().content("위생이안좋군요").score(2.2).createdDate(LocalDate.of(2022,04,02)).build());
+        review1.addStore(store1);
+        review2.addStore(store1);
 
         String keyword = "";
         String location = "";
@@ -361,7 +405,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         // Then
         for (int i = 1; i < topStores.getContent().size(); i++) {
             assertThat(topStores.getContent().get(i).getAvgScore())
-                    .isGreaterThanOrEqualTo(
+                    .isLessThanOrEqualTo(
                             topStores.getContent().get(i - 1).getAvgScore()
                     );
         }
@@ -385,7 +429,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         for (int i = 1; i < topStores.getContent().size(); i++) {
             assertThat(
                     topStores.getContent().get(i).getAvgScore())
-                    .isLessThanOrEqualTo(
+                    .isGreaterThanOrEqualTo(
                             topStores.getContent().get(i - 1).getAvgScore()
                     );
         }

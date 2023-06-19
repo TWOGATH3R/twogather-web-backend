@@ -127,7 +127,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()).optional(),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional()
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명(닉네임)").optional().attributes(getMemberNameFormat())
 
                         ),
                         responseFields(
@@ -169,7 +169,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
 
                         ),
                         responseFields(

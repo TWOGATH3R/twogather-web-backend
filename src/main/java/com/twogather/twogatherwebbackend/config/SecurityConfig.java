@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.config;
 
 
+import akka.http.javadsl.Http;
 import com.twogather.twogatherwebbackend.auth.*;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +73,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/stores/**")
                 .antMatchers(HttpMethod.POST,"/api/owners")
                 .antMatchers(HttpMethod.POST,"/api/consumers")
+                .antMatchers(HttpMethod.GET, "/api/stores/**/images")
                 .antMatchers("/api/email")
                 .antMatchers("/api/members/checks-email")
                 .antMatchers("/api/**/my-id")
