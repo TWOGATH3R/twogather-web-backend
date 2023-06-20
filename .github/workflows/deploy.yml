@@ -40,7 +40,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-
+      - name: Print working directory
+        run: pwd
       # (3) Gradle build (Test 포함)
       - name: Run Gradle tasks
         run: ./gradlew copyGitSubmoduleWithMain copyGitSubmoduleWithTest
