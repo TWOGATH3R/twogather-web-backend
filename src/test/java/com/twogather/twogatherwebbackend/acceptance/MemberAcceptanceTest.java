@@ -407,6 +407,23 @@ public class MemberAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("owner 는 자신의 유효하지 않은 비밀번호를 입력해서 유효성 검사를 실패해야한다")
+    public void whenOwnerInvalidVerityPassword_ThenFail(){
+        //given
+        registerOwner();
+        String UPDATE_URL = MEMBER_URL + "/" + loginMemberId + "/verify-password";
+        String passwordLessThan8 = "alal123";
+        //when
+        doPost(UPDATE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                new PasswordRequest(passwordLessThan8))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
+        //then
+    }
+
+    @Test
     @DisplayName("owner 는 자신의 비밀번호와 일치하지 않는 비밀번호를 입력해서 비밀번호 검증 실패해야한다")
     public void whenOwnerVerityPassword_ThenFail(){
         //given

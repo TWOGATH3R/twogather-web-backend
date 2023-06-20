@@ -18,13 +18,15 @@ public class StoreDefaultResponse {
     private String phone;
     private List<String> keywordList;
     private String categoryName;
+    private Integer likeCount;
     public StoreDefaultResponse(Long storeId, String storeName, String address, String phone,
-                                String categoryName){
+                                String categoryName, Integer likeCount){
         this.storeId = storeId;
         this.storeName=storeName;
         this.address = address;
         this.phone =phone;
         this.categoryName=categoryName;
+        this.likeCount = likeCount;
     }
     public void setKeywordList(List<String> keywordList){
         this.keywordList= keywordList;

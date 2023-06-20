@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.repository;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.MyLikeStoreResponse;
+import com.twogather.twogatherwebbackend.dto.store.StoreDefaultResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
 import org.checkerframework.checker.units.qual.K;
@@ -79,7 +80,7 @@ public class StoreRepositoryTest extends RepositoryTest{
 
 
     @Test
-    @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인")
+    @DisplayName("좋아요수/내림차순으로 결과가 잘 나오는지 확인한다")
     void whenFindTopNByLikeCount_ShouldReturnFirstIsStore1() {
         //given
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
@@ -90,6 +91,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
         // Then
         assertThat(topStores.get(0).getStoreName()).isEqualTo(store1.getName());
+        assertThat(topStores.get(0).getLikeCount()).isEqualTo(1);
 
     }
 
@@ -467,6 +469,27 @@ public class StoreRepositoryTest extends RepositoryTest{
                         && sk.getKeywordList().size()!=0
                         && sk.getPhone().equals(store3.getPhone())
                         && sk.getAddress().equals(store3.getAddress())));
+    }
+
+    @Test
+    @DisplayName("가게 정보 불러올때 요구한 모든 필드에 값이 들어있어야한다")
+    public void whenFindDefaultActiveStoreInfo_ThenSuccess(){
+        //given
+        //when
+        Member member = createLiker();
+        createLike(member);
+        createImage();
+        createKeyword();
+        Category category1 = categoryRepository.save(new Category("양식"));
+        store1.setCategory(category1);
+        //then
+        StoreDefaultResponse response = storeRepository.findDefaultActiveStoreInfo(store1.getStoreId()).get();
+        Assertions.assertEquals(response.getLikeCount(),1);
+        Assertions.assertEquals(response.getStoreName(),store1.getName());
+        Assertions.assertEquals(response.getAddress(),store1.getAddress());
+        Assertions.assertEquals(response.getKeywordList().size(),2);
+        Assertions.assertEquals(response.getPhone(), store1.getPhone());
+        Assertions.assertEquals(response.getCategoryName(), category1.getName());
     }
     private Member createLiker(){
         return memberRepository.save(CONSUMER);

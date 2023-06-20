@@ -201,7 +201,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 평점"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 url")
+                                fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 url"),
+                                fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("가게 좋아요 개수")
                         )
                 ));
 
@@ -217,7 +218,8 @@ public class StoreControllerTest extends ControllerTest{
                 "123 Store St, City, Country",
                 4.5,
                 new ArrayList<>(){{add("맛있는"); add("분위기좋은");}},
-                "https://example.com/store_image1.jpg"
+                "https://example.com/store_image1.jpg",
+                12
         );
         StoreResponseWithKeyword storeResponse2 = new StoreResponseWithKeyword(
                 2L,
@@ -225,7 +227,8 @@ public class StoreControllerTest extends ControllerTest{
                 "123 Store St, City, Country",
                 3.5,
                 new ArrayList<>(){{add("청결한"); add("분위기좋은");}},
-                "https://example.com/store_image2.jpg"
+                "https://example.com/store_image2.jpg",
+                1
         );
         List<StoreResponseWithKeyword> list = new ArrayList<>(){{
             add(storeResponse1);
@@ -268,6 +271,7 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data[].avgScore").type(JsonFieldType.NUMBER).description("가게 별점 정보").attributes(getRatingFormat()),
+                                fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("가게 좋아요 개수"),
                                 fieldWithPath("data[].keywordList").type(JsonFieldType.ARRAY).description("가게 관련 키워드"),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url"),
                                 fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
@@ -308,8 +312,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
                                 fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리이름"),
-                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("가게 키워드 리스트")
-
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("가게 키워드 리스트"),
+                                fieldWithPath("data.likeCount").type(JsonFieldType.NUMBER).description("가게 좋아요 개수")
                         )
                 ));
 
