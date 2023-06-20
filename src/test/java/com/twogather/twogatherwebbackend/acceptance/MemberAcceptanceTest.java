@@ -633,6 +633,23 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 .body("message", equalTo(EXPIRED_TOKEN));
     }
 
+    @Test
+    @DisplayName("타회원의 정보를 가져오려고 하면 권한이 없다는 에러가 발생해야한다")
+    public void whenFindOtherPeopleInfo_ThenThrowException(){
+        //given
+        registerOwner();
+        Long ownerId = loginMemberId;
+        registerConsumer();
+        Long consumerId = loginMemberId;
+        String url = OWNER_URL + "/" + consumerId;
+        //when
+        doGet(url,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken())
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+
     private <T> MemberResponse updateMember(String url, String refreshToken, String accessToken, T request){
         Response result = doPut(url, refreshToken, accessToken, request)
                 .statusCode(HttpStatus.OK.value())

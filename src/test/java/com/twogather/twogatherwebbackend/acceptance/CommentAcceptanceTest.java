@@ -24,6 +24,7 @@ public class CommentAcceptanceTest extends AcceptanceTest{
     /*
     //TODO: Comment나 review등록하는 부분을 repository가 아니라 하나의 api요청으로 처리해야한다
     //TODO: review부분이 완성이 되지 않았기에 나중에 구현하도록 주석처리하였다
+    //TODO: 리뷰의 경우 가게주인이 작성하면 REJECT돼야함 (테스트 추가하기)
     @BeforeEach
     public void init(){
         super.setUp();
