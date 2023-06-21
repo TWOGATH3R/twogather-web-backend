@@ -16,15 +16,19 @@ public class StoreResponseWithKeyword {
     private Double avgScore;
     private List<String> keywordList = new ArrayList<>();
     private String storeImageUrl;
+    private Integer likeCount;
 
 
-    public StoreResponseWithKeyword(Long storeId, String name, String address, Double score, List<String> keywordList, String storeImageUrl){
+    public StoreResponseWithKeyword(Long storeId, String name, String address, Double score,
+                                    List<String> keywordList, String storeImageUrl,
+                                    Integer likeCount){
         this.storeId = storeId;
         this.storeName = name;
         this.address = address;
         this.storeImageUrl = storeImageUrl;
         this.keywordList = keywordList;
         this.avgScore = score;
+        this.likeCount = likeCount;
 
     }
 }

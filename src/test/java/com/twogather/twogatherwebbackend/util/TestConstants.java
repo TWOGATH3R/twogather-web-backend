@@ -137,6 +137,7 @@ public class TestConstants {
                     .categoryName("양식")
                     .keywordList(KEYWORD_LIST)
                     .address(STORE_ADDRESS)
+                    .likeCount(2)
                     .phone(STORE_PHONE)
                     .build();
     // My Store Response
@@ -200,7 +201,7 @@ public class TestConstants {
             new CategoryResponse(1l, "양식");
 
     public static final StoreResponseWithKeyword STORES_RESPONSE =
-            new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3", 4.2, KEYWORD_LIST, "imageurl1");
+            new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3", 4.2, KEYWORD_LIST, "imageurl1", 12);
     public static final ArrayList STORES_RESPONSE_LIST =
             new ArrayList<StoreResponseWithKeyword>(){{
                 add(STORES_RESPONSE);
@@ -220,25 +221,20 @@ public class TestConstants {
 
     // Top Store Response
     public static final List<TopStoreResponse> STORES_TOP3_TOP_RATED_RESPONSE = Arrays.asList(
-            new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1"),
-            new TopStoreResponse(1l, "store2", 4.2, "456 Oak Ave.", "url2"),
-            new TopStoreResponse(1l, "store3", 4.0, "789 Elm St.", "url3")
-    );
-    public static final List<TopStoreResponse> STORES_TOP3_MOST_REVIEWED_RESPONSE = Arrays.asList(
-            new TopStoreResponse(1l, "store11", 4.8, "123 Main St.", "url11"),
-            new TopStoreResponse(1l, "store12", 4.6, "456 Oak Ave.", "url12"),
-            new TopStoreResponse(1l, "store13", 4.4, "789 Elm St.", "url13")
+            new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1", 23),
+            new TopStoreResponse(1l, "store2", 4.2, "456 Oak Ave.", "url2", 12),
+            new TopStoreResponse(1l, "store3", 4.0, "789 Elm St.", "url3", 12)
     );
     public static final List<TopStoreResponse> STORES_TOP10_RESPONSE_LIST = Arrays.asList(
-            new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1"),
-            new TopStoreResponse(2l, "store2", 4.2, "456 Oak Ave.", "url2"),
-            new TopStoreResponse(3l, "store3", 3.0, "789 Elm St.", "url3"),
-            new TopStoreResponse(4l, "store4", 3.5, "123 Main St.", "url1"),
-            new TopStoreResponse(5l, "store5", 3.2, "456 Oak Ave.", "url2"),
-            new TopStoreResponse(6l, "store6", 3.0, "789 Elm St.", "url3"),
-            new TopStoreResponse(7l, "store7", 3.5, "123 Main St.", "url1"),
-            new TopStoreResponse(8l, "store8", 2.2, "456 Oak Ave.", "url2"),
-            new TopStoreResponse(9l, "store9", 1.0, "789 Elm St.", "url3")
+            new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1",1),
+            new TopStoreResponse(2l, "store2", 4.2, "456 Oak Ave.", "url2",2),
+            new TopStoreResponse(3l, "store3", 3.0, "789 Elm St.", "url3",3),
+            new TopStoreResponse(4l, "store4", 3.5, "123 Main St.", "url1",4),
+            new TopStoreResponse(5l, "store5", 3.2, "456 Oak Ave.", "url2",5),
+            new TopStoreResponse(6l, "store6", 3.0, "789 Elm St.", "url3",6),
+            new TopStoreResponse(7l, "store7", 3.5, "123 Main St.", "url1",7),
+            new TopStoreResponse(8l, "store8", 2.2, "456 Oak Ave.", "url2",12),
+            new TopStoreResponse(9l, "store9", 1.0, "789 Elm St.", "url3",12)
     );
 
     // Menu Constants

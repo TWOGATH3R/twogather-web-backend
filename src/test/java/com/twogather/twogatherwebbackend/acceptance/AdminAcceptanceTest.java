@@ -16,15 +16,16 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class AdminAcceptanceTest  extends AcceptanceTest{
-
     @Autowired
     private StoreOwnerRepository ownerRepository;
+
     @BeforeEach
     public void init(){
         super.setUp();
@@ -180,7 +181,18 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .statusCode(HttpStatus.OK.value());
 
     }
-
+    @Test
+    @DisplayName("관리자가 아닌 회원이 요청할떄 예외가 발생해야한다")
+    public void whenNoAuth_ThenThrowException(){
+        //given
+        registerConsumer();
+        String url = "/api/admin/stores/" + StoreStatus.DENIED;
+        //when,then
+        doGet(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
     @Test
     @DisplayName("가게 승인 요청 -> 거부 -> 재요청의 시나리오의 경우 데이터베이스에서 재요청상태/신청날짜를 확인할 수 있다")
     public void whenReapplyRequest_ThenSuccess() {

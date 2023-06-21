@@ -334,7 +334,6 @@ public class AcceptanceTest
     }
     private List<File> createMockFiles() {
         List<File> fileList = new ArrayList<>();
-
         File multipartFile = new File("src/test/resources/files/image.jpg");
 
         fileList.add(multipartFile);

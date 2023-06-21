@@ -56,10 +56,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                         store.name,
                                         store.address,
                                         store.phone,
-                                        store.category.name
+                                        store.category.name,
+                                        store.likesList.size()
                                 ))
                         .from(store)
                         .leftJoin(store.category, category)
+                        .leftJoin(store.likesList, likes)
                         .where(store.status.eq(StoreStatus.APPROVED))
                         .where(store.storeId.eq(storeId))
                         .groupBy(store.storeId)
@@ -85,7 +87,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                 store.name,
                                 MathExpressions.round(review.score.avg(), 1),
                                 store.address,
-                                image.url
+                                image.url,
+                                store.likesList.size()
                         ))
                 .from(store)
                         .leftJoin(store.likesList, likes)
@@ -228,7 +231,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                             ? ""
                             : store.getStoreImageList().get(0).getUrl();
 
-                    return new StoreResponseWithKeyword(storeId, name, address, score, keywordList, storeImageUrl);
+                    return new StoreResponseWithKeyword(storeId, name, address, score, keywordList, storeImageUrl, store.getLikesList().size());
                 })
                 .collect(Collectors.toList());
 
