@@ -1,5 +1,9 @@
-## 맛집 등록/검색 웹 프로젝트 `TwoGather`
 
+<p align="center">
+  <img src="https://github.com/TWOGATH3R/.github/assets/66842566/39335476-6b15-4ff3-be52-be5b47dbbd10">
+</p>
+
+## 맛집 등록/검색 웹 프로젝트 `TwoGather`
 - 맛집을 등록하고 키워드를 통해 검색할 수 있습니다<br>
 - 필터링을 통하여 맛집을 추천받을 수 있고, 카테고리별로 맛집을 찾아볼 수 있습니다.
 
@@ -25,3 +29,9 @@
 - oAuth 적용 목표
 ### 문서
 [위키](https://github.com/TWOGATH3R/twogather-web-backend/wiki)
+
+# 팀원
+| Backend 🌟 | Backend 🌟 | Frontend 🌟 | Frontend 🌟 |
+| :-----: | :-----: | :-----: | :------: |
+| <img src="https://github.com/TWOGATH3R/.github/assets/66842566/5c881f2e-c0a8-43dd-a301-51865d24deac" width=400px height=200px  alt="민지"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/174fbbed-dbba-4cfc-8c71-12fe15008521" width=400px height=200px alt="지호"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/f85e58c9-126d-4710-9253-269bc77e0bf8" width=400px height=200px alt="태욱"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/5c881f2e-c0a8-43dd-a301-51865d24deac" width=400px height=200px  alt="예정"> |
+|                       [민지](https://github.com/Flre-fly)                        |                            [지호](https://github.com/J-I-H-O)                            |                            [태욱](https://github.com/taewok)                            |                          [예정](https://github.com/bananana0118)                 |
