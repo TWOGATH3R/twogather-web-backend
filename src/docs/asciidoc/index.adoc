@@ -37,6 +37,7 @@ operation::member/verify-password/[snippets='http-request,path-parameters,reques
 
 operation::member/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
 
+
 === Find-Username
 - 필요권한: `ALL`
 
@@ -67,6 +68,12 @@ operation::admin/reject/[snippets='http-request,request-fields,path-parameters']
 - 필요권한: `ALL`
 
 operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Password-Verify-Email-Send
+- 필요권한: `ALL`
+- 임시 비밀번호가 해당 이메일로 전송됩니다
+
+operation::email/password-post/[snippets='http-request,request-fields,http-response']
 
 == Menu
 === Get

@@ -51,7 +51,7 @@ public class S3Uploader implements StorageUploader {
     }
     @Override
     public String upload(String directory, File uploadFile) {
-        String fileName = directory + "/" + UUID.randomUUID() + uploadFile.getName();
+        String fileName = UUID.randomUUID() + "";
         amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
 
@@ -81,24 +81,25 @@ public class S3Uploader implements StorageUploader {
     }
     @Override
     public String upload(String directory, MultipartFile multipartFile){
-        File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+        File uploadFile = null;
+        try {
+            uploadFile = convert(multipartFile)
+                    .orElseThrow(() -> new FileException(FILE_CONVERTER_ERROR));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FileException(FILE_CONVERTER_ERROR);
+        }
         return upload(directory, uploadFile);
     }
 
-    private Optional<File> convert(MultipartFile file)  {
+    private Optional<File> convert(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
-        try {
-            if(convertFile.createNewFile()) {
-                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                    fos.write(file.getBytes());
-                }
-                return Optional.of(convertFile);
-            }
-        } catch (IOException e) {
-            throw new FileException(FILE_CONVERTER_ERROR);
+
+        try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+            fos.write(file.getBytes());
         }
-        return Optional.empty();
+        return Optional.of(convertFile);
+
     }
 
     @Override
