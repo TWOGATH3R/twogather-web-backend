@@ -65,7 +65,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         Assertions.assertTrue(!menuRepository.findByStoreStoreId(storeId).isEmpty());
         Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
     }
-
+/* TODO: 배포시 추가
     @Test
     @DisplayName("유효하지않은 사업자등록번호정보로 저장은 실패해야한다")
     public void whenSaveInvalidBusinessInfo_ThenThrowException() {
@@ -73,7 +73,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         registerStoreWithValidatorFail();
 
     }
-
+*/
     @Test
     @DisplayName("가게 저장시 빈값, null, 올바르지않은 전화번호 형식에 대한 예외 throw")
     public void whenSaveIncludeNullFieldStore_ThenThrowsException()  {

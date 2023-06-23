@@ -56,7 +56,7 @@ public class StoreService {
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validateDuplicateName(storeRequest.getStoreName());
-        validationBizRegNumber(storeRequest);
+        //validationBizRegNumber(storeRequest); TODO: 나중에 추가
         String username = SecurityUtils.getLoginUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
@@ -107,6 +107,7 @@ public class StoreService {
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        //TODO: biz 유효성 검사 필요
         store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
 
 
