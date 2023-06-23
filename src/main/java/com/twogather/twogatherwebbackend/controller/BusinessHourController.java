@@ -41,7 +41,6 @@ public class BusinessHourController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
-
     @DeleteMapping
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Void> deleteList(@PathVariable final Long storeId, @RequestBody final BusinessHourIdList businessHourIdList) {
