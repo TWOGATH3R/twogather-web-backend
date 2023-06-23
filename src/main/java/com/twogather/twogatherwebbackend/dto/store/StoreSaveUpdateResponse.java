@@ -25,6 +25,6 @@ public class StoreSaveUpdateResponse {
     private String businessName;
     private LocalDate businessStartDate;
     private List<String> keywordList;
-    private Long categoryId;
+    private String categoryName;
 
 }

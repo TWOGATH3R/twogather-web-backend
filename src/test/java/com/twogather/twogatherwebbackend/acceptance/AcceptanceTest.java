@@ -227,7 +227,7 @@ public class AcceptanceTest
     protected void registerStore() {
         log.info("register store");
         validatorWillPass();
-        Long categoryId = registerCategory();
+        categoryId = registerCategory();
         registerKeyword();
 
         storeId = convert(doPost(STORE_URL,

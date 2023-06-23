@@ -81,8 +81,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
                                 fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
-                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
-                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리 이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 리스트")
 
                         )
                 ));
@@ -357,8 +357,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
                                 fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
-                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
-                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 리스트")
 
                         )
                 ));

@@ -100,7 +100,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 "updateName", "updateAddress", "063-231-4999",
-                "0000000001", "홍길당", LocalDate.now(), new ArrayList<>(),1l
+                "0000000001", "홍길당", LocalDate.now(), new ArrayList<>(),categoryId
         );
         //when, then
         doPut(URL+"/"+storeId,

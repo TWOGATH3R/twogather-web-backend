@@ -119,14 +119,12 @@ public class TestConstants {
     // Store Save/Update Request
     public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST =
             new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(),  KEYWORD_ID_LIST,1L);
-    public static final StoreSaveUpdateRequest STORE_SAVE_REQUEST2 =
-            new StoreSaveUpdateRequest("other store", STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(), KEYWORD_ID_LIST, 1L);
 
     public static final StoreOwner STORE_OWNER =
             new StoreOwner(OWNER_USERNAME, OWNER_EMAIL, passwordEncoder.encode(OWNER_PASSWORD), OWNER_NAME,
                     AuthenticationType.STORE_OWNER, true);
     public static final StoreSaveUpdateResponse STORE_SAVE_UPDATE_RESPONSE =
-            new StoreSaveUpdateResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "000000000","김길공",LocalDate.now(),KEYWORD_LIST, 1L);
+            new StoreSaveUpdateResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "010-1234-1234", "000000000","김길공",LocalDate.now(),KEYWORD_LIST, "양식");
 
     //default store response
     public static final StoreDefaultResponse STORE_DEFAULT_RESPONSE =
@@ -222,11 +220,7 @@ public class TestConstants {
             new PageImpl<>(List.of(MY_STORES_RESPONSE, MY_STORES_RESPONSE, MY_STORES_RESPONSE));
 
     // Top Store Response
-    public static final List<TopStoreResponse> STORES_TOP3_TOP_RATED_RESPONSE = Arrays.asList(
-            new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1", 23),
-            new TopStoreResponse(1l, "store2", 4.2, "456 Oak Ave.", "url2", 12),
-            new TopStoreResponse(1l, "store3", 4.0, "789 Elm St.", "url3", 12)
-    );
+
     public static final List<TopStoreResponse> STORES_TOP10_RESPONSE_LIST = Arrays.asList(
             new TopStoreResponse(1l, "store1", 4.5, "123 Main St.", "url1",1),
             new TopStoreResponse(2l, "store2", 4.2, "456 Oak Ave.", "url2",2),
@@ -372,17 +366,7 @@ public class TestConstants {
         BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
         return request;
     }
-    public static BusinessHourSaveUpdateListRequest createBreakStartTimeIsLaterThanEndTimeBusinessHourRequest(Long storeId){
-        BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
-                 java.time.LocalTime.of(9,0), java.time.LocalTime.of(16,0), java.time.DayOfWeek.MONDAY, true,
-                true, java.time.LocalTime.of(12,0),java.time.LocalTime.of(11,0)
-        );
-        ArrayList<BusinessHourSaveUpdateInfo> businessHourList = new ArrayList<>();
-        businessHourList.add(businessHour1);
-        BusinessHourSaveUpdateListRequest request = new BusinessHourSaveUpdateListRequest(businessHourList);
 
-        return request;
-    }
 
     public static BusinessHourSaveUpdateListRequest createNullTimeBusinessHourRequest(Long storeId){
         BusinessHourSaveUpdateInfo businessHour1 = new BusinessHourSaveUpdateInfo(
