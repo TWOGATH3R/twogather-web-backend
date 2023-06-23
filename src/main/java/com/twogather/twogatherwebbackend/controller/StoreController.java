@@ -80,6 +80,14 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
+    @GetMapping("/my/stores/{storeId}/detail")
+    @PreAuthorize("hasRole('ADMIN') or @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> getMyStoreDetailInfo(@PathVariable Long storeId) {
+        StoreSaveUpdateResponse data = storeService.getStoreDetail(storeId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
 
     @GetMapping("/stores/search")
     public ResponseEntity<Response> getStoreInfos(Pageable pageable,

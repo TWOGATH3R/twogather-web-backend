@@ -150,6 +150,11 @@ operation::store/get-list-search/[snippets='http-request,request-parameters,http
 
 operation::store/get-my-list/[snippets='http-request,request-parameters,http-response,response-fields']
 
+=== Get-My-Store-Detail
+- 필요권한: `MY_STORE` or `ADMIN`
+
+operation::store/get-detail/[snippets='http-request,path-parameters,http-response,response-fields']
+
 === Delete
 - 필요권한: `MY_STORE`
 

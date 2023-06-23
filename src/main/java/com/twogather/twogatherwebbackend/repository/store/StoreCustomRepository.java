@@ -16,4 +16,5 @@ public interface StoreCustomRepository {
     Page<MyStoreResponse> findMyStore(Long ownerId, Pageable pageable);
     Page<MyLikeStoreResponse> findMyLikeStore(Long memberId, Pageable pageable);
     Optional<StoreDefaultResponse> findDefaultActiveStoreInfo(Long storeId);
+    Optional<StoreSaveUpdateResponse> findStoreDetail(Long storeId);
 }

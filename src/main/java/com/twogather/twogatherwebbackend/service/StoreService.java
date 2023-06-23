@@ -54,6 +54,9 @@ public class StoreService {
         );
         store.reject(rejectReason.getReason());
     }
+    public StoreSaveUpdateResponse getStoreDetail(final Long storeId){
+        return storeRepository.findStoreDetail(storeId).orElseThrow(()->new StoreException(NO_SUCH_STORE));
+    }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validateDuplicateName(storeRequest.getStoreName());
         //validationBizRegNumber(storeRequest); TODO: 나중에 추가
