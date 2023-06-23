@@ -81,8 +81,8 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
                                 fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
-                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
-                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리 이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 리스트")
 
                         )
                 ));
@@ -357,8 +357,40 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
                                 fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
                                 fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
-                                fieldWithPath("data.categoryId").type(JsonFieldType.NUMBER).description("카테고리 ID"),
-                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 ID 리스트")
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 리스트")
+
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("가게 상세보기 ")
+    public void findStoreDetail_WhenFindStore_ThenReturnInfo() throws Exception {
+        //given
+        when(storeService.getStoreDetail(any())).thenReturn(STORE_SAVE_UPDATE_RESPONSE);
+        //when
+        //then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/my/stores/{storeId}/detail",STORE_SAVE_UPDATE_RESPONSE.getStoreId()))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("store/get-detail",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
+                                fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
+                                fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),
+                                fieldWithPath("data.businessNumber").type(JsonFieldType.STRING).description("사업자번호").attributes(getBusinessNumberFormat()),
+                                fieldWithPath("data.businessName").type(JsonFieldType.STRING).description("사업자이름"),
+                                fieldWithPath("data.businessStartDate").type(JsonFieldType.STRING).description("사업시작일").attributes(getDateFormat()),
+                                fieldWithPath("data.phone").type(JsonFieldType.STRING).description("가게전화번호").attributes(getStorePhoneFormat()),
+                                fieldWithPath("data.categoryName").type(JsonFieldType.STRING).description("카테고리이름"),
+                                fieldWithPath("data.keywordList").type(JsonFieldType.ARRAY).description("키워드 리스트")
 
                         )
                 ));

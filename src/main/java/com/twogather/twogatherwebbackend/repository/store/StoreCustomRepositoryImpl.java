@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,6 +77,23 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
         return Optional.of(results);
     }
+
+    @Override
+    public Optional<StoreSaveUpdateResponse> findStoreDetail(Long storeId) {
+        Store storeQuery = jpaQueryFactory
+                .selectFrom(store)
+                .leftJoin(store.storeKeywordList, storeKeyword)
+                .leftJoin(storeKeyword.keyword, keyword)
+                .leftJoin(store.category, category)
+                .where(store.storeId.eq(storeId))
+                .groupBy(store.storeId)
+                .fetchOne();
+
+        StoreSaveUpdateResponse storeResponse = createStoreDetailResponse(storeQuery);
+
+        return Optional.of(storeResponse);
+    }
+
     @Override
     public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
         List<TopStoreResponse> results =
@@ -271,6 +289,25 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         }
         return new OrderSpecifier<>(Order.DESC, store.storeId);
 
+    }
+    private StoreSaveUpdateResponse createStoreDetailResponse(Store store){
+        List<String> keywordNameList = store.getStoreKeywordList().stream()
+                .limit(3)
+                .map(s->s.getKeyword().getName())
+                .collect(Collectors.toList());
+        String categoryName = store.getCategory().getName();
+
+        return StoreSaveUpdateResponse
+                .builder()
+                .storeId(store.getStoreId())
+                .keywordList(keywordNameList)
+                .storeName(store.getName())
+                .businessStartDate(store.getBusinessStartDate())
+                .businessNumber(store.getBusinessNumber())
+                .businessName(store.getBusinessName())
+                .phone(store.getPhone())
+                .address(store.getAddress())
+                .categoryName(categoryName).build();
     }
     private Double roundToTwoDecimal(Double score){
         return Math.round(score * 10.0) / 10.0;

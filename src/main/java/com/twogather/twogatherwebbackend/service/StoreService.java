@@ -1,13 +1,12 @@
 package com.twogather.twogatherwebbackend.service;
 
-import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreOwner;
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
+import com.twogather.twogatherwebbackend.exception.CategoryException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.exception.CategoryException.CategoryErrorCode.NO_SUCH_CATEGORY;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
@@ -33,7 +33,7 @@ public class StoreService {
     private final StoreKeywordService storeKeywordService;
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final KeywordService keywordService;
 
     public void approveStore(final Long storeId){
@@ -54,6 +54,9 @@ public class StoreService {
         );
         store.reject(rejectReason.getReason());
     }
+    public StoreSaveUpdateResponse getStoreDetail(final Long storeId){
+        return storeRepository.findStoreDetail(storeId).orElseThrow(()->new StoreException(NO_SUCH_STORE));
+    }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validateDuplicateName(storeRequest.getStoreName());
         //validationBizRegNumber(storeRequest); TODO: 나중에 추가
@@ -67,14 +70,16 @@ public class StoreService {
         Store savedStore = storeRepository.save(store);
 
         List<String> keywordNameList = storeKeywordService.setStoreKeyword(store.getStoreId(), storeRequest.getKeywordIdList());
-        categoryService.setCategoriesForStore(store.getStoreId(), storeRequest.getCategoryId());
+        Category category = categoryRepository.findById(storeRequest.getCategoryId()).orElseThrow(()-> new CategoryException(NO_SUCH_CATEGORY));
+        store.setCategory(category);
+
 
         return StoreSaveUpdateResponse.builder()
                 .address(savedStore.getAddress())
                 .storeId(savedStore.getStoreId())
                 .businessName(savedStore.getBusinessName())
                 .businessNumber(savedStore.getBusinessNumber())
-                .categoryId(storeRequest.getCategoryId())
+                .categoryName(category.getName())
                 .keywordList(keywordNameList)
                 .phone(savedStore.getPhone())
                 .businessStartDate(savedStore.getBusinessStartDate())
@@ -109,14 +114,15 @@ public class StoreService {
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         //TODO: biz 유효성 검사 필요
         store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
-
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(()->new CategoryException(NO_SUCH_CATEGORY));
 
         return StoreSaveUpdateResponse.builder()
                 .address(store.getAddress())
                 .storeId(store.getStoreId())
                 .businessName(store.getBusinessName())
                 .businessNumber(store.getBusinessNumber())
-                .categoryId(request.getCategoryId())
+                .categoryName(category.getName())
                 .keywordList(keywordService.getKeywordNameList(request.getKeywordIdList()))
                 .phone(store.getPhone())
                 .businessStartDate(store.getBusinessStartDate())

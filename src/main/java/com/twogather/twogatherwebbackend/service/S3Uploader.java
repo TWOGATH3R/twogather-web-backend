@@ -93,7 +93,7 @@ public class S3Uploader implements StorageUploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File("/tmp/"+ file.getOriginalFilename());
+        File convertFile = new File(file.getOriginalFilename());
 
         try (FileOutputStream fos = new FileOutputStream(convertFile)) {
             fos.write(file.getBytes());
