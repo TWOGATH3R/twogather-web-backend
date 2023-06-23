@@ -57,7 +57,7 @@ public class TestConstants {
 
     // Owner Constants
     public static final String OWNER_USERNAME = "owner1";
-    public static final String OWNER_EMAIL = "asd@naver.com";
+    public static final String OWNER_EMAIL = "firefly_0@naver.com";
     public static final String OWNER_PASSWORD = "asdqwea123";
     public static final String OWNER_NAME = "루터";
     public static final MemberSaveRequest OWNER_SAVE_REQUEST = new MemberSaveRequest(
@@ -190,6 +190,8 @@ public class TestConstants {
             new VerificationCodeResponse("asVVaa");
     public static final EmailRequest EMAIL_REQUEST =
             new EmailRequest(VALID_EMAIL);
+    public static final FindPasswordRequest FIND_PASSWORD_REQUEST =
+            new FindPasswordRequest("asda@naver.com", "username1");
 
     // Category Constants
     public static final ArrayList<CategoryResponse> CATEGORY_RESPONSE_LIST = new ArrayList<>(Arrays.asList(

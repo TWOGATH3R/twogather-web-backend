@@ -8,7 +8,8 @@ public class MemberException extends ClientException{
         DUPLICATE_EMAIL("이메일이 중복됩니다"),
         NO_SUCH_MEMBER_ID("해당 멤버가 존재하지 않습니다", HttpStatus.NOT_FOUND),
         NO_SUCH_MEMBER("해당 정보로 가입된 사용자가 없습니다", HttpStatus.FORBIDDEN),
-        DUPLICATE_NICKNAME("닉네임이 중복됩니다");
+        DUPLICATE_NICKNAME("닉네임이 중복됩니다"),
+        PASSWORD_GENERATOR_EXCEPTION("비밀번호 생성과정에서 문제가 발생하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
         private final String message;
         private final HttpStatus status;
 

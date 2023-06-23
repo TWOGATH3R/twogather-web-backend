@@ -2,10 +2,8 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.Member;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
-import com.twogather.twogatherwebbackend.dto.member.FindUsernameRequest;
-import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
-import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.member.*;
+import com.twogather.twogatherwebbackend.exception.EmailException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.twogather.twogatherwebbackend.exception.EmailException.EmailErrorCode.INVALID_CODE;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsername;
 
@@ -80,7 +79,10 @@ public class MemberService {
         );
         member.update("","",passwordEncoder.encode(password),"");
     }
-
+    public Member findMember(String email, String username){
+        return memberRepository.findMemberByEmailAndUsername(email, username)
+                .orElseThrow(()->new MemberException(NO_SUCH_MEMBER_ID));
+    }
     public boolean verifyPassword(String password){
         String username = getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(

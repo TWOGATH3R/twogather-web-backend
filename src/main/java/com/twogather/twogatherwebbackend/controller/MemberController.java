@@ -9,7 +9,6 @@ import com.twogather.twogatherwebbackend.dto.member.VerifyPasswordResponse;
 import com.twogather.twogatherwebbackend.dto.store.MyLikeStoreResponse;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,4 +64,5 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }
