@@ -21,6 +21,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.format.DateTimeParseException;
@@ -44,7 +46,7 @@ public class ControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(ex));
     }
 
-    @ExceptionHandler(ClientException.class)
+    @ExceptionHandler({ClientException.class, MissingServletRequestPartException.class, MultipartException.class})
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
         logInfo(request,e);
         return ResponseEntity.status(e.getStatus()).body(ErrorResponse.of(e));
