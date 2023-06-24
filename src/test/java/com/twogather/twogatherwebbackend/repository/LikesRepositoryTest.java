@@ -1,16 +1,10 @@
 package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.List;
 
 public class LikesRepositoryTest extends RepositoryTest{
 
@@ -25,7 +19,7 @@ public class LikesRepositoryTest extends RepositoryTest{
         likeRepository.save(new Likes(store,consumer));
         em.flush();
         em.clear();
-        int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(store.getStoreId(), consumer.getMemberId());
+        int deletedRows = likeRepository.deleteByStoreIdAndMemberId(store.getStoreId(), consumer.getMemberId());
         boolean isExist = likeRepository.findByStoreIdAndMemberId(store.getStoreId(), consumer.getMemberId()).isPresent();
 
         //then

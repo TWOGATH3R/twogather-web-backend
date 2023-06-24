@@ -10,7 +10,6 @@ import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import static com.twogather.twogatherwebbackend.exception.LikeException.LikeErrorCode.DUPLICATE_LIKE;
@@ -46,7 +45,7 @@ public class LikeService {
                 ()-> new MemberException(NO_SUCH_MEMBER)
         );
 
-        int deletedRows = likeRepository.deleteByStoreStoreIdAndMemberMemberId(storeId, member.getMemberId());
+        int deletedRows = likeRepository.deleteByStoreIdAndMemberId(storeId, member.getMemberId());
 
         if(deletedRows!=1){
             log.error("너무많거나 적은 like entity가 삭제되었습니다 storeId: {}, memberId: {}", storeId, member.getMemberId());

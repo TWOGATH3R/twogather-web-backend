@@ -4,8 +4,7 @@ import com.twogather.twogatherwebbackend.domain.Keyword;
 import com.twogather.twogatherwebbackend.domain.StoreKeyword;
 import com.twogather.twogatherwebbackend.repository.KeywordRepository;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
-import org.checkerframework.checker.units.qual.K;
-import org.junit.jupiter.api.Assertions;
+import com.twogather.twogatherwebbackend.repository.StoreKeywordRepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +81,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
         Long keywordId2 = keywordRepository.findByName(keywordName2).get().getKeywordId();
         Long keywordId3 = keywordRepository.findByName(keywordName3).get().getKeywordId();
 
-        List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreStoreId(storeId);
+        List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreId(storeId);
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId1)));
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId2)));
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId3)));

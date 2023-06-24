@@ -9,13 +9,11 @@ import com.twogather.twogatherwebbackend.repository.KeywordRepository;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.K;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.MAXIMUM_KEYWORD_LIMIT;
 import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.NO_SUCH_KEYWORD;
@@ -37,7 +35,7 @@ public class StoreKeywordService {
         Store store = storeRepository.findById(storeId).orElseThrow(
                 ()->new StoreException(NO_SUCH_STORE)
         );
-        storeKeywordRepository.deleteByStoreStoreId(storeId);
+        storeKeywordRepository.deleteByStoreId(storeId);
         for (Long id: keywordStringList){
             Keyword keyword = keywordRepository.findById(id).orElseThrow(()->new KeywordException(NO_SUCH_KEYWORD));
             storeKeywordRepository.save(new StoreKeyword(store, keyword));

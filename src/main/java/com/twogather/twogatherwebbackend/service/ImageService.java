@@ -9,15 +9,11 @@ import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,7 +53,7 @@ public class ImageService {
 
     }
     public List<ImageResponse> getStoreImageInfos(Long storeId){
-        List<Image> imageList = imageRepository.findByStoreStoreId(storeId);
+        List<Image> imageList = imageRepository.findByStoreId(storeId);
 
         return imageList.stream()
                 .map(image -> new ImageResponse(image.getImageId(), image.getUrl()))

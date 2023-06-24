@@ -42,7 +42,7 @@ public class MenuService {
 
         List<Menu> savedMenuList = new ArrayList<>();
         for(MenuUpdateInfo request: menuList){
-            Menu menu = menuRepository.findByStoreStoreIdAndMenuId(storeId,request.getMenuId()).orElseThrow(
+            Menu menu = menuRepository.findByStoreIdAndMenuId(storeId,request.getMenuId()).orElseThrow(
                     () -> new MenuException(NO_SUCH_MENU)
             );
             Menu updatedMenu = menu.update(request.getName(), request.getPrice());
@@ -55,13 +55,13 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> findMenusByStoreId(Long storeId) {
-        List<Menu> menuList = menuRepository.findByStoreStoreId(storeId);
+        List<Menu> menuList = menuRepository.findByStoreId(storeId);
         return toResponseList(menuList);
     }
 
     public void deleteMenuByStoreIdAndMenuId(Long storeId, List<Long> menuIdList) {
         for (Long menuId : menuIdList) {
-            Menu menu = menuRepository.findByStoreStoreIdAndMenuId(storeId, menuId)
+            Menu menu = menuRepository.findByStoreIdAndMenuId(storeId, menuId)
                     .orElseThrow(() -> new MenuException(NO_SUCH_MENU));
             menuRepository.delete(menu);
         }

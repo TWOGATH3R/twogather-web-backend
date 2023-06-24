@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface StoreOwnerRepository extends JpaRepository<StoreOwner, Long> {
-    boolean existsByUsername(String username);
     Optional<StoreOwner> findByUsername(String username);
     @Query("select m from StoreOwner m where m.memberId =:memberId and m.isActive = true")
     Optional<StoreOwner> findActiveMemberById(@Param("memberId") Long memberId);

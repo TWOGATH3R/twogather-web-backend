@@ -27,6 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StoreRepositoryTest extends RepositoryTest{
 
+    private Store store1;
+    private Store store2;
+    private Store store3;
+    private Store store4;
+
     @BeforeEach
     public void init(){
         store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());

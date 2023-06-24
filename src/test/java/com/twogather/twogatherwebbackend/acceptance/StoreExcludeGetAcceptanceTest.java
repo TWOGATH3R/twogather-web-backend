@@ -1,15 +1,11 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
-import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
 import com.twogather.twogatherwebbackend.repository.BusinessHourRepository;
-import com.twogather.twogatherwebbackend.repository.ImageRepository;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
+import com.twogather.twogatherwebbackend.repository.StoreKeywordRepositoryTest;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +21,6 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 
-import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static org.hamcrest.Matchers.*;
 
 
@@ -60,10 +54,10 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         Store store = storeRepository.findById(storeId).get();
         Assertions.assertNotNull(store);
         Assertions.assertTrue(categoryRepository.findById(store.getCategory().getCategoryId()).isPresent());
-        Assertions.assertTrue(!businessHourRepository.findByStoreStoreId(storeId).isEmpty());
-        Assertions.assertTrue(businessHourRepository.findByStoreStoreId(storeId).size() == 7);
-        Assertions.assertTrue(!menuRepository.findByStoreStoreId(storeId).isEmpty());
-        Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!businessHourRepository.findByStoreId(storeId).isEmpty());
+        Assertions.assertTrue(businessHourRepository.findByStoreId(storeId).size() == 7);
+        Assertions.assertTrue(!menuRepository.findByStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!storeKeywordRepository.findByStoreId(storeId).isEmpty());
     }
 /* TODO: 배포시 추가
     @Test

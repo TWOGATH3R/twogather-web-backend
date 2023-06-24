@@ -76,8 +76,8 @@ public class MenuAcceptanceTest extends AcceptanceTest{
                 .body("message", equalTo("유효하지않은 값을 입력하였습니다"));
     }
     private MenuUpdateListRequest createMenu(){
-        Long menuId1 = menuRepository.findByStoreStoreId(storeId).get(0).getMenuId();
-        Long menuId2 = menuRepository.findByStoreStoreId(storeId).get(1).getMenuId();
+        Long menuId1 = menuRepository.findByStoreId(storeId).get(0).getMenuId();
+        Long menuId2 = menuRepository.findByStoreId(storeId).get(1).getMenuId();
         ArrayList<MenuUpdateInfo> list = new ArrayList<>(Arrays.asList(
                 new MenuUpdateInfo(menuId1, "new 감자", 10000),
                 new MenuUpdateInfo(menuId2, "new 케찹", 20000)

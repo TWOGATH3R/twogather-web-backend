@@ -49,7 +49,7 @@ public class BusinessHourService {
 
     @Transactional(readOnly = true)
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
-        List<BusinessHour> businessHours = businessHourRepository.findByStoreStoreId(storeId);
+        List<BusinessHour> businessHours = businessHourRepository.findByStoreId(storeId);
         if (businessHours.isEmpty()) {
             throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID);
         }
@@ -67,7 +67,7 @@ public class BusinessHourService {
         checkDuplicateDays(requestList);
 
         createBusinessHourListByUpdateList(requestList, store);
-        List<BusinessHour> businessHourList = businessHourRepository.findByStoreStoreId(storeId);
+        List<BusinessHour> businessHourList = businessHourRepository.findByStoreId(storeId);
 
         if (businessHourList.size() != 7) {
             throw new BusinessHourException(INVALID_BUSINESS_HOUR);
@@ -136,7 +136,7 @@ public class BusinessHourService {
 
         for (BusinessHourSaveUpdateInfo request : requestList) {
             validator.validateBusinessHourRequest(request);
-            BusinessHour businessHour = businessHourRepository.findByStoreStoreIdAndDayOfWeek(store.getStoreId(), request.getDayOfWeek())
+            BusinessHour businessHour = businessHourRepository.findByStoreIdAndDayOfWeek(store.getStoreId(), request.getDayOfWeek())
                     .orElseThrow(
                             () -> new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID)
                     );

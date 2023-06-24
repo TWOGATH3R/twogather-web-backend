@@ -1,24 +1,20 @@
 package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.config.QueryDslConfig;
-import com.twogather.twogatherwebbackend.domain.Review;
+import com.twogather.twogatherwebbackend.domain.AuthenticationType;
+import com.twogather.twogatherwebbackend.domain.Consumer;
 import com.twogather.twogatherwebbackend.domain.Store;
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
 import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
 
 @DataJpaTest
 @Import(QueryDslConfig.class)
@@ -47,10 +43,17 @@ public class RepositoryTest {
     protected StoreKeywordRepository storeKeywordRepository;
     @Autowired
     protected CategoryRepository categoryRepository;
+    @Autowired
+    protected BusinessHourRepository businessHourRepository;
 
-    protected Store store1;
-    protected Store store2;
-    protected Store store3;
-    protected Store store4;
+    protected Store store;
+    protected Consumer consumer;
+
+    public void createStore(){
+        store = storeRepository.save(Store.builder().address("서울시 어쩌고 어쩌고").name("가게1").build());
+   }
+   public void createConsumer(){
+       consumer = consumerRepository.save(new Consumer("username", "email@naver.com", "asdasd123", "김뿡치", AuthenticationType.CONSUMER, true));
+   }
 
 }
