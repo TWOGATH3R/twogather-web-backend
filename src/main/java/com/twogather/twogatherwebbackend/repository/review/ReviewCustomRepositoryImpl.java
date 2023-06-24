@@ -6,11 +6,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.twogather.twogatherwebbackend.domain.QImage;
-import com.twogather.twogatherwebbackend.domain.QMember;
-import com.twogather.twogatherwebbackend.domain.QReview;
-import com.twogather.twogatherwebbackend.domain.QStore;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
@@ -19,9 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
@@ -53,17 +53,24 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                                 .from(subReview)
                                 .join(subReview.reviewer, subMember)
                                 .where(subMember.memberId.eq(member.memberId))
-                        ))
+                ))
                 .from(review)
                 .join(review.reviewer, member)
                 .join(review.store, store)
                 .where(store.storeId.eq(storeId))
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(responseList, pageable, responseList.size());
+        int reviewCount = jpaQueryFactory
+                .selectFrom(review)
+                .join(review.store, store)
+                .where(store.storeId.eq(storeId))
+                .fetch()
+                .size();
+
+        return new PageImpl<>(responseList, pageable, reviewCount);
     }
 
     @Override
@@ -89,7 +96,14 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(responseList, pageable, responseList.size());
+        int reviewCount = jpaQueryFactory
+                .selectFrom(review)
+                .join(review.reviewer, member)
+                .where(member.memberId.eq(memberId))
+                .fetch()
+                .size();
+
+        return new PageImpl<>(responseList, pageable, reviewCount);
     }
 
     // 동적 정렬

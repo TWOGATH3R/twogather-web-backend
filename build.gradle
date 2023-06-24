@@ -84,7 +84,8 @@ dependencies {
 	// MariaDB
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
-
+	//mocking s3
+	implementation 'io.findify:s3mock_2.12:0.2.4'
 }
 
 

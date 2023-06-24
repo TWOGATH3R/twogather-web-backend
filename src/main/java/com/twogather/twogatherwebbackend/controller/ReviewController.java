@@ -20,7 +20,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
-    private final StoreService storeService;
 
     @PostMapping("/stores/{storeId}/reviews")
     @PreAuthorize("not @storeService.isMyStore(#storeId)")
@@ -31,7 +30,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/stores/{storeId}/reviews/{reviewId}")
-    @PreAuthorize("@reviewService.isMyReeview(#reviewId)")
+    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
     public ResponseEntity<Response> delete(@PathVariable final Long reviewId, @PathVariable String storeId) {
         reviewService.delete(reviewId);
 

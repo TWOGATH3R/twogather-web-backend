@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,6 +66,8 @@ public class AcceptanceTest
     private DatabaseCleanup databaseCleanup;
     @Autowired
     protected CategoryRepository categoryRepository;
+    @Autowired
+    protected AmazonS3 amazonS3;
 
     @BeforeEach
     public void setUp() {
@@ -73,6 +76,7 @@ public class AcceptanceTest
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.execute();
+        amazonS3.createBucket("store");
     }
     protected Tokens adminToken;
     protected Tokens ownerToken;

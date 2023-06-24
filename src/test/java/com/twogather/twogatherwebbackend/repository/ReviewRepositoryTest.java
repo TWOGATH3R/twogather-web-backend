@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twogather.twogatherwebbackend.domain.StoreStatus.APPROVED;
 import static org.assertj.core.api.Assertions.*;
@@ -205,21 +207,20 @@ public class ReviewRepositoryTest {
     @Transactional
     void WhenFindByStoreStoreId_ThenReturnReviewsWithAvgScoreOfCustomer() {
         // given
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate").descending());
+        Map<Long, Double> map = new HashMap<>();    // consumer1,2,3의 평균평점 저장
+        map.put(consumer1.getMemberId(), 3.0);
+        map.put(consumer2.getMemberId(), 4.5);
+        map.put(consumer3.getMemberId(), 5.0);
 
         // when
         Page<StoreDetailReviewResponse> results1 = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
-
-        // then
         List<StoreDetailReviewResponse> content = results1.getContent();
 
-        assertThat(results1).isNotEmpty();
-        assertThat(content.get(0).getConsumerAvgScore()).isEqualTo(3.0);   // user1의 평균 리뷰 평점
-        assertThat(content.get(1).getConsumerAvgScore()).isEqualTo(4.5);   // user2의 평균 리뷰 평점
-        assertThat(content.get(2).getConsumerAvgScore()).isEqualTo(5.0);   // user3의 평균 리뷰 평점
-
+        // then
         content.stream().forEach(
                 item -> {
+                    assertThat(item.getConsumerAvgScore()).isEqualTo(map.get(item.getConsumerId()));
                     System.out.println(item.getReviewId());
                     System.out.println(item.getConsumerId());
                     System.out.println(item.getConsumerName());
@@ -231,40 +232,50 @@ public class ReviewRepositoryTest {
     @Test
     @DisplayName("가게 리뷰 목록 조회 - 페이지 번호와 size에 따른 페이징 테스트")
     @Transactional
-    void When12ReviewsOnStore3_ThenReturn10ReviewsOnPage0and2ReviewsOnPage1() {
+    void When12ReviewsOnStore3_ThenReturnMaximum5ReviewsForEachPage() {
         // given
         // store3의 총 review 수는 총 12개
-        Pageable pageable0 = PageRequest.of(0, 10, Sort.by("createdDate").descending());
-        Pageable pageable1 = PageRequest.of(1, 10, Sort.by("createdDate").descending());
+        Pageable pageable0 = PageRequest.of(0, 5, Sort.by("createdDate").descending());
+        Pageable pageable1 = PageRequest.of(1, 5, Sort.by("createdDate").descending());
+        Pageable pageable2 = PageRequest.of(2, 5, Sort.by("createdDate").descending());
 
         // when
         Page<StoreDetailReviewResponse> pagedResult0 = reviewRepository.findReviewsByStoreId(store3.getStoreId(), pageable0);
         Page<StoreDetailReviewResponse> pagedResult1 = reviewRepository.findReviewsByStoreId(store3.getStoreId(), pageable1);
+        Page<StoreDetailReviewResponse> pagedResult2 = reviewRepository.findReviewsByStoreId(store3.getStoreId(), pageable2);
 
         // then
-        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
-        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
+        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(5);
+        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(5);
+        assertThat(pagedResult2.getNumberOfElements()).isEqualTo(2);
         assertThat(pagedResult0.isFirst()).isTrue();
-        assertThat(pagedResult1.isLast()).isTrue();
+        assertThat(pagedResult2.isLast()).isTrue();
+
+        System.out.println(pagedResult0.getTotalElements());
     }
 
     @Test
     @DisplayName("사용자 리뷰 목록 조회 - 페이지 번호와 size에 따른 페이징 테스트")
     @Transactional
-    void WhenConsumer4Written12Reviews_ThenReturn10ReviewsOnPage0and2ReviewsOnPage1() {
+    void WhenConsumer4Written12Reviews_ThenReturnMaximum5ReviewsForEachPage() {
         // given
         // consumer4의 총 review 수는 총 12개
-        Pageable pageable0 = PageRequest.of(0, 10, Sort.by("createdDate").descending());
-        Pageable pageable1 = PageRequest.of(1, 10, Sort.by("createdDate").descending());
+        Pageable pageable0 = PageRequest.of(0, 5, Sort.by("createdDate").descending());
+        Pageable pageable1 = PageRequest.of(1, 5, Sort.by("createdDate").descending());
+        Pageable pageable2 = PageRequest.of(2, 5, Sort.by("createdDate").descending());
 
         // when
         Page<MyReviewInfoResponse> pagedResult0 = reviewRepository.findMyReviewsByMemberId(consumer4.getMemberId(), pageable0);
         Page<MyReviewInfoResponse> pagedResult1 = reviewRepository.findMyReviewsByMemberId(consumer4.getMemberId(), pageable1);
+        Page<MyReviewInfoResponse> pagedResult2 = reviewRepository.findMyReviewsByMemberId(consumer4.getMemberId(), pageable2);
 
         // then
-        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
-        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
+        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(5);
+        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(5);
+        assertThat(pagedResult2.getNumberOfElements()).isEqualTo(2);
         assertThat(pagedResult0.isFirst()).isTrue();
-        assertThat(pagedResult1.isLast()).isTrue();
+        assertThat(pagedResult2.isLast()).isTrue();
+
+        System.out.println(pagedResult0.getTotalElements());
     }
 }

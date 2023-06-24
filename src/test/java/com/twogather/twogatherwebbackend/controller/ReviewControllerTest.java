@@ -43,43 +43,6 @@ public class ReviewControllerTest extends ControllerTest {
     private ReviewService reviewService;
     private static final String URL = "/api/stores/{storeId}/reviews";
 
-
-//    @Test
-//    @DisplayName("페이징된 리뷰 목록 오름차순 정상 조회")
-//    public void WhenGetReviewsByPageWithAsc_ThenResponseReviewsAsc() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-//
-//    @Test
-//    @DisplayName("페이지 번호로 음수 또는 정수가 아닌 값이 들어오면 실패(400)")
-//    public void WhenPageIsNegative_ThenResponseStatus400() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-//
-//    @Test
-//    @DisplayName("페이징 크기로 음수 또는 정수가 아닌 값이 들어오면 실패(400)")
-//    public void WhenPageSizeIsNegative_ThenResponseStatus400() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-//
-//    @Test
-//    @DisplayName("페이징 크기보다 적은 리뷰 수가 존재한다면, 존재하는 리뷰들만 정상적으로 조회")
-//    public void WhenGivenPageSizeBiggerThanActualReviews_ThenResponseReviewsWell() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-//
-//    @Test
-//    @DisplayName("존재하는 페이지 수보다 큰 페이지 번호를 요청한다면 실패(404)")
-//    public void WhenGivenPageLargerThanActualPages_ThenResponseStatus404() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-//
-//    @Test
-//    @DisplayName("존재하지 않는 column을 기준으로 정렬하려고 시도할 시 실패(400)")
-//    public void WhenInvalidColumn_ThenResponseStatus400() throws Exception {
-//        //TODO: 테스트코드 작성
-//    }
-
     @Test
     @DisplayName("페이징된 리뷰 목록 조회")
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
@@ -96,7 +59,7 @@ public class ReviewControllerTest extends ControllerTest {
                         .param("orderBy", "desc")
                         .param("orderColumn", "createdDate")
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                 )
@@ -114,30 +77,22 @@ public class ReviewControllerTest extends ControllerTest {
                                         parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
                                         parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdDate입니다."),
                                         parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다."),
-                                        parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 10입니다.")
+                                        parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
                                 ),
                                 responseFields(
-                                        fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("조회한 리뷰 목록"),
-                                        fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰를 작성한 사용자의 이름"),
-                                        fieldWithPath("data.content[].consumerId").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 고유 ID"),
-                                        fieldWithPath("data.content[].consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 평균 평점"),
-                                        fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
-                                        fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
-                                        fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
-                                        fieldWithPath("data.content[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
-                                        fieldWithPath("data.pageable").type(JsonFieldType.STRING).description("페이지 정보"),
-                                        fieldWithPath("data.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
-                                        fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
-                                        fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 되지 않은 상태인지 여부"),
-                                        fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 가능한 상태인지 여부"),
-                                        fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
-                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
-                                        fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
-                                        fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
-                                        fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 조회한 페이지 번호"),
-                                        fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("조회한 페이지의 리뷰 개수"),
-                                        fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("한 페이지당 최대 리뷰 개수"),
-                                        fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("리뷰 조회 결과가 비어있는지 여부")
+                                        fieldWithPath("data[].consumerName").type(JsonFieldType.STRING).description("리뷰를 작성한 사용자의 이름"),
+                                        fieldWithPath("data[].consumerId").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 고유 ID"),
+                                        fieldWithPath("data[].consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 평균 평점"),
+                                        fieldWithPath("data[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
+                                        fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
+                                        fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
+                                        fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
+                                        fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                        fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
+                                        fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
+                                        fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
                                 )
                         )
                 );
@@ -150,10 +105,10 @@ public class ReviewControllerTest extends ControllerTest {
         when(reviewService.getMyReviewInfos(anyLong(), any())).thenReturn(MY_REVIEW_LIST);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get(URL + "/members/{memberId}", 1, 2)
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/reviews/members/{memberId}", 2)
                         .param("orderBy", "desc")
                         .param("orderColumn", "createdDate")
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -164,8 +119,7 @@ public class ReviewControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("memberId").description("리뷰를 조회할 사용자의 고유 ID"),
-                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
+                                parameterWithName("memberId").description("리뷰를 조회할 사용자의 고유 ID")
                         ),
                         requestParameters(
                                 parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
@@ -174,28 +128,20 @@ public class ReviewControllerTest extends ControllerTest {
                                 parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
                         ),
                         responseFields(
-                                fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("조회한 리뷰 목록"),
-                                fieldWithPath("data.content[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
-                                fieldWithPath("data.content[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
-                                fieldWithPath("data.content[].storeAddress").type(JsonFieldType.STRING).description("가게 주소"),
-                                fieldWithPath("data.content[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 닉네임"),
-                                fieldWithPath("data.content[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
-                                fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
-                                fieldWithPath("data.content[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
-                                fieldWithPath("data.content[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
-                                fieldWithPath("data.pageable").type(JsonFieldType.STRING).description("페이지 정보"),
-                                fieldWithPath("data.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
-                                fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
-                                fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 되지 않은 상태인지 여부"),
-                                fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN).description("정렬 가능한 상태인지 여부"),
-                                fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
-                                fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
-                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
-                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
-                                fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 조회한 페이지 번호"),
-                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("조회한 페이지의 리뷰 개수"),
-                                fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("한 페이지당 최대 리뷰 개수"),
-                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("리뷰 조회 결과가 비어있는지 여부")
+                                fieldWithPath("data[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
+                                fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
+                                fieldWithPath("data[].storeAddress").type(JsonFieldType.STRING).description("가게 주소"),
+                                fieldWithPath("data[].consumerName").type(JsonFieldType.STRING).description("리뷰단 사람의 닉네임"),
+                                fieldWithPath("data[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 고유 ID"),
+                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
+                                fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
+                                fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
+                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
+                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
                         )
                 ));
     }
