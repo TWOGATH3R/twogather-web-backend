@@ -15,7 +15,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
     @BeforeEach
     public void initSetting(){
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         registerConsumer();
         url = "/api/stores/" + storeId + "/likes";
@@ -30,7 +30,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //then
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
 
         Assertions.assertTrue(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
@@ -41,7 +41,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //given
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
 
         //when
         //then
@@ -59,21 +59,57 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         //given
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.OK.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
         //when,then
         doPost(url,
                 consumerToken.getRefreshToken(),
-                consumerToken.getAccessToken()).statusCode(HttpStatus.BAD_REQUEST.value());
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.BAD_REQUEST.value());
 
         Assertions.assertTrue(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
+
+    }
+
+    @Test
+    @DisplayName("가게 좋아요 취소하는 요청을 두번 보냈을땐 아무일도 일어나지 않는다")
+    public void whenDuplicateDeleteStoreLike_ThenNoException() {
+        //given
+        doPost(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken(),null).statusCode(HttpStatus.OK.value());
+
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+        //when,then
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+
+        Assertions.assertFalse(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
+
+    }
+    @Test
+    @DisplayName("가게 좋아요 누르지 않고 취소하는 경우 no exception")
+    public void whenDeleteStoreLikeWithNoEntity_ThenNoException() {
+        //given
+        doDelete(url,
+                consumerToken.getRefreshToken(),
+                consumerToken.getAccessToken())
+                .statusCode(HttpStatus.OK.value());
+
+        //when, then
+        Assertions.assertFalse(likeRepository.findByStoreIdAndMemberId(storeId, consumerId).isPresent());
 
     }
     @Test
     @DisplayName("인증되지 않은자가 가게 좋아요를 누르는 경우 throw exception")
     public void whenSetStoreLikeWithAnonymousUser_ThenThrowException() {
         //given
-        doPost(url).statusCode(HttpStatus.UNAUTHORIZED.value());
+        doPost(url,null,null,null)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
 

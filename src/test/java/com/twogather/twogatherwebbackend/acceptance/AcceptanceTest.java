@@ -1,29 +1,30 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.domain.Category;
+import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.LoginResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
-import com.twogather.twogatherwebbackend.dto.store.StoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateRequest;
-import com.twogather.twogatherwebbackend.repository.CategoryRepository;
-import com.twogather.twogatherwebbackend.repository.ConsumerRepository;
+import com.twogather.twogatherwebbackend.dto.store.StoreSaveUpdateResponse;
+import com.twogather.twogatherwebbackend.exception.StoreException;
+import com.twogather.twogatherwebbackend.repository.*;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import io.restassured.RestAssured;
-import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.MultiPartSpecification;
+import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +34,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
-import static com.twogather.twogatherwebbackend.TestUtil.convert;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.UNDEFINED_PORT;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,6 +67,18 @@ public class AcceptanceTest
     private DatabaseCleanup databaseCleanup;
     @Autowired
     protected CategoryRepository categoryRepository;
+    @Autowired
+    protected ReviewRepository reviewRepository;
+    @Autowired
+    protected StoreRepository storeRepository;
+    @Autowired
+    private AmazonS3 amazonS3;
+    @Autowired
+    protected MemberRepository memberRepository;
+    @Autowired
+    protected KeywordRepository keywordRepository;
+    @Autowired
+    protected ImageRepository imageRepository;
 
     @BeforeEach
     public void setUp() {
@@ -73,6 +87,7 @@ public class AcceptanceTest
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.execute();
+        amazonS3.createBucket("store");
     }
     protected Tokens adminToken;
     protected Tokens ownerToken;
@@ -81,16 +96,9 @@ public class AcceptanceTest
     protected Long storeId;
     protected Long consumerId;
     protected Long loginMemberId;
+    protected Long categoryId;
+    protected List<Keyword> keywordList;
 
-    protected <T> ValidatableResponse doGet(String path) {
-        return given()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
-    }
     protected <T> ValidatableResponse doDelete(String path,String refreshToken, String accessToken) {
         return given()
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
@@ -100,110 +108,70 @@ public class AcceptanceTest
                 .then()
                 .log().all();
     }
-    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
+    protected <T> ValidatableResponse doGet(String path, String refreshToken, String accessToken) {
+
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+
+        return requestSpec
                 .when()
-                .patch(path)
+                .get(path)
                 .then()
                 .log().all();
     }
-    protected <T> ValidatableResponse doPatch(String path,String refreshToken, String accessToken, T request) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+    protected <T> ValidatableResponse doPost(String path, String refreshToken, String accessToken, T requestBody) {
+
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .body(request)
-                .patch(path)
-                .then()
-                .log().all();
-    }
-    protected <T, R> R doPost(String path, String refreshToken, String accessToken, T request, Class<R> responseClass) {
-
-        com.twogather.twogatherwebbackend.dto.Response response = given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .body(request)
-                .post(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class);
-
-        return objectMapper.convertValue(response.getData(), responseClass);
-    }
-
-
-    protected <T> ValidatableResponse doPost(String path, String refreshToken, String accessToken, T request) {
-
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .body(request)
                 .post(path)
                 .then()
                 .log().all();
-
     }
-    protected <T> ValidatableResponse doPut(String path, String refreshToken, String accessToken, T request) {
+    protected <T> ValidatableResponse doPut(String path, String refreshToken, String accessToken, T requestBody) {
 
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .body(request)
                 .put(path)
                 .then()
                 .log().all();
-
     }
-    protected <T, R> R doPost(String path, T request, Class<R> responseClass) {
-        com.twogather.twogatherwebbackend.dto.Response response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when()
-                .post(path)
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class);
-        return objectMapper.convertValue(response.getData(), responseClass);
-    }
+    protected <T> ValidatableResponse doPatch(String path, String refreshToken, String accessToken, T requestBody) {
 
-    protected <T> ValidatableResponse doPost(String path, T request) {
-        return given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+        RequestSpecification requestSpec = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Optional.ofNullable(refreshToken).ifPresent(token -> requestSpec.header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(accessToken).ifPresent(token -> requestSpec.header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + token));
+        Optional.ofNullable(requestBody).ifPresent(requestSpec::body);
+
+        return requestSpec
                 .when()
-                .post(path)
+                .patch(path)
                 .then()
                 .log().all();
     }
-    protected <T> ValidatableResponse doPost(String path) {
-        return given()
-                .when()
-                .post(path)
-                .then()
-                .log().all();
+    protected void removeStore(){
+        doDelete(STORE_URL+"/"+storeId,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken());
     }
-    protected <T> ValidatableResponse doPost(String path,  String refreshToken, String accessToken) {
-        return given()
-                .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + refreshToken)
-                .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + accessToken)
-                .when()
-                .post(path)
-                .then()
-                .log().all();
-    }
-
-
     protected <T> Tokens doLogin(T request) {
         Response response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -238,140 +206,118 @@ public class AcceptanceTest
     protected void validatorWillPass(){
         org.mockito.Mockito.when(validator.validateBizRegNumber(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any())).thenReturn(true);
     }
-
     protected void registerOwner(){
         log.info("register owner");
-        memberResponse = doPost(OWNER_URL, OWNER_SAVE_UPDATE_REQUEST, MemberResponse.class);
+        memberResponse = convert(
+                doPost(OWNER_URL, null,null,OWNER_SAVE_REQUEST)
+                        .extract().as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<MemberResponse>(){}
+                        );
+        loginMemberId = memberResponse.getMemberId();
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);
     }
-    protected void registerStore() {
+    protected Long registerReview(){
+        Store store = storeRepository.findActiveStoreById(storeId).get();
+        Member member = memberRepository.findActiveMemberById(consumerId).get();
+        Review review = reviewRepository.save(Review.builder().content("맛있어요").score(3.2).createdDate(LocalDate.now()).build());
+        review.addStore(store);
+        review.addReviewer(member);
+        return review.getReviewId();
+    }
+    protected void registerStoreWithFullInfo() {
         log.info("register store");
         validatorWillPass();
+        categoryId = registerCategory();
+        registerKeyword();
+
+        storeId = convert(doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
+        registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
+        registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
+        registerImage(storeId);
+
+    }
+    protected void registerOnlyStore() {
+        log.info("register store");
+        validatorWillPass();
+        categoryId = registerCategory();
+        registerKeyword();
+
+        storeId = convert(doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
+
+    }
+    protected void registerStoreWithValidatorFail(){
         Long categoryId = registerCategory();
+        registerKeyword();
 
-        String storeRequestPart = null;
-        String businessHourRequestPart = null;
-        String keywordListPart = null;
-        String menuRequestPart = null;
-        try {
-            storeRequestPart = objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(STORE_SAVE_REQUEST);
-            businessHourRequestPart = objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
-             keywordListPart = objectMapper.writeValueAsString(KEYWORD_LIST);
-             menuRequestPart = objectMapper.writeValueAsString(MENU_SAVE_LIST_REQUEST);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        MultiPartSpecification storeRequestMultiPart = new MultiPartSpecBuilder(storeRequestPart)
-                .controlName("storeRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
+        doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(StoreException.StoreErrorCode.BIZ_REG_NUMBER_VALIDATION.getMessage()));
 
-        MultiPartSpecification businessHourRequestMultiPart = new MultiPartSpecBuilder(businessHourRequestPart)
-                .controlName("businessHourRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        MultiPartSpecification keywordListMultiPart = new MultiPartSpecBuilder(keywordListPart)
-                .controlName("keywordList")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        MultiPartSpecification menuRequestMultiPart = new MultiPartSpecBuilder(menuRequestPart)
-                .controlName("menuRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        storeId = objectMapper.convertValue(given()
+    }
+    private void registerBusinessHour(Long storeId, BusinessHourSaveUpdateListRequest request){
+        String url = "/api/stores/"+ storeId +"/business-hours";
+        doPost(url, ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(), request)
+                .statusCode(HttpStatus.CREATED.value());
+    }
+    private void registerMenu(Long storeId, MenuSaveListRequest request){
+        String url = "/api/stores/"+ storeId +"/menus";
+        doPost(url, ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(), request)
+                .statusCode(HttpStatus.CREATED.value());
+    }
+    public StoreSaveUpdateRequest createStoreRequest(List<Keyword> keywordList, Long categoryId){
+        List<Long> keywordIdList = keywordList.stream().map(Keyword::getKeywordId).collect(Collectors.toList());
+        return new StoreSaveUpdateRequest(STORE_NAME, STORE_ADDRESS, STORE_PHONE, "0000000000", "홍길동", LocalDate.now(),  keywordIdList,categoryId);
+    }
+    protected void registerKeyword(){
+        keywordList = new ArrayList<>();
+        Keyword keyword1 = keywordRepository.save(new Keyword("맛있는"));
+        Keyword keyword2 = keywordRepository.save(new Keyword("분위기있는"));
+        Keyword keyword3 = keywordRepository.save(new Keyword("청결한"));
+        keywordList.add(keyword1);
+        keywordList.add(keyword2);
+        keywordList.add(keyword3);
+    }
+    protected void registerImage(Long storeId){
+        String url = "/api/stores/"+ storeId +"/images";
+        List<File> fileList =  createMockFiles();
+        given()
+                .multiPart("storeImageList", fileList.get(0))
+                .multiPart("storeImageList", fileList.get(1))
                 .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
                 .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
-                .multiPart(storeRequestMultiPart)
-                .multiPart(businessHourRequestMultiPart)
-                .multiPart(keywordListMultiPart)
-                .multiPart(menuRequestMultiPart)
-                .multiPart("storeImageList", createFile(), "multipart/form-data")
-                .contentType("multipart/form-data")
-                .accept(ContentType.JSON)
                 .when()
-                .post("/api/stores/categories/{categoryId}", categoryId)
+                .post(url)
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class).getData(),  StoreResponse.class).getStoreId();
+                .statusCode(HttpStatus.CREATED.value());
     }
 
-    protected ValidatableResponse registerStore(StoreSaveUpdateRequest storeRequest,
-                                 BusinessHourSaveUpdateListRequest businessHourRequest,
-                                 List<String> keywordList,
-                                 MenuSaveListRequest menuRequest) {
-        log.info("register store");
-        validatorWillPass();
-        Long categoryId = registerCategory();
-
-        String storeRequestPart = null;
-        String businessHourRequestPart = null;
-        String keywordListPart = null;
-        String menuRequestPart = null;
-        try {
-            storeRequestPart = objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(storeRequest);
-            businessHourRequestPart = objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(businessHourRequest);
-            keywordListPart = objectMapper.writeValueAsString(keywordList);
-            menuRequestPart = objectMapper.writeValueAsString(menuRequest);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        MultiPartSpecification storeRequestMultiPart = new MultiPartSpecBuilder(storeRequestPart)
-                .controlName("storeRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        MultiPartSpecification businessHourRequestMultiPart = new MultiPartSpecBuilder(businessHourRequestPart)
-                .controlName("businessHourRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        MultiPartSpecification keywordListMultiPart = new MultiPartSpecBuilder(keywordListPart)
-                .controlName("keywordList")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        MultiPartSpecification menuRequestMultiPart = new MultiPartSpecBuilder(menuRequestPart)
-                .controlName("menuRequest")
-                .mimeType("application/json")
-                .charset(StandardCharsets.UTF_8)
-                .build();
-
-        return given()
-                        .header(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getRefreshToken())
-                        .header(constants.ACCESS_TOKEN_HEADER, constants.TOKEN_PREFIX + ownerToken.getAccessToken())
-                        .multiPart("storeImageList", createFile(), "multipart/form-data")
-                        .multiPart(storeRequestMultiPart)
-                        .multiPart(businessHourRequestMultiPart)
-                        .multiPart(keywordListMultiPart)
-                        .multiPart(menuRequestMultiPart)
-                        .contentType("multipart/form-data;charset=UTF-8")
-                        .accept(ContentType.JSON)
-                        .when()
-                        .post("/api/stores/categories/{categoryId}", categoryId)
-                        .then()
-                        .log().all();
-    }
     protected Long registerCategory(){
         Category category = categoryRepository.save(new Category("기타"));
+        categoryId = category.getCategoryId();
         return category.getCategoryId();
     }
     protected void approveStore(){
         log.info("approve store");
         consumerRepository.save(ADMIN);
         adminToken = doLogin(ADMIN_LOGIN_REQUEST);
-        String approveStoreUrl = "/api/admin/stores/" + storeId;
-        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+        String approveStoreUrl = "/api/admin/stores/approve/" + storeId;
+        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken(),null)
+                .statusCode(HttpStatus.OK.value());
     }
     protected void registerConsumer(){
         loginMemberId = consumerId = consumerRepository.save(CONSUMER).getMemberId();
@@ -386,25 +332,26 @@ public class AcceptanceTest
         String leaveMemberUrl = CONSUMER_URL+"/" + loginMemberId;
         doDelete(leaveMemberUrl, consumerToken.getRefreshToken(), consumerToken.getAccessToken());
     }
+    protected String generateExpiredToken() {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() - 3600000);  // set the expiry date to 1 hour before now
 
-    private File createFile(){
-        File file = null;
-        try {
-            // Create temp file
-            file = File.createTempFile("tempfile", ".txt");
+        return JWT.create()
+                .withSubject("Test User")
+                .withExpiresAt(expiryDate)   // expiry date is in the past
+                .withIssuedAt(now)
+                .withClaim("id", 123)   // replace this with actual user's id
+                .withClaim("role", "ROLE_CONSUMER")   // replace this with actual user's role
+                .sign(Algorithm.HMAC512(constants.JWT_SECRET));
 
-            // Write to temp file
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            bw.write("This is a dummy file");
-            bw.close();
+    }
+    private List<File> createMockFiles() {
+        List<File> fileList = new ArrayList<>();
+        File multipartFile = new File("src/test/resources/files/image.jpg");
 
-            // Delete file when program ends
-            file.deleteOnExit();
+        fileList.add(multipartFile);
+        fileList.add(multipartFile);
 
-        } catch (IOException e) {
-            // Handle the exception
-            e.printStackTrace();
-        }
-        return file;
+        return fileList;
     }
 }

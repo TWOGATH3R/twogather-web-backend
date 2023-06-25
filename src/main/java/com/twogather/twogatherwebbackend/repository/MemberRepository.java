@@ -15,6 +15,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findActiveMemberById(@Param("id")Long id);
     @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.username = :username AND c.isActive = true")
     boolean existsByActiveUsername(@Param("username") String username);
+    @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.username = :username")
+    boolean existsByUsername(@Param("username") String username);
     @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.email = :email AND c.isActive = true")
     boolean existsByActiveEmail(@Param("email") String email);
+    @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.email = :email")
+    boolean existsByEmail(@Param("email") String email);
+    @Query("SELECT COUNT(c) > 0 FROM Member c WHERE c.name = :name")
+    boolean existsByName(@Param("name") String name);
+    @Query("select m from Member m where m.email =:email and m.username = :username")
+    Optional<Member> findMemberByEmailAndUsername(@Param("email") String email, @Param("username") String username);
+    Optional<Member> findMemberByEmail(@Param("email") String email);
 }

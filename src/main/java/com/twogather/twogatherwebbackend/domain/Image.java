@@ -21,7 +21,11 @@ public class Image {
     private String url;
 
     public Image(Store store, String url){
+        if (this.store != null) {
+            this.store.getStoreImageList().remove(this); 
+        }
         this.store = store;
+        this.store.addImage(this);
         this.url = url;
     }
 }

@@ -22,7 +22,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    @PreAuthorize("@storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestPart List<MultipartFile> storeImageList) {
         List<ImageResponse> data = imageService.upload(storeId, storeImageList);
 
@@ -30,14 +30,13 @@ public class ImageController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> getStoreImageInfos(@PathVariable Long storeId) {
         List<ImageResponse> data = imageService.getStoreImageInfos(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
     @DeleteMapping
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    @PreAuthorize("@storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> delete(@PathVariable Long storeId, @RequestBody ImageIdList idList) {
         imageService.delete(idList);
 

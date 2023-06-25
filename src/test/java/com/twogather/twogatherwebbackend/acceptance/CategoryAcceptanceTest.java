@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
+import static org.hamcrest.Matchers.equalTo;
 
 public class CategoryAcceptanceTest extends AcceptanceTest{
     @Autowired
@@ -26,17 +27,18 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
     public void initSetting(){
         super.setUp();
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         createCategory();
     }
 
     @Test
+    @DisplayName("가게에 대해 카테고리를 설정하고 데이터베이스를 조회했을때 제대로 관계가 설정되어있어야한다")
     public void whenSetCategoriesForStore_ThenAssociateCategoryWithStore() {
         //given
         String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
 
         //then
         Long savedCategoryId = storeRepository.findById(storeId).get().getCategory().getCategoryId();
@@ -45,7 +47,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
 
 
     @Test
-    @DisplayName("이미 카테고리가 설정된 가게의 카테고리를 다른걸로 다시 설정했을때 제대로 반영됐는지 확인한다")
+    @DisplayName("이미 카테고리가 설정된 가게의 카테고리를 다른걸로 다시 설정했을때 두번째 카테고리로 설정되어야 한다")
     public void whenUpdateCategory_thenUpdatedCategoryIsReturned()  {
         //given
         String url = "/api/stores/" + storeId + "/categories/" + category1.getCategoryId();
@@ -75,8 +77,8 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
     }*/
 
     @Test
-    @DisplayName("없는 카테고리로 등록시 throw exception")
-    public void whenNoSuchCategory_thenThrowException() throws Exception {
+    @DisplayName("없는 카테고리로 가게를 등록시 throw exception")
+    public void whenNoSuchCategory_thenThrowException() {
         //given
         Long noSuchId = 12313l;
         String url = "/api/stores/" + storeId + "/categories/" + noSuchId;
@@ -94,14 +96,9 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         Long noSuchStoreId = 123l;
         String url = "/api/stores/" + noSuchStoreId + "/categories/" + category1.getCategoryId();
         //when
-        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken())
-                .statusCode(HttpStatus.FORBIDDEN.value());
-
-    }
-    private void approveStore2(Long storeId2){
-        adminToken = doLogin(ADMIN_LOGIN_REQUEST);
-        String approveStoreUrl = "/api/admin/stores/" + storeId2;
-        doPatch(approveStoreUrl, adminToken.getRefreshToken(), adminToken.getAccessToken());
+        doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null)
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message",equalTo(NO_SUCH_STORE.getMessage()));
 
     }
     private void createCategory(){
@@ -109,6 +106,6 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
         category2 = categoryRepository.save(new Category("일식"));
     }
     private ValidatableResponse settingStoreCategory(String url){
-        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken());
+        return doPatch(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(),null);
     }
 }

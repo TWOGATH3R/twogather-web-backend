@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -20,12 +22,15 @@ public class Member {
     @Column(name="member_id")
     protected Long memberId;
 
-    @Column(unique = true, length = 20)
+    @OneToMany(mappedBy = "commenter", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
+
+    @Column(unique = true, length = 15)
     protected String username;
     @Column(unique = true, length = 30)
     protected String email;
     protected String password;
-    @Column(length = 10)
+    @Column(unique = true, length = 10)
     protected String name;
     protected boolean isActive;
 
@@ -49,17 +54,23 @@ public class Member {
         this.authenticationType = authenticationType;
         this.isActive = isActive;
     }
+    public void addComment(Comment comment){
+        if(commentList==null){
+            commentList = new ArrayList<>();
+        }
+        this.commentList.add(comment);
+    }
     public void update(String username, String email, String password, String name){
-        if(!username.isEmpty()){
+        if(username!=null && !username.isEmpty()){
             this.username = username;
         }
-        if(!email.isEmpty()){
+        if(email!=null &&!email.isEmpty()){
             this.email = email;
         }
-        if(!password.isEmpty()){
+        if(password!=null &&!password.isEmpty()){
             this.password = password;
         }
-        if(!name.isEmpty()){
+        if(name!=null &&!name.isEmpty()){
             this.name = name;
         }
     }

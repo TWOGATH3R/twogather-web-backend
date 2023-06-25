@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class LikeException extends ClientException{
     public enum LikeErrorCode {
-        DUPLICATE_LIKE("중복으로 좋아요를 누를 수 없습니다");
+        DUPLICATE_LIKE("중복으로 좋아요를 누를 수 없습니다"),
+        NO_SUCH_LIKE("해당하는 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND);
 
         private final String message;
         private final HttpStatus status;

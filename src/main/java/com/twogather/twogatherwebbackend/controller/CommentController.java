@@ -18,25 +18,35 @@ import javax.validation.Valid;
 public class CommentController {
     private final CommentService commentService;
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Response> upload(@PathVariable Long storeId,
                                            @PathVariable Long reviewId,
                                            @RequestBody @Valid final CommentSaveUpdateRequest request
                                            ) {
-        CommentResponse data = commentService.save(request);
+        CommentResponse data = commentService.save(storeId, reviewId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
     @PutMapping("/{commentId}")
-    @PreAuthorize("isAuthenticated() and @commentService.isMyComment(#commentId)")
+    @PreAuthorize("@commentService.isMyComment(#commentId)")
     public ResponseEntity<Response> update(@PathVariable Long storeId,
                                            @PathVariable Long reviewId,
                                            @PathVariable Long commentId,
                                            @RequestBody @Valid final CommentSaveUpdateRequest request
     ) {
-        CommentResponse data = commentService.update(request);
+        CommentResponse data = commentService.update(storeId, commentId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
+    @DeleteMapping("/{commentId}")
+    @PreAuthorize("@commentService.isMyComment(#commentId)")
+    public ResponseEntity delete(@PathVariable Long storeId,
+                                           @PathVariable Long reviewId,
+                                           @PathVariable Long commentId
+    ) {
+        commentService.delete(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 

@@ -24,6 +24,7 @@ public class StoreKeyword {
 
     public StoreKeyword(Store store, Keyword keyword){
         this.store = store;
+        store.addStoreKeyword(this);
         this.keyword = keyword;
     }
 }

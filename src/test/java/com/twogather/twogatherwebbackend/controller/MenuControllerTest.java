@@ -1,14 +1,10 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.menu.MenuIdList;
-import com.twogather.twogatherwebbackend.service.BusinessHourService;
 import com.twogather.twogatherwebbackend.service.MenuService;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,14 +12,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getDayOfWeekFormat;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getTimeFormat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -44,7 +37,41 @@ public class MenuControllerTest extends ControllerTest{
     private StoreService storeService;
     private static final String URL = "/api/stores/{storeId}/menus";
 
+    @Test
+    @DisplayName("메뉴 여러개에 대해 저장을 요청했을때 요청한정보 + id 정보 반환")
+    public void saveMenuList_WhenSaveMenuList_ThenMenuInfoIncludeId() throws Exception {
+        //given
+        when(menuService.saveList(anyLong(), any())).thenReturn(MENU_RESPONSE_LIST);
+        //when
+        //then
+        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .writeValueAsString(MENU_SAVE_LIST_REQUEST))
+                )
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(document("menu/save",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("storeId").description("가게 고유 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("menuSaveList[].name").type(JsonFieldType.STRING).description("메뉴 이름"),
+                                fieldWithPath("menuSaveList[].price").type(JsonFieldType.NUMBER).description("메뉴의 가격")
+                        ),
+                        responseFields(
+                                fieldWithPath("data[].name").type(JsonFieldType.STRING).description("메뉴 이름"),
+                                fieldWithPath("data[].price").type(JsonFieldType.NUMBER).description("메뉴의 가격"),
+                                fieldWithPath("data[].menuId").type(JsonFieldType.NUMBER).description("메뉴의 고유 id")
 
+                        )
+                ));
+
+    }
     @Test
     @DisplayName("가게에 대한 모든 메뉴 받아오기")
     public void getMenuListByStore_WhenGetMenuList_ThenReturnMenuList() throws Exception {

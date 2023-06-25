@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-abstract public class StoreBaseResponse {
-    protected Long storeId;
-    protected String storeName;
-    protected String address;
+public class RejectReason {
+    private String reason;
 }

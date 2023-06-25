@@ -1,49 +1,28 @@
 package com.twogather.twogatherwebbackend.repository;
 
-import com.twogather.twogatherwebbackend.config.QueryDslConfig;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
-import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
-import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.domain.StoreStatus.APPROVED;
 import static org.assertj.core.api.Assertions.*;
 
-@Import(QueryDslConfig.class)
-@SpringBootTest
-public class ReviewRepositoryTest {
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private EntityManager em;
 
+public class ReviewRepositoryTest extends RepositoryTest{
     private Member consumer1, consumer2, consumer3, consumer4;
-
     private Store store1, store2, store3;
-
-    private Review review1, review2, review3, review4, review5, review6, review7, review8,
-            review9, review10, review11, review12, review13, review14, review15, review16, review17;
+    private Review review1;
 
     @BeforeEach
     void setUp() {
@@ -114,27 +93,27 @@ public class ReviewRepositoryTest {
         );
 
         // for store1
-        review1 = reviewRepository.save(new Review(store1, consumer1, "맛있어용", 5.0, LocalDate.now()));
-        review2 = reviewRepository.save(new Review(store1, consumer2, "괜찮아용", 4.0, LocalDate.now()));
-        review3 = reviewRepository.save(new Review(store1, consumer3, "맛있어용", 5.0, LocalDate.now()));
+        review1 = reviewRepository.save(Review.builder().store(store1).reviewer(consumer1).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store1).reviewer(consumer2).content("괜찮아용").score( 4.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store1).reviewer(consumer3).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
 
         // for store2
-        review4 = reviewRepository.save(new Review(store2, consumer1, "맛없어용", 1.0, LocalDate.now()));
-        review5 = reviewRepository.save(new Review(store2, consumer2, "맛있어용", 5.0, LocalDate.now()));
+        reviewRepository.save(Review.builder().store(store2).reviewer(consumer1).content("맛없어용").score(1.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store2).reviewer(consumer2).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
 
         // for store3
-        review6 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review7 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review8 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review9 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review10 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review11 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review12 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review13 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review14 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review15 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review16 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
-        review17 = reviewRepository.save(new Review(store3, consumer4, "맛있어용", 5.0, LocalDate.now()));
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score( 5.0).createdDate( LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
 
         em.flush();
     }
@@ -198,6 +177,7 @@ public class ReviewRepositoryTest {
 
         // then
         assertThat(reviewSizeAfterDelete).isEqualTo(reviewSize - 1);
+        assertThat(reviewRepository.findById(review1.getReviewId()).isPresent()).isFalse();
     }
 
     @Test
@@ -217,19 +197,10 @@ public class ReviewRepositoryTest {
         assertThat(content.get(0).getConsumerAvgScore()).isEqualTo(3.0);   // user1의 평균 리뷰 평점
         assertThat(content.get(1).getConsumerAvgScore()).isEqualTo(4.5);   // user2의 평균 리뷰 평점
         assertThat(content.get(2).getConsumerAvgScore()).isEqualTo(5.0);   // user3의 평균 리뷰 평점
-
-        content.stream().forEach(
-                item -> {
-                    System.out.println(item.getReviewId());
-                    System.out.println(item.getConsumerId());
-                    System.out.println(item.getConsumerName());
-                    System.out.println(item.getConsumerAvgScore());
-                }
-        );
     }
 
     @Test
-    @DisplayName("가게 리뷰 목록 조회 - 페이지 번호와 size에 따른 페이징 테스트")
+    @DisplayName("가게 리뷰 목록 조회 - 첫페이지와 두번째 페이지에 대한 필드값이 예상한 값과 같아야한다")
     @Transactional
     void When12ReviewsOnStore3_ThenReturn10ReviewsOnPage0and2ReviewsOnPage1() {
         // given
@@ -244,12 +215,13 @@ public class ReviewRepositoryTest {
         // then
         assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
         assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
+        assertThat(pagedResult0.getTotalElements()).isEqualTo(12);
         assertThat(pagedResult0.isFirst()).isTrue();
         assertThat(pagedResult1.isLast()).isTrue();
     }
 
     @Test
-    @DisplayName("사용자 리뷰 목록 조회 - 페이지 번호와 size에 따른 페이징 테스트")
+    @DisplayName("사용자 리뷰 목록 조회 - 페이징 적용결과 각 페이지별 element의 개수가 제대로 출력돼야한다")
     @Transactional
     void WhenConsumer4Written12Reviews_ThenReturn10ReviewsOnPage0and2ReviewsOnPage1() {
         // given
@@ -262,8 +234,15 @@ public class ReviewRepositoryTest {
         Page<MyReviewInfoResponse> pagedResult1 = reviewRepository.findMyReviewsByMemberId(consumer4.getMemberId(), pageable1);
 
         // then
+        assertThat(pagedResult0.getContent().get(0).getContent()).isNotBlank();
+        assertThat(pagedResult0.getContent().get(0).getConsumerName()).isNotBlank();
+        assertThat(pagedResult0.getContent().get(0).getStoreName()).isNotBlank();
+        //assertThat(pagedResult0.getContent().get(0).getUrl()).isNotBlank();
+        assertThat(pagedResult0.getContent().get(0).getReviewId()).isNotNull();
         assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
         assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
+        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
+        assertThat(pagedResult0.getTotalElements()).isEqualTo(12);
         assertThat(pagedResult0.isFirst()).isTrue();
         assertThat(pagedResult1.isLast()).isTrue();
     }

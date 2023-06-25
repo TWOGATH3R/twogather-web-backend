@@ -3,7 +3,6 @@ package com.twogather.twogatherwebbackend.exception;
 import org.springframework.http.HttpStatus;
 
 public class StoreException extends ClientException{
-
     public enum StoreErrorCode {
         DUPLICATE_NAME("이름이 중복됩니다"),
         NO_SUCH_STORE("해당하는 가게가 존재하지 않습니다", HttpStatus.NOT_FOUND),
