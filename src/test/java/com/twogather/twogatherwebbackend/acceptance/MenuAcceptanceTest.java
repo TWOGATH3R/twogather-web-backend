@@ -1,6 +1,5 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.twogather.twogatherwebbackend.dto.menu.MenuResponse;
 import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateInfo;
 import com.twogather.twogatherwebbackend.dto.menu.MenuUpdateListRequest;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
@@ -14,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 
 import static org.hamcrest.Matchers.*;
@@ -29,14 +28,14 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     public void setup(){
         super.setUp();
         registerOwner();
-        registerStore();//createMenu을 포함하고 있음
+        registerStoreWithFullInfo();//createMenu을 포함하고 있음
         approveStore();
         URL = "/api/stores/" + storeId + "/menus";
     }
 
 
     @Test
-    @DisplayName("update menu 성공")
+    @DisplayName("update menu시 제약사항을 만족했다면 성공해야한다")
     public void updateMenuList_WithValidMenuList_ThenMenuSaved()  {
         // given,when
         // Then
@@ -52,7 +51,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("update menu 시에 유효성 실패 - null 입력하면 안됨")
+    @DisplayName("update menu 시에 null을 입력하면 유효성 실패해야한다")
     public void updateMenuList_WithInputNull_ThenThrowException() {
         // Given
         // When, Then
@@ -65,7 +64,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
-    @DisplayName("update menu 시에 유효성 실패 - 음수 가격 입력하면 안됨")
+    @DisplayName("update menu 시에 음수가격을 입력해서 유효성검사에 실패해야한다")
     public void updateMenuList_WithInputMinusPrice_ThenThrowException(){
         // Given
         // When, Then

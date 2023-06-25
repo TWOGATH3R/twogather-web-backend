@@ -8,9 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
-    boolean existsByEmail(String email);
-    Optional<Consumer> findByEmail(String email);
-
-    @Query("select c from Consumer c where c.memberId = :consumerId and c.isActive = true")
-    Optional<Consumer> findActiveConsumerById(@Param("consumerId") Long consumerId);
+    @Query("select m from Consumer m where m.memberId =:memberId and m.isActive = true")
+    Optional<Consumer> findActiveMemberById(@Param("memberId") Long memberId);
 }

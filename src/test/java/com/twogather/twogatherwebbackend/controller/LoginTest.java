@@ -13,7 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getUsernameFormat;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
@@ -54,7 +55,7 @@ public class LoginTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인에 필요한 로그인 아이디"),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("로그인에 필요한 로그인 아이디").attributes(getUsernameFormat()),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인에 필요한 비밀번호").attributes(getPasswordFormat())
                         ),
                         responseFields(

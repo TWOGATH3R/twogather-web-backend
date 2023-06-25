@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class ImageException  extends ClientException {
     public enum ImageErrorCode {
-        NO_SUCH_IMAGE("해당 사진을 찾을 수 없습니다");
+        NO_SUCH_IMAGE("해당 사진을 찾을 수 없습니다"),
+        NOT_IMAGE("이미지 파일이 아닙니다");
         private final String message;
         private final HttpStatus status;
 

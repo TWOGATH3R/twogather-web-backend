@@ -21,7 +21,11 @@ public class Menu {
     private Integer price;
 
     public Menu(Store store, String name, Integer price){
+        if (this.store != null) {
+            this.store.getMenuList().remove(this);
+        }
         this.store = store;
+        store.addMenu(this);
         this.name = name;
         this.price = price;
     }

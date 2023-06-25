@@ -1,17 +1,16 @@
 package com.twogather.twogatherwebbackend.config;
 
 
+import akka.http.javadsl.Http;
 import com.twogather.twogatherwebbackend.auth.*;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -40,7 +39,8 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/api/stores/**/my").authenticated()
+                .antMatchers("/api/stores/**/comments").authenticated()
+                .antMatchers("/api/my/stores").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/owners").authenticated()
                 .antMatchers("/api/stores/**/business-hours").authenticated()
@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/consumers").permitAll()
                 .antMatchers("/api/owners/**").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/owners").permitAll()
-                .antMatchers("/api/email").permitAll()
+                .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/stores/**/images").authenticated()
                 .antMatchers(HttpMethod.GET,"/api/keywords").permitAll()
                 .antMatchers("/api/keywords/stores/**").authenticated()
@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler).and()// access denied 시 JwtAccessDeniedHandler 실행
                 .build();
     }
@@ -72,7 +73,12 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/stores/**")
                 .antMatchers(HttpMethod.POST,"/api/owners")
                 .antMatchers(HttpMethod.POST,"/api/consumers")
+                .antMatchers(HttpMethod.GET, "/api/stores/**/images")
                 .antMatchers("/api/email")
+                .antMatchers("/api/email/*")
+                .antMatchers("/api/members/password/*")
+                .antMatchers("/api/members/checks-email")
+                .antMatchers("/api/**/my-id")
                 .antMatchers("/api/categories")
                 .antMatchers(HttpMethod.GET,"/api/keywords")
                 .antMatchers(HttpMethod.GET,"/api/stores/**/menus")
@@ -84,8 +90,8 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
-                    .addFilterAfter(new JwtAuthenticationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthenticationFilter.class);
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
+                    .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthorizationFilter.class);
         }
 
     }

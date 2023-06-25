@@ -12,8 +12,6 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 public class BusinessHourSaveUpdateInfo {
-    protected Long storeId;
-
     @JsonFormat(pattern = "HH:mm")
     @DateTimeFormat(pattern = "HH:mm")
     protected LocalTime startTime;
@@ -39,10 +37,9 @@ public class BusinessHourSaveUpdateInfo {
     @DateTimeFormat(pattern = "HH:mm")
     protected LocalTime breakEndTime;
 
-    public BusinessHourSaveUpdateInfo(Long storeId, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek,
+    public BusinessHourSaveUpdateInfo(LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek,
                                       Boolean isOpen, Boolean hasBreakTime, LocalTime breakStartTime,
                                       LocalTime breakEndTime) {
-        this.storeId = storeId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.dayOfWeek = dayOfWeek;

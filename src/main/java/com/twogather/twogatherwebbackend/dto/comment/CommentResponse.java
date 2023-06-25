@@ -9,12 +9,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 public class CommentResponse {
+    private Long commentId;
     private String content;
     private Boolean isOwner;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createDate;
 
-    public CommentResponse(String content, Boolean isOwner, LocalDate createDate) {
+    public CommentResponse(Long commentId, String content, Boolean isOwner, LocalDate createDate) {
+        this.commentId = commentId;
         this.content = content;
         this.isOwner = isOwner;
         this.createDate = createDate;

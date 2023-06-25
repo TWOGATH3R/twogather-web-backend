@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import static com.twogather.twogatherwebbackend.TestConstants.BUSINESS_HOUR_SAVE_UPDATE_INFO;
+import static com.twogather.twogatherwebbackend.util.TestConstants.BUSINESS_HOUR_SAVE_UPDATE_INFO;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.MUST_HAVE_START_TIME_AND_END_TIME;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.START_TIME_MUST_BE_BEFORE_END_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class BusinessHourValidationTest {
     public void WhenMissingOpenHours_ThenFalse() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, null, null,
+                null, null,
                 DayOfWeek.MONDAY, true, false, null, null
         );
 
@@ -49,7 +49,7 @@ public class BusinessHourValidationTest {
     public void WhenStartTimeAfterEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(12, 0), LocalTime.of(11, 0),
+                LocalTime.of(12, 0), LocalTime.of(11, 0),
                 DayOfWeek.MONDAY, true, false, null, null
         );
 
@@ -64,7 +64,7 @@ public class BusinessHourValidationTest {
     public void WhenBreakStartTimeAfterEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(9, 0), LocalTime.of(17, 0),
+                LocalTime.of(9, 0), LocalTime.of(17, 0),
                 DayOfWeek.MONDAY, true, true, LocalTime.of(14, 0), LocalTime.of(13, 0)
         );
 
@@ -79,7 +79,7 @@ public class BusinessHourValidationTest {
     public void WhenBreakStartTimeEqualsEndTime_ThenViolation() {
         // Given
         BusinessHourSaveUpdateInfo request = new BusinessHourSaveUpdateInfo(
-                1L, LocalTime.of(9, 0), LocalTime.of(17, 0),
+                LocalTime.of(9, 0), LocalTime.of(17, 0),
                 DayOfWeek.MONDAY, true, true, LocalTime.of(14, 0), LocalTime.of(14, 0)
         );
 

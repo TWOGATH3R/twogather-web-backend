@@ -4,7 +4,6 @@ import com.twogather.twogatherwebbackend.dto.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.review.*;
 import com.twogather.twogatherwebbackend.service.ReviewService;
-import com.twogather.twogatherwebbackend.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +22,8 @@ public class ReviewController {
 
     @PostMapping("/stores/{storeId}/reviews")
     @PreAuthorize("not @storeService.isMyStore(#storeId)")
-    public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestBody @Valid final ReviewSaveRequest request) {
-        ReviewResponse data = reviewService.save(request);
+    public ResponseEntity<Response> upload(@PathVariable Long storeId, @RequestBody @Valid final ReviewSaveUpdateRequest request) {
+        ReviewResponse data = reviewService.save(storeId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -40,8 +39,8 @@ public class ReviewController {
     @PutMapping("/stores/{storeId}/reviews/{reviewId}")
     @PreAuthorize("@reviewService.isMyReview(#reviewId)")
     public ResponseEntity<Response> update(@PathVariable final Long reviewId, @PathVariable final Long storeId,
-                                           @RequestBody @Valid final ReviewUpdateRequest request){
-        ReviewResponse data = reviewService.update(request);
+                                           @RequestBody @Valid final ReviewSaveUpdateRequest request){
+        ReviewResponse data = reviewService.update(reviewId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

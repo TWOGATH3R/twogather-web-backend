@@ -7,112 +7,227 @@ api spec 문서
 :toclevels: 2
 :sectlinks:
 
+== Error
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "message": "예외 메시지"
+}
+```
+
 == Auth
 
 === Login
+- 로그인을 완료하면 RefreshToken과 AccessToken을 발급합니다
+- 필요권한: `ALL`
+
 operation::auth/login/[snippets='http-request,request-fields,http-response,response-fields']
 
-=== Consumer-Password-Verification
-operation::consumer/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+== Member
+=== Password-Verification
+- 필요권한: `인증`
 
-=== StoreOwner-Password-Verification
-operation::owner/verify-password/[snippets='http-request,request-fields,http-response,response-fields']
+operation::member/verify-password/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
+=== Password-Change
+- 필요권한: `인증`
+- 인증을 거친 사용자만이 비밀번호를 변경할 수 있습니다
+
+operation::member/change-password/[snippets='http-request,path-parameters,request-fields,http-response']
+
+
+=== Find-Username
+- 필요권한: `ALL`
+
+operation::member/get-username/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== Find-Like-Store
+- 필요권한: `인증`
+
+operation::member/find-like-store/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+
+== Admin
+=== Get-Store
+- 필요권한: `ADMIN`
+
+operation::admin/getStore/[snippets='http-request,path-parameters,http-response,response-fields']
+=== Approve-Store
+- 필요권한: `ADMIN`
+
+operation::admin/approve/[snippets='http-request,path-parameters']
+=== Reject-Store
+- 필요권한: `ADMIN`
+
+operation::admin/reject/[snippets='http-request,request-fields,path-parameters']
 
 
 == Email
-=== Email-Verification
+=== Email-Send
+- 필요권한: `ALL`
+
 operation::email/post/[snippets='http-request,request-fields,http-response,response-fields']
 
+=== Password-Verify-Email-Send
+- 필요권한: `ALL`
+- 임시 비밀번호가 해당 이메일로 전송됩니다
+
+operation::email/password-post/[snippets='http-request,request-fields,http-response']
+
 == Menu
-
 === Get
+- 필요권한: `ALL`
+
 operation::menu/get/[snippets='http-request,path-parameters,http-response,response-fields']
-
 === Delete
-operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
+- 필요권한: `MY_STORE`
 
+operation::menu/delete/[snippets='http-request,path-parameters,request-fields,http-response']
 === Update
+- 필요권한: `MY_STORE`
+
 operation::menu/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+=== Save
+- 필요권한: `OWNER`
+
+operation::menu/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 == BusinessHour
-
 === Get
+- 필요권한: `ALL`
+
 operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
-
 === Delete
-operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
+- 필요권한: `MY-STORE`
 
+operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
 === Update
+- 필요권한: `MY-STORE`
+
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+=== Save
+- 필요권한: `OWNER`
+- 영업하는 요일에 대해서 저장을 요청하면 미요청된 요일에 대해서는 "영업안함"으로 표시하여 되돌려줍니다
+
+operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
 == Keyword
 === Get-List
+- 필요권한: `ALL`
+
 operation::keywords/get/[snippets='http-request,request-parameters,http-response,response-fields']
 === Set-Keyword-Store-Association
+- 특정 키워드를 가게에 등록하는 일을 합니다
+- 필요권한: `MY-STORE`
+
 operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
 
 == Store
-
 === Save
-operation::store/save/[snippets='http-request,request-parts,http-response,response-fields']
+- 필요권한: `OWNER`
+
+operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Get-One
+- 필요권한: `ALL`
+
 operation::store/get-one/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Get-List
+- 필요권한: `ALL`
+
 operation::store/get-list/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Get-List-Search
+- 필요권한: `ALL`
+
 operation::store/get-list-search/[snippets='http-request,request-parameters,http-response,response-fields']
 
 === Get-My-Store-List
-operation::store/get-my-list/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+- 필요권한: `MY_STORE`
+
+operation::store/get-my-list/[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== Get-My-Store-Detail
+- 필요권한: `MY_STORE` or `ADMIN`
+
+operation::store/get-detail/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Delete
+- 필요권한: `MY_STORE`
+
 operation::store/delete/[snippets='http-request,path-parameters,http-response']
 
 === Update
+- 필요권한: `MY_STORE`
+
 operation::store/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
 == Store-Owner
 
 === Get
+- 필요권한: `MY_ID`
+
 operation::owner/get/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Save
+- 필요권한: `ALL`
+
 operation::owner/save/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Update
+- 필요권한: `MY_ID`
+
 operation::owner/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === Delete
+- 탈퇴
+- 필요권한: `MY_ID`
+
 operation::owner/delete/[snippets='http-request,path-parameters,http-response']
 
 == Consumer
 
 === Get
+- 필요권한: `MY_ID`
+
 operation::consumer/get/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Save
+- 필요권한: `ALL`
+
 operation::consumer/save/[snippets='http-request,request-fields,http-response,response-fields']
 
 === Update
+- 필요권한: `MY_ID`
+
 operation::consumer/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 === Delete
+- 탈퇴
+- 필요권한: `MY_ID`
+
 operation::consumer/delete/[snippets='http-request,path-parameters,http-response']
 
 == Image
 
 === Get
+- 필요권한: `ALL`
+
 operation::image/get/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Save
+- 이미지를 넘겨주면 백엔드 측에서 스토리지에 저장하고 외부에서 접근가능한 public url을 발급해줍니다
+- 필요권한: `MY_STORE`
+
 operation::image/save/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Delete
+- 필요권한: `MY_STORE`
+
 operation::image/delete/[snippets='http-request,path-parameters,http-response']
 
 
@@ -122,34 +237,58 @@ operation::image/delete/[snippets='http-request,path-parameters,http-response']
 operation::review/getReviewsByStoreId/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
 
 === Get-My-Review-List
+- 필요권한: `MY_ID`
+
 operation::review/getMyReviewInfos/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
 
 === Save
+- 필요권한: `인증`
+
 operation::review/save/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Update
+- 필요권한: `MY_ID`
+
 operation::review/update/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Delete
+- 필요권한: `MY_ID`
+
 operation::review/delete/[snippets='http-request,path-parameters,http-response']
 
 == Comment
 === Save
+- 필요권한: `인증`
+
 operation::comment/save/[snippets='http-request,path-parameters,http-response,response-fields']
 
 === Update
+- 필요권한: `MY_ID`
+
 operation::comment/update/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Delete
+- 필요권한: `MY_ID`
+
+operation::comment/delete/[snippets='http-request,path-parameters,http-response']
 
 == Category
 
 === Get
+- 필요권한: `ALL`
+
 operation::category/get/[snippets='http-request,http-response,response-fields']
 
 == Like
 === AddLike
+- 필요권한: `인증`
+
 operation::like/setLike/[snippets='http-request,path-parameters']
 
 === DeleteLike
+- 필요권한: `인증`
+- 좋아요를 취소할 수 있습니다
+
 operation::like/deleteLike/[snippets='http-request,path-parameters']
 
 

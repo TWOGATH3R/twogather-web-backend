@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.store;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.twogather.twogatherwebbackend.dto.member.MemberSaveUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -36,5 +36,10 @@ public class StoreSaveUpdateRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalDate businessStartDate;
+
+    private List<Long> keywordIdList;
+
+    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    private Long categoryId;
 
 }

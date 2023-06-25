@@ -21,38 +21,25 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/stores")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
 
-    @GetMapping("/test")
+    @GetMapping("/stores/test")
     public String test(){
         return "test";
     }
 
-    @PostMapping(value = "/categories/{categoryId}")
+    @PostMapping(value = "/stores")
     @PreAuthorize("hasRole('STORE_OWNER')")
-    public ResponseEntity<Response> save(
-                                        @PathVariable Long categoryId,
-                                        @RequestPart @Valid final BusinessHourSaveUpdateListRequest businessHourRequest,
-                                        @RequestPart @Valid final StoreSaveUpdateRequest storeRequest,
-                                        @RequestPart @Valid final MenuSaveListRequest menuRequest,
-                                        @RequestPart List<MultipartFile> storeImageList,
-                                        @RequestPart final List<String> keywordList
-                                         ) {
-        StoreSaveUpdateResponse data =
-                storeService.save(categoryId,
-                        businessHourRequest,
-                        storeRequest,
-                        menuRequest,
-                        storeImageList,
-                        keywordList);
+    public ResponseEntity<Response> save(@RequestBody @Valid final StoreSaveUpdateRequest storeRequest) {
+        StoreSaveUpdateResponse data = storeService.save(storeRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
 
-    @PutMapping("/{storeId}")
+    @PutMapping("/stores/{storeId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> update(@PathVariable Long storeId, @RequestBody @Valid StoreSaveUpdateRequest storeUpdateRequest) {
         StoreSaveUpdateResponse data = storeService.update(storeId, storeUpdateRequest);
@@ -60,15 +47,22 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping("/{storeId}")
+    @PatchMapping("/stores/{storeId}")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> reapply(@PathVariable Long storeId) {
+        storeService.reapply(storeId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @GetMapping("/stores/{storeId}")
     public ResponseEntity<Response> getStoreInfo(@PathVariable Long storeId) {
-        StoreSaveUpdateResponse data = storeService.getStore(storeId);
+        StoreDefaultResponse data = storeService.getStore(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
 
-    @GetMapping("/top/{type}/{count}")
+    @GetMapping("/stores/top/{type}/{count}")
     public ResponseEntity<Response> getStoreTopInfos(@PathVariable StoreSearchType type,
                                                      @PathVariable int count) {
         List<TopStoreResponse> data = storeService.getStoresTopN(type, count);
@@ -76,30 +70,37 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
-    @GetMapping("/{storeId}/my")
-    @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
+    @GetMapping("/my/stores")
+    @PreAuthorize("hasRole('STORE_OWNER') and @storeOwnerService.isStoreOwner(#ownerId)")
     public ResponseEntity<Response> getMyStoreInfo(
-            @PathVariable Long storeId,
-            @RequestParam(value = "owner-id") Long storeOwnerId,
-            Pageable pageable
-    ) {
-        Page<MyStoreResponse> data = storeService.getStoresByOwner(storeOwnerId, pageable);
+            @RequestParam(value = "ownerId") Long ownerId,
+            Pageable pageable) {
+        Page<MyStoreResponse> data = storeService.getStoresByOwner(ownerId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
+    @GetMapping("/my/stores/{storeId}/detail")
+    @PreAuthorize("hasRole('ADMIN') or @storeService.isMyStore(#storeId)")
+    public ResponseEntity<Response> getMyStoreDetailInfo(@PathVariable Long storeId) {
+        StoreSaveUpdateResponse data = storeService.getStoreDetail(storeId);
 
-    @GetMapping("/search")
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
+    }
+
+
+    @GetMapping("/stores/search")
     public ResponseEntity<Response> getStoreInfos(Pageable pageable,
                                                   @RequestParam(value = "category", required = false) String categoryName,
                                                   @RequestParam(value = "search", required = false) String keyword,
+                                                  @RequestParam(value = "storeName", required = false) String storeName,
                                                   @RequestParam(value = "location", required = false) String location) {
 
-        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location);
+        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location, storeName);
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
-    @DeleteMapping("/{storeId}")
+    @DeleteMapping("/stores/{storeId}")
     @PreAuthorize("hasRole('STORE_OWNER') and @storeService.isMyStore(#storeId)")
     public ResponseEntity<Void> delete(@PathVariable Long storeId) {
         storeService.delete(storeId);

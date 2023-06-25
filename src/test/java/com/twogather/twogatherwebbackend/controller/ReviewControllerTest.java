@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.TestConstants.*;
+import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
@@ -41,23 +41,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReviewControllerTest extends ControllerTest {
     @MockBean
     private ReviewService reviewService;
-    private static final String URL = "/api/stores/{storeId}/reviews";
 
     @Test
     @DisplayName("페이징된 리뷰 목록 조회")
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
+        //given
         Page<StoreDetailReviewResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
                 new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
                 new StoreDetailReviewResponse(1L, 2L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
                 new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0)
         ));
 
+        //when
         when(reviewService.getReviewsByStoreId(anyLong(), any()))
                 .thenReturn(MY_REVIEW_LIST);
 
+        //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/stores/{storeId}/reviews", 1)
-                        .param("orderBy", "desc")
-                        .param("orderColumn", "createdDate")
+                        .param("sort", "createdDate,desc")
                         .param("page", "0")
                         .param("size", "5")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +75,7 @@ public class ReviewControllerTest extends ControllerTest {
                                         parameterWithName("storeId").description("리뷰를 조회할 가게의 고유 ID")
                                 ),
                                 requestParameters(
-                                        parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
-                                        parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdDate입니다."),
+                                        parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").optional(),
                                         parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다."),
                                         parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
                                 ),
@@ -87,12 +87,13 @@ public class ReviewControllerTest extends ControllerTest {
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                         fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
                                         fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
-                                        fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
-                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
-                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
-                                        fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
-                                        fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
-                                        fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
+                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
+                                        fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
+                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
+                                        fieldWithPath("isLast").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
+                                        fieldWithPath("isFirst").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
+                                        fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재페이지가 몇번인지")
+
                                 )
                         )
                 );
@@ -102,13 +103,13 @@ public class ReviewControllerTest extends ControllerTest {
     @DisplayName("내가 작성한 리뷰 목록")
     public void getMyReviewInfos_WhenGetMyReviews_ThenReturnReviewInfos() throws Exception {
         //given
+
         when(reviewService.getMyReviewInfos(anyLong(), any())).thenReturn(MY_REVIEW_LIST);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/reviews/members/{memberId}", 2)
-                        .param("orderBy", "desc")
-                        .param("orderColumn", "createdDate")
-                        .param("page", "0")
+                        .param("sort", "createdAt,desc")
+                        .param("page", "1")
                         .param("size", "5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -122,10 +123,9 @@ public class ReviewControllerTest extends ControllerTest {
                                 parameterWithName("memberId").description("리뷰를 조회할 사용자의 고유 ID")
                         ),
                         requestParameters(
-                                parameterWithName("orderBy").description("정렬 방향 (asc 또는 desc). 기본값은 desc입니다."),
-                                parameterWithName("orderColumn").description("정렬 대상 컬럼. 기본값은 createdDate입니다."),
-                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다."),
-                                parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.")
+                                parameterWithName("sort").description("정렬기준항목과 정렬순서(콤마로 구분)").optional(),
+                                parameterWithName("page").description("조회할 페이지 번호. 기본값은 0입니다.").optional(),
+                                parameterWithName("size").description("한 페이지에 조회할 리뷰 개수. 기본값은 5입니다.").optional()
                         ),
                         responseFields(
                                 fieldWithPath("data[].url").type(JsonFieldType.STRING).description("리뷰단 가게의 대표사진"),
@@ -136,12 +136,13 @@ public class ReviewControllerTest extends ControllerTest {
                                 fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
                                 fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
-                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
-                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
-                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 데이터개수"),
-                                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("현재페이지가 첫 페이지인가에 대한 여부"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("현재페이지가 마지막 페이지인가에 대한 여부")
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
+                                fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
+                                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
+                                fieldWithPath("isLast").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
+                                fieldWithPath("isFirst").type(JsonFieldType.BOOLEAN).description("첫 페이지인지 여부"),
+                                fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재페이지가 몇번인지")
+
                         )
                 ));
     }
@@ -150,10 +151,10 @@ public class ReviewControllerTest extends ControllerTest {
     @DisplayName("리뷰 업로드")
     public void upload_WhenUploadReview_ThenReviewInfo() throws Exception {
         //given
-        when(reviewService.save(any())).thenReturn(REVIEW_RESPONSE);
+        when(reviewService.save(anyLong(),any())).thenReturn(REVIEW_RESPONSE);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.post(URL, 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/stores/{storeId}/reviews", 1,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -168,11 +169,10 @@ public class ReviewControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
+                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID"),
+                                parameterWithName("storeId").description("가게 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("consumerId").type(JsonFieldType.NUMBER).description("리뷰작성자의 고유 id"),
-                                fieldWithPath("storeId").type(JsonFieldType.NUMBER).description("가게의 고유 id"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat())
                         ),
@@ -194,10 +194,10 @@ public class ReviewControllerTest extends ControllerTest {
     @DisplayName("리뷰 업데이트")
     public void update() throws Exception {
         //given
-        when(reviewService.update(any())).thenReturn(REVIEW_RESPONSE);
+        when(reviewService.update(anyLong(),any())).thenReturn(REVIEW_RESPONSE);
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.put(URL + "/{writerId}", 1, 2)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/stores/{storeId}/reviews/{reviewId}", 2,1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -212,12 +212,10 @@ public class ReviewControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("writerId").description("리뷰 작성한사람의 고유 id"),
-                                parameterWithName("storeId").description("리뷰다는 가게의 고유 ID")
+                                parameterWithName("reviewId").description("리뷰 id"),
+                                parameterWithName("storeId").description("가게 고유 id")
                         ),
                         requestFields(
-                                fieldWithPath("consumerId").type(JsonFieldType.NUMBER).description("리뷰 작성자의 고유 id"),
-                                fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("리뷰 고유 id"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat())
                         ),
@@ -241,7 +239,7 @@ public class ReviewControllerTest extends ControllerTest {
         doNothing().when(reviewService).delete(anyLong());
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL + "/{reviewId}", 1, 2)
+        mockMvc.perform(RestDocumentationRequestBuilders.delete( "/api/stores/{storeId}/reviews/{reviewId}", 1,2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
@@ -251,8 +249,8 @@ public class ReviewControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("storeId").description("리뷰 단 가게의 고유 id"),
-                                parameterWithName("reviewId").description("리뷰의 고유 id")
+                                parameterWithName("reviewId").description("리뷰의 고유 id"),
+                                parameterWithName("storeId").description("가게 고유 id")
                         )
                 ));
 

@@ -1,15 +1,11 @@
 package com.twogather.twogatherwebbackend.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +53,15 @@ public class Store {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Column(unique = true)
     private String name;
     private String address;
     private String phone;
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
     private String reasonForRejection;
+    @Builder.Default
+    private LocalDate requestDate = LocalDate.now();
     private String businessNumber;
     private String businessName;
     private LocalDate businessStartDate;
@@ -77,6 +76,7 @@ public class Store {
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;
+        this.requestDate = LocalDate.now();
     }
     public void update(String storeName, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate) {
         if (storeName != null && !storeName.isEmpty()) {
@@ -103,14 +103,52 @@ public class Store {
             this.category = category;
         }
     }
-    public void clearKeyword(){
-        this.storeKeywordList = new ArrayList<>();
+    public void addBusinessHour(BusinessHour businessHour){
+        if(businessHourList==null){
+            businessHourList = new ArrayList<>();
+        }
+        businessHourList.add(businessHour);
     }
-    public void delete(){
-        this.status = StoreStatus.DELETED;
+    public void addImage(Image image){
+        if(storeImageList==null){
+            storeImageList = new ArrayList<>();
+        }
+        storeImageList.add(image);
+    }
+    public void addReview(Review review){
+        if(reviewList==null){
+            reviewList = new ArrayList<>();
+        }
+        reviewList.add(review);
+    }
+    public void addLikes(Likes likes){
+        if(likesList==null){
+            likesList = new ArrayList<>();
+        }
+        likesList.add(likes);
+    }
+    public void addMenu(Menu menu){
+        if(menuList==null){
+            menuList = new ArrayList<>();
+        }
+        menuList.add(menu);
+    }
+    public void addStoreKeyword(StoreKeyword storeKeyword){
+        if(storeKeywordList==null){
+            storeKeywordList = new ArrayList<>();
+        }
+        storeKeywordList.add(storeKeyword);
+    }
+    public void reject(String reasonForRejection) {
+        this.status = StoreStatus.DENIED;
+        this.reasonForRejection = reasonForRejection;
     }
     public void approve(){
         this.status = StoreStatus.APPROVED;
+    }
+    public void reapply(){
+        this.requestDate = LocalDate.now();
+        this.status = StoreStatus.PENDING;
     }
 
 }
