@@ -12,17 +12,18 @@ import java.util.List;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
+@Builder
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
     protected Long memberId;
 
-
     @OneToMany(mappedBy = "commenter", cascade = CascadeType.REMOVE)
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList;
 
     @Column(unique = true, length = 15)
     protected String username;

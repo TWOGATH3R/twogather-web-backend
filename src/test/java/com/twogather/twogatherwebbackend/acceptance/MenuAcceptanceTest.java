@@ -28,7 +28,7 @@ public class MenuAcceptanceTest extends AcceptanceTest{
     public void setup(){
         super.setUp();
         registerOwner();
-        registerStore();//createMenu을 포함하고 있음
+        registerStoreWithFullInfo();//createMenu을 포함하고 있음
         approveStore();
         URL = "/api/stores/" + storeId + "/menus";
     }

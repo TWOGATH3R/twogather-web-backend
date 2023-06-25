@@ -34,27 +34,19 @@ public class BusinessHour {
 
     public void update(LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek, Boolean isOpen,
                        Boolean hasBreakTime, LocalTime breakStartTime, LocalTime breakEndTime){
-        if(startTime!=null){
-            this.startTime = startTime;
-        }
-        if(endTime!=null){
-            this.endTime = endTime;
-        }
-        if(dayOfWeek!=null){
-            this.dayOfWeek = dayOfWeek;
-        }
-        if(breakStartTime!=null){
-            this.breakStartTime = breakStartTime;
-        }
-        if(breakEndTime!=null){
-            this.breakEndTime = breakEndTime;
-        }
         if(isOpen!=null){
             this.isOpen = isOpen;
         }
         if(hasBreakTime!=null){
             this.hasBreakTime = hasBreakTime;
         }
+        if(dayOfWeek!=null){
+            this.dayOfWeek = dayOfWeek;
+        }
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
 
     }
     public void addStore(Store store){

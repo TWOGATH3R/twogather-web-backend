@@ -89,7 +89,6 @@ public class ControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
     }
 
-
     //TODO:나중에 변경
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final HttpServletRequest request, final Exception exception) {

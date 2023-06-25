@@ -27,7 +27,7 @@ public interface DocumentFormatGenerator {
         return key("format").value("숫자 10자리여야한다");
     }
     static Attributes.Attribute getScoreFormat() {
-        return key("format").value("숫자 0~5 사이의 소수점 한자리 형태");
+        return key("format").value("숫자 0~5 사이의 소수점 한자리 형태( x.0 or x.5 의 형태여야합니다)");
     }
     static Attributes.Attribute getStoreType() {
         return key("format").value("TOP_RATED or MOST_REVIEWED or MOST_LIKES_COUNT");

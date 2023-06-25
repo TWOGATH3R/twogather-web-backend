@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 import static io.restassured.RestAssured.given;
@@ -30,7 +29,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
     public void init(){
         super.setUp();
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
     }
     static final String REASON = "조건 불충족";
 

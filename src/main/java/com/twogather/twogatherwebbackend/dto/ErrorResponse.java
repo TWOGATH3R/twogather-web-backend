@@ -35,9 +35,6 @@ public class ErrorResponse {
         return new ErrorResponse(exception.getMessage());
     }
 
-    public static ErrorResponse internalServerError(){
-        return new ErrorResponse("일시적으로 접속이 원활하지 않습니다.");
-    }
     public static ErrorResponse of(final MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return new ErrorResponse(message);

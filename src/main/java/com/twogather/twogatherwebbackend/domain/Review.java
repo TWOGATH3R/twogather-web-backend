@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,4 +51,12 @@ public class Review {
         reviewer = member;
     }
 
+    public void update(String content, Double score) {
+        if(content != null && !content.isEmpty()) {
+            this. content = content;
+        }
+        if(!score.isNaN() && 0.0 <= score && score <= 5.0) {
+            this. content = content;
+        }
+    }
 }

@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class CommentException extends ClientException{
     public enum CommentErrorCode {
-        NO_SUCH_COMMENT("해당하는 대댓글이 존재하지않습니다", HttpStatus.NOT_FOUND);
+        NO_SUCH_COMMENT("해당하는 대댓글이 존재하지않습니다", HttpStatus.NOT_FOUND),
+        MAX_1_COMMENT("최대 1개의 대댓글만 작성할 수 있습니다");
         private final String message;
         private final HttpStatus status;
 

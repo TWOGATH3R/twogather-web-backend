@@ -11,13 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ReviewUpdateRequest {
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
-    private Long consumerId;
-
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
-    private Long reviewId;
-
+public class ReviewSaveUpdateRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private String content;
 

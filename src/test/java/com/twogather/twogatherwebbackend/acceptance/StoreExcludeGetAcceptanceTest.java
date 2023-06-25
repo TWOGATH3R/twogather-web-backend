@@ -47,7 +47,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("가게의 기본적인 정보를 저장하는데 제약사항을 만족했다면 성공해야한다")
     public void whenSaveValidStore_ThenReturnStoreInfo() {
         //when
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         //then
@@ -90,7 +90,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("유효한 값으로 가게 업데이트 시 데이터베이스를 조회해서 제대로 업데이트가 되었는지 값일치를 확인해봤을때 일치해야한다")
     public void whenUpdateValidStore_ThenReturnStoreInfo()  {
         //given
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 "updateName", "updateAddress", "063-231-4999",
@@ -116,7 +116,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("유효하지않은 값(null field)으로 가게 업데이트 시도 시 실패하면서 롤백돼야한다")
     public void whenUpdateStoreIncludeNullField_ThenThrowException()  {
         //given
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 null, "updateAddress", "063-231-4999",
@@ -135,7 +135,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("유효하지않은 전화번호로 가게 업데이트 시도 시 실패하면서 롤백돼야한다 ")
     public void whenUpdateStoreIncludePhoneField_ThenThrowException() {
         //given
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         StoreSaveUpdateRequest updateRequest = new StoreSaveUpdateRequest(
                 null, "updateAddress", "061233-231-4999",
@@ -154,7 +154,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("똑같은 가게 이름으로 두번 등록시 4xx error가 터진다")
     public void whenRegisterSameStoreName_ThenThrowException() {
         //given
-        registerStore();
+        registerStoreWithFullInfo();
         //when
         registerStoreDuplicate();
     }
@@ -163,7 +163,7 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
     @DisplayName("가게 삭제 요청 후 가게 관련 요소(메뉴, 영업시간, 이미지)도 다 삭제되어야한다")
     public void whenDeleteStore_ThenNotExistStore() {
         //given
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         Assertions.assertFalse(businessHourRepository.findAll().isEmpty());
