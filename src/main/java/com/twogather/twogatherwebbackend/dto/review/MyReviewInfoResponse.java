@@ -10,14 +10,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MyReviewInfoResponse {
-    private Long reviewId;
-    private String content;
-    private Double score;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate createdDate;
+public class MyReviewInfoResponse extends ReviewResponse{
     private String url;
     private String storeName;
     private String storeAddress;
-    private String consumerName;
+
+    public MyReviewInfoResponse(Long reviewId, String content, Double score, LocalDate createdDate,
+                                String url, String storeName, String storeAddress, String consumerName) {
+        super(reviewId, content, score, createdDate, consumerName);
+        this.url = url;
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+    }
 }

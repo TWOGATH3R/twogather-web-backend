@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
-import com.twogather.twogatherwebbackend.exception.StoreException;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void init(){
         super.setUp();
         registerOwner();
-        registerStore();
+        registerOnlyStore();
         approveStore();
         url = "/api/stores/" + storeId + "/business-hours";
     }
@@ -31,8 +31,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     @DisplayName("save: 열린 날만 요청해도 영업안하는요일까지 포함해서 응답으로 줘야한다")
     public void whenOnlyOpenDaysProvided_thenResponseIncludesClosedDays(){
         //given
-        BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
+        saveBusinessHour()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("data", hasSize(7))
                 .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
@@ -45,14 +44,28 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     }
 
     @Test
+    @DisplayName("save: 중복으로 save를 요청하는 경우 throw exception: update를 수행해야합니다")
+    public void whenDuplicateSave_thenThrowException(){
+        //given
+
+        //when
+        saveBusinessHour()
+                .statusCode(HttpStatus.CREATED.value());
+        //then
+        saveBusinessHour()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+
+    @Test
     @DisplayName("save: 탈퇴한 회원의 경우 영업시간을 저장할때 401 throw exception")
     public void whenLeavedUserRequest_thenThrowException(){
         // given
-        BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);
         //when
         leaveOwner();
         //then
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
+        saveBusinessHour()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
 
     }
@@ -61,11 +74,10 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     @DisplayName("save: 탈퇴한 회원은 아니지만 삭제된 가게의 경우에도 throw exception")
     public void whenDeletedStoreRequest_thenThrowException()  {
         // given
-        BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);
         //when
         removeStore();
         //then
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
+        saveBusinessHour()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("message", equalTo(NO_SUCH_STORE.getMessage()));
 
@@ -78,7 +90,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         BusinessHourSaveUpdateListRequest saveRequest = createStartTimeIsLaterThanEndTimeBusinessHourRequest(storeId);
 
         //when, then
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
+        saveBusinessHour(saveRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo(START_TIME_MUST_BE_BEFORE_END_TIME.getMessage()));
 
@@ -90,7 +102,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         //given
         BusinessHourSaveUpdateListRequest saveRequest = createNullTimeBusinessHourRequest(storeId);
         //when, then
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest)
+        saveBusinessHour(saveRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
 
@@ -102,7 +114,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         //given
         BusinessHourSaveUpdateListRequest request = createInvalidTimeBusinessHourRequest(storeId);
         //when, then
-        doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
+        saveBusinessHour(request)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo(MUST_HAVE_START_TIME_AND_END_TIME.getMessage()));
 
@@ -114,7 +126,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     public void whenOnlyUpdateDaysProvided_thenReviseProvidedDays() {
         //given
         //when
-
+        saveBusinessHour();
         //then
         BusinessHourSaveUpdateListRequest updateRequest = createUpdateBusinessHourRequest(storeId);
         doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), updateRequest)
@@ -181,13 +193,15 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
     @DisplayName("get: 가게 id에 해당하는 영업시간 7개 정보를 모두 가져온다")
     public void whenGetBusinessHourByStoreId_thenReturnAllDayOfWeekBusinessHour() {
         //given
+        //when
+        saveBusinessHour();
         //then
         doGet(url,null,null)
                 .body("data", hasSize(7))
-                .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '11:30' && it.endTime == '20:00' }", notNullValue())
-                .body("data.find { it.dayOfWeek == 'TUESDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'MONDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00' }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == true && it.startTime == '09:00' && it.endTime == '16:00'}", notNullValue())
                 .body("data.find { it.dayOfWeek == 'WEDNESDAY' && it.isOpen == false }", notNullValue())
-                .body("data.find { it.dayOfWeek == 'THURSDAY' && it.isOpen == false }", notNullValue())
+                .body("data.find { it.dayOfWeek == 'TUESDAY' && it.isOpen == false }", notNullValue())
                 .body("data.find { it.dayOfWeek == 'FRIDAY' && it.isOpen == false }", notNullValue())
                 .body("data.find { it.dayOfWeek == 'SATURDAY' && it.isOpen == false }", notNullValue())
                 .body("data.find { it.dayOfWeek == 'SUNDAY' && it.isOpen == false }", notNullValue());
@@ -203,6 +217,17 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .body("message", equalTo(INVALID_TOKEN));
     }
+
+    private ValidatableResponse saveBusinessHour(){
+        BusinessHourSaveUpdateListRequest saveRequest = createBusinessHourRequest(storeId);
+        return doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest);
+    }
+
+    private ValidatableResponse saveBusinessHour(BusinessHourSaveUpdateListRequest request){
+        return doPost(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request);
+    }
+
+
 
 
 }

@@ -34,7 +34,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -69,11 +68,10 @@ public class AcceptanceTest
     @Autowired
     protected CategoryRepository categoryRepository;
     @Autowired
+    protected AmazonS3 amazonS3;
     protected ReviewRepository reviewRepository;
     @Autowired
     protected StoreRepository storeRepository;
-    @Autowired
-    private AmazonS3 amazonS3;
     @Autowired
     protected MemberRepository memberRepository;
     @Autowired
@@ -224,7 +222,7 @@ public class AcceptanceTest
         review.addReviewer(member);
         return review.getReviewId();
     }
-    protected void registerStore() {
+    protected void registerStoreWithFullInfo() {
         log.info("register store");
         validatorWillPass();
         categoryId = registerCategory();
@@ -239,6 +237,20 @@ public class AcceptanceTest
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
         registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
         registerImage(storeId);
+
+    }
+    protected void registerOnlyStore() {
+        log.info("register store");
+        validatorWillPass();
+        categoryId = registerCategory();
+        registerKeyword();
+
+        storeId = convert(doPost(STORE_URL,
+                ownerToken.getRefreshToken(),
+                ownerToken.getAccessToken(),
+                createStoreRequest(keywordList, categoryId))
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
 
     }
     protected void registerStoreWithValidatorFail(){

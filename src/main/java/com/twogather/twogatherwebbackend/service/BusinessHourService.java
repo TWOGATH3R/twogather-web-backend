@@ -33,6 +33,10 @@ public class BusinessHourService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
 
+        if(!businessHourRepository.findByStoreStoreId(storeId).isEmpty()){
+            throw new BusinessHourException(DUPLICATE_BUSINESS_HOUR);
+        }
+
         Set<DayOfWeek> uniqueDays = checkDuplicateDays(requestList);
         List<BusinessHour> entityList = createBusinessHourListBySaveList(requestList, store, uniqueDays);
 

@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import io.restassured.response.ValidatableResponse;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
-import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class CategoryAcceptanceTest extends AcceptanceTest{
@@ -29,7 +27,7 @@ public class CategoryAcceptanceTest extends AcceptanceTest{
     public void initSetting(){
         super.setUp();
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         createCategory();
     }

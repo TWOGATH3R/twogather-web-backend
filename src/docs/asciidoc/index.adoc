@@ -233,6 +233,9 @@ operation::image/delete/[snippets='http-request,path-parameters,http-response']
 
 == Review
 
+=== Get-Reviews-By-Store-Id
+operation::review/getReviewsByStoreId/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+
 === Get-My-Review-List
 - 필요권한: `MY_ID`
 

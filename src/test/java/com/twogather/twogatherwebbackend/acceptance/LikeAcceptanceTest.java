@@ -15,7 +15,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
     @BeforeEach
     public void initSetting(){
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         registerConsumer();
         url = "/api/stores/" + storeId + "/likes";

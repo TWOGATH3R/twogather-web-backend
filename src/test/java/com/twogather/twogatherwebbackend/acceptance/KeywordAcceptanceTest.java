@@ -4,8 +4,6 @@ import com.twogather.twogatherwebbackend.domain.Keyword;
 import com.twogather.twogatherwebbackend.domain.StoreKeyword;
 import com.twogather.twogatherwebbackend.repository.KeywordRepository;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
-import org.checkerframework.checker.units.qual.K;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,7 +65,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenSettingThreeKeywordsForStore_thenTheyAreSavedInStoreKeywordTable()  {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         //when
@@ -94,7 +92,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenSettingTwoKeywordsForStore_thenThrowException()  {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         List<String> request = createMoreThan3Request();
@@ -112,7 +110,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenEmptyKeyword_thenIgnore() {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         int keywordSize = 2;

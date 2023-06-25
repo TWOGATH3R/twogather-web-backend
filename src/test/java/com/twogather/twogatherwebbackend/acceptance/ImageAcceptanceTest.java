@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.image.ImageIdList;
 import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
-import com.twogather.twogatherwebbackend.exception.ImageException;
 import com.twogather.twogatherwebbackend.repository.ImageRepository;
-import com.twogather.twogatherwebbackend.service.S3Uploader;
 import com.twogather.twogatherwebbackend.service.StorageUploader;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
@@ -14,29 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NOT_IMAGE;
@@ -59,7 +39,7 @@ public class ImageAcceptanceTest extends AcceptanceTest{
     public void initSetting(){
         super.setUp();
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
         url = "/api/stores/" + storeId + "/images";
     }
@@ -81,16 +61,17 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         imageUrl1 = responseList.get(0).getUrl();
         imageUrl2 = responseList.get(1).getUrl();
     }
-    /*
-    @Test
-    public void whenUploadImage_ThenCreateImageWithProd() throws Exception {
-        // Given,then
-        createImages();
 
-        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
-        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
-    }*/
 
+//    @Test
+//    public void whenUploadImage_ThenCreateImage() throws Exception {
+//        // TODO
+//        // Given,then
+//        createImages();
+//
+//        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
+//        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
+//    }
 
     @Test
     @DisplayName("특정 가게의 모든 이미지를 권한없이 얻어올수있다")
@@ -151,26 +132,25 @@ public class ImageAcceptanceTest extends AcceptanceTest{
         Assertions.assertFalse(s3Uploader.doesObjectExist(imageUrl2));
     }
 
-    /*
-    @Test
-    @DisplayName("탈퇴한 회원으로 이미지 삭제시 throw exception")
-    public void whenDeleteImageWithLeaveMember_ThenThrowExceptionWithProd() throws Exception {
-        // Given
-        createImages();
-        leaveOwner();
-        ImageIdList request = createImageIdRequest();
-
-        // When
-        doDeleteWithFile(request)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
-
-        Assertions.assertTrue(imageRepository.findById(imageId1).isPresent());
-        Assertions.assertTrue(imageRepository.findById(imageId2).isPresent());
-        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
-        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
-
-    }*/
-
+//    @Test
+//    @DisplayName("탈퇴한 회원으로 이미지 삭제시 throw exception")
+//    public void whenDeleteImageWithLeaveMember_ThenThrowException() throws Exception {
+//        // TODO
+//        // Given
+//        createImages();
+//        leaveOwner();
+//        ImageIdList request = createImageIdRequest();
+//
+//        // When
+//        doDeleteWithFile(request)
+//                .statusCode(HttpStatus.UNAUTHORIZED.value());
+//
+//        Assertions.assertTrue(imageRepository.findById(imageId1).isPresent());
+//        Assertions.assertTrue(imageRepository.findById(imageId2).isPresent());
+//        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl1));
+//        Assertions.assertTrue(s3Uploader.doesObjectExist(imageUrl2));
+//
+//    }
     @Test
     @DisplayName("존재하지않는 id로 이미지를 삭제했을때 4xx error 가 터져야한다")
     public void whenDeleteNoSuchImage_ThenNotThrowException() {
