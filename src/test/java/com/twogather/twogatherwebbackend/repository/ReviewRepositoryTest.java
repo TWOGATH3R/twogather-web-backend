@@ -197,23 +197,11 @@ public class ReviewRepositoryTest extends RepositoryTest{
         Page<StoreDetailReviewResponse> results1 = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
         List<StoreDetailReviewResponse> content = results1.getContent();
 
-<<<<<<< HEAD
-        // then
-        content.stream().forEach(
-                item -> {
-                    assertThat(item.getConsumerAvgScore()).isEqualTo(map.get(item.getConsumerId()));
-                    System.out.println(item.getReviewId());
-                    System.out.println(item.getConsumerId());
-                    System.out.println(item.getConsumerName());
-                    System.out.println(item.getConsumerAvgScore());
-                }
-        );
-=======
         assertThat(results1).isNotEmpty();
         assertThat(content.get(0).getConsumerAvgScore()).isEqualTo(3.0);   // user1의 평균 리뷰 평점
         assertThat(content.get(1).getConsumerAvgScore()).isEqualTo(4.5);   // user2의 평균 리뷰 평점
         assertThat(content.get(2).getConsumerAvgScore()).isEqualTo(5.0);   // user3의 평균 리뷰 평점
->>>>>>> d591cb6431895eeda3a9bb4a92bc6691973b93c5
+
     }
 
     @Test
@@ -232,15 +220,10 @@ public class ReviewRepositoryTest extends RepositoryTest{
         Page<StoreDetailReviewResponse> pagedResult2 = reviewRepository.findReviewsByStoreId(store3.getStoreId(), pageable2);
 
         // then
-<<<<<<< HEAD
         assertThat(pagedResult0.getNumberOfElements()).isEqualTo(5);
         assertThat(pagedResult1.getNumberOfElements()).isEqualTo(5);
         assertThat(pagedResult2.getNumberOfElements()).isEqualTo(2);
-=======
-        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
-        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
         assertThat(pagedResult0.getTotalElements()).isEqualTo(12);
->>>>>>> d591cb6431895eeda3a9bb4a92bc6691973b93c5
         assertThat(pagedResult0.isFirst()).isTrue();
         assertThat(pagedResult2.isLast()).isTrue();
 
@@ -263,21 +246,15 @@ public class ReviewRepositoryTest extends RepositoryTest{
         Page<MyReviewInfoResponse> pagedResult2 = reviewRepository.findMyReviewsByMemberId(consumer4.getMemberId(), pageable2);
 
         // then
-<<<<<<< HEAD
         assertThat(pagedResult0.getNumberOfElements()).isEqualTo(5);
         assertThat(pagedResult1.getNumberOfElements()).isEqualTo(5);
         assertThat(pagedResult2.getNumberOfElements()).isEqualTo(2);
-=======
         assertThat(pagedResult0.getContent().get(0).getContent()).isNotBlank();
         assertThat(pagedResult0.getContent().get(0).getConsumerName()).isNotBlank();
         assertThat(pagedResult0.getContent().get(0).getStoreName()).isNotBlank();
         //assertThat(pagedResult0.getContent().get(0).getUrl()).isNotBlank();
         assertThat(pagedResult0.getContent().get(0).getReviewId()).isNotNull();
-        assertThat(pagedResult0.getNumberOfElements()).isEqualTo(10);
-        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
-        assertThat(pagedResult1.getNumberOfElements()).isEqualTo(2);
         assertThat(pagedResult0.getTotalElements()).isEqualTo(12);
->>>>>>> d591cb6431895eeda3a9bb4a92bc6691973b93c5
         assertThat(pagedResult0.isFirst()).isTrue();
         assertThat(pagedResult2.isLast()).isTrue();
 
