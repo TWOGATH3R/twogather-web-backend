@@ -10,24 +10,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StoreDetailReviewResponse extends ReviewResponse{
+public class StoreDetailReviewResponse {
+    private Long reviewId;
+    private String content;
+    private Double score;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createdDate;
     private Long consumerId;
+    private String consumerName;
     private Double consumerAvgScore;
-
-    public StoreDetailReviewResponse(Long consumerId, Long reviewId, String content, Double score,
-                                     LocalDate createdDate, String consumerName) {
-        super(reviewId, content, score, createdDate, consumerName);
-        this.consumerId = consumerId;
-    }
-
-    public StoreDetailReviewResponse(Long consumerId, Long reviewId, String content, Double score,
-                              LocalDate createdDate, String consumerName, Double consumerAvgScore) {
-        super(reviewId, content, score, createdDate, consumerName);
-        this.consumerId = consumerId;
-        this.consumerAvgScore = consumerAvgScore;
-    }
-
-    public void setConsumerAvgScore(Double consumerAvgScore) {
-        this.consumerAvgScore = consumerAvgScore;
-    }
 }

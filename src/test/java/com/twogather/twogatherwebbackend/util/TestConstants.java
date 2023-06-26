@@ -16,6 +16,7 @@ import com.twogather.twogatherwebbackend.dto.image.ImageResponse;
 import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.dto.menu.*;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
+import com.twogather.twogatherwebbackend.dto.review.ReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.dto.review.ReviewSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
@@ -148,8 +149,8 @@ public class TestConstants {
             new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDate.of(2022, 1, 3), "imageurl2", "레스토랑1", "경기도 어쩌고 어쩌고", "박은지"),
             new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDate.of(2022, 1, 5), "imageurl3", "김밥집1", "전주시 어쩌고 어쩌고", "김지은")
     ));
-    public static final StoreDetailReviewResponse REVIEW_RESPONSE =
-            new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0);
+    public static final ReviewResponse REVIEW_RESPONSE =
+            new ReviewResponse(1L, "맛잇서요", 5.0, LocalDate.now(), "김뿡치");
     public static final ReviewSaveUpdateRequest REVIEW_SAVE_REQUEST =
             new ReviewSaveUpdateRequest( "진짜맛있어요!", 1.2);
     public static final ReviewSaveUpdateRequest REVIEW_UPDATE_REQUEST =

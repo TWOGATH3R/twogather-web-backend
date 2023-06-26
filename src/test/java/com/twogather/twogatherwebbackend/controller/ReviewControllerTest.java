@@ -47,9 +47,9 @@ public class ReviewControllerTest extends ControllerTest {
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
         //given
         Page<StoreDetailReviewResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-                new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, 2L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0)
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 1L, "김뿡치", 5.0),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 2L, "김뿡치", 5.0),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 3L, "김뿡치", 5.0)
         ));
 
         //when
