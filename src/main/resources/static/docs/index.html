@@ -655,8 +655,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3NzU1ODk5fQ.qHKVj7YxEsA-YHbf6jM2SfsZ57YX7glvVHGcxx7BYfheUM4UW_Xk0K9HTBjr5vsJ5tTrFSh-WJT6T3pvC8kXnA
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3NzY0NjI5fQ.7SUbsfJRCn45qjdIDBAiuEE1sD2XiB8oT4GUt_BY5u6QRJneK1_Twgt76pnJLl1XkB3BgdLXqGsUBmUcQAeYxw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3Nzc3MjY4fQ.AEkMDBtO9kcmE9XNk79DPBElGDoSthVHSVAB1dbz69LC6Pajy7O1GjLwAUZ2DE34kRp_EIoLqpJ3lDu8oMa-3Q
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg3Nzg1OTk4fQ.kmHGtV3jGooQDP4Ul1TmrhE1iwWaonjc7eyjt06QxufLYARPPowGbijsEGxuLyTpdNA3VGsu3rUoRW3lkeHpPQ
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -4894,7 +4894,7 @@ Content-Length: 389
 <h4 id="_get_3_http_request"><a class="link" href="#_get_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=2e792414-d276-4336-98d1-9b03b9dc3a73 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=3dea9dbf-4661-4ff3-9d69-c422cdcad26a HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5012,7 +5012,7 @@ Content-Length: 138
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=035df732-2837-4043-a773-eb44d1bd427b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=7e08e991-d836-439f-afb7-2254590d6ce4 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -5528,7 +5528,7 @@ Content-Length: 130
 <h4 id="_save_5_http_request"><a class="link" href="#_save_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=28c2ca02-ac32-47c8-a0ce-bb1234134f12 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=e19438fb-16fb-4d80-bee3-134063b27f05 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5677,7 +5677,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=6be02414-db27-43da-844f-46c9fde59d4b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=6ff5b34c-243a-4855-bbfc-1de321e42a66 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -6295,24 +6295,24 @@ Content-Length: 761
     "content" : "맛잇서요",
     "score" : 5.0,
     "createdDate" : "2022-01-05",
-    "consumerName" : "김뿡치",
     "consumerId" : 1,
+    "consumerName" : "김뿡치",
     "consumerAvgScore" : 5.0
   }, {
-    "reviewId" : 2,
+    "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
     "createdDate" : "2022-01-05",
+    "consumerId" : 2,
     "consumerName" : "김뿡치",
-    "consumerId" : 1,
     "consumerAvgScore" : 5.0
   }, {
-    "reviewId" : 3,
+    "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
     "createdDate" : "2022-01-05",
+    "consumerId" : 3,
     "consumerName" : "김뿡치",
-    "consumerId" : 1,
     "consumerAvgScore" : 5.0
   } ],
   "currentPage" : 0,
@@ -6540,28 +6540,28 @@ Content-Length: 943
     "content" : "Good product",
     "score" : 4.5,
     "createdDate" : "2022-01-01",
-    "consumerName" : "김은지",
-    "url" : "imageurl",
-    "storeName" : "김가네삼겹살",
-    "storeAddress" : "서울시 어쩌고 어쩌고"
+    "consumerName" : "imageurl",
+    "url" : "김가네삼겹살",
+    "storeName" : "서울시 어쩌고 어쩌고",
+    "storeAddress" : "김은지"
   }, {
     "reviewId" : 1,
     "content" : "Not bad",
     "score" : 3.0,
     "createdDate" : "2022-01-03",
-    "consumerName" : "박은지",
-    "url" : "imageurl2",
-    "storeName" : "레스토랑1",
-    "storeAddress" : "경기도 어쩌고 어쩌고"
+    "consumerName" : "imageurl2",
+    "url" : "레스토랑1",
+    "storeName" : "경기도 어쩌고 어쩌고",
+    "storeAddress" : "박은지"
   }, {
     "reviewId" : 2,
     "content" : "Excellent",
     "score" : 5.0,
     "createdDate" : "2022-01-05",
-    "consumerName" : "김지은",
-    "url" : "imageurl3",
-    "storeName" : "김밥집1",
-    "storeAddress" : "전주시 어쩌고 어쩌고"
+    "consumerName" : "imageurl3",
+    "url" : "김밥집1",
+    "storeName" : "전주시 어쩌고 어쩌고",
+    "storeAddress" : "김지은"
   } ],
   "currentPage" : 0,
   "totalPages" : 1,
@@ -6708,7 +6708,7 @@ Content-Length: 943
 <h4 id="_save_7_http_request"><a class="link" href="#_save_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=508517cc-f29e-4d45-ad07-d9023cfb411d HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=f7d1b2eb-6839-4742-84dd-abe86215c7e7 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6754,17 +6754,15 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 220
+Content-Length: 166
 
 {
   "data" : {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
-    "consumerName" : "김뿡치",
-    "consumerId" : 1,
-    "consumerAvgScore" : 5.0
+    "createdDate" : "2023-06-26",
+    "consumerName" : "김뿡치"
   }
 }</code></pre>
 </div>
@@ -6790,27 +6788,6 @@ Content-Length: 220
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 고유 id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerAvgScore</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰를 작성한 사용자의 평균 평점</p></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
@@ -6839,6 +6816,13 @@ Content-Length: 220
 <td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성날짜</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰작성자의 이름</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -6856,7 +6840,7 @@ Content-Length: 220
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=b9061d7a-378c-4be8-a8a1-d7177d3fb0ee HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=f7a7329d-17a3-4554-bcaa-9b2b0dc308e4 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6908,17 +6892,15 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 220
+Content-Length: 166
 
 {
   "data" : {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
-    "consumerName" : "김뿡치",
-    "consumerId" : 1,
-    "consumerAvgScore" : 5.0
+    "createdDate" : "2023-06-26",
+    "consumerName" : "김뿡치"
   }
 }</code></pre>
 </div>
@@ -6944,27 +6926,6 @@ Content-Length: 220
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자의 고유 id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자의 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerAvgScore</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 자자의 평균 평점</p></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.reviewId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
@@ -6993,6 +6954,13 @@ Content-Length: 220
 <td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성날짜</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.consumerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자의 이름</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -7010,7 +6978,7 @@ Content-Length: 220
 <h4 id="_delete_7_http_request"><a class="link" href="#_delete_7_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=2f1e2e1d-e160-4d29-b2e5-f5545a451047 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=87f49f66-3ba8-4232-aec4-32006b8e27e2 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>

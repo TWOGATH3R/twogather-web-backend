@@ -43,11 +43,11 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
 
         List<StoreDetailReviewResponse> responseList = jpaQueryFactory
                 .select(Projections.constructor(StoreDetailReviewResponse.class,
-                        member.memberId,
                         review.reviewId,
                         review.content,
                         review.score,
                         review.createdDate,
+                        member.memberId,
                         member.username,
                         JPAExpressions.select(subReview.score.avg())
                                 .from(subReview)
@@ -81,10 +81,10 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                         review.content,
                         review.score,
                         review.createdDate,
+                        member.username,
                         image.url,
                         store.name,
-                        store.address,
-                        member.username))
+                        store.address))
                 .from(review)
                 .join(review.reviewer, member)
                 .join(review.store, store)

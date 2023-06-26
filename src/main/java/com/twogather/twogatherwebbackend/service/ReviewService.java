@@ -58,7 +58,7 @@ public class ReviewService {
                         .store(store)
                         .reviewer(reviewer)
                         .content(request.getContent())
-                        .score(request.getScore())
+                        .score(roundToNearestHalf(request.getScore()))
                         .createdDate(LocalDate.now())
                         .build());
 
@@ -69,7 +69,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewException(NO_SUCH_REVIEW));
 
-        review.update(request.getContent(), request.getScore());
+        review.update(request.getContent(), roundToNearestHalf(request.getScore()));
 
         return toReviewResponse(review);
     }
@@ -92,5 +92,13 @@ public class ReviewService {
     private ReviewResponse toReviewResponse(Review review) {
         return new ReviewResponse(review.getReviewId(), review.getContent(),
                 review.getScore(), review.getCreatedDate(), review.getReviewer().getName());
+    }
+
+    // 점수를 0.5단위로 반올림
+    public Double roundToNearestHalf(Double input) {
+        Double score = input;
+        score = Math.round(score * 2) / 2.0;
+
+        return score;
     }
 }
