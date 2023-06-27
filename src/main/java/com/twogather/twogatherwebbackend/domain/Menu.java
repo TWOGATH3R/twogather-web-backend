@@ -9,11 +9,15 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"store_id", "name"})
+})
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="menu_id")
     private Long menuId;
+
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")

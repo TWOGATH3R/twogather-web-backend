@@ -18,7 +18,7 @@ public class LikeAcceptanceTest extends AcceptanceTest{
         registerStoreWithFullInfo();
         approveStore();
         registerConsumer();
-        url = "/api/stores/" + storeId + "/likes";
+        url = "/api/stores/" + storeId + "/members/" + consumerId +  "/likes";
     }
     private String url;
 

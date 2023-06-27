@@ -29,7 +29,6 @@ import java.util.List;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -44,63 +43,16 @@ public class BusinessHourControllerTest extends ControllerTest{
 
     @MockBean
     private BusinessHourService businessHourService;
-    @MockBean
-    private StoreService storeService;
+
     private static final String URL = "/api/stores/{storeId}/business-hours";
 
-    @Test
-    @DisplayName("영업시간 정보 여러개에 대해 저장을 요청했을때 요청한정보 + id 정보 반환")
-    public void saveList_WhenSaveBusinessHours_Then201Status() throws Exception {
-        //given
-        when(businessHourService.saveList(any(), any())).thenReturn(createBusinessHourSaveResponse());
-        //when
-        //then
-        mockMvc.perform(RestDocumentationRequestBuilders.post(URL,1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(createBusinessHourSaveRequest()))
-                )
-                .andExpect(status().isCreated())
-                .andDo(print())
-                .andDo(document("business-hour/save",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("storeId").description("가게 고유 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("businessHourList[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week.").attributes(getDayOfWeekFormat()),
-                                fieldWithPath("businessHourList[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("businessHourList[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("businessHourList[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
-                                fieldWithPath("businessHourList[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("businessHourList[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("businessHourList[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
-                        ),
-                        responseFields(
-                                fieldWithPath("data[].businessHourId").type(JsonFieldType.NUMBER).description("The id of the businessHour"),
-                                fieldWithPath("data[].storeId").type(JsonFieldType.NUMBER).description("The id of the store"),
-                                fieldWithPath("data[].dayOfWeek").type(JsonFieldType.STRING).description("The day of week").attributes(getDayOfWeekFormat()),
-                                fieldWithPath("data[].startTime").type(JsonFieldType.STRING).description("The opening time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("data[].endTime").type(JsonFieldType.STRING).description("The closing time of the business hour").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("data[].hasBreakTime").type(JsonFieldType.BOOLEAN).description("해당 요일의 breakTime 존재 여부"),
-                                fieldWithPath("data[].breakStartTime").type(JsonFieldType.STRING).description("breakTime의 시작 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("data[].breakEndTime").type(JsonFieldType.STRING).description("breakTime이 끝나는 시간").attributes(getTimeFormat()).optional(),
-                                fieldWithPath("data[].isOpen").type(JsonFieldType.BOOLEAN).description("해당 요일의 장사여부")
 
-                        )
-                ));
-
-    }
 
     @Test
     @DisplayName("영업시간 정보 여러개에 대해 업데이트를 요청했을때 변경된 정보 반환")
     public void updateList_WhenUpdateBusinessHours_ThenReturnInfo() throws Exception {
         //given
-        when(businessHourService.updateList(anyLong(), any())).thenReturn(createBusinessHourUpdateResponse());
+        when(businessHourService.setList(anyLong(), any())).thenReturn(createBusinessHourSaveResponse());
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.put(URL, 1)
@@ -109,7 +61,7 @@ public class BusinessHourControllerTest extends ControllerTest{
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(createBusinessHourUpdateRequest()))
+                                        .writeValueAsString(createBusinessHourSaveRequest()))
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -178,35 +130,6 @@ public class BusinessHourControllerTest extends ControllerTest{
                 ));
 
     }
-
-    @Test
-    @DisplayName("영업시간 정보 한번에 여러건 삭제 시 200 반환")
-    public void deleteList_WhenDeleteBusinessHours_Then200Status() throws Exception {
-        //given
-        doNothing().when(businessHourService).deleteList(any());
-        //when
-        //then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete(URL,1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(
-                                objectMapper
-                                        .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(BUSINESS_HOUR_ID_LIST))
-                )
-                .andExpect(status().isOk())
-                .andDo(document("business-hour/delete",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("storeId").description("가게 고유 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("businessHourId").type(JsonFieldType.ARRAY).description("The id of the 영업시간정보, 숫자로이루어져있다")
-                           )
-                ));
-
-    }
     private BusinessHourSaveUpdateListRequest createBusinessHourSaveRequest(){
         List<BusinessHourSaveUpdateInfo> businessHourRequests = new ArrayList<>();
 
@@ -249,65 +172,5 @@ public class BusinessHourControllerTest extends ControllerTest{
         }
         return businessHours;
     }
-    private List<BusinessHourResponse> createBusinessHourUpdateResponse(){
-        List<BusinessHourResponse> businessHours = new ArrayList<>();
-
-        // Monday and Tuesday
-        BusinessHourResponse monday = BusinessHourResponse.builder()
-                .businessHourId(1L)
-                .storeId(1L)
-                .startTime(LocalTime.of(10, 0))
-                .endTime(LocalTime.of(17, 0))
-                .dayOfWeek(DayOfWeek.MONDAY)
-                .isOpen(true)
-                .hasBreakTime(false)
-                .breakStartTime(null)
-                .breakEndTime(null)
-                .build();
-        BusinessHourResponse tuesday = BusinessHourResponse.builder()
-                .businessHourId(2L)
-                .storeId(1L)
-                .startTime(LocalTime.of(9, 0))
-                .endTime(LocalTime.of(18, 0))
-                .dayOfWeek(DayOfWeek.TUESDAY)
-                .isOpen(true)
-                .hasBreakTime(false)
-                .breakStartTime(null)
-                .breakEndTime(null)
-                .build();
-        businessHours.add(monday);
-        businessHours.add(tuesday);
-
-        return businessHours;
-    }
-    public BusinessHourSaveUpdateListRequest createBusinessHourUpdateRequest(){
-        List<BusinessHourSaveUpdateInfo> businessHourRequests = new ArrayList<>();
-
-        // Monday and Tuesday
-        BusinessHourSaveUpdateInfo monday = new BusinessHourSaveUpdateInfo(
-                LocalTime.of(10, 0), // Start time
-                LocalTime.of(17, 0), // End time
-                DayOfWeek.MONDAY, // Day of week
-                true, // Is open
-                false, // Has break time
-                null, // Break start time
-                null // Break end time
-        );
-        businessHourRequests.add(monday);
-
-        BusinessHourSaveUpdateInfo tuesday = new BusinessHourSaveUpdateInfo(
-                LocalTime.of(10, 0), // Start time
-                LocalTime.of(17, 0), // End time
-                DayOfWeek.TUESDAY, // Day of week
-                true, // Is open
-                false, // Has break time
-                null, // Break start time
-                null // Break end time
-        );
-        businessHourRequests.add(tuesday);
-
-        return new BusinessHourSaveUpdateListRequest(businessHourRequests);
-    }
-
 
 }

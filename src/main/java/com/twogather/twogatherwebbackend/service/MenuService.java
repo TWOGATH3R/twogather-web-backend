@@ -10,13 +10,14 @@ import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.MenuRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.exception.MenuException.MenuErrorCode.NO_SUCH_MENU;
+import static com.twogather.twogatherwebbackend.exception.MenuException.MenuErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -25,11 +26,20 @@ import static com.twogather.twogatherwebbackend.exception.StoreException.StoreEr
 public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
+    @Value("${menu.max.size}")
+    private Integer MenuMaxSize;
 
     public List<MenuResponse> saveList(Long storeId, List<MenuSaveInfo> requestList) {
         Store store = storeRepository.findById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
+        if(store.getMenuList().size() + requestList.size() > MenuMaxSize){
+            throw new MenuException(MAX_MENU_SIZE);
+        }
+        for (MenuSaveInfo menu: requestList){
+            boolean isExist = menuRepository.existsByStoreIdAndName(storeId, menu.getName());
+            if(isExist) throw new MenuException(DUPLICATE_NAME);
+        }
         List<Menu> menuList = toMenuEntity(requestList, store);
         List<Menu> savedMenuList = menuRepository.saveAll(menuList);
         return toResponseList(savedMenuList);
@@ -39,12 +49,15 @@ public class MenuService {
         storeRepository.findActiveStoreById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
-
         List<Menu> savedMenuList = new ArrayList<>();
         for(MenuUpdateInfo request: menuList){
             Menu menu = menuRepository.findByStoreStoreIdAndMenuId(storeId,request.getMenuId()).orElseThrow(
                     () -> new MenuException(NO_SUCH_MENU)
             );
+            if(!request.getName().equals(menu.getName())){
+                boolean isExist = menuRepository.existsByStoreIdAndName(storeId, request.getName());
+                if(isExist) throw new MenuException(DUPLICATE_NAME);
+            }
             Menu updatedMenu = menu.update(request.getName(), request.getPrice());
             savedMenuList.add(updatedMenu);
         }

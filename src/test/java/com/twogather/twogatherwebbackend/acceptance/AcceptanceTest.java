@@ -267,9 +267,9 @@ public class AcceptanceTest
     }
     private void registerBusinessHour(Long storeId, BusinessHourSaveUpdateListRequest request){
         String url = "/api/stores/"+ storeId +"/business-hours";
-        doPost(url, ownerToken.getRefreshToken(),
+        doPut(url, ownerToken.getRefreshToken(),
                 ownerToken.getAccessToken(), request)
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.OK.value());
     }
     private void registerMenu(Long storeId, MenuSaveListRequest request){
         String url = "/api/stores/"+ storeId +"/menus";
