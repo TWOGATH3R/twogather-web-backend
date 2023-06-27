@@ -132,6 +132,11 @@ operation::keywords/set-keyword-store/[snippets='http-request,request-fields,req
 
 operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
 
+=== RE-APPLY
+- 필요권한: `MY_STORE`
+
+operation::store/reapply/[snippets='http-request,path-parameters,http-response']
+
 === Get-One
 - 필요권한: `ALL`
 
