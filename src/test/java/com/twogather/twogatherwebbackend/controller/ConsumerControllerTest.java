@@ -131,13 +131,13 @@ public class ConsumerControllerTest extends ControllerTest {
                         requestFields(
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional()
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional().attributes(getMemberNameFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         )
                 ));
 
@@ -171,13 +171,13 @@ public class ConsumerControllerTest extends ControllerTest {
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         )
                 ));
 

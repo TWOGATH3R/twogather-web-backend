@@ -98,7 +98,7 @@ public class StoreService {
                 new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
-            throw new StoreException(NO_SUCH_STORE);
+            return false;
         }
         return true;
     }
