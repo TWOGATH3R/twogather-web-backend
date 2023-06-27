@@ -18,6 +18,7 @@ import java.util.List;
 public class LikeController {
     private final LikeService likeService;
     @PostMapping
+    @PreAuthorize("not @storeService.isMyStore(#storeId)")
     public ResponseEntity<Response> addStoreLike(@PathVariable final Long storeId) {
         likeService.addStoreLike(storeId);
 

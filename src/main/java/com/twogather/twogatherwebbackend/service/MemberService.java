@@ -22,8 +22,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberResponse update(final MemberUpdateRequest request){
-        Member member = checkMemberOverlapByUpdate(request);
+    public MemberResponse update(final Long memberId, final MemberUpdateRequest request){
+        Member member = checkMemberOverlapByUpdate(memberId, request);
 
         member.update(
                 request.getUsername(),
@@ -43,6 +43,9 @@ public class MemberService {
         if(memberRepository.findActiveMemberByEmail(request.getEmail()).isPresent()) return true;
         else return false;
     }
+    public MemberResponse findMember(Long memberId){
+        return toResponse(memberRepository.findById(memberId).orElseThrow(()-> new MemberException(NO_SUCH_MEMBER_ID)));
+    }
     public void checkMemberOverlapBySave(MemberSaveRequest request){
         if (memberRepository.existsByUsername(request.getUsername())) {
             throw new MemberException(DUPLICATE_USERNAME);
@@ -54,20 +57,17 @@ public class MemberService {
             throw new MemberException(DUPLICATE_NICKNAME);
         }
     }
-    public Member checkMemberOverlapByUpdate(MemberUpdateRequest request){
-        String originUsername = getLoginUsername();
-        if(!request.getUsername().equals(originUsername) && memberRepository.existsByUsername(request.getUsername())){
-            throw new MemberException(DUPLICATE_USERNAME);
-        }
-        Member member = memberRepository.findActiveMemberByUsername(getLoginUsername()).orElseThrow(
+    public Member checkMemberOverlapByUpdate(final Long memberId, final MemberUpdateRequest request){
+        Member member = memberRepository.findById(memberId).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
-        String originEmail = member.getEmail();
-        if(!request.getEmail().equals(originEmail) && memberRepository.existsByEmail(request.getEmail())){
+        if(!request.getUsername().equals(member.getUsername()) && memberRepository.existsByUsername(request.getUsername())){
+            throw new MemberException(DUPLICATE_USERNAME);
+        }
+        if(!request.getEmail().equals(member.getEmail()) && memberRepository.existsByEmail(request.getEmail())){
             throw new MemberException(DUPLICATE_EMAIL);
         }
-        String originNickname = member.getName();
-        if(!request.getName().equals(originNickname) && memberRepository.existsByName(request.getName())){
+        if(!request.getName().equals(member.getName()) && memberRepository.existsByName(request.getName())){
             throw new MemberException(DUPLICATE_NICKNAME);
         }
         return member;

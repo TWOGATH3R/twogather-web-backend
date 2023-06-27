@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NOT_IMAGE;
-import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.NO_SUCH_IMAGE;
+import static com.twogather.twogatherwebbackend.exception.ImageException.ImageErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -34,12 +33,18 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final StorageUploader s3Uploader;
 
+    @Value("${image.max.size}")
+    private Integer ImageMaxSize;
+
     public List<ImageResponse> upload(Long storeId, List<MultipartFile> fileList){
         isImageFiles(fileList);
 
         Store store = storeRepository.findById(storeId).orElseThrow(
                 () -> new StoreException(NO_SUCH_STORE)
         );
+
+        validateMaxSize(store);
+
         List<String> uploadedFileUrlList = s3Uploader.uploadList(fileList);
         List<Image> imageList = toImageEntityList(uploadedFileUrlList, store);
         List<Image> savedImageList = imageRepository.saveAll(imageList);
@@ -103,5 +108,8 @@ public class ImageService {
         for (MultipartFile file: fileList){
             if(!isImageFile(file)) throw new ImageException(NOT_IMAGE);
         }
+    }
+    private void validateMaxSize(Store store){
+        if(store.getStoreImageList().size()>ImageMaxSize) throw new ImageException(MAXIMUM_IMAGE_SIZE);
     }
 }
