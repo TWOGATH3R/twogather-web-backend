@@ -92,7 +92,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                       )
                 ));
 
@@ -134,7 +134,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
 
                         )
                 ));
