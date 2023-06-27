@@ -66,7 +66,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenSettingThreeKeywordsForStore_thenTheyAreSavedInStoreKeywordTable()  {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         //when
@@ -93,7 +93,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenSettingTwoKeywordsForStore_thenThrowException()  {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         List<String> request = createMoreThan3Request();
@@ -111,7 +111,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
     public void whenEmptyKeyword_thenIgnore() {
         //given
         registerOwner();
-        registerStore();
+        registerStoreWithFullInfo();
         approveStore();
 
         int keywordSize = 2;

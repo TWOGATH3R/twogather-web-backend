@@ -79,6 +79,7 @@ public class MemberService {
         );
         member.update("","",passwordEncoder.encode(password),"");
     }
+
     public Member findMember(String email, String username){
         return memberRepository.findMemberByEmailAndUsername(email, username)
                 .orElseThrow(()->new MemberException(NO_SUCH_MEMBER_ID));

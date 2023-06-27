@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.dto.store;
 
+import com.twogather.twogatherwebbackend.domain.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,5 +31,16 @@ public class StoreDefaultResponse {
     }
     public void setKeywordList(List<String> keywordList){
         this.keywordList= keywordList;
+    }
+
+    public static StoreDefaultResponse of(Store store){
+        return StoreDefaultResponse
+                .builder()
+                .storeId(store.getStoreId())
+                .storeName(store.getName())
+                .categoryName(store.getCategory().getName())
+                .phone(store.getPhone())
+                .address(store.getAddress())
+                .likeCount(store.getLikesList().size()).build();
     }
 }

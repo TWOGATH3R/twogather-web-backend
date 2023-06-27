@@ -55,7 +55,10 @@ public class StoreService {
         store.reject(rejectReason.getReason());
     }
     public StoreSaveUpdateResponse getStoreDetail(final Long storeId){
-        return storeRepository.findStoreDetail(storeId).orElseThrow(()->new StoreException(NO_SUCH_STORE));
+        Store store = storeRepository.findWithCategory(storeId)
+                .orElseThrow(()->new StoreException(NO_SUCH_STORE));
+
+        return StoreSaveUpdateResponse.of(store);
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validateDuplicateName(storeRequest.getStoreName());
@@ -139,7 +142,11 @@ public class StoreService {
         return storeRepository.findMyStore(ownerId, pageable);
     }
     public StoreDefaultResponse getStore(Long storeId){
-        return storeRepository.findDefaultActiveStoreInfo(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        Store store = storeRepository
+                .findWithCategory(storeId)
+                .orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        return StoreDefaultResponse.of(store);
+
     }
 
     private void validateDuplicateName(String name){

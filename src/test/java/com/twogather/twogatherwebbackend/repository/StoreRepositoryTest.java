@@ -1,22 +1,32 @@
 package com.twogather.twogatherwebbackend.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.MyLikeStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreDefaultResponse;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.dto.store.TopStoreResponse;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
+import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.service.StoreService;
 import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,14 +34,12 @@ import static com.twogather.twogatherwebbackend.util.TestConstants.CONSUMER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class StoreRepositoryTest extends RepositoryTest{
 
     private Store store1;
     private Store store2;
     private Store store3;
     private Store store4;
-
     @BeforeEach
     public void init(){
         store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
@@ -90,7 +98,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         //given
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
-
+        List<Likes> list = likeRepository.findAll();
         // When
 
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
@@ -298,6 +306,12 @@ public class StoreRepositoryTest extends RepositoryTest{
         String location = "전주시";
         String emptyCategory = "";
 
+        Member member1 = memberRepository.save(Member.builder().name("멤버1").build());
+        Member member2 = memberRepository.save(Member.builder().name("멤버2").build());
+        likeRepository.save(new Likes(store1, member1));
+        likeRepository.save(new Likes(store2, member2));
+        likeRepository.save(new Likes(store2, member1));
+        likeRepository.save(new Likes(store3, member1));
 
         //when
         Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
@@ -358,6 +372,34 @@ public class StoreRepositoryTest extends RepositoryTest{
         String keyword = "";
         String location = "";
         String emptyCategory = "";
+
+        Keyword keyword1 = keywordRepository.save(new Keyword("감성 있는"));
+        Keyword keyword2 = keywordRepository.save(new Keyword("맛있는"));
+        Keyword keyword3 = keywordRepository.save(new Keyword("분위기 좋은"));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword2));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword3));
+        storeKeywordRepository.save(new StoreKeyword(store1, keyword1));
+        storeKeywordRepository.save(new StoreKeyword(store2, keyword1));
+
+        Category category1 = categoryRepository.save(new Category("양식"));
+        Category category2 = categoryRepository.save(new Category("한식"));
+        store1.setCategory(category1);
+        store2.setCategory(category2);
+        store3.setCategory(category1);
+
+        imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje1/(store1)"));
+        imageRepository.save(new Image(store2, "http:s3.sae2/kjhkje2/(store2)"));
+        imageRepository.save(new Image(store1, "http:s3.sae2/kjhkje3/(store1)"));
+
+        Member member1 = memberRepository.save(Member.builder().name("멤버1").build());
+        Member member2 = memberRepository.save(Member.builder().name("멤버2").build());
+        likeRepository.save(new Likes(store1, member1));
+        likeRepository.save(new Likes(store2, member2));
+        likeRepository.save(new Likes(store2, member1));
+        likeRepository.save(new Likes(store3, member1));
+
+        em.flush();
+        em.clear();
 
         //when
         Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
@@ -451,7 +493,6 @@ public class StoreRepositoryTest extends RepositoryTest{
         createImage();
         createKeyword();
 
-
         Page<MyLikeStoreResponse> myLikeStore = storeRepository.findMyLikeStore(member.getMemberId(), pageable);
 
         Assertions.assertEquals(myLikeStore.getTotalElements(),3);
@@ -487,14 +528,16 @@ public class StoreRepositoryTest extends RepositoryTest{
         createKeyword();
         Category category1 = categoryRepository.save(new Category("양식"));
         store1.setCategory(category1);
+
         //then
-        StoreDefaultResponse response = storeRepository.findDefaultActiveStoreInfo(store1.getStoreId()).get();
-        Assertions.assertEquals(response.getLikeCount(),1);
-        Assertions.assertEquals(response.getStoreName(),store1.getName());
-        Assertions.assertEquals(response.getAddress(),store1.getAddress());
-        Assertions.assertEquals(response.getKeywordList().size(),2);
-        Assertions.assertEquals(response.getPhone(), store1.getPhone());
-        Assertions.assertEquals(response.getCategoryName(), category1.getName());
+        Store result = storeRepository.findWithCategory(store1.getStoreId()).get();
+
+        Assertions.assertEquals(result.getLikesList().size(),1);
+        Assertions.assertEquals(result.getName(),store1.getName());
+        Assertions.assertEquals(result.getAddress(),store1.getAddress());
+        Assertions.assertEquals(result.getStoreKeywordList().size(),2);
+        Assertions.assertEquals(result.getPhone(), store1.getPhone());
+        Assertions.assertEquals(result.getCategory().getName(), category1.getName());
     }
     private Member createLiker(){
         return memberRepository.save(CONSUMER);
