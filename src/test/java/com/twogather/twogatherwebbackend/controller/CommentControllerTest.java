@@ -37,7 +37,7 @@ public class CommentControllerTest extends ControllerTest{
     @Test
     public void save() throws Exception {
         //given
-        when(commentService.save(anyLong(), anyLong(), any())).thenReturn(COMMENT_RESPONSE);
+        when(commentService.save(anyLong(), any())).thenReturn(COMMENT_RESPONSE);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.post(URL, 1,2)
@@ -62,8 +62,7 @@ public class CommentControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("대댓글 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("대댓글의 내용"),
-                                fieldWithPath("data.isOwner").type(JsonFieldType.BOOLEAN).description("대댓글을 쓴 사람이 가게 주인인지에 대한 여부"),
-                                fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
+                               fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
 
                         )
                 ));
@@ -71,7 +70,7 @@ public class CommentControllerTest extends ControllerTest{
     @Test
     public void update() throws Exception {
         //given
-        when(commentService.update(anyLong(), anyLong(), any())).thenReturn(COMMENT_RESPONSE);
+        when(commentService.update(anyLong(), any())).thenReturn(COMMENT_RESPONSE);
         //when
         //then
         mockMvc.perform(RestDocumentationRequestBuilders.put(URL+"/{commentId}", 1,2,3)
@@ -97,8 +96,7 @@ public class CommentControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("대댓글 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("대댓글의 내용"),
-                                fieldWithPath("data.isOwner").type(JsonFieldType.BOOLEAN).description("대댓글을 쓴 사람이 가게 주인인지에 대한 여부"),
-                                fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
+                               fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
 
                         )
                 ));

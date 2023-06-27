@@ -30,29 +30,27 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
     private final StoreRepository storeRepository;
-    public CommentResponse save(Long storeId, Long reviewId, CommentSaveUpdateRequest request){
+    public CommentResponse save(Long reviewId, CommentSaveUpdateRequest request){
         //TODO: Review exception 추가
         String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
-        Boolean isOwner = isOwner(storeId, member);
         Review review = reviewRepository.findById(reviewId).get();
         Comment comment = new Comment(request.getContent(), review, member);
         Comment savedComment = commentRepository.save(comment);
-        return new CommentResponse(savedComment.getCommentId(), savedComment.getContent(), isOwner, savedComment.getCreatedDate());
+        return new CommentResponse(savedComment.getCommentId(), savedComment.getContent(),  savedComment.getCreatedDate());
     }
-    public CommentResponse update(Long storeId, Long commentId, CommentSaveUpdateRequest request){
+    public CommentResponse update(Long commentId, CommentSaveUpdateRequest request){
         String username = SecurityUtils.getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
-        Boolean isOwner = isOwner(storeId, member);
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()->new CommentException(NO_SUCH_COMMENT)
         );
         comment.update(request.getContent());
-        return new CommentResponse(comment.getCommentId(), comment.getContent(), isOwner, comment.getCreatedDate());
+        return new CommentResponse(comment.getCommentId(), comment.getContent(), comment.getCreatedDate());
     }
     public void delete(Long commentId){
         commentRepository.deleteById(commentId);
@@ -66,12 +64,5 @@ public class CommentService {
                 ()->new CommentException(NO_SUCH_COMMENT)
         );
         return (member.getMemberId() == comment.getCommenter().getMemberId());
-    }
-    private Boolean isOwner(Long storeId, Member member){
-        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(
-                ()->new StoreException(NO_SUCH_STORE)
-        );
-        Long ownerId = store.getOwner().getMemberId();
-        return ownerId == member.getMemberId();
     }
 }
