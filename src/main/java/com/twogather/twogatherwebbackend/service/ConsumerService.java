@@ -10,8 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
-import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER_ID;
+import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.SecurityUtils.getLoginUsername;
 
 @Service
@@ -25,7 +24,7 @@ public class ConsumerService {
     public boolean isConsumer(final Long requestMemberId){
         String currentUsername = getLoginUsername();
         Member requestMember = consumerRepository.findActiveMemberById(requestMemberId).orElseThrow(
-                ()-> new MemberException(NO_SUCH_MEMBER));
+                ()-> new MemberException(ONLY_CONSUMER));
         if (!currentUsername.equals(requestMember.getUsername())) {
             throw new MemberException(NO_SUCH_MEMBER);
         }
