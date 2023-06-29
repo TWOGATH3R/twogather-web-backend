@@ -22,7 +22,7 @@ public class CommentController {
                                            @PathVariable Long reviewId,
                                            @RequestBody @Valid final CommentSaveUpdateRequest request
                                            ) {
-        CommentResponse data = commentService.save(storeId, reviewId, request);
+        CommentResponse data = commentService.save(reviewId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
@@ -33,7 +33,7 @@ public class CommentController {
                                            @PathVariable Long commentId,
                                            @RequestBody @Valid final CommentSaveUpdateRequest request
     ) {
-        CommentResponse data = commentService.update(storeId, commentId, request);
+        CommentResponse data = commentService.update(commentId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }

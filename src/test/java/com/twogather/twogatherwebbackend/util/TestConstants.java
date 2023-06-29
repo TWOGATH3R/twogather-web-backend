@@ -129,6 +129,7 @@ public class TestConstants {
     public static final StoreDefaultResponse STORE_DEFAULT_RESPONSE =
             StoreDefaultResponse
                     .builder()
+                    .ownerId(1l)
                     .storeId(1L)
                     .storeName(STORE_NAME)
                     .categoryName("양식")
@@ -167,7 +168,7 @@ public class TestConstants {
     public static final CommentSaveUpdateRequest COMMENT_SAVE_UPDATE_REQUEST =
             new CommentSaveUpdateRequest("내용내뇽ㅇ");
     public static final CommentResponse COMMENT_RESPONSE =
-            new CommentResponse(1l, "대댓글내용", false, LocalDate.now());
+            new CommentResponse(1l, "대댓글내용", LocalDate.now());
 
     // Image Response
     public static final ImageResponse IMAGE_RESPONSE =
