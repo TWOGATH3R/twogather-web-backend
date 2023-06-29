@@ -129,6 +129,7 @@ public class TestConstants {
     public static final StoreDefaultResponse STORE_DEFAULT_RESPONSE =
             StoreDefaultResponse
                     .builder()
+                    .ownerId(1l)
                     .storeId(1L)
                     .storeName(STORE_NAME)
                     .categoryName("양식")

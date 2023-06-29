@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class StoreDefaultResponse {
+    private Long ownerId;
     private Long storeId;
     private String storeName;
     private String address;
@@ -19,8 +20,9 @@ public class StoreDefaultResponse {
     private List<String> keywordList;
     private String categoryName;
     private Integer likeCount;
-    public StoreDefaultResponse(Long storeId, String storeName, String address, String phone,
+    public StoreDefaultResponse(Long ownerId, Long storeId, String storeName, String address, String phone,
                                 String categoryName, Integer likeCount){
+        this.ownerId = ownerId;
         this.storeId = storeId;
         this.storeName=storeName;
         this.address = address;
@@ -29,6 +31,9 @@ public class StoreDefaultResponse {
         this.likeCount = likeCount;
     }
     public void setKeywordList(List<String> keywordList){
-        this.keywordList= keywordList;
+        if(keywordList!=null){
+            this.keywordList= keywordList;
+        }
+
     }
 }

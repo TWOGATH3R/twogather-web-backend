@@ -53,6 +53,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         .select(
                                 Projections.constructor(
                                         StoreDefaultResponse.class,
+                                        storeOwner.memberId,
                                         store.storeId,
                                         store.name,
                                         store.address,
@@ -63,6 +64,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         .from(store)
                         .leftJoin(store.category, category)
                         .leftJoin(store.likesList, likes)
+                        .leftJoin(store.owner, storeOwner)
                         .where(store.status.eq(StoreStatus.APPROVED))
                         .where(store.storeId.eq(storeId))
                         .groupBy(store.storeId)
