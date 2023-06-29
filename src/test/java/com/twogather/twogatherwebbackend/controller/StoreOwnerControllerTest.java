@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;
@@ -91,7 +92,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                       )
                 ));
 
@@ -102,7 +103,7 @@ public class StoreOwnerControllerTest extends ControllerTest{
     @DisplayName("가게주인정보업데이트")
     public void updateOwnerInfo_WhenUpdateOwnerInfo_ThenReturnOwnerInfo() throws Exception {
         //given
-        when(memberService.update(any())).thenReturn(
+        when(memberService.update(anyLong(), any())).thenReturn(
                 new MemberResponse(1l, "nick1", "dda@naver.com",
                 "가게주인이름"));
       //then
@@ -112,8 +113,8 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         .content(
                                 objectMapper
                                         .registerModule(new JavaTimeModule())
-                                        .writeValueAsString(new MemberSaveRequest(
-                                                "ad@naer.com", "name1","Asdawd213", "홍길동"
+                                        .writeValueAsString(new MemberUpdateRequest(
+                                                "ad@naer.com", "name1", "홍길동"
                                         )))
                 )
                 .andExpect(status().isOk())
@@ -126,15 +127,14 @@ public class StoreOwnerControllerTest extends ControllerTest{
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()).optional(),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명(닉네임)").optional().attributes(getMemberNameFormat())
+                               fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명(닉네임)").optional().attributes(getMemberNameFormat())
 
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
 
                         )
                 ));

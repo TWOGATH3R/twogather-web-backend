@@ -31,13 +31,14 @@ public class LikeControllerTest extends ControllerTest {
         doNothing().when(likeService).addStoreLike(anyLong());
         //when
         //then
-        mockMvc.perform(post("/api/stores/{storeId}/likes", 1))
+        mockMvc.perform(post("/api/stores/{storeId}/members/{memberId}/likes", 1,1))
                 .andExpect(status().isOk())
                 .andDo(document("like/setLike",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("storeId").description("좋아요를 누를 대상 가게 id")
+                                parameterWithName("storeId").description("좋아요를 누를 대상 가게 id"),
+                                parameterWithName("memberId").description("좋아요를 누르는 사람의 고유 id (consumer만 가능)")
                         )
                 ));
     }
@@ -46,13 +47,14 @@ public class LikeControllerTest extends ControllerTest {
         doNothing().when(likeService).addStoreLike(anyLong());
         //when
         //then
-        mockMvc.perform(delete("/api/stores/{storeId}/likes", 1))
+        mockMvc.perform(delete("/api/stores/{storeId}/members/{memberId}/likes", 1,1))
                 .andExpect(status().isOk())
                 .andDo(document("like/deleteLike",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("storeId").description("좋아요 취소할 대상 가게 id")
+                                parameterWithName("storeId").description("좋아요 취소할 대상 가게 id"),
+                                parameterWithName("memberId").description("좋아요를 누르는 사람의 고유 id (consumer만 가능)")
                         )
                 ));
     }

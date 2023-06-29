@@ -307,6 +307,7 @@ public class StoreControllerTest extends ControllerTest{
                                 parameterWithName("storeId").description("가게 고유 id")
                         ),
                         responseFields(
+                                fieldWithPath("data.ownerId").type(JsonFieldType.NUMBER).description("가게 사장 고유 ID"),
                                 fieldWithPath("data.storeId").type(JsonFieldType.NUMBER).description("가게 ID"),
                                 fieldWithPath("data.storeName").type(JsonFieldType.STRING).description("가게이름"),
                                 fieldWithPath("data.address").type(JsonFieldType.STRING).description("가게주소"),

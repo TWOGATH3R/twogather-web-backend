@@ -49,6 +49,16 @@ operation::member/get-username/[snippets='http-request,request-fields,http-respo
 operation::member/find-like-store/[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
 
 == Admin
+=== Get
+- 필요권한: `ADMIN`
+
+operation::admin/get/[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Update
+- 필요권한: `ADMIN`
+
+operation::admin/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
+
 === Get-Store
 - 필요권한: `ADMIN`
 
@@ -98,19 +108,11 @@ operation::menu/save/[snippets='http-request,path-parameters,request-fields,http
 - 필요권한: `ALL`
 
 operation::business-hour/get/[snippets='http-request,path-parameters,http-response,response-fields']
-=== Delete
-- 필요권한: `MY-STORE`
 
-operation::business-hour/delete/[snippets='http-request,path-parameters,request-fields,http-response']
-=== Update
+=== Set
 - 필요권한: `MY-STORE`
 
 operation::business-hour/update/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
-=== Save
-- 필요권한: `OWNER`
-- 영업하는 요일에 대해서 저장을 요청하면 미요청된 요일에 대해서는 "영업안함"으로 표시하여 되돌려줍니다
-
-operation::business-hour/save/[snippets='http-request,path-parameters,request-fields,http-response,response-fields']
 
 
 == Keyword
@@ -122,13 +124,18 @@ operation::keywords/get/[snippets='http-request,request-parameters,http-response
 - 특정 키워드를 가게에 등록하는 일을 합니다
 - 필요권한: `MY-STORE`
 
-operation::keywords/set-keyword-store/[snippets='http-request,request-body,path-parameters']
+operation::keywords/set-keyword-store/[snippets='http-request,request-fields,request-body,path-parameters']
 
 == Store
 === Save
 - 필요권한: `OWNER`
 
 operation::store/save/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== RE-APPLY
+- 필요권한: `MY_STORE`
+
+operation::store/reapply/[snippets='http-request,path-parameters,http-response']
 
 === Get-One
 - 필요권한: `ALL`

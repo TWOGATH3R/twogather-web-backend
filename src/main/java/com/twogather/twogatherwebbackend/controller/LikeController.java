@@ -13,19 +13,24 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/stores/{storeId}/likes")
+@RequestMapping("/api/stores/{storeId}/members/{memberId}/likes")
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
+
     @PostMapping
-    public ResponseEntity<Response> addStoreLike(@PathVariable final Long storeId) {
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> addStoreLike(@PathVariable final Long memberId,
+                                                @PathVariable final Long storeId) {
         likeService.addStoreLike(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Response> deleteStoreLike(@PathVariable final Long storeId) {
+    @PreAuthorize("@consumerService.isConsumer(#memberId)")
+    public ResponseEntity<Response> deleteStoreLike(@PathVariable final Long memberId,
+                                                    @PathVariable final Long storeId) {
         likeService.deleteStoreLike(storeId);
 
         return ResponseEntity.status(HttpStatus.OK).build();

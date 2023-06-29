@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import com.twogather.twogatherwebbackend.exception.StoreException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.ALREADY_APPROVED_STORE;
 
 @Entity
 @Getter
@@ -145,8 +148,10 @@ public class Store {
     }
     public void approve(){
         this.status = StoreStatus.APPROVED;
+        this.reasonForRejection = "";
     }
     public void reapply(){
+        if(this.status.equals(StoreStatus.APPROVED)) throw new StoreException(ALREADY_APPROVED_STORE);
         this.requestDate = LocalDate.now();
         this.status = StoreStatus.PENDING;
     }

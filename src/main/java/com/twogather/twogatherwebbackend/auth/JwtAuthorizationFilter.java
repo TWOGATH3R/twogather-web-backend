@@ -123,7 +123,7 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
 
     private void writeTokensToResponse(CustomUser customUser, HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId())));
+        String loginResponseJson = objectMapper.writeValueAsString(new Response<>(new LoginResponse(customUser.getMemberId(), customUser.getName())));
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

@@ -4,6 +4,7 @@ import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CategoryException;
+import com.twogather.twogatherwebbackend.exception.KeywordException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
@@ -13,6 +14,7 @@ import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.exception.CategoryException.CategoryErrorCode.NO_SUCH_CATEGORY;
+import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.MAXIMUM_KEYWORD_LIMIT;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.*;
 
@@ -35,6 +38,9 @@ public class StoreService {
     private final BizRegNumberValidator validator;
     private final CategoryRepository categoryRepository;
     private final KeywordService keywordService;
+
+    @Value("${keyword.max.size}")
+    private Integer keywordMaxSize;
 
     public void approveStore(final Long storeId){
         Store store = storeRepository.findById(storeId).orElseThrow(
@@ -59,12 +65,12 @@ public class StoreService {
     }
     public StoreSaveUpdateResponse save(final StoreSaveUpdateRequest storeRequest){
         validateDuplicateName(storeRequest.getStoreName());
+        validateKeywordList(storeRequest.getKeywordIdList());
         //validationBizRegNumber(storeRequest); TODO: 나중에 추가
         String username = SecurityUtils.getLoginUsername();
         StoreOwner owner = storeOwnerRepository.findByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
-        validateDuplicateName(storeRequest.getStoreName());
         Store store = new Store(owner, storeRequest.getStoreName(), storeRequest.getAddress(), storeRequest.getPhone(),
                 storeRequest.getBusinessName(), storeRequest.getBusinessNumber(), storeRequest.getBusinessStartDate());
         Store savedStore = storeRepository.save(store);
@@ -98,7 +104,7 @@ public class StoreService {
                 new StoreException(NO_SUCH_STORE)
         );
         if (!store.getOwner().getMemberId().equals(member.getMemberId())) {
-            throw new StoreException(NO_SUCH_STORE);
+            return false;
         }
         return true;
     }
@@ -111,8 +117,11 @@ public class StoreService {
     }
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
+        validateKeywordList(request.getKeywordIdList());
         Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         //TODO: biz 유효성 검사 필요
+        validateDuplicateName(store.getName(), request.getStoreName());
+
         store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(()->new CategoryException(NO_SUCH_CATEGORY));
@@ -147,10 +156,18 @@ public class StoreService {
             throw new StoreException(StoreException.StoreErrorCode.DUPLICATE_NAME);
         }
     }
+    private void validateDuplicateName(String storeName, String requestStoreName){
+        if(!storeName.equals(requestStoreName) && storeRepository.existsByName(requestStoreName)){
+             throw new StoreException(DUPLICATE_NAME);
+        }
+    }
     private void validationBizRegNumber(final StoreSaveUpdateRequest request){
         boolean isValid = validator.validateBizRegNumber(request.getBusinessNumber(), request.getBusinessStartDate(), request.getBusinessName());
         if(!isValid){
             throw new StoreException(BIZ_REG_NUMBER_VALIDATION);
         }
+    }
+    private void validateKeywordList(final List<Long> keywordList){
+        if(keywordList.size()>keywordMaxSize) throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
     }
 }

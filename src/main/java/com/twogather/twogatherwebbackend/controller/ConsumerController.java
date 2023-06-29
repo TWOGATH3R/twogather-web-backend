@@ -29,7 +29,7 @@ public class ConsumerController {
     @PutMapping("/{memberId}")
     @PreAuthorize("@consumerService.isConsumer(#memberId)")
     public ResponseEntity<Response> updateConsumerInfo(@PathVariable final Long memberId, @RequestBody @Valid final MemberUpdateRequest consumerSaveUpdateRequest){
-        MemberResponse data = memberService.update(consumerSaveUpdateRequest);
+        MemberResponse data = memberService.update(memberId, consumerSaveUpdateRequest);
 
         return ResponseEntity.ok(new Response(data));
     }

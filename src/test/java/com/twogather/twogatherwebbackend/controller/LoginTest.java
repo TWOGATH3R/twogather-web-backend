@@ -13,11 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getUsernameFormat;
+import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.getPasswordFormat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,7 +58,9 @@ public class LoginTest {
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인에 필요한 비밀번호").attributes(getPasswordFormat())
                         ),
                         responseFields(
-                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("로그인한 회원의 고유 id")
+                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("로그인한 회원의 고유 id"),
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("로그인한 회원의 닉네임").attributes(getMemberNameFormat())
+
                         )
                 ));
 

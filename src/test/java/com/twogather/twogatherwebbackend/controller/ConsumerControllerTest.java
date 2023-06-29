@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.controller;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberSaveRequest;
+import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.member.PasswordRequest;
 import com.twogather.twogatherwebbackend.service.ConsumerService;
 import com.twogather.twogatherwebbackend.service.MemberService;
@@ -106,8 +107,8 @@ public class ConsumerControllerTest extends ControllerTest {
     public void update_WhenConsumerInfoChange_Then200Ok() throws Exception {
         //given
         MemberResponse response = new MemberResponse(1l, "user1", "adsd@naver.cin","홍길동");
-        MemberSaveRequest request = new MemberSaveRequest(response.getEmail(), response.getUsername(), "password1", response.getName());
-        when(memberService.update(any())).thenReturn(response);
+        MemberUpdateRequest request = new MemberUpdateRequest(response.getEmail(), response.getUsername(),  response.getName());
+        when(memberService.update(anyLong(),any())).thenReturn(response);
         //when
         //then
 
@@ -130,14 +131,13 @@ public class ConsumerControllerTest extends ControllerTest {
                         requestFields(
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()).optional(),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").optional(),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()).optional(),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional()
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").optional().attributes(getMemberNameFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         )
                 ));
 
@@ -171,13 +171,13 @@ public class ConsumerControllerTest extends ControllerTest {
                                 fieldWithPath("username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("계정 비밀번호").attributes(getPasswordFormat()),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         ),
                         responseFields(
                                 fieldWithPath("data.username").type(JsonFieldType.STRING).description("로그인 ID").attributes(getUsernameFormat()),
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("사업자의 고유 id"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명")
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("사용자명").attributes(getMemberNameFormat())
                         )
                 ));
 
