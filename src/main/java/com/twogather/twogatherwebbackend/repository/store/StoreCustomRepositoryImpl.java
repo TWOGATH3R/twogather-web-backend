@@ -227,7 +227,8 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .where(
                         categoryEq(category),
                         keywordContain(keyword),
-                        addressContain(location)
+                        addressContain(location),
+                        storeNameContain(storeName)
                 )
                 .groupBy(store.storeId)
                 .fetch().size();
