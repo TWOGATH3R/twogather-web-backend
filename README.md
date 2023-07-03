@@ -31,7 +31,7 @@
 [위키](https://github.com/TWOGATH3R/twogather-web-backend/wiki)
 
 ## 팀원
-| Backend 🌟 | Backend 🌟 | Frontend 🌟 | Frontend 🌟 |
-| :-----: | :-----: | :-----: | :------: |
-| <img src="https://github.com/TWOGATH3R/.github/assets/66842566/5c881f2e-c0a8-43dd-a301-51865d24deac" width=400px height=200px  alt="민지"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/174fbbed-dbba-4cfc-8c71-12fe15008521" width=400px height=200px alt="지호"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/f85e58c9-126d-4710-9253-269bc77e0bf8" width=400px height=200px alt="태욱"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/5c881f2e-c0a8-43dd-a301-51865d24deac" width=400px height=200px  alt="예정"> |
-|                       [민지](https://github.com/Flre-fly)                        |                            [지호](https://github.com/J-I-H-O)                            |                            [태욱](https://github.com/taewok)                            |                          [예정](https://github.com/bananana0118)                 |
+| Backend 🌟 | Backend 🌟 | Frontend 🌟 | 
+| :-----: | :-----: | :-----: | 
+| <img src="https://github.com/TWOGATH3R/.github/assets/66842566/5c881f2e-c0a8-43dd-a301-51865d24deac" width=400px height=300px  alt="민지"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/174fbbed-dbba-4cfc-8c71-12fe15008521" width=400px height=300px alt="지호"/> | <img src="https://github.com/TWOGATH3R/.github/assets/66842566/f85e58c9-126d-4710-9253-269bc77e0bf8" width=400px height=300px alt="태욱"/> | 
+|                       [민지](https://github.com/Flre-fly)                        |                            [지호](https://github.com/J-I-H-O)                            |                            [태욱](https://github.com/taewok)                            | 
