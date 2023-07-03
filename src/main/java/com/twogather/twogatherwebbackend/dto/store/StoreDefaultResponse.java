@@ -19,9 +19,10 @@ public class StoreDefaultResponse {
     private String phone;
     private List<String> keywordList;
     private String categoryName;
+    private Double avgScore;
     private Integer likeCount;
     public StoreDefaultResponse(Long ownerId, Long storeId, String storeName, String address, String phone,
-                                String categoryName, Integer likeCount){
+                                String categoryName, Integer likeCount, Double avgScore){
         this.ownerId = ownerId;
         this.storeId = storeId;
         this.storeName=storeName;
@@ -29,6 +30,7 @@ public class StoreDefaultResponse {
         this.phone =phone;
         this.categoryName=categoryName;
         this.likeCount = likeCount;
+        this.avgScore = avgScore;
     }
     public void setKeywordList(List<String> keywordList){
         if(keywordList!=null){
