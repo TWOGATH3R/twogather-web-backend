@@ -18,6 +18,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -65,9 +67,9 @@ public class ReviewControllerTest extends ControllerTest {
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
         //given
         Page<StoreDetailReviewResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 1L, "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 2L, "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), 3L, "김뿡치", 5.0)
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 1L, "김뿡치", 5.0, "감사합니당", LocalDateTime.now()),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 2L, "김뿡치", 5.0, null, null),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 3L, "김뿡치", 5.0, null, null)
         ));
 
         //when
@@ -105,6 +107,8 @@ public class ReviewControllerTest extends ControllerTest {
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                         fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
                                         fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
+                                        fieldWithPath("data[].commentContent").type(JsonFieldType.STRING).description("대댓글 내용").optional(),
+                                        fieldWithPath("data[].commentCreatedDate").type(JsonFieldType.STRING).description("대댓글 작성일자").attributes(getDateFormat()).optional(),
                                         fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
                                         fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
                                         fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
 import static com.twogather.twogatherwebbackend.exception.ReviewException.ReviewErrorCode.NO_SUCH_REVIEW;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
@@ -59,7 +61,7 @@ public class ReviewService {
                         .reviewer(reviewer)
                         .content(request.getContent())
                         .score(roundToNearestHalf(request.getScore()))
-                        .createdDate(LocalDate.now())
+                        .createdDate(LocalDateTime.now())
                         .build());
 
         return toReviewResponse(result);

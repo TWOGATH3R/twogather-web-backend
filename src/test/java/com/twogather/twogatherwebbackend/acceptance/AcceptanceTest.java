@@ -37,6 +37,7 @@ import org.springframework.http.MediaType;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -217,7 +218,7 @@ public class AcceptanceTest
     protected Long registerReview(){
         Store store = storeRepository.findActiveStoreById(storeId).get();
         Member member = memberRepository.findActiveMemberById(consumerId).get();
-        Review review = reviewRepository.save(Review.builder().content("맛있어요").score(3.2).createdDate(LocalDate.now()).build());
+        Review review = reviewRepository.save(Review.builder().content("맛있어요").score(3.2).createdDate(LocalDateTime.now()).build());
         review.addStore(store);
         review.addReviewer(member);
         return review.getReviewId();

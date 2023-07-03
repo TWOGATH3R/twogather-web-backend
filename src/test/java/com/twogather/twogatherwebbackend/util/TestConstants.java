@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,12 +147,12 @@ public class TestConstants {
 
     // Review Constants
     public static final Page<MyReviewInfoResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-            new MyReviewInfoResponse(1L, "Good product", 4.5, LocalDate.of(2022, 1, 1), "imageurl", "김가네삼겹살", "서울시 어쩌고 어쩌고", "김은지"),
-            new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDate.of(2022, 1, 3), "imageurl2", "레스토랑1", "경기도 어쩌고 어쩌고", "박은지"),
-            new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDate.of(2022, 1, 5), "imageurl3", "김밥집1", "전주시 어쩌고 어쩌고", "김지은")
+            new MyReviewInfoResponse(1L, "Good product", 4.5, LocalDateTime.now(), "imageurl", "김가네삼겹살", "서울시 어쩌고 어쩌고", "김은지"),
+            new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDateTime.now(), "imageurl2", "레스토랑1", "경기도 어쩌고 어쩌고", "박은지"),
+            new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDateTime.now(), "imageurl3", "김밥집1", "전주시 어쩌고 어쩌고", "김지은")
     ));
     public static final ReviewResponse REVIEW_RESPONSE =
-            new ReviewResponse(1L, "맛잇서요", 5.0, LocalDate.now(), "김뿡치");
+            new ReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), "김뿡치");
     public static final ReviewSaveUpdateRequest REVIEW_SAVE_REQUEST =
             new ReviewSaveUpdateRequest( "진짜맛있어요!", 1.2);
     public static final ReviewSaveUpdateRequest REVIEW_UPDATE_REQUEST =
@@ -169,7 +170,7 @@ public class TestConstants {
     public static final CommentSaveUpdateRequest COMMENT_SAVE_UPDATE_REQUEST =
             new CommentSaveUpdateRequest("내용내뇽ㅇ");
     public static final CommentResponse COMMENT_RESPONSE =
-            new CommentResponse(1l, "대댓글내용", LocalDate.now());
+            new CommentResponse(1l, "대댓글내용", LocalDateTime.now());
 
     // Image Response
     public static final ImageResponse IMAGE_RESPONSE =

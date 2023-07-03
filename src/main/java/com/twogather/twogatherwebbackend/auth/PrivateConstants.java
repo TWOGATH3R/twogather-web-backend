@@ -22,7 +22,6 @@ public class PrivateConstants {
     @Value("${jwt.refresh-header}")
     public String REFRESH_TOKEN_HEADER = null;
 
-
     @Value("${api.validate.service.key}")
     public String API_KEY = null;
 

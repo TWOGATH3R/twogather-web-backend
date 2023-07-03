@@ -21,7 +21,7 @@ public interface DocumentFormatGenerator {
         return key("format").value("비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로");
     }
     static Attributes.Attribute getDateFormat() {
-        return key("format").value("yyyy-MM-dd");
+        return key("format").value("yyyy-MM-dd HH:mm:ss");
     }
     static Attributes.Attribute getBusinessNumberFormat() {
         return key("format").value("숫자 10자리여야한다");

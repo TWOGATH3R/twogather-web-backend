@@ -17,37 +17,35 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+    
     @PostMapping
+    @PreAuthorize("@storeService.isMyStore(#storeId)")  // 가게 사장님만 대댓글 작성 가능
     public ResponseEntity<Response> upload(@PathVariable Long storeId,
                                            @PathVariable Long reviewId,
-                                           @RequestBody @Valid final CommentSaveUpdateRequest request
-                                           ) {
+                                           @RequestBody @Valid final CommentSaveUpdateRequest request) {
         CommentResponse data = commentService.save(reviewId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new Response(data));
     }
+
     @PutMapping("/{commentId}")
-    @PreAuthorize("@commentService.isMyComment(#commentId)")
+    @PreAuthorize("hasRole('ADMIN') or (@commentService.isMyComment(#commentId) and @storeService.isMyStore(#storeId))")
     public ResponseEntity<Response> update(@PathVariable Long storeId,
                                            @PathVariable Long reviewId,
                                            @PathVariable Long commentId,
-                                           @RequestBody @Valid final CommentSaveUpdateRequest request
-    ) {
+                                           @RequestBody @Valid final CommentSaveUpdateRequest request) {
         CommentResponse data = commentService.update(commentId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
     @DeleteMapping("/{commentId}")
-    @PreAuthorize("@commentService.isMyComment(#commentId)")
+    @PreAuthorize("hasRole('ADMIN') or (@commentService.isMyComment(#commentId) and @storeService.isMyStore(#storeId))")
     public ResponseEntity delete(@PathVariable Long storeId,
                                            @PathVariable Long reviewId,
-                                           @PathVariable Long commentId
-    ) {
+                                           @PathVariable Long commentId) {
         commentService.delete(commentId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 }

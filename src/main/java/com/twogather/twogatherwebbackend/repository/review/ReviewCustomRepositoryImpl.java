@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.twogather.twogatherwebbackend.domain.QComment.comment;
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
 import static com.twogather.twogatherwebbackend.domain.QMember.member;
 import static com.twogather.twogatherwebbackend.domain.QReview.review;
@@ -48,15 +49,18 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                         review.score,
                         review.createdDate,
                         member.memberId,
-                        member.username,
+                        member.name,
                         JPAExpressions.select(subReview.score.avg())
                                 .from(subReview)
                                 .join(subReview.reviewer, subMember)
-                                .where(subMember.memberId.eq(member.memberId))
+                                .where(subMember.memberId.eq(member.memberId)),
+                        comment.content,
+                        comment.createdDate
                 ))
                 .from(review)
                 .join(review.reviewer, member)
                 .join(review.store, store)
+                .leftJoin(review.comment, comment)
                 .where(store.storeId.eq(storeId))
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())

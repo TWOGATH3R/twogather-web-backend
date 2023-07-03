@@ -656,8 +656,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4MDI3OTM3fQ.of31WmfUMVIHbPXibpmHVnhI1bEoYEKkUGHJs-mWkkRvsexe74cPL1Nb7KT115AEOavkWOpd1FQd7f2WAaWbhA
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4MDM2NjY3fQ.bjcEz5DatjBINYonct_QHsZIX6yxiSnMcSzUMvcU3GT3mI3KCMMqQ_tVljqgYFPOKAHTLkWQlFrzDHO9DoXYUQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4MzU1NTcyfQ.7P2RTAnuAjGi-LJ5YqvmA-L0B9eYtM_vPoQ0CsiuZUEg1TrWfTFvAnK9mS9sAxVzgGa9etf1dr6149Z2KRWxsQ
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4MzY0MzAyfQ.TgTX14Y9Z-eM8rK8Nuc2e10VQaeti2WrIU_YK2OymwDSE0xTRgrX7YXf2a-JB7o2CFgLex8BXpiT-gCEJWt1Og
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1411,7 +1411,7 @@ Content-Length: 144
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/admin/1?_csrf=a4051992-dee7-4203-a1ea-bb9f7498264a HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/admin/1?_csrf=369e1191-c913-4d5b-a914-fcfe5efcd0fb HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -1629,7 +1629,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-29",
+    "requestDate" : "2023-07-03",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 2,
@@ -1638,7 +1638,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-29",
+    "requestDate" : "2023-07-03",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 3,
@@ -1647,7 +1647,7 @@ Content-Length: 876
     "phone" : "010-1234-124",
     "isApproved" : false,
     "reasonForRejection" : "",
-    "requestDate" : "2023-06-29",
+    "requestDate" : "2023-07-03",
     "storeImageUrl" : "url1"
   } ],
   "currentPage" : 0,
@@ -1698,7 +1698,7 @@ Content-Length: 876
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].requestDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가게 승인 요청 날짜</p></td>
 </tr>
 <tr>
@@ -3384,7 +3384,7 @@ Host: docs.api.com
   "phone" : "063-231-2222",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-29",
+  "businessStartDate" : "2023-07-03",
   "keywordIdList" : [ 1, 2, 3 ],
   "categoryId" : 1
 }</code></pre>
@@ -3450,7 +3450,7 @@ Host: docs.api.com
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
 </tr>
 <tr>
@@ -3486,7 +3486,7 @@ Content-Length: 389
     "phone" : "010-1234-1234",
     "businessNumber" : "000000000",
     "businessName" : "김길공",
-    "businessStartDate" : "2023-06-29",
+    "businessStartDate" : "2023-07-03",
     "keywordList" : [ "분위기좋은", "사진찍기좋은", "저렴한" ],
     "categoryName" : "양식"
   }
@@ -3553,7 +3553,7 @@ Content-Length: 389
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.businessStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
 </tr>
 <tr>
@@ -4371,7 +4371,7 @@ Content-Length: 1004
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].requestDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">승인 요청한 날짜</p></td>
 </tr>
 <tr>
@@ -4510,7 +4510,7 @@ Content-Length: 389
     "phone" : "010-1234-1234",
     "businessNumber" : "000000000",
     "businessName" : "김길공",
-    "businessStartDate" : "2023-06-29",
+    "businessStartDate" : "2023-07-03",
     "keywordList" : [ "분위기좋은", "사진찍기좋은", "저렴한" ],
     "categoryName" : "양식"
   }
@@ -4577,7 +4577,7 @@ Content-Length: 389
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.businessStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
 </tr>
 <tr>
@@ -4685,7 +4685,7 @@ Host: docs.api.com
   "phone" : "010-1234-1234",
   "businessNumber" : "0000000000",
   "businessName" : "홍길동",
-  "businessStartDate" : "2023-06-29",
+  "businessStartDate" : "2023-07-03",
   "keywordIdList" : [ 1, 2, 3 ],
   "categoryId" : 1
 }</code></pre>
@@ -4779,7 +4779,7 @@ Host: docs.api.com
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
 </tr>
 <tr>
@@ -4815,7 +4815,7 @@ Content-Length: 389
     "phone" : "010-1234-1234",
     "businessNumber" : "000000000",
     "businessName" : "김길공",
-    "businessStartDate" : "2023-06-29",
+    "businessStartDate" : "2023-07-03",
     "keywordList" : [ "분위기좋은", "사진찍기좋은", "저렴한" ],
     "categoryName" : "양식"
   }
@@ -4882,7 +4882,7 @@ Content-Length: 389
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.businessStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사업시작일</p></td>
 </tr>
 <tr>
@@ -4928,7 +4928,7 @@ Content-Length: 389
 <h4 id="_get_4_http_request"><a class="link" href="#_get_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=b81d547a-f07f-421e-8c2d-51e0a7a1634a HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=dd7db9b6-a4bd-4ff1-8858-8ab2e0f0664b HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5046,7 +5046,7 @@ Content-Length: 138
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=0ffc4371-21dd-4bbe-ba93-b3a23923e614 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=ffdd83a3-9370-4353-94b5-09254a42ed46 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -5554,7 +5554,7 @@ Content-Length: 130
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=4cb9fb3a-0491-445e-85a8-a84233170680 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=d1109326-8d0c-4a8a-be4f-11e050d6d133 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5703,7 +5703,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=d854b5b7-6940-407f-9bc9-3f39fcfd4b08 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=da0cd5e4-180d-4009-ad48-3e8daa9f7ff1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 84
 Host: docs.api.com
@@ -6305,33 +6305,39 @@ Host: docs.api.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 761
+Content-Length: 1010
 
 {
   "data" : [ {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
+    "createdDate" : "2023-07-03 11:39:42",
     "consumerId" : 1,
     "consumerName" : "김뿡치",
-    "consumerAvgScore" : 5.0
+    "consumerAvgScore" : 5.0,
+    "commentContent" : "감사합니당",
+    "commentCreatedDate" : "2023-07-03 11:39:42"
   }, {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
+    "createdDate" : "2023-07-03 11:39:42",
     "consumerId" : 2,
     "consumerName" : "김뿡치",
-    "consumerAvgScore" : 5.0
+    "consumerAvgScore" : 5.0,
+    "commentContent" : null,
+    "commentCreatedDate" : null
   }, {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
+    "createdDate" : "2023-07-03 11:39:42",
     "consumerId" : 3,
     "consumerName" : "김뿡치",
-    "consumerAvgScore" : 5.0
+    "consumerAvgScore" : 5.0,
+    "commentContent" : null,
+    "commentCreatedDate" : null
   } ],
   "currentPage" : 0,
   "totalPages" : 1,
@@ -6409,8 +6415,22 @@ Content-Length: 761
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성일자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].commentContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].commentCreatedDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대댓글 작성일자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPages</code></p></td>
@@ -6550,14 +6570,14 @@ Host: docs.api.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 943
+Content-Length: 970
 
 {
   "data" : [ {
     "reviewId" : 1,
     "content" : "Good product",
     "score" : 4.5,
-    "createdDate" : "2022-01-01",
+    "createdDate" : "2023-07-03 11:37:43",
     "consumerName" : "imageurl",
     "url" : "김가네삼겹살",
     "storeName" : "서울시 어쩌고 어쩌고",
@@ -6566,7 +6586,7 @@ Content-Length: 943
     "reviewId" : 1,
     "content" : "Not bad",
     "score" : 3.0,
-    "createdDate" : "2022-01-03",
+    "createdDate" : "2023-07-03 11:37:43",
     "consumerName" : "imageurl2",
     "url" : "레스토랑1",
     "storeName" : "경기도 어쩌고 어쩌고",
@@ -6575,7 +6595,7 @@ Content-Length: 943
     "reviewId" : 2,
     "content" : "Excellent",
     "score" : 5.0,
-    "createdDate" : "2022-01-05",
+    "createdDate" : "2023-07-03 11:37:43",
     "consumerName" : "imageurl3",
     "url" : "김밥집1",
     "storeName" : "전주시 어쩌고 어쩌고",
@@ -6664,7 +6684,7 @@ Content-Length: 943
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성일자</p></td>
 </tr>
 <tr>
@@ -6726,7 +6746,7 @@ Content-Length: 943
 <h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=d60d7a6b-73b5-433e-9236-22182237c824 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=42aaa940-f5c6-4195-aa24-7ad420a9f038 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6772,14 +6792,14 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 166
+Content-Length: 175
 
 {
   "data" : {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-06-29",
+    "createdDate" : "2023-07-03 11:37:43",
     "consumerName" : "김뿡치"
   }
 }</code></pre>
@@ -6831,7 +6851,7 @@ Content-Length: 166
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성날짜</p></td>
 </tr>
 <tr>
@@ -6858,7 +6878,7 @@ Content-Length: 166
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=e7c884fd-54ad-43b7-a22a-bd64eda25c55 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=417ca266-5df6-45a5-a082-7963b8bc8a9b HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6910,14 +6930,14 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 166
+Content-Length: 175
 
 {
   "data" : {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-06-29",
+    "createdDate" : "2023-07-03 11:37:43",
     "consumerName" : "김뿡치"
   }
 }</code></pre>
@@ -6969,7 +6989,7 @@ Content-Length: 166
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd HH:mm:ss</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성날짜</p></td>
 </tr>
 <tr>
@@ -6996,7 +7016,7 @@ Content-Length: 166
 <h4 id="_delete_6_http_request"><a class="link" href="#_delete_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=2c9c74e6-17dc-4781-9f99-fe32b75d93ee HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=2ea31fcd-0dfa-4ab6-b16b-51d79c5fbe1d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -7114,13 +7134,13 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
 Content-Type: application/json
-Content-Length: 114
+Content-Length: 123
 
 {
   "data" : {
     "commentId" : 1,
     "content" : "대댓글내용",
-    "createDate" : "2023-06-29"
+    "createDate" : "2023-07-03 11:37:43"
   }
 }</code></pre>
 </div>
@@ -7241,13 +7261,13 @@ Host: docs.api.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 114
+Content-Length: 123
 
 {
   "data" : {
     "commentId" : 1,
     "content" : "대댓글내용",
-    "createDate" : "2023-06-29"
+    "createDate" : "2023-07-03 11:37:43"
   }
 }</code></pre>
 </div>
