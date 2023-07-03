@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.twogather.twogatherwebbackend.domain.QComment.comment;
 import static com.twogather.twogatherwebbackend.domain.QImage.image;
 import static com.twogather.twogatherwebbackend.domain.QMember.member;
 import static com.twogather.twogatherwebbackend.domain.QReview.review;
@@ -43,20 +44,23 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
 
         List<StoreDetailReviewResponse> responseList = jpaQueryFactory
                 .select(Projections.constructor(StoreDetailReviewResponse.class,
-                        member.memberId,
                         review.reviewId,
                         review.content,
                         review.score,
                         review.createdDate,
-                        member.username,
+                        member.memberId,
+                        member.name,
                         JPAExpressions.select(subReview.score.avg())
                                 .from(subReview)
                                 .join(subReview.reviewer, subMember)
-                                .where(subMember.memberId.eq(member.memberId))
+                                .where(subMember.memberId.eq(member.memberId)),
+                        comment.content,
+                        comment.createdDate
                 ))
                 .from(review)
                 .join(review.reviewer, member)
                 .join(review.store, store)
+                .leftJoin(review.comment, comment)
                 .where(store.storeId.eq(storeId))
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())
@@ -81,15 +85,14 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                         review.content,
                         review.score,
                         review.createdDate,
+                        member.username,
                         image.url,
                         store.name,
-                        store.address,
-                        member.username))
+                        store.address))
                 .from(review)
                 .join(review.reviewer, member)
                 .join(review.store, store)
-                .leftJoin(image)
-                .on(store.storeId.eq(image.store.storeId))
+                .leftJoin(store.storeImageList, image)
                 .where(member.memberId.eq(memberId))
                 .orderBy(reviewSort(pageable))
                 .offset(pageable.getOffset())

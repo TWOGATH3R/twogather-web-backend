@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.dto.review.ReviewSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.service.ReviewService;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -43,13 +46,30 @@ public class ReviewControllerTest extends ControllerTest {
     private ReviewService reviewService;
 
     @Test
+    @DisplayName("지정된 범위(0.5~5.0)를 벗어난 점수 입력 시 요청 거부")
+    public void WhenScoreIsInvalid_ThenDenyRequest() throws Exception{
+        // given
+        ReviewSaveUpdateRequest request = new ReviewSaveUpdateRequest(
+                "너무 맛있어서 1000점 드립니다", 1000.0
+        );
+        String jsonRequest = objectMapper.writeValueAsString(request);
+
+        // when-then
+        mockMvc.perform(post("/api/stores/{storeId}/reviews", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(jsonRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("페이징된 리뷰 목록 조회")
     public void WhenGetReviewsByStoreId_ThenResponseReviews() throws Exception {
         //given
         Page<StoreDetailReviewResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-                new StoreDetailReviewResponse(1L, 1L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, 2L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0),
-                new StoreDetailReviewResponse(1L, 3L, "맛잇서요", 5.0, LocalDate.of(2022, 1, 5), "김뿡치", 5.0)
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 1L, "김뿡치", 5.0, "감사합니당", LocalDateTime.now()),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 2L, "김뿡치", 5.0, null, null),
+                new StoreDetailReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), 3L, "김뿡치", 5.0, null, null)
         ));
 
         //when
@@ -87,6 +107,8 @@ public class ReviewControllerTest extends ControllerTest {
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                         fieldWithPath("data[].score").type(JsonFieldType.NUMBER).description("리뷰 점수").attributes(getScoreFormat()),
                                         fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("리뷰 작성일자").attributes(getDateFormat()),
+                                        fieldWithPath("data[].commentContent").type(JsonFieldType.STRING).description("대댓글 내용").optional(),
+                                        fieldWithPath("data[].commentCreatedDate").type(JsonFieldType.STRING).description("대댓글 작성일자").attributes(getDateFormat()).optional(),
                                         fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
                                         fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),
                                         fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 개수"),
@@ -177,13 +199,11 @@ public class ReviewControllerTest extends ControllerTest {
                                 fieldWithPath("score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat())
                         ),
                         responseFields(
-                                fieldWithPath("data.consumerId").type(JsonFieldType.NUMBER).description("리뷰작성자의 고유 id"),
-                                fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰작성자의 이름"),
-                                fieldWithPath("data.consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰를 작성한 사용자의 평균 평점"),
                                 fieldWithPath("data.reviewId").type(JsonFieldType.NUMBER).description("해당 리뷰의 고유 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("data.score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat()),
-                                fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("작성날짜").attributes(getDateFormat())
+                                fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("작성날짜").attributes(getDateFormat()),
+                                fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰작성자의 이름")
 
                         )
                 ));
@@ -220,13 +240,11 @@ public class ReviewControllerTest extends ControllerTest {
                                 fieldWithPath("score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat())
                         ),
                         responseFields(
-                                fieldWithPath("data.consumerId").type(JsonFieldType.NUMBER).description("리뷰 작성자의 고유 id"),
-                                fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰 작성자의 이름"),
-                                fieldWithPath("data.consumerAvgScore").type(JsonFieldType.NUMBER).description("리뷰 자자의 평균 평점"),
                                 fieldWithPath("data.reviewId").type(JsonFieldType.NUMBER).description("해당 리뷰의 고유 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("리뷰작성내용"),
                                 fieldWithPath("data.score").type(JsonFieldType.NUMBER).description("리뷰점수").attributes(getScoreFormat()),
-                                fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("작성날짜").attributes(getDateFormat())
+                                fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("작성날짜").attributes(getDateFormat()),
+                                fieldWithPath("data.consumerName").type(JsonFieldType.STRING).description("리뷰 작성자의 이름")
                         )
                 ));
 
@@ -255,6 +273,4 @@ public class ReviewControllerTest extends ControllerTest {
                 ));
 
     }
-
-
 }

@@ -6,28 +6,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StoreDetailReviewResponse extends ReviewResponse{
+public class StoreDetailReviewResponse {
+    private Long reviewId;
+    private String content;
+    private Double score;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
     private Long consumerId;
+    private String consumerName;
     private Double consumerAvgScore;
+    private String commentContent;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime commentCreatedDate;
 
-    public StoreDetailReviewResponse(Long consumerId, Long reviewId, String content, Double score,
-                                     LocalDate createdDate, String consumerName) {
-        super(reviewId, content, score, createdDate, consumerName);
+    public StoreDetailReviewResponse(Long reviewId, String content, Double score, LocalDateTime createdDate,
+                                     Long consumerId, String consumerName, Double consumerAvgScore,
+                                     String commentContent, LocalDateTime commentCreatedDate) {
+        this.reviewId = reviewId;
+        this.content = content;
+        this.score = score;
+        this.createdDate = createdDate;
         this.consumerId = consumerId;
-    }
-
-    public StoreDetailReviewResponse(Long consumerId, Long reviewId, String content, Double score,
-                              LocalDate createdDate, String consumerName, Double consumerAvgScore) {
-        super(reviewId, content, score, createdDate, consumerName);
-        this.consumerId = consumerId;
-        this.consumerAvgScore = consumerAvgScore;
-    }
-
-    public void setConsumerAvgScore(Double consumerAvgScore) {
-        this.consumerAvgScore = consumerAvgScore;
+        this.consumerName = consumerName;
+        this.consumerAvgScore = Math.round(consumerAvgScore * 10) / 10.0;
+        this.commentContent = commentContent;
+        this.commentCreatedDate = commentCreatedDate;
     }
 }

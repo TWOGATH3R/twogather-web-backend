@@ -8,6 +8,8 @@ import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.exception.CommentException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
+import com.twogather.twogatherwebbackend.exception.ReviewException;
+import com.twogather.twogatherwebbackend.exception.ReviewException.ReviewErrorCode;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CommentRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
@@ -18,8 +20,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.twogather.twogatherwebbackend.exception.CommentException.CommentErrorCode.MAX_1_COMMENT;
 import static com.twogather.twogatherwebbackend.exception.CommentException.CommentErrorCode.NO_SUCH_COMMENT;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.exception.ReviewException.ReviewErrorCode.NO_SUCH_REVIEW;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 
 @Service
@@ -29,40 +33,55 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
-    private final StoreRepository storeRepository;
-    public CommentResponse save(Long reviewId, CommentSaveUpdateRequest request){
-        //TODO: Review exception 추가
+
+    public CommentResponse save(Long reviewId, CommentSaveUpdateRequest request) {
         String username = SecurityUtils.getLoginUsername();
+
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
-        Review review = reviewRepository.findById(reviewId).get();
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ReviewException(NO_SUCH_REVIEW)
+        );
+
+        // 이미 작성된 comment가 있는 경우 BAD_REQUEST
+        if (review.getComment() != null) {
+            throw new CommentException(MAX_1_COMMENT);
+        }
+
         Comment comment = new Comment(request.getContent(), review, member);
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponse(savedComment.getCommentId(), savedComment.getContent(),  savedComment.getCreatedDate());
     }
-    public CommentResponse update(Long commentId, CommentSaveUpdateRequest request){
+
+    public CommentResponse update(Long commentId, CommentSaveUpdateRequest request) {
         String username = SecurityUtils.getLoginUsername();
+
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()->new CommentException(NO_SUCH_COMMENT)
         );
+
         comment.update(request.getContent());
         return new CommentResponse(comment.getCommentId(), comment.getContent(), comment.getCreatedDate());
     }
-    public void delete(Long commentId){
+
+    public void delete(Long commentId) {
         commentRepository.deleteById(commentId);
     }
-    public Boolean isMyComment(Long commentId){
+
+    public Boolean isMyComment(Long commentId) {
         String username = SecurityUtils.getLoginUsername();
+
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
                 ()->new MemberException(NO_SUCH_MEMBER)
         );
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()->new CommentException(NO_SUCH_COMMENT)
         );
+
         return (member.getMemberId() == comment.getCommenter().getMemberId());
     }
 }

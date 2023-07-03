@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.repository;
 
+import com.amazonaws.services.s3.model.Owner;
 import com.twogather.twogatherwebbackend.domain.*;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
@@ -13,64 +14,31 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.twogather.twogatherwebbackend.domain.StoreStatus.APPROVED;
 import static org.assertj.core.api.Assertions.*;
 
 
 public class ReviewRepositoryTest extends RepositoryTest{
-    private Member consumer1, consumer2, consumer3, consumer4;
+    private Consumer consumer1, consumer2, consumer3, consumer4, consumer5;
+    private StoreOwner owner1;
     private Store store1, store2, store3;
     private Review review1;
+    private Comment comment1;
 
     @BeforeEach
     void setUp() {
-        consumer1 = memberRepository.save(
-                Member.builder()
-                        .username("뿡치1")
-                        .email("a@a.a")
-                        .password("123")
-                        .name("user1")
-                        .authenticationType(AuthenticationType.CONSUMER)
-                        .isActive(true)
-                        .build()
-        );
-        consumer2 = memberRepository.save(
-                Member.builder()
-                        .username("뿡치2")
-                        .email("b@b.b")
-                        .password("123")
-                        .name("user2")
-                        .authenticationType(AuthenticationType.CONSUMER)
-                        .isActive(true)
-                        .build()
-        );
-        consumer3 = memberRepository.save(
-                Member.builder()
-                        .username("뿡치3")
-                        .email("c@c.c")
-                        .password("123")
-                        .name("user3")
-                        .authenticationType(AuthenticationType.CONSUMER)
-                        .isActive(true)
-                        .build()
-        );
-        consumer4 = memberRepository.save(
-                Member.builder()
-                        .username("뿡치4")
-                        .email("d@d.d")
-                        .password("123")
-                        .name("user4")
-                        .authenticationType(AuthenticationType.CONSUMER)
-                        .isActive(true)
-                        .build()
-        );
+        consumer1 = consumerRepository.save(new Consumer("user1", "a@a.a", "123", "뿡치1", AuthenticationType.CONSUMER, true));
+        consumer2 = consumerRepository.save(new Consumer("user2", "b@b.b", "123", "뿡치2", AuthenticationType.CONSUMER, true));
+        consumer3 = consumerRepository.save(new Consumer("user3", "c@c.c", "123", "뿡치3", AuthenticationType.CONSUMER, true));
+        consumer4 = consumerRepository.save(new Consumer("user4", "d@d.d", "123", "뿡치4", AuthenticationType.CONSUMER, true));
+        consumer5 = consumerRepository.save(new Consumer("user5", "e@e.e", "123", "뿡치5", AuthenticationType.CONSUMER, true));
+        owner1 = memberRepository.save(new StoreOwner("owner1", "1@1.1", "123", "주인1", AuthenticationType.STORE_OWNER, true));
+
         store1 = storeRepository.save(
                 Store.builder()
-                        .storeId(1L)
                         .name("store1")
                         .address("addr1")
                         .phone("010")
@@ -78,7 +46,6 @@ public class ReviewRepositoryTest extends RepositoryTest{
                         .build()
         );
         store2 = storeRepository.save(Store.builder()
-                .storeId(2L)
                 .name("store2")
                 .address("addr2")
                 .phone("010")
@@ -86,7 +53,6 @@ public class ReviewRepositoryTest extends RepositoryTest{
                 .build()
         );
         store3 = storeRepository.save(Store.builder()
-                .storeId(3L)
                 .name("store3")
                 .address("addr3")
                 .phone("010")
@@ -94,30 +60,82 @@ public class ReviewRepositoryTest extends RepositoryTest{
                 .build()
         );
 
+        Store tempStore = Store.builder()
+                .name("store4")
+                .address("addr4")
+                .phone("010")
+                .status(APPROVED)
+                .build();
+        Store store4 = storeRepository.save(tempStore);
+        imageRepository.save(new Image(store4, "url1"));
+        imageRepository.save(new Image(store4, "url2"));
+        imageRepository.save(new Image(store4, "url3"));
+
         // for store1
-        review1 = reviewRepository.save(Review.builder().store(store1).reviewer(consumer1).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store1).reviewer(consumer2).content("괜찮아용").score( 4.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store1).reviewer(consumer3).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        review1 = reviewRepository.save(Review.builder().store(store1).reviewer(consumer1).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store1).reviewer(consumer2).content("괜찮아용").score(4.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store1).reviewer(consumer3).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
 
         // for store2
-        reviewRepository.save(Review.builder().store(store2).reviewer(consumer1).content("맛없어용").score(1.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store2).reviewer(consumer2).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store2).reviewer(consumer1).content("맛없어용").score(1.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store2).reviewer(consumer2).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
 
         // for store3
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer( consumer4).content( "맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score( 5.0).createdDate( LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
-        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content( "맛있어용").score(5.0).createdDate( LocalDate.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
+        reviewRepository.save(Review.builder().store(store3).reviewer(consumer4).content("맛있어용").score(5.0).createdDate(LocalDateTime.now()).build());
 
+        // for store4
+        reviewRepository.save(Review.builder().store(store4).reviewer(consumer5).content("이미지테스트").score(5.0).createdDate(LocalDateTime.now()).build());
+        
         em.flush();
+    }
+
+    @Test
+    @DisplayName("comment를 정상적으로 불러오는지 테스트")
+    @Transactional
+    void commentTest() {
+        // given
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate").descending());
+        em.clear();
+
+        // when
+        Comment savedComment = commentRepository.save(new Comment("감사합니당^^", review1, owner1));
+        Page<StoreDetailReviewResponse> response = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
+
+        // then
+        System.out.println("=====================================");
+        System.out.println(response.getContent().get(0).getCommentContent());
+        System.out.println(response.getContent().get(1).getCommentContent());
+        System.out.println(response.getContent().get(2).getCommentContent());
+        System.out.println("=====================================");
+    }
+
+    @Test
+    @DisplayName("이미지 목록 테스트")
+    @Transactional
+    void imageTest() {
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate").descending());
+        
+        // consumer5는 store4에 리뷰 한개 작성
+        // store4는 3개의 이미지를 가짐
+        em.clear();
+        Page<MyReviewInfoResponse> response = reviewRepository.findMyReviewsByMemberId(consumer5.getMemberId(), pageable);
+
+        System.out.println("=====================================");
+        System.out.println(response.getContent().get(0).getUrl());
+        System.out.println(response.getContent().get(1).getUrl());
+        System.out.println(response.getContent().get(2).getUrl());
+        System.out.println("=====================================");
     }
 
     @Test
@@ -188,20 +206,20 @@ public class ReviewRepositoryTest extends RepositoryTest{
     void WhenFindByStoreStoreId_ThenReturnReviewsWithAvgScoreOfCustomer() {
         // given
         Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate").descending());
-        Map<Long, Double> map = new HashMap<>();    // consumer1,2,3의 평균평점 저장
-        map.put(consumer1.getMemberId(), 3.0);
-        map.put(consumer2.getMemberId(), 4.5);
-        map.put(consumer3.getMemberId(), 5.0);
+
+        Map<String, Double> map = new HashMap<>();
+        map.put("뿡치1", 3.0);  // user1의 평균 리뷰 평점
+        map.put("뿡치2", 4.5);  // user2의 평균 리뷰 평점
+        map.put("뿡치3", 5.0);  // user3의 평균 리뷰 평점
 
         // when
         Page<StoreDetailReviewResponse> results1 = reviewRepository.findReviewsByStoreId(store1.getStoreId(), pageable);
         List<StoreDetailReviewResponse> content = results1.getContent();
 
-        assertThat(results1).isNotEmpty();
-        assertThat(content.get(0).getConsumerAvgScore()).isEqualTo(3.0);   // user1의 평균 리뷰 평점
-        assertThat(content.get(1).getConsumerAvgScore()).isEqualTo(4.5);   // user2의 평균 리뷰 평점
-        assertThat(content.get(2).getConsumerAvgScore()).isEqualTo(5.0);   // user3의 평균 리뷰 평점
-
+        // then
+        assertThat(content.get(0).getConsumerAvgScore()).isEqualTo(map.get(content.get(0).getConsumerName()));
+        assertThat(content.get(1).getConsumerAvgScore()).isEqualTo(map.get(content.get(1).getConsumerName()));
+        assertThat(content.get(2).getConsumerAvgScore()).isEqualTo(map.get(content.get(2).getConsumerName()));
     }
 
     @Test

@@ -29,7 +29,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/stores/{storeId}/reviews/{reviewId}")
-    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("hasRole('ADMIN') or (@reviewService.isMyReview(#reviewId) and not @storeService.isMyStore(#storeId))")
     public ResponseEntity<Response> delete(@PathVariable final Long reviewId, @PathVariable String storeId) {
         reviewService.delete(reviewId);
 
@@ -37,7 +37,7 @@ public class ReviewController {
     }
 
     @PutMapping("/stores/{storeId}/reviews/{reviewId}")
-    @PreAuthorize("@reviewService.isMyReview(#reviewId)")
+    @PreAuthorize("hasRole('ADMIN') or (@reviewService.isMyReview(#reviewId) and not @storeService.isMyStore(#storeId))")
     public ResponseEntity<Response> update(@PathVariable final Long reviewId, @PathVariable final Long storeId,
                                            @RequestBody @Valid final ReviewSaveUpdateRequest request){
         ReviewResponse data = reviewService.update(reviewId, request);

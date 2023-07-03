@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -16,25 +17,23 @@ public class Comment {
     private Long commentId;
     @Column(name = "content", columnDefinition = "VARCHAR(5000)")
     private String content;
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member commenter;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "review_id")
     private Review review;
 
-
-    public Comment(String content, Review review, Member member){
+    public Comment(String content, Review review, Member member) {
         this.review = review;
         this.review.addComment(this);
         this.commenter = member;
-        commenter.addComment(this);
         this.content = content;
-        this.createdDate = LocalDate.now();
-        review.addComment(this);
+        this.createdDate = LocalDateTime.now();
+        commenter.addComment(this);
     }
     public void update(String content){
         if(!content.isEmpty()){

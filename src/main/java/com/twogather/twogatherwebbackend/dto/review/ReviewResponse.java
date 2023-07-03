@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class ReviewResponse {
     private Long reviewId;
     private String content;
     private Double score;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate createdDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
     private String consumerName;
 }

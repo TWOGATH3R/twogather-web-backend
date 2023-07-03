@@ -47,6 +47,8 @@ public class RepositoryTest {
     protected StoreKeywordRepository storeKeywordRepository;
     @Autowired
     protected CategoryRepository categoryRepository;
+    @Autowired
+    protected CommentRepository commentRepository;
 
     protected Store store1;
     protected Store store2;

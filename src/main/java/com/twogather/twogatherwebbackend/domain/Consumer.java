@@ -1,5 +1,6 @@
 package com.twogather.twogatherwebbackend.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

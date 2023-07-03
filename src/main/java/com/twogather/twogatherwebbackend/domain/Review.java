@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,32 +21,28 @@ public class Review {
     @Column(name="review_id")
     private Long reviewId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member reviewer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<Comment> commentList = new ArrayList<>();
+    @OneToOne(mappedBy = "review")
+    private Comment comment;
 
     @Column(name = "content", columnDefinition = "VARCHAR(5000)")
     private String content;
     private Double score;
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
-    public void addStore(Store store){
+    public void addStore(Store store) {
         this.store = store;
         this.store.addReview(this);
     }
     public void addComment(Comment comment){
-        if(commentList==null){
-            commentList = new ArrayList<>();
-        }
-        this.commentList.add(comment);
+        this.comment = comment;
     }
     public void addReviewer(Member member){
         reviewer = member;
@@ -53,10 +50,10 @@ public class Review {
 
     public void update(String content, Double score) {
         if(content != null && !content.isEmpty()) {
-            this. content = content;
+            this.content = content;
         }
         if(!score.isNaN() && 0.0 <= score && score <= 5.0) {
-            this. content = content;
+            this.content = content;
         }
     }
 }

@@ -6,20 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MyReviewInfoResponse extends ReviewResponse{
+public class MyReviewInfoResponse {
+    private Long reviewId;
+    private String content;
+    private Double score;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
+    private String consumerName;
     private String url;
     private String storeName;
     private String storeAddress;
-
-    public MyReviewInfoResponse(Long reviewId, String content, Double score, LocalDate createdDate,
-                                String url, String storeName, String storeAddress, String consumerName) {
-        super(reviewId, content, score, createdDate, consumerName);
-        this.url = url;
-        this.storeName = storeName;
-        this.storeAddress = storeAddress;
-    }
 }
