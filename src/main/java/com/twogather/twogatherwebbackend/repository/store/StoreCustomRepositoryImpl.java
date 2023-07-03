@@ -59,9 +59,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                         store.address,
                                         store.phone,
                                         store.category.name,
-                                        store.likesList.size()
+                                        store.likesList.size(),
+                                        MathExpressions.round(review.score.avg(), 1)
                                 ))
                         .from(store)
+                        .leftJoin(store.reviewList, review)
                         .leftJoin(store.category, category)
                         .leftJoin(store.likesList, likes)
                         .leftJoin(store.owner, storeOwner)
