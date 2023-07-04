@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -19,12 +20,12 @@ public class MyStoreResponse {
     private String phone;
     private StoreStatus status;
     private String reasonForRejection;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate requestDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime requestDate;
     private String storeImageUrl;
 
 
-    public MyStoreResponse(Long storeId, String name, String address, String phone, StoreStatus status, String reasonForRejection, LocalDate requestDate, String storeImageUrl) {
+    public MyStoreResponse(Long storeId, String name, String address, String phone, StoreStatus status, String reasonForRejection, LocalDateTime requestDate, String storeImageUrl) {
         this.storeId = storeId;
         this.storeName = name;
         this.address = address;
