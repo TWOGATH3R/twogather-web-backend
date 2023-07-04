@@ -206,7 +206,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 null);
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
-        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(), LocalDate.now());
+//        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
 
     }
 

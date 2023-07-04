@@ -29,7 +29,7 @@ public class Review {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToOne(mappedBy = "review")
+    @OneToOne(mappedBy = "review", cascade = CascadeType.REMOVE)
     private Comment comment;
 
     @Column(name = "content", columnDefinition = "VARCHAR(5000)")
