@@ -302,32 +302,32 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
 
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게10") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게11") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게12") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게13") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게14") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
-        Assertions.assertFalse(list.stream().anyMatch(e ->
+        Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("안승인된 가게") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.DENIED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
 

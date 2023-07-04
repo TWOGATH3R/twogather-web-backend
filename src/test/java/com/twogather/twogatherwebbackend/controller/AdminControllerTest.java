@@ -76,7 +76,7 @@ public class AdminControllerTest extends ControllerTest{
                                 fieldWithPath("data[].requestDate").type(JsonFieldType.STRING).description("가게 승인 요청 날짜").attributes(getDateFormat()),
                                 fieldWithPath("data[].reasonForRejection").type(JsonFieldType.STRING).description("가게 거부 이유"),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 사진 url"),
-                                fieldWithPath("data[].isApproved").type(JsonFieldType.BOOLEAN).description("가게 상태").attributes(getStoreStatus()),
+                                fieldWithPath("data[].status").type(JsonFieldType.STRING).description("가게 상태").attributes(getStoreStatus()),
                                 fieldWithPath("data[].storeName").type(JsonFieldType.STRING).description("가게 이름"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게 주소"),
                                 fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),

@@ -162,7 +162,7 @@ public class StoreControllerTest extends ControllerTest{
                                 fieldWithPath("data[].requestDate").type(JsonFieldType.STRING).description("승인 요청한 날짜").attributes(getDateFormat()),
                                 fieldWithPath("data[].storeImageUrl").type(JsonFieldType.STRING).description("가게 대표 이미지 URL"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("가게주소"),
-                                fieldWithPath("data[].isApproved").type(JsonFieldType.BOOLEAN).description("관리자에 의해 가게가 승인됐는지의 여부"),
+                                fieldWithPath("data[].status").type(JsonFieldType.STRING).description("가게 상태").attributes(getStoreStatus()),
                                 fieldWithPath("data[].reasonForRejection").type(JsonFieldType.STRING).description("가게가 승인되지 않은 이유"),
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("조회한 리뷰의 총 페이지 수"),
                                 fieldWithPath("pageSize").type(JsonFieldType.NUMBER).description("현재 페이지의 아이템 수"),

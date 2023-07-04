@@ -72,32 +72,32 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
         //then
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게0") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게1") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게2") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게3") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertTrue(list.stream().anyMatch(e ->
                 e.getStoreName().equals("가게4") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.APPROVED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
         Assertions.assertFalse(list.stream().anyMatch(e ->
                 e.getStoreName().equals("안승인된 가게") &&
-                        e.getIsApproved().equals(true) &&
+                        e.getStatus().equals(StoreStatus.DENIED) &&
                         e.getPhone().equals(STORE_PHONE) &&
                         e.getAddress().equals(STORE_ADDRESS)));
 
@@ -206,7 +206,8 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 null);
         //then
         Assertions.assertEquals(storeRepository.findById(storeId).get().getStatus(),StoreStatus.PENDING);
-        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(),LocalDate.now());
+        Assertions.assertEquals(storeRepository.findById(storeId).get().getRequestDate(), LocalDate.now());
+
     }
 
 
