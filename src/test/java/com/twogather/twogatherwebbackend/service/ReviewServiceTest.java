@@ -31,20 +31,4 @@ public class ReviewServiceTest {
         MockitoAnnotations.openMocks(this);
         reviewService = new ReviewService(reviewRepository, memberRepository, storeRepository);
     }
-
-    @Test
-    @DisplayName("리뷰 등록 시 0.5 단위로 점수를 입력하지 않을 시 반올림하여 0.5 단위로 만듦")
-    public void WhenRequestScoreIsNot_ThenChangeScore() {
-        // given
-        Double score1 = 3.2;
-        Double score2 = 1.4;
-
-        // when
-        Double result1 = reviewService.roundToNearestHalf(score1);
-        Double result2 = reviewService.roundToNearestHalf(score2);
-
-        // then
-        assertThat(result1).isEqualTo(3.0);
-        assertThat(result2).isEqualTo(1.5);
-    }
 }

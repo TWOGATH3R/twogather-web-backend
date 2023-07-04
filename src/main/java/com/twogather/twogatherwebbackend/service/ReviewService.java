@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.NO_SUCH_MEMBER;
@@ -76,7 +75,6 @@ public class ReviewService {
         return toReviewResponse(review);
     }
 
-
     public void delete(Long reviewId){
         reviewRepository.deleteById(reviewId);
     }
@@ -96,8 +94,7 @@ public class ReviewService {
                 review.getScore(), review.getCreatedDate(), review.getReviewer().getName());
     }
 
-    // 점수를 0.5단위로 반올림
-    public Double roundToNearestHalf(Double input) {
+    private Double roundToNearestHalf(Double input) {
         Double score = input;
         score = Math.round(score * 2) / 2.0;
 

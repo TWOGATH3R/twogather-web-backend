@@ -114,9 +114,9 @@ public class ReviewRepositoryTest extends RepositoryTest{
 
         // then
         System.out.println("=====================================");
-        System.out.println(response.getContent().get(0).getCommentContent());
-        System.out.println(response.getContent().get(1).getCommentContent());
-        System.out.println(response.getContent().get(2).getCommentContent());
+        System.out.println(response.getContent().get(0).getComment().getContent());
+        System.out.println(response.getContent().get(1).getComment().getContent());
+        System.out.println(response.getContent().get(2).getComment().getContent());
         System.out.println("=====================================");
     }
 
