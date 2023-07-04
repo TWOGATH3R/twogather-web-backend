@@ -144,7 +144,9 @@ public class TestConstants {
     // My Store Response
     public static final LocalDate DATE = LocalDate.parse("2020-02-02");
     public static final MyStoreResponse MY_STORES_RESPONSE =
-            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "063-231-4990", false, "자격미달", DATE, "url1");
+            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "063-231-4990", StoreStatus.APPROVED, "", DATE, "url1");
+    public static final MyStoreResponse MY_STORES_RESPONSE_DENIED =
+            new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "063-231-4990", StoreStatus.DENIED, "자격미달", DATE, "url1");
 
     // Review Constants
     public static final Page<MyReviewInfoResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
@@ -219,7 +221,7 @@ public class TestConstants {
 
     // My Store Response Page
     public static final Page<MyStoreResponse> MY_STORES_RESPONSE_PAGE =
-            new PageImpl<>(List.of(MY_STORES_RESPONSE, MY_STORES_RESPONSE, MY_STORES_RESPONSE));
+            new PageImpl<>(List.of(MY_STORES_RESPONSE, MY_STORES_RESPONSE, MY_STORES_RESPONSE_DENIED));
 
     // Top Store Response
 
@@ -471,7 +473,7 @@ public class TestConstants {
                     .requestDate(LocalDate.now())
                     .reasonForRejection("")
                     .storeImageUrl("url1")
-                    .isApproved(false)
+                    .status(StoreStatus.APPROVED)
                     .storeName("Store 1")
                     .address("Address 1")
                     .build(),
@@ -479,9 +481,9 @@ public class TestConstants {
                     .storeId(2L)
                     .phone("010-1234-124")
                     .requestDate(LocalDate.now())
-                    .reasonForRejection("")
+                    .reasonForRejection("자격 불충분")
                     .storeImageUrl("url1")
-                    .isApproved(false)
+                    .status(StoreStatus.DENIED)
                     .storeName("Store 2")
                     .address("Address 2")
                     .build(),
@@ -491,7 +493,7 @@ public class TestConstants {
                     .requestDate(LocalDate.now())
                     .reasonForRejection("")
                     .storeImageUrl("url1")
-                    .isApproved(false)
+                    .status(StoreStatus.APPROVED)
                     .storeName("Store 3")
                     .address("Address 3")
                     .build()

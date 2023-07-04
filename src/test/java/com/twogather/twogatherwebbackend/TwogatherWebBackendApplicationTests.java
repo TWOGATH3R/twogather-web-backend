@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalTime;
 import java.util.TimeZone;
 
 @SpringBootTest
@@ -19,6 +20,7 @@ class TwogatherWebBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println(LocalTime.now());
 	}
 
 

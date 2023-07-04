@@ -355,7 +355,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .map(store ->
                         MyStoreResponse.builder()
                                 .storeImageUrl(getUrl(store.getStoreImageList()))
-                                .isApproved(store.getStatus().equals(StoreStatus.APPROVED))
+                                .status(store.getStatus())
                                 .phone(store.getPhone())
                                 .reasonForRejection(store.getReasonForRejection())
                                 .requestDate(store.getRequestDate())
