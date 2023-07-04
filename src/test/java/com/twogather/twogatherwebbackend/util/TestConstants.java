@@ -132,6 +132,7 @@ public class TestConstants {
             StoreDefaultResponse
                     .builder()
                     .ownerId(1l)
+                    .avgScore(4.0)
                     .storeId(1L)
                     .storeName(STORE_NAME)
                     .categoryName("양식")
