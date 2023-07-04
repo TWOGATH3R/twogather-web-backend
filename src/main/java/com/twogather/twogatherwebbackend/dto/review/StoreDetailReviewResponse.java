@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +20,11 @@ public class StoreDetailReviewResponse {
     private Long consumerId;
     private String consumerName;
     private Double consumerAvgScore;
-    private String commentContent;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime commentCreatedDate;
+    private CommentResponse comment;
 
     public StoreDetailReviewResponse(Long reviewId, String content, Double score, LocalDateTime createdDate,
                                      Long consumerId, String consumerName, Double consumerAvgScore,
-                                     String commentContent, LocalDateTime commentCreatedDate) {
+                                     CommentResponse commentResponse) {
         this.reviewId = reviewId;
         this.content = content;
         this.score = score;
@@ -33,7 +32,6 @@ public class StoreDetailReviewResponse {
         this.consumerId = consumerId;
         this.consumerName = consumerName;
         this.consumerAvgScore = Math.round(consumerAvgScore * 10) / 10.0;
-        this.commentContent = commentContent;
-        this.commentCreatedDate = commentCreatedDate;
+        this.comment = commentResponse;
     }
 }

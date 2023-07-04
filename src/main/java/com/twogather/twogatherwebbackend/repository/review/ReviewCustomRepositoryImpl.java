@@ -9,6 +9,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.review.MyReviewInfoResponse;
 import com.twogather.twogatherwebbackend.dto.review.StoreDetailReviewResponse;
 import com.twogather.twogatherwebbackend.exception.SQLException;
@@ -54,8 +55,10 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                                 .from(subReview)
                                 .join(subReview.reviewer, subMember)
                                 .where(subMember.memberId.eq(member.memberId)),
-                        comment.content,
-                        comment.createdDate
+                        Projections.constructor(CommentResponse.class,
+                                comment.commentId,
+                                comment.content,
+                                comment.createdDate)
                 ))
                 .from(review)
                 .join(review.reviewer, member)
@@ -87,6 +90,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository{
                         review.createdDate,
                         member.username,
                         image.url,
+                        store.storeId,
                         store.name,
                         store.address))
                 .from(review)

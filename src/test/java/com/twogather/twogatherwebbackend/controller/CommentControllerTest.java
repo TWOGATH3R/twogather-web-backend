@@ -62,7 +62,7 @@ public class CommentControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("대댓글 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("대댓글의 내용"),
-                               fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
+                               fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
 
                         )
                 ));
@@ -96,7 +96,7 @@ public class CommentControllerTest extends ControllerTest{
                         responseFields(
                                 fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("대댓글 id"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("대댓글의 내용"),
-                               fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
+                               fieldWithPath("data.createdDate").type(JsonFieldType.STRING).description("대댓글 작성날짜").attributes(getDayOfWeekFormat())
 
                         )
                 ));

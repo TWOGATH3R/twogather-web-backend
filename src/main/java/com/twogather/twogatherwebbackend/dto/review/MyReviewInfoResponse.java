@@ -19,6 +19,7 @@ public class MyReviewInfoResponse {
     private LocalDateTime createdDate;
     private String consumerName;
     private String url;
+    private Long storeId;
     private String storeName;
     private String storeAddress;
 }

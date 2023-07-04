@@ -147,9 +147,9 @@ public class TestConstants {
 
     // Review Constants
     public static final Page<MyReviewInfoResponse> MY_REVIEW_LIST = new PageImpl<>(List.of(
-            new MyReviewInfoResponse(1L, "Good product", 4.5, LocalDateTime.now(), "imageurl", "김가네삼겹살", "서울시 어쩌고 어쩌고", "김은지"),
-            new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDateTime.now(), "imageurl2", "레스토랑1", "경기도 어쩌고 어쩌고", "박은지"),
-            new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDateTime.now(), "imageurl3", "김밥집1", "전주시 어쩌고 어쩌고", "김지은")
+            new MyReviewInfoResponse(1L, "Good product", 4.5, LocalDateTime.now(), "imageurl", "김가네삼겹살", 1L, "서울시 어쩌고 어쩌고", "김은지"),
+            new MyReviewInfoResponse(1L, "Not bad", 3.0, LocalDateTime.now(), "imageurl2", "레스토랑1", 2L, "경기도 어쩌고 어쩌고", "박은지"),
+            new MyReviewInfoResponse(2L, "Excellent", 5.0, LocalDateTime.now(), "imageurl3", "김밥집1", 3L, "전주시 어쩌고 어쩌고", "김지은")
     ));
     public static final ReviewResponse REVIEW_RESPONSE =
             new ReviewResponse(1L, "맛잇서요", 5.0, LocalDateTime.now(), "김뿡치");
