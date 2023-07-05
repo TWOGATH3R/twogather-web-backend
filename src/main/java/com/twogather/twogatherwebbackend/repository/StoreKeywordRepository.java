@@ -9,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface StoreKeywordRepository extends JpaRepository<StoreKeyword, Long> {
-    List<StoreKeyword> findByStoreStoreId(Long storeId);
+    @Query("select sk from StoreKeyword sk where sk.store.storeId = :storeId")
+    List<StoreKeyword> findByStoreId(Long storeId);
     void deleteByStoreStoreId(Long storeId);
-    @Query("SELECT sk.keyword FROM StoreKeyword sk WHERE sk.store.storeId = :storeId")
+    @Query("select sk.keyword from StoreKeyword sk where sk.store.storeId = :storeId")
     List<Keyword> findKeywordsByStoreId(@Param("storeId") Long storeId);
 }

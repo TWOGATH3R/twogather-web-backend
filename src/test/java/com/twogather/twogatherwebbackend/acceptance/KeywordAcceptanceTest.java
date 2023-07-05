@@ -80,7 +80,7 @@ public class KeywordAcceptanceTest extends AcceptanceTest{
         Long keywordId2 = keywordRepository.findByName(keywordName2).get().getKeywordId();
         Long keywordId3 = keywordRepository.findByName(keywordName3).get().getKeywordId();
 
-        List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreStoreId(storeId);
+        List<StoreKeyword> storeKeywordList = storeKeywordRepository.findByStoreId(storeId);
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId1)));
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId2)));
         assertTrue(storeKeywordList.stream().anyMatch(sk -> sk.getKeyword().getKeywordId().equals(keywordId3)));
