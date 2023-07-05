@@ -53,10 +53,10 @@ public class StoreExcludeGetAcceptanceTest extends AcceptanceTest{
         Store store = storeRepository.findById(storeId).get();
         Assertions.assertNotNull(store);
         Assertions.assertTrue(categoryRepository.findById(store.getCategory().getCategoryId()).isPresent());
-        Assertions.assertTrue(!businessHourRepository.findByStoreStoreId(storeId).isEmpty());
-        Assertions.assertTrue(businessHourRepository.findByStoreStoreId(storeId).size() == 7);
-        Assertions.assertTrue(!menuRepository.findByStoreStoreId(storeId).isEmpty());
-        Assertions.assertTrue(!storeKeywordRepository.findByStoreStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!businessHourRepository.findByStoreId(storeId).isEmpty());
+        Assertions.assertTrue(businessHourRepository.findByStoreId(storeId).size() == 7);
+        Assertions.assertTrue(!menuRepository.findByStoreId(storeId).isEmpty());
+        Assertions.assertTrue(!storeKeywordRepository.findByStoreId(storeId).isEmpty());
     }
 /* TODO: 배포시 추가
     @Test

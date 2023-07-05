@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long>, StoreCustomRepository {
     boolean existsByName(String name);
-    Optional<Store> findByName(String name);
     @Query("select s from Store s where s.storeId = :id and s.status = com.twogather.twogatherwebbackend.domain.StoreStatus.APPROVED ")
     Optional<Store> findActiveStoreById(@Param("id") Long id);
 

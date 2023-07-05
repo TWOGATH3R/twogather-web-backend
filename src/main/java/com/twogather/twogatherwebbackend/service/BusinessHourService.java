@@ -10,7 +10,6 @@ import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.valid.BusinessHourValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class BusinessHourService {
 
     @Transactional(readOnly = true)
     public List<BusinessHourResponse> findBusinessHoursByStoreId(Long storeId) {
-        List<BusinessHour> businessHours = businessHourRepository.findByStoreStoreId(storeId);
+        List<BusinessHour> businessHours = businessHourRepository.findByStoreId(storeId);
         if (businessHours.isEmpty()) {
             throw new BusinessHourException(NO_SUCH_BUSINESS_HOUR_BY_STORE_ID);
         }
