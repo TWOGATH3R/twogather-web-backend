@@ -43,7 +43,7 @@ public class TestConstants {
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
     public static final String STORE_PHONE = "063-231-2222";
-    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"",LocalDate.now(), "0000000000", "홍길동", LocalDate.now());
+    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"",LocalDateTime.now(), "0000000000", "홍길동", LocalDate.now());
     // Business Hour Constants
     public static final String START_TIME_STRING = "11:30";
     public static final String END_TIME_STRING = "20:00";
@@ -142,7 +142,7 @@ public class TestConstants {
                     .phone(STORE_PHONE)
                     .build();
     // My Store Response
-    public static final LocalDate DATE = LocalDate.parse("2020-02-02");
+    public static final LocalDateTime DATE = LocalDateTime.now();
     public static final MyStoreResponse MY_STORES_RESPONSE =
             new MyStoreResponse(1l, "가게이름", "전주시 평화동 산동 2길 1-3", "063-231-4990", StoreStatus.APPROVED, "", DATE, "url1");
     public static final MyStoreResponse MY_STORES_RESPONSE_DENIED =
@@ -470,7 +470,7 @@ public class TestConstants {
             MyStoreResponse.builder()
                     .storeId(1L)
                     .phone("010-1234-124")
-                    .requestDate(LocalDate.now())
+                    .requestDate(LocalDateTime.now())
                     .reasonForRejection("")
                     .storeImageUrl("url1")
                     .status(StoreStatus.APPROVED)
@@ -480,7 +480,7 @@ public class TestConstants {
             MyStoreResponse.builder()
                     .storeId(2L)
                     .phone("010-1234-124")
-                    .requestDate(LocalDate.now())
+                    .requestDate(LocalDateTime.now())
                     .reasonForRejection("자격 불충분")
                     .storeImageUrl("url1")
                     .status(StoreStatus.DENIED)
@@ -490,7 +490,7 @@ public class TestConstants {
             MyStoreResponse.builder()
                     .storeId(3L)
                     .phone("010-1234-124")
-                    .requestDate(LocalDate.now())
+                    .requestDate(LocalDateTime.now())
                     .reasonForRejection("")
                     .storeImageUrl("url1")
                     .status(StoreStatus.APPROVED)

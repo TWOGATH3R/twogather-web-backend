@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -243,7 +244,7 @@ public class AdminAcceptanceTest  extends AcceptanceTest{
                 .phone(STORE_PHONE)
                 .status(StoreStatus.DENIED)
                 .reasonForRejection("요구사항 불충족")
-                .requestDate(LocalDate.of(2020,2,2))
+                .requestDate(LocalDateTime.now())
                 .build();
         return storeRepository.save(store).getStoreId();
     }

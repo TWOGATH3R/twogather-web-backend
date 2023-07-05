@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class Store {
     private StoreStatus status;
     private String reasonForRejection;
     @Builder.Default
-    private LocalDate requestDate = LocalDate.now();
+    private LocalDateTime requestDate = LocalDateTime.now();
     private String businessNumber;
     private String businessName;
     private LocalDate businessStartDate;
@@ -79,7 +80,7 @@ public class Store {
         this.businessName = businessName;
         this.businessNumber = businessNumber;
         this.businessStartDate = businessStartDate;
-        this.requestDate = LocalDate.now();
+        this.requestDate = LocalDateTime.now();
     }
     public void update(String storeName, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate) {
         if (storeName != null && !storeName.isEmpty()) {
@@ -152,7 +153,7 @@ public class Store {
     }
     public void reapply(){
         if(this.status.equals(StoreStatus.APPROVED)) throw new StoreException(ALREADY_APPROVED_STORE);
-        this.requestDate = LocalDate.now();
+        this.requestDate = LocalDateTime.now();
         this.status = StoreStatus.PENDING;
     }
 

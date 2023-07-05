@@ -656,8 +656,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4NDgxMTYxfQ.qp-6p6Y4HJspOSF00NZknrGV9otHY3bz_a4RhfqM0Or_sXPWfV4AYco3aVqvsSiVMsNm9K6qkTGfFyfKAQdTtg
-RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4NDg5ODkxfQ.8cfKxP8b0TVwKva6zBeUw8OviIPe0MR4iWKyAafTdQk8cvHOYz_h1baFxlE_KL9v0YoGcxwWMr4xPz0c1hOPzA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4NDgyODYzfQ.B7pvkGA9b7qve-tgfhQHqwS-pvA1i1HcgLVI223joimUmnzo1MQ8eFiVQtOsQZ3f570_FKOpMpNeuerwIX92XA
+RefreshToken: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlJPTEVfU1RPUkVfT1dORVIiLCJpZCI6MSwiZXhwIjoxNjg4NDkxNTkzfQ.RNkcndr9cWHux4xPmiewIUz28q8jX-Q6sGc5nHphYgSo4dzg4xOP7DSHFAZK0MoM7vWgdDAzXAvSYuxGnbj7kA
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1411,7 +1411,7 @@ Content-Length: 144
 <h4 id="_update_http_request"><a class="link" href="#_update_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/admin/1?_csrf=df1ec59a-c6a7-408e-8fb9-8295e09977a8 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/admin/1?_csrf=ef743d17-6aa1-4401-96e2-8c503edcb326 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 98
 Host: docs.api.com
@@ -1619,7 +1619,7 @@ Host: docs.api.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 893
+Content-Length: 920
 
 {
   "data" : [ {
@@ -1629,7 +1629,7 @@ Content-Length: 893
     "phone" : "010-1234-124",
     "status" : "APPROVED",
     "reasonForRejection" : "",
-    "requestDate" : "2023-07-04",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 2,
@@ -1638,7 +1638,7 @@ Content-Length: 893
     "phone" : "010-1234-124",
     "status" : "DENIED",
     "reasonForRejection" : "자격 불충분",
-    "requestDate" : "2023-07-04",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 3,
@@ -1647,7 +1647,7 @@ Content-Length: 893
     "phone" : "010-1234-124",
     "status" : "APPROVED",
     "reasonForRejection" : "",
-    "requestDate" : "2023-07-04",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   } ],
   "currentPage" : 0,
@@ -4293,7 +4293,7 @@ Host: docs.api.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 981
+Content-Length: 1008
 
 {
   "data" : [ {
@@ -4303,7 +4303,7 @@ Content-Length: 981
     "phone" : "063-231-4990",
     "status" : "APPROVED",
     "reasonForRejection" : "",
-    "requestDate" : "2020-02-02",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 1,
@@ -4312,7 +4312,7 @@ Content-Length: 981
     "phone" : "063-231-4990",
     "status" : "APPROVED",
     "reasonForRejection" : "",
-    "requestDate" : "2020-02-02",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   }, {
     "storeId" : 1,
@@ -4321,7 +4321,7 @@ Content-Length: 981
     "phone" : "063-231-4990",
     "status" : "DENIED",
     "reasonForRejection" : "자격미달",
-    "requestDate" : "2020-02-02",
+    "requestDate" : "2023-07-04 23:00:01",
     "storeImageUrl" : "url1"
   } ],
   "currentPage" : 0,
@@ -4936,7 +4936,7 @@ Content-Length: 389
 <h4 id="_get_4_http_request"><a class="link" href="#_get_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=9249e4fa-d787-4e5c-9e07-49101f28fdb6 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/owners/1?_csrf=62b43c4a-78d4-4d87-b244-5d0d53353281 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -5054,7 +5054,7 @@ Content-Length: 138
 <h4 id="_save_3_http_request"><a class="link" href="#_save_3_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=190aae81-8330-46b6-99ef-c209bdfeb5a2 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/owners?_csrf=0ce49187-c1fb-48b5-82ce-5fa94ef7cf66 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 110
 Host: docs.api.com
@@ -5562,7 +5562,7 @@ Content-Length: 130
 <h4 id="_save_4_http_request"><a class="link" href="#_save_4_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=b9f70033-d8d7-487b-b9a8-6959136cd313 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/consumers?_csrf=750b3b52-ece3-4f66-b62c-bd7bb1cb3f06 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: docs.api.com
@@ -5711,7 +5711,7 @@ Content-Length: 130
 <h4 id="_update_5_http_request"><a class="link" href="#_update_5_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=1e5bff46-f0c4-41e1-8abc-88657d4e10c4 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/consumers/1?_csrf=8b20d69b-0ffa-4318-aba4-926551347915 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 84
 Host: docs.api.com
@@ -6320,20 +6320,20 @@ Content-Length: 968
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:32:43",
+    "createdDate" : "2023-07-04 23:01:06",
     "consumerId" : 1,
     "consumerName" : "김뿡치",
     "consumerAvgScore" : 5.0,
     "comment" : {
       "commentId" : 1,
       "content" : "감사합니당",
-      "createdDate" : "2023-07-04 22:32:43"
+      "createdDate" : "2023-07-04 23:01:06"
     }
   }, {
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:32:43",
+    "createdDate" : "2023-07-04 23:01:06",
     "consumerId" : 2,
     "consumerName" : "김뿡치",
     "consumerAvgScore" : 5.0,
@@ -6342,7 +6342,7 @@ Content-Length: 968
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:32:43",
+    "createdDate" : "2023-07-04 23:01:06",
     "consumerId" : 3,
     "consumerName" : "김뿡치",
     "consumerAvgScore" : 5.0,
@@ -6600,7 +6600,7 @@ Content-Length: 1030
     "reviewId" : 1,
     "content" : "Good product",
     "score" : 4.5,
-    "createdDate" : "2023-07-04 22:31:42",
+    "createdDate" : "2023-07-04 23:00:01",
     "consumerName" : "imageurl",
     "url" : "김가네삼겹살",
     "storeId" : 1,
@@ -6610,7 +6610,7 @@ Content-Length: 1030
     "reviewId" : 1,
     "content" : "Not bad",
     "score" : 3.0,
-    "createdDate" : "2023-07-04 22:31:42",
+    "createdDate" : "2023-07-04 23:00:01",
     "consumerName" : "imageurl2",
     "url" : "레스토랑1",
     "storeId" : 2,
@@ -6620,7 +6620,7 @@ Content-Length: 1030
     "reviewId" : 2,
     "content" : "Excellent",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:31:42",
+    "createdDate" : "2023-07-04 23:00:01",
     "consumerName" : "imageurl3",
     "url" : "김밥집1",
     "storeId" : 3,
@@ -6779,7 +6779,7 @@ Content-Length: 1030
 <h4 id="_save_6_http_request"><a class="link" href="#_save_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=417965f6-a5da-48f6-8d09-ab42bb23f046 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/stores/1/reviews?_csrf=087dfe34-1b92-4c6a-8979-26bd2da049a9 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6832,7 +6832,7 @@ Content-Length: 175
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:31:42",
+    "createdDate" : "2023-07-04 23:00:01",
     "consumerName" : "김뿡치"
   }
 }</code></pre>
@@ -6911,7 +6911,7 @@ Content-Length: 175
 <h4 id="_update_6_http_request"><a class="link" href="#_update_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=5a4b6952-826b-4cc8-ba74-9014a32ce01e HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/stores/2/reviews/1?_csrf=717f7c16-b0d5-475e-affc-d6dc60b45415 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 59
 Host: docs.api.com
@@ -6970,7 +6970,7 @@ Content-Length: 175
     "reviewId" : 1,
     "content" : "맛잇서요",
     "score" : 5.0,
-    "createdDate" : "2023-07-04 22:31:42",
+    "createdDate" : "2023-07-04 23:00:01",
     "consumerName" : "김뿡치"
   }
 }</code></pre>
@@ -7049,7 +7049,7 @@ Content-Length: 175
 <h4 id="_delete_6_http_request"><a class="link" href="#_delete_6_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=47003ec3-a4a9-456d-9c2d-f99d6d39191b HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/stores/1/reviews/2?_csrf=0ea21cea-85e4-44a7-84f8-bbc4aed54054 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: docs.api.com</code></pre>
 </div>
@@ -7173,7 +7173,7 @@ Content-Length: 124
   "data" : {
     "commentId" : 1,
     "content" : "대댓글내용",
-    "createdDate" : "2023-07-04 22:31:42"
+    "createdDate" : "2023-07-04 23:00:01"
   }
 }</code></pre>
 </div>
@@ -7300,7 +7300,7 @@ Content-Length: 124
   "data" : {
     "commentId" : 1,
     "content" : "대댓글내용",
-    "createdDate" : "2023-07-04 22:31:42"
+    "createdDate" : "2023-07-04 23:00:01"
   }
 }</code></pre>
 </div>
