@@ -3,6 +3,7 @@ package com.twogather.twogatherwebbackend.config;
 
 import akka.http.javadsl.Http;
 import com.twogather.twogatherwebbackend.auth.*;
+import com.twogather.twogatherwebbackend.log.CachingRequestBodyFilter;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
@@ -89,6 +91,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity http) {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
+                .addFilterBefore(new CachingRequestBodyFilter(), ChannelProcessingFilter.class)//두번째인자 보다 첫번째 필터가 먼저 실행되도록. ChannelProcessingFilter 은 filter중 먼저 실행되는 filter임
                     .addFilter(corsConfig.corsFilter())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
                     .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthorizationFilter.class);

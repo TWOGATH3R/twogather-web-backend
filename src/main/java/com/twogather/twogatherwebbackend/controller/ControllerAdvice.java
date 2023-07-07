@@ -1,9 +1,14 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import akka.http.javadsl.Http;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.*;
+import com.twogather.twogatherwebbackend.log.CachingRequestBodyFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -25,9 +30,14 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.Principal;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 
@@ -97,15 +107,75 @@ public class ControllerAdvice {
     }
     private void logWarn(HttpServletRequest request, Exception e){
         e.printStackTrace();
+
+        String requestBody = CachingRequestBodyFilter.getRequestBody().orElse("");
+
+        String maskedRequestBody = maskSensitiveFields(requestBody);
+
+        log.info("{}: Request body: {}", Thread.currentThread().getId(), maskedRequestBody);
+        log.info("{}: Request URL: {}", Thread.currentThread().getId(), request.getRequestURL());
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            log.info("{}: User: {}", Thread.currentThread().getId(), principal.getName());
+        }
+
+
         log.warn("An error occurred while processing the request", e);
-        log.warn("Request URL: {}", request.getRequestURL());
-        log.warn("Request method: {}", request.getMethod());
     }
     private void logInfo(HttpServletRequest request, Exception e){
         e.printStackTrace();
-        log.info("error message: {}", e.getMessage());
-        log.info("An error occurred while processing the request", e);
-        log.info("Request URL: {}", request.getRequestURL());
-        log.info("Request method: {}", request.getMethod());
+
+        String requestBody = CachingRequestBodyFilter.getRequestBody().orElse("");
+
+        String maskedRequestBody = maskSensitiveFields(requestBody);
+
+        log.info("{}: Request body: {}", Thread.currentThread().getId(), maskedRequestBody);
+        log.info("{}: Request URL: {}", Thread.currentThread().getId(), request.getRequestURL());
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            log.info("{}: User: {}", Thread.currentThread().getId(), principal.getName());
+        }
+
+
+        log.warn("An error occurred while processing the request", e);
+    }
+
+    private String maskSensitiveFields(String requestBody) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(requestBody);
+
+            maskFieldsContainingWord(jsonNode, "business");
+            maskFieldsContainingWord(jsonNode, "password");
+            maskEmailField(jsonNode);
+
+            return jsonNode.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return requestBody;
+        }
+    }
+
+    private void maskFieldsContainingWord(JsonNode jsonNode, String word) {
+        jsonNode.fields().forEachRemaining(entry -> {
+            String fieldName = entry.getKey();
+            JsonNode fieldValue = entry.getValue();
+
+            if (fieldName.contains(word)) {
+                ((ObjectNode) jsonNode).put(fieldName, "********");
+            }
+
+            if (fieldValue.isObject()) {
+                maskFieldsContainingWord(fieldValue, word);
+            } else if (fieldValue.isArray()) {
+                fieldValue.forEach(arrayItem -> maskFieldsContainingWord(arrayItem, word));
+            }
+        });
+    }
+
+    private void maskEmailField(JsonNode jsonNode) {
+        if (jsonNode.has("email")) {
+            ((ObjectNode) jsonNode).put("email", "********");
+        }
     }
 }
