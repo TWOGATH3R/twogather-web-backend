@@ -12,13 +12,30 @@ public class PasswordGenerator {
 
     public static String generatePassword(int length) {
         StringBuilder builder = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            builder.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
-        }
-        String password = builder.toString();
+        SecureRandom random = new SecureRandom();
 
-        if (password.matches("^(?=.*[0-9])(?=.*[a-z]).{8,20}$")) {
-            return password;
+        String lowercase = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+
+        boolean hasLowercase = false;
+        boolean hasDigit = false;
+
+        for (int i = 0; i < length; i++) {
+            int charType = random.nextInt(3);
+
+            if (charType == 0) {
+                builder.append(lowercase.charAt(random.nextInt(lowercase.length())));
+                hasLowercase = true;
+            } else if (charType == 1) {
+                builder.append(digits.charAt(random.nextInt(digits.length())));
+                hasDigit = true;
+            } else {
+                builder.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
+            }
+        }
+
+        if (hasLowercase && hasDigit) {
+            return builder.toString();
         } else {
             throw new MemberException(PASSWORD_GENERATOR_EXCEPTION);
         }
