@@ -20,7 +20,7 @@ public class MyStoreResponse {
     private String phone;
     private StoreStatus status;
     private String reasonForRejection;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:CachingRequestBodyFilter")
     private LocalDateTime requestDate;
     private String storeImageUrl;
 
