@@ -1,4 +1,3 @@
-//querydsl 추가
 buildscript {
 	ext {
 		queryDslVersion = "5.0.0"
@@ -9,8 +8,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
-//querydsl 추가
 	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+	id 'jacoco'
 }
 
 group = 'com.twogather'
@@ -101,6 +100,12 @@ test {
 	filter {
 		excludeTestsMatching "com.ae.stagram.domain.**.dao.*"
 	}
+	jacoco {
+		excludes += ["com/twogather/twogatherwebbackend/service/EmailService.java",
+					 "com/twogather/twogatherwebbackend/exception/**",
+					 "com/twogather/twogatherwebbackend/domain/**",
+					 "com/twogather/twogatherwebbackend/dto/**"]
+	}
 }
 
 // ext에서 정의한 경로에 스니펫을 넣어준뒤 테스트를 진행한다
@@ -166,4 +171,67 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 	querydsl.extendsFrom compileClasspath
+}
+jacoco {
+	toolVersion = '0.8.8'
+}
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		csv.enabled true
+		html.enabled true
+
+		xml.destination file("${buildDir}/jacoco/index.xml")
+		csv.destination file("${buildDir}/jacoco/index.csv")
+		html.destination file("${buildDir}/jacoco/index.html")
+	}
+
+	def Qdomains = []
+
+	for (qPattern in '**/QA'..'**/QZ') {
+		Qdomains.add(qPattern + '*')
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(
+				files(classDirectories.files.collect {
+					fileTree(dir: it, excludes: [
+							"com/twogather/twogatherwebbackend/service/Email*",
+							"com/twogather/twogatherwebbackend/exception/**",
+							"com/twogather/twogatherwebbackend/domain/**",
+							"com/twogather/twogatherwebbackend/dto/**",
+							"**/*Config*"
+					] + Qdomains)
+				})
+		)
+	}
+
+}
+jacocoTestCoverageVerification {
+	def Qdomains = []
+
+	for (qPattern in '*.QA'..'*.QZ') { // qPattern 제외
+		Qdomains.add(qPattern + '*')
+	}
+
+	violationRules {
+		rule {
+			enabled = true
+			element = 'CLASS'
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.00
+			}
+
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.00
+			}
+
+			excludes = [] + Qdomains
+		}
+	}
 }

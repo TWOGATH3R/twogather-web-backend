@@ -119,7 +119,7 @@ public class StoreService {
 
     public StoreSaveUpdateResponse update(final Long storeId, final StoreSaveUpdateRequest request) {
         validateKeywordList(request.getKeywordIdList());
-        Store store = storeRepository.findActiveStoreById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         //TODO: biz 유효성 검사 필요
         validateDuplicateName(store.getName(), request.getStoreName());
 
