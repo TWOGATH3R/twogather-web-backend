@@ -1,7 +1,5 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import akka.http.javadsl.Http;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -10,11 +8,8 @@ import com.twogather.twogatherwebbackend.dto.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.log.CachingRequestBodyFilter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,14 +25,9 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.Principal;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.InvalidArgumentException.InvalidArgumentErrorCode.INVALID_ARGUMENT;
 
@@ -47,7 +37,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(FileException.class)
     public ResponseEntity<ErrorResponse> handleFileException(HttpServletRequest request, FileException ex) {
-        logInfo(request,ex);
+        logError(request,ex);
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(ex.getStatus()).body(errorResponse);
     }
@@ -58,22 +48,22 @@ public class ControllerAdvice {
 
     @ExceptionHandler({ClientException.class, MissingServletRequestPartException.class, MultipartException.class})
     public ResponseEntity<ErrorResponse> clientExceptionHandler(HttpServletRequest request, ClientException e) {
-        logInfo(request,e);
+        logError(request,e);
         return ResponseEntity.status(e.getStatus()).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException e) {
-        logInfo(request,e);
+        logError(request,e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> authenticationExceptionHandler(HttpServletRequest request, AuthenticationException e) {
-        logInfo(request,e);
+        logError(request,e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {
-        logInfo(request,e);
+        logError(request,e);
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName;
@@ -95,51 +85,31 @@ public class ControllerAdvice {
             MissingServletRequestParameterException.class,
             HttpRequestMethodNotSupportedException.class})
     public ResponseEntity<ErrorResponse> invalidFormatHandler(final HttpServletRequest request, final Exception exception) {
-        logInfo(request, exception);
+        logError(request, exception);
         return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
     }
 
     //TODO:나중에 변경
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final HttpServletRequest request, final Exception exception) {
-        logWarn(request, exception);
+        logError(request, exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse.of(exception));
     }
-    private void logWarn(HttpServletRequest request, Exception e){
+    private void logError(HttpServletRequest request, Exception e){
         e.printStackTrace();
 
         String requestBody = CachingRequestBodyFilter.getRequestBody().orElse("");
 
         String maskedRequestBody = maskSensitiveFields(requestBody);
 
-        log.info("{}: Request body: {}", Thread.currentThread().getId(), maskedRequestBody);
-        log.info("{}: Request URL: {}", Thread.currentThread().getId(), request.getRequestURL());
+        log.error("{}: Request body: {}", Thread.currentThread().getId(), maskedRequestBody);
+        log.error("{}: Request URL: {}", Thread.currentThread().getId(), request.getRequestURL());
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            log.info("{}: User: {}", Thread.currentThread().getId(), principal.getName());
+            log.error("{}: User: {}", Thread.currentThread().getId(), principal.getName());
         }
-
-
-        log.warn("An error occurred while processing the request", e);
+        log.error("An error occurred while processing the request", e);
     }
-    private void logInfo(HttpServletRequest request, Exception e){
-        e.printStackTrace();
-
-        String requestBody = CachingRequestBodyFilter.getRequestBody().orElse("");
-
-        String maskedRequestBody = maskSensitiveFields(requestBody);
-
-        log.info("{}: Request body: {}", Thread.currentThread().getId(), maskedRequestBody);
-        log.info("{}: Request URL: {}", Thread.currentThread().getId(), request.getRequestURL());
-        Principal principal = request.getUserPrincipal();
-        if (principal != null) {
-            log.info("{}: User: {}", Thread.currentThread().getId(), principal.getName());
-        }
-
-
-        log.warn("An error occurred while processing the request", e);
-    }
-
     private String maskSensitiveFields(String requestBody) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

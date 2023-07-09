@@ -44,3 +44,4 @@ out/
 # log
 /application-log
 /application_log
+/error.log
