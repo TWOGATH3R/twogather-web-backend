@@ -5,12 +5,23 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-        <logger name="com.twogather.twogatherwebbackend" level="debug" additivity="false">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
+    <!-- Error Logs -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${PROJECT_ROOT}/error-file.log</file>
+        <append>true</append>
+        <encoder>
+            <!-- Define log message format and encoding -->
+        </encoder>
+    </appender>
 
-        <root level="error">
-            <appender-ref ref="CONSOLE"/>
-        </root>
+    <logger name="com.twogather.twogatherwebbackend" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- General Logs -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
 
 </configuration>
