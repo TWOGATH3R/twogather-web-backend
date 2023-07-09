@@ -122,7 +122,7 @@ public class StoreService {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(NO_SUCH_STORE));
         //TODO: biz 유효성 검사 필요
         validateDuplicateName(store.getName(), request.getStoreName());
-
+        List<String> keywordNameList = storeKeywordService.setStoreKeyword(store.getStoreId(), request.getKeywordIdList());
         store.update(request.getStoreName(), request.getAddress(), request.getPhone(), request.getBusinessName(), request.getBusinessNumber(), request.getBusinessStartDate());
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(()->new CategoryException(NO_SUCH_CATEGORY));
@@ -133,7 +133,7 @@ public class StoreService {
                 .businessName(store.getBusinessName())
                 .businessNumber(store.getBusinessNumber())
                 .categoryName(category.getName())
-                .keywordList(keywordService.getKeywordNameList(request.getKeywordIdList()))
+                .keywordList(keywordNameList)
                 .phone(store.getPhone())
                 .businessStartDate(store.getBusinessStartDate())
                 .storeName(store.getName()).build();
