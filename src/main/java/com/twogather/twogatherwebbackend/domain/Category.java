@@ -1,5 +1,7 @@
 package com.twogather.twogatherwebbackend.domain;
 
+        import lombok.AllArgsConstructor;
+        import lombok.Builder;
         import lombok.Getter;
         import lombok.NoArgsConstructor;
 
@@ -9,6 +11,8 @@ package com.twogather.twogatherwebbackend.domain;
 @Entity
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

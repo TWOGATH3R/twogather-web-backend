@@ -38,7 +38,6 @@ public class StoreService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
     private final CategoryRepository categoryRepository;
-    private final KeywordService keywordService;
 
     @Value("${keyword.max.size}")
     private Integer keywordMaxSize;
@@ -168,7 +167,7 @@ public class StoreService {
             throw new StoreException(BIZ_REG_NUMBER_VALIDATION);
         }
     }
-    private void validateKeywordList(final List<Long> keywordList){
+    public void validateKeywordList(final List<Long> keywordList){
         if(keywordList.size()>keywordMaxSize) throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
     }
 }

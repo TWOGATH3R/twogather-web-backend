@@ -33,6 +33,21 @@ public class MemberService {
 
         return toResponse(member);
     }
+    public Member checkMemberOverlapByUpdate(final Long memberId, final MemberUpdateRequest request){
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                ()->new MemberException(NO_SUCH_MEMBER)
+        );
+        if(!request.getUsername().equals(member.getUsername()) && memberRepository.existsByUsername(request.getUsername())){
+            throw new MemberException(DUPLICATE_USERNAME);
+        }
+        if(!request.getEmail().equals(member.getEmail()) && memberRepository.existsByEmail(request.getEmail())){
+            throw new MemberException(DUPLICATE_EMAIL);
+        }
+        if(!request.getName().equals(member.getName()) && memberRepository.existsByName(request.getName())){
+            throw new MemberException(DUPLICATE_NICKNAME);
+        }
+        return member;
+    }
     public String findMyUsername(FindUsernameRequest request){
         Member member = memberRepository.findActiveMemberByEmail(request.getEmail()).orElseThrow(()->new MemberException(NO_SUCH_MEMBER));
         if(!member.getName().equals(request.getName())) throw new MemberException(NO_SUCH_MEMBER_ID);
@@ -57,21 +72,7 @@ public class MemberService {
             throw new MemberException(DUPLICATE_NICKNAME);
         }
     }
-    public Member checkMemberOverlapByUpdate(final Long memberId, final MemberUpdateRequest request){
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                ()->new MemberException(NO_SUCH_MEMBER)
-        );
-        if(!request.getUsername().equals(member.getUsername()) && memberRepository.existsByUsername(request.getUsername())){
-            throw new MemberException(DUPLICATE_USERNAME);
-        }
-        if(!request.getEmail().equals(member.getEmail()) && memberRepository.existsByEmail(request.getEmail())){
-            throw new MemberException(DUPLICATE_EMAIL);
-        }
-        if(!request.getName().equals(member.getName()) && memberRepository.existsByName(request.getName())){
-            throw new MemberException(DUPLICATE_NICKNAME);
-        }
-        return member;
-    }
+
     public void changePassword(String password){
         String username = getLoginUsername();
         Member member = memberRepository.findActiveMemberByUsername(username).orElseThrow(
