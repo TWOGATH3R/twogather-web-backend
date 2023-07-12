@@ -11,10 +11,12 @@ import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.util.CacheNames;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -108,6 +110,7 @@ public class StoreService {
         }
         return true;
     }
+    @Cacheable(cacheNames = CacheNames.TOP_STORE, key="#type.name().concat('-').concat(#n)")
     public List<TopStoreResponse> getStoresTopN(StoreSearchType type, int n){
         return storeRepository.findTopNByType(n, type.name(), "desc");
     }
