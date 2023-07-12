@@ -1,11 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,26 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static com.twogather.twogatherwebbackend.auth.AuthMessage.FAILURE_LOGIN;
-import static com.twogather.twogatherwebbackend.controller.DocumentUtils.*;
-import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentRequest;
-import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
-import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.payload.JsonFieldType;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;

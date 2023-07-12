@@ -3,12 +3,11 @@ package com.twogather.twogatherwebbackend.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.dto.member.CustomUser;
+import com.twogather.twogatherwebbackend.dto.RefreshTokenValue;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
+import com.twogather.twogatherwebbackend.repository.RefreshTokenRepository;
+import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,10 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.Optional;
 
 import static com.twogather.twogatherwebbackend.auth.AuthMessage.*;
 
@@ -30,13 +26,15 @@ import static com.twogather.twogatherwebbackend.auth.AuthMessage.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
-
     private final PrivateConstants constants;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
 
     public String reissueAccessToken(String refreshToken) {
         try {
-            CustomUser customUser = parseToken(refreshToken);
+            refreshToken = refreshToken.replace(constants.TOKEN_PREFIX,"");
+            Long memberId = refreshTokenRepository.findId(refreshToken).get();
+            CustomUser customUser = new CustomUser(memberRepository.findById(Long.valueOf(memberId)).get());
             saveSecurityContext(customUser);
             return constants.TOKEN_PREFIX + generateAccessToken(customUser);
         } catch (Exception e) {
@@ -45,24 +43,6 @@ public class AuthService {
         }
     }
 
-    private CustomUser parseToken(String token) {
-        token = token.replace(constants.TOKEN_PREFIX, "");
-
-        Long memberId = getMemberId(token);
-        Optional<Member> member = memberRepository.findActiveMemberById(memberId);
-        if(!member.isPresent()){
-            throw new BadCredentialsException(FAILURE_AUTH);
-        }
-        return new CustomUser(member.get());
-    }
-
-    private Long getMemberId(String token){
-        return JWT
-                .require(Algorithm.HMAC512(constants.JWT_SECRET))
-                .build()
-                .verify(token)
-                .getClaim("id").asLong();
-    }
     private void saveSecurityContext(CustomUser customUser){
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 customUser, null, customUser.getAuthorities());

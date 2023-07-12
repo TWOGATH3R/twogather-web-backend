@@ -1,7 +1,6 @@
 package com.twogather.twogatherwebbackend.auth;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,6 +13,8 @@ import javax.validation.Validator;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.twogather.twogatherwebbackend.dto.RefreshTokenValue;
+import com.twogather.twogatherwebbackend.repository.RefreshTokenRepository;
 import com.twogather.twogatherwebbackend.dto.LoginResponse;
 import com.twogather.twogatherwebbackend.dto.Response;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
@@ -25,10 +26,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.twogather.twogatherwebbackend.auth.AuthMessage.*;
 
@@ -38,13 +39,16 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
     private final AuthenticationManager authenticationManager;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PrivateConstants constants;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
                                   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                                  PrivateConstants constants) {
+                                  PrivateConstants constants,
+                                  RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.constants = constants;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.setFilterProcessesUrl("/api/login");
     }
 
@@ -64,7 +68,6 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
                             loginRequest.getPassword());
 
             System.out.println("JwtAuthorizationFilter : 토큰생성완료");
-
             return authenticationManager.authenticate(authToken);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,6 +83,7 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
     }
 
     @Override
+    @Transactional
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException {
         CustomUser customUser = (CustomUser) authResult.getPrincipal();
@@ -87,6 +91,7 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         String accessToken = generateToken(customUser, constants.ACCESS_TOKEN_EXPIRATION_TIME);
         String refreshToken = generateToken(customUser, constants.REFRESH_TOKEN_EXPIRATION_TIME);
 
+        refreshTokenRepository.save(refreshToken, customUser.getMemberId());
         writeTokensToResponse(customUser, response, accessToken, refreshToken);
     }
 

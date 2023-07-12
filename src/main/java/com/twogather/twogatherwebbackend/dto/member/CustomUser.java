@@ -2,7 +2,9 @@ package com.twogather.twogatherwebbackend.dto.member;
 
 import com.twogather.twogatherwebbackend.domain.AuthenticationType;
 import com.twogather.twogatherwebbackend.domain.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +22,7 @@ public class CustomUser extends User {
 
     public CustomUser(Member member){
         super(member.getUsername(), member.getPassword(), toGrantedAuthority(member.getAuthenticationType()));
-        role = member.getAuthenticationType().name();
+        this.role = member.getAuthenticationType().name();
         this.username = member.getUsername();
         this.memberId = member.getMemberId();
         this.name = member.getName();
