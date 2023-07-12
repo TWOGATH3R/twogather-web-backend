@@ -1,7 +1,9 @@
 package com.twogather.twogatherwebbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static com.twogather.twogatherwebbackend.docs.DocumentFormatGenerator.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -19,13 +22,14 @@ import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumen
 import static com.twogather.twogatherwebbackend.docs.ApiDocumentUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
-public class LoginTest {
+public class AuthTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,9 +39,11 @@ public class LoginTest {
 
     @Autowired
     private StoreOwnerRepository ownerRepository;
+    @Autowired
+    private PrivateConstants constants;
 
     @Test
-    public void login() throws Exception {
+    public void whenLoginThenSuccess() throws Exception {
         //given
         initSetting();
         //when
@@ -65,8 +71,35 @@ public class LoginTest {
                 ));
 
     }
+
+    @Test
+    public void when() throws Exception {
+        //given
+        initSetting();
+        MvcResult result = login();
+        String refreshToken = result.getResponse().getHeader(constants.REFRESH_TOKEN_HEADER);
+        //when
+        mockMvc.perform(get("/api/access-token")
+                .header(constants.REFRESH_TOKEN_HEADER, refreshToken))
+                .andExpect(status().isOk())
+                .andDo(document("auth/access-token",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
+
+    }
     private void initSetting(){
         StoreOwner owner1 = STORE_OWNER;
         ownerRepository.save(owner1);
+    }
+    private MvcResult login() throws Exception {
+        return mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(
+                                objectMapper
+                                        .registerModule(new JavaTimeModule())
+                                        .writeValueAsString(LOGIN_REQUEST)))
+                .andReturn();
     }
 }

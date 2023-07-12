@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.auth;
 
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
+import com.twogather.twogatherwebbackend.dto.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

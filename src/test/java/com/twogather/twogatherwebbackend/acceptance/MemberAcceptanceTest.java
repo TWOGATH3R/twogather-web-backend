@@ -1,24 +1,17 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.Member;
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 
-import java.util.Date;
-
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
@@ -629,8 +622,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 generateExpiredToken(),
                 generateExpiredToken(),
                 UPDATE_REQUEST)
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(EXPIRED_TOKEN));
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

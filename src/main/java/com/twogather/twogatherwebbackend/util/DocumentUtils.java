@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.controller;
+package com.twogather.twogatherwebbackend.util;
 import io.restassured.specification.RequestSpecification;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;

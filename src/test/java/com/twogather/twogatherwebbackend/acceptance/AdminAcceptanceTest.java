@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.twogather.twogatherwebbackend.domain.Store;
 import com.twogather.twogatherwebbackend.domain.StoreOwner;
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
-import com.twogather.twogatherwebbackend.dto.PagedResponse;
+import com.twogather.twogatherwebbackend.dto.common.PagedResponse;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;
 import com.twogather.twogatherwebbackend.dto.store.RejectReason;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,18 +1,20 @@
 package com.twogather.twogatherwebbackend.acceptance;
+import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.FAILURE_LOGIN;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -21,7 +23,10 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 
 
-public class LoginAcceptanceTest extends AcceptanceTest{
+public class AuthAcceptanceTest extends AcceptanceTest{
+
+    @Autowired
+    PrivateConstants constants;
 
     @BeforeEach
     public void init() {
@@ -72,7 +77,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(NO_SUCH_MEMBER));
+                .body("message", equalTo(FAILURE_LOGIN));
     }
     @Test
     @DisplayName("잘못된 아이디로 로그인 시도 시, 오류 메시지 반환해야한다")
@@ -87,7 +92,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(NO_SUCH_MEMBER));
+                .body("message", equalTo(FAILURE_LOGIN));
 
     }
 
@@ -103,9 +108,7 @@ public class LoginAcceptanceTest extends AcceptanceTest{
                 .post("/api/login")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(NO_SUCH_MEMBER));
-
-
+                .body("message", equalTo(FAILURE_LOGIN));
 
     }
 

@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.config;
 
 
-import akka.http.javadsl.Http;
 import com.twogather.twogatherwebbackend.auth.*;
+import com.twogather.twogatherwebbackend.repository.RefreshTokenRepository;
 import com.twogather.twogatherwebbackend.log.CachingRequestBodyFilter;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +30,7 @@ public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PrivateConstants constants;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -77,6 +78,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/consumers")
                 .antMatchers(HttpMethod.GET, "/api/stores/**/images")
                 .antMatchers("/api/email")
+                .antMatchers("/api/access-token")
                 .antMatchers("/api/email/*")
                 .antMatchers("/api/members/password/*")
                 .antMatchers("/api/members/checks-email")
@@ -93,8 +95,8 @@ public class SecurityConfig {
             http
                 .addFilterBefore(new CachingRequestBodyFilter(), ChannelProcessingFilter.class)//두번째인자 보다 첫번째 필터가 먼저 실행되도록. ChannelProcessingFilter 은 filter중 먼저 실행되는 filter임
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
-                    .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthorizationFilter.class);
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, constants))
+                    .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants, refreshTokenRepository), JwtAuthorizationFilter.class);
         }
 
     }

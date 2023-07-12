@@ -1,9 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.keyword.KeywordResponse;
-import com.twogather.twogatherwebbackend.repository.KeywordRepository;
 import com.twogather.twogatherwebbackend.service.KeywordService;
 import com.twogather.twogatherwebbackend.service.StoreKeywordService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

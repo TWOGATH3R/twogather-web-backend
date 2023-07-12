@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.PagedResponse;
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.PagedResponse;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.review.*;
 import com.twogather.twogatherwebbackend.service.ReviewService;
 import lombok.RequiredArgsConstructor;

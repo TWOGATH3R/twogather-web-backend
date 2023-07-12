@@ -1,7 +1,7 @@
 package com.twogather.twogatherwebbackend.service;
 
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.store.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.CategoryException;
 import com.twogather.twogatherwebbackend.exception.KeywordException;
@@ -11,13 +11,14 @@ import com.twogather.twogatherwebbackend.repository.CategoryRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
+import com.twogather.twogatherwebbackend.util.CacheNames;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
 import com.twogather.twogatherwebbackend.valid.BizRegNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,6 @@ public class StoreService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
     private final CategoryRepository categoryRepository;
-    private final KeywordService keywordService;
 
     @Value("${keyword.max.size}")
     private Integer keywordMaxSize;
@@ -109,6 +109,7 @@ public class StoreService {
         }
         return true;
     }
+    @Cacheable(cacheNames = CacheNames.TOP_STORE, key="#type.name().concat('-').concat(#n)")
     public List<TopStoreResponse> getStoresTopN(StoreSearchType type, int n){
         return storeRepository.findTopNByType(n, type.name(), "desc");
     }
@@ -168,7 +169,7 @@ public class StoreService {
             throw new StoreException(BIZ_REG_NUMBER_VALIDATION);
         }
     }
-    private void validateKeywordList(final List<Long> keywordList){
+    public void validateKeywordList(final List<Long> keywordList){
         if(keywordList.size()>keywordMaxSize) throw new KeywordException(MAXIMUM_KEYWORD_LIMIT);
     }
 }

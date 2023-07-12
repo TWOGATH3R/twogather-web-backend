@@ -46,6 +46,7 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	// .adoc 파일에서 빌드, 스니펫 생성을 자동으로 구성되기 위해 추가하는 의존성
 	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	// jwt
