@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
+import com.twogather.twogatherwebbackend.dto.common.ErrorResponse;
 import com.twogather.twogatherwebbackend.exception.*;
 import com.twogather.twogatherwebbackend.log.CachingRequestBodyFilter;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,7 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.twogather.twogatherwebbackend.domain.StoreStatus;
-import com.twogather.twogatherwebbackend.dto.StoreSearchType;
+import com.twogather.twogatherwebbackend.dto.store.StoreSearchType;
 import com.twogather.twogatherwebbackend.dto.store.StoreResponseWithKeyword;
 import com.twogather.twogatherwebbackend.service.StoreService;
 import org.junit.jupiter.api.DisplayName;

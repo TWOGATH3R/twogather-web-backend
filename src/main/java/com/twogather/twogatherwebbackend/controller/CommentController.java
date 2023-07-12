@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
 import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.service.CommentService;

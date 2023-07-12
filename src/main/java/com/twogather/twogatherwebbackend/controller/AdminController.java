@@ -1,8 +1,8 @@
 package com.twogather.twogatherwebbackend.controller;
 
 import com.twogather.twogatherwebbackend.domain.StoreStatus;
-import com.twogather.twogatherwebbackend.dto.PagedResponse;
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.PagedResponse;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.member.MemberUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.MyStoreResponse;

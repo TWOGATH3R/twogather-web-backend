@@ -1,13 +1,10 @@
 package com.twogather.twogatherwebbackend.repository;
 
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.dto.RefreshTokenValue;
-import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

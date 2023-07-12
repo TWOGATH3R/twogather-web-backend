@@ -13,10 +13,9 @@ import javax.validation.Validator;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.twogather.twogatherwebbackend.dto.RefreshTokenValue;
 import com.twogather.twogatherwebbackend.repository.RefreshTokenRepository;
-import com.twogather.twogatherwebbackend.dto.LoginResponse;
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.LoginResponse;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;
 import com.twogather.twogatherwebbackend.dto.member.LoginRequest;
 import lombok.extern.slf4j.Slf4j;

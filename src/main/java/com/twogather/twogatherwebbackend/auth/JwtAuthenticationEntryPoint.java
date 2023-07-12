@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.auth;
 
-import com.twogather.twogatherwebbackend.dto.ErrorResponse;
+import com.twogather.twogatherwebbackend.dto.common.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;

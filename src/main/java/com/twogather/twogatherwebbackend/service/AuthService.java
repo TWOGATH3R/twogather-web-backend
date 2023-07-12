@@ -4,7 +4,6 @@ package com.twogather.twogatherwebbackend.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
-import com.twogather.twogatherwebbackend.dto.RefreshTokenValue;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.RefreshTokenRepository;
 import com.twogather.twogatherwebbackend.dto.member.CustomUser;

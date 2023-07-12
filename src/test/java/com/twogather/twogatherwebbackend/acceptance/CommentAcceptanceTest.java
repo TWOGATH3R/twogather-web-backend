@@ -1,20 +1,7 @@
 package com.twogather.twogatherwebbackend.acceptance;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.twogather.twogatherwebbackend.dto.Response;
-import com.twogather.twogatherwebbackend.dto.comment.CommentResponse;
-import com.twogather.twogatherwebbackend.dto.comment.CommentSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.repository.CommentRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import java.time.LocalDate;
-
-import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
 
 
 public class CommentAcceptanceTest extends AcceptanceTest{

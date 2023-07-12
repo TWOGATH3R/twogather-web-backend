@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.member.*;
 import com.twogather.twogatherwebbackend.service.MemberService;
 import com.twogather.twogatherwebbackend.service.StoreOwnerService;

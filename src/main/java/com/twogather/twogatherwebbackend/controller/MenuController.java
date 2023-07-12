@@ -1,11 +1,8 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.menu.*;
 import com.twogather.twogatherwebbackend.service.MenuService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.service.BusinessHourService;

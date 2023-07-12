@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twogather.twogatherwebbackend.Tokens;
 import com.twogather.twogatherwebbackend.auth.PrivateConstants;
 import com.twogather.twogatherwebbackend.domain.*;
-import com.twogather.twogatherwebbackend.dto.LoginResponse;
+import com.twogather.twogatherwebbackend.dto.common.LoginResponse;
 import com.twogather.twogatherwebbackend.dto.businesshour.BusinessHourSaveUpdateListRequest;
 import com.twogather.twogatherwebbackend.dto.member.MemberResponse;
 import com.twogather.twogatherwebbackend.dto.menu.MenuSaveListRequest;
@@ -186,7 +186,7 @@ public class AcceptanceTest
 
         Headers headers = response.headers();
 
-        LoginResponse loginResponse = convert(response.as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<LoginResponse>() {});
+        LoginResponse loginResponse = convert(response.as(com.twogather.twogatherwebbackend.dto.common.Response.class), new TypeReference<LoginResponse>() {});
         loginMemberId = loginResponse.getMemberId();
 
         String accessToken = headers.getValue(constants.ACCESS_TOKEN_HEADER);
@@ -210,7 +210,7 @@ public class AcceptanceTest
         log.info("register owner");
         memberResponse = convert(
                 doPost(OWNER_URL, null,null,OWNER_SAVE_REQUEST)
-                        .extract().as(com.twogather.twogatherwebbackend.dto.Response.class), new TypeReference<MemberResponse>(){}
+                        .extract().as(com.twogather.twogatherwebbackend.dto.common.Response.class), new TypeReference<MemberResponse>(){}
                         );
         loginMemberId = memberResponse.getMemberId();
         ownerToken = doLogin(OWNER_LOGIN_REQUEST);
@@ -234,7 +234,7 @@ public class AcceptanceTest
                 ownerToken.getAccessToken(),
                 createStoreRequest(keywordList, categoryId))
                 .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
+                .extract().as(com.twogather.twogatherwebbackend.dto.common.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
         registerBusinessHour(storeId, BUSINESS_HOUR_SAVE_UPDATE_REQUEST_LIST);
         registerMenu(storeId, MENU_SAVE_LIST_REQUEST);
         registerImage(storeId);
@@ -251,7 +251,7 @@ public class AcceptanceTest
                 ownerToken.getAccessToken(),
                 createStoreRequest(keywordList, categoryId))
                 .statusCode(HttpStatus.CREATED.value())
-                .extract().as(com.twogather.twogatherwebbackend.dto.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
+                .extract().as(com.twogather.twogatherwebbackend.dto.common.Response.class),  new TypeReference<StoreSaveUpdateResponse>() {}).getStoreId();
 
     }
     protected void registerStoreWithValidatorFail(){

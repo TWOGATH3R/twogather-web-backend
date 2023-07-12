@@ -1,6 +1,6 @@
 package com.twogather.twogatherwebbackend.controller;
 
-import com.twogather.twogatherwebbackend.dto.Response;
+import com.twogather.twogatherwebbackend.dto.common.Response;
 import com.twogather.twogatherwebbackend.dto.email.EmailRequest;
 import com.twogather.twogatherwebbackend.dto.email.VerificationCodeResponse;
 import com.twogather.twogatherwebbackend.dto.member.FindPasswordRequest;

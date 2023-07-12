@@ -1,4 +1,4 @@
-package com.twogather.twogatherwebbackend.dto;
+package com.twogather.twogatherwebbackend.dto.store;
 
 public enum StoreSearchType {
     MOST_REVIEWED,
