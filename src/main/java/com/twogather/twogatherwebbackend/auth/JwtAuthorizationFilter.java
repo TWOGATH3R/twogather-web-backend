@@ -50,43 +50,29 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        log.info("JwtAuthorizationFilter : 진입");
-
-        LoginRequest loginRequest = parseLoginRequest(request);
-        log.info("JwtAuthorizationFilter: {}", loginRequest);
-
-        validateLoginRequest(request, response, loginRequest);
-
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword());
-
-        System.out.println("JwtAuthorizationFilter : 토큰생성완료");
-
         try {
-            Authentication authentication =
-                    authenticationManager.authenticate(authToken);
-            User user = (User) authentication.getPrincipal();
-            log.info("user info: {}", user.getUsername());
-            return authentication;
-        } catch (AuthenticationException e) {
+            log.info("JwtAuthorizationFilter : 진입");
+
+            LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
+            log.info("JwtAuthorizationFilter: {}", loginRequest);
+
+            validateLoginRequest(loginRequest);
+
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword());
+
+            System.out.println("JwtAuthorizationFilter : 토큰생성완료");
+
+            return authenticationManager.authenticate(authToken);
+        } catch (Exception e) {
             e.printStackTrace();
             log.info("Authentication failed: invalid username or password");
-            commenceAuthenticationFailure(request, response, new BadCredentialsException(NO_SUCH_MEMBER));
+            commenceAuthenticationFailure(request, response, new BadCredentialsException(FAILURE_LOGIN));
             return null;
         }
     }
-
-    private LoginRequest parseLoginRequest(HttpServletRequest request) {
-        try {
-            return new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private void commenceAuthenticationFailure(HttpServletRequest request,
                                                HttpServletResponse response,
                                                AuthenticationException e) {
@@ -98,18 +84,10 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
                                             Authentication authResult) throws IOException {
         CustomUser customUser = (CustomUser) authResult.getPrincipal();
 
-        String accessToken = generateAccessToken(customUser);
-        String refreshToken = generateRefreshToken(customUser);
+        String accessToken = generateToken(customUser, constants.ACCESS_TOKEN_EXPIRATION_TIME);
+        String refreshToken = generateToken(customUser, constants.REFRESH_TOKEN_EXPIRATION_TIME);
 
         writeTokensToResponse(customUser, response, accessToken, refreshToken);
-    }
-
-    private String generateAccessToken(CustomUser customUser) {
-        return generateToken(customUser, constants.ACCESS_TOKEN_EXPIRATION_TIME);
-    }
-
-    private String generateRefreshToken(CustomUser customUser) {
-        return generateToken(customUser, constants.REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     private String generateToken(CustomUser customUser, long expirationTime) {
@@ -131,13 +109,12 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         response.addHeader(constants.REFRESH_TOKEN_HEADER, constants.TOKEN_PREFIX +  refreshToken);
         response.getWriter().write(loginResponseJson);
     }
-    private void validateLoginRequest(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest) {
+    private void validateLoginRequest(LoginRequest loginRequest) {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(loginRequest);
 
         if (!violations.isEmpty()) {
-            commenceAuthenticationFailure(request, response, new BadCredentialsException(INVALID_FORMAT));
-
+            throw new BadCredentialsException(FAILURE_LOGIN);
        }
     }
 }

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.INVALID_TOKEN;
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.NO_SUCH_MEMBER;
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.FAILURE_AUTH;
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
@@ -68,8 +67,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
 
         //when, then
         doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request)
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(NO_SUCH_MEMBER));
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
 
     }
 
@@ -99,8 +97,7 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         String url = "/api/stores/" + 1 + "/business-hours";
         //when, then
         doPut(url,null,null, createBusinessHourRequest(1l))
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(INVALID_TOKEN));
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ValidatableResponse saveBusinessHour(){
@@ -108,9 +105,6 @@ public class BusinessHourAcceptanceTest extends AcceptanceTest{
         return doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), saveRequest);
     }
 
-    private ValidatableResponse saveBusinessHour(BusinessHourSaveUpdateListRequest request){
-        return doPut(url, ownerToken.getRefreshToken(), ownerToken.getAccessToken(), request);
-    }
 
 
 

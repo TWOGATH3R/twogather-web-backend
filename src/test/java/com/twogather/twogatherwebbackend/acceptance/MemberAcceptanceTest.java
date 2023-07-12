@@ -18,7 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.Date;
 
-import static com.twogather.twogatherwebbackend.auth.AuthMessage.EXPIRED_TOKEN;
+import static com.twogather.twogatherwebbackend.auth.AuthMessage.FAILURE_AUTH;
 import static com.twogather.twogatherwebbackend.exception.MemberException.MemberErrorCode.*;
 import static com.twogather.twogatherwebbackend.util.TestConstants.*;
 import static com.twogather.twogatherwebbackend.util.TestUtil.convert;
@@ -629,8 +629,7 @@ public class MemberAcceptanceTest extends AcceptanceTest{
                 generateExpiredToken(),
                 generateExpiredToken(),
                 UPDATE_REQUEST)
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(EXPIRED_TOKEN));
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

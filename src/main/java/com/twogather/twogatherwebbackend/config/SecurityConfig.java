@@ -77,6 +77,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/consumers")
                 .antMatchers(HttpMethod.GET, "/api/stores/**/images")
                 .antMatchers("/api/email")
+                .antMatchers("/api/access-token")
                 .antMatchers("/api/email/*")
                 .antMatchers("/api/members/password/*")
                 .antMatchers("/api/members/checks-email")
@@ -93,7 +94,7 @@ public class SecurityConfig {
             http
                 .addFilterBefore(new CachingRequestBodyFilter(), ChannelProcessingFilter.class)//두번째인자 보다 첫번째 필터가 먼저 실행되도록. ChannelProcessingFilter 은 filter중 먼저 실행되는 filter임
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtAuthenticationEntryPoint, constants))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, constants))
                     .addFilterAfter(new JwtAuthorizationFilter(authenticationManager, jwtAuthenticationEntryPoint, constants), JwtAuthorizationFilter.class);
         }
 
