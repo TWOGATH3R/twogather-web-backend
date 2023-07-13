@@ -10,10 +10,10 @@
 
 |로그인|검색|
 |:-:|:-:|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/303270ec-f865-4d9a-ab22-b4d44c160e72.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/832b6f00-c1e6-44f0-b9de-31ed05457062.gif>|
+|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/303270ec-f865-4d9a-ab22-b4d44c160e72.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/b574649c-ebb5-4cf6-b282-1a6693ffd6b5.gif>|
 |회원가입|비밀번호찾기|
 |<img src=https://github.com/TWOGATH3R/.github/assets/66842566/8b83a61a-948e-41da-ae39-57d36c018fc9.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/af42a7fc-66c9-4c5a-ae42-2843751c8a03.gif>|
-|아이디 찾기|ㅡㅡ|
+|아이디 찾기|빈칸|
 |<img src=https://github.com/TWOGATH3R/.github/assets/66842566/1912d42b-26cb-48bc-b1d8-9a5f3acacb6b.gif>||
 |개인회원 마이페이지|가게 주인 마이페이지|
 |<img src=https://github.com/TWOGATH3R/.github/assets/66842566/fd8e5746-6fff-4994-9c00-f09f33c176da.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/b8494fa0-56b8-4a51-a4af-72fec9162156.gif>|
