@@ -57,6 +57,11 @@ public class Store {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    private Long likeCount;
+    private Long reviewCount;
+    @Column(precision = 3, scale = 1)
+    private Double avgReviewRating;
+
     @Column(unique = true)
     private String name;
     private String address;
@@ -69,6 +74,7 @@ public class Store {
     private String businessNumber;
     private String businessName;
     private LocalDate businessStartDate;
+
 
     public Store(StoreOwner owner, String name, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate){
         this.name=name;

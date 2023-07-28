@@ -27,10 +27,11 @@ public class StoreRepositoryTest extends RepositoryTest{
 
     @BeforeEach
     public void init(){
-        store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
-        store2 = storeRepository.save(Store.builder().name("가게2").address("서울시 서초구 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).build());
-        store3 = storeRepository.save(Store.builder().name("가게3").address("서울특별시 서초구 신반포로23길 30 반원상가").phone("02-232-2222").status(StoreStatus.APPROVED).build());
-        store4 = storeRepository.save(Store.builder().name("가게4").address("서울시 서초구 어쩌고").phone("063-231-4444").status(StoreStatus.APPROVED).build());
+        Category category = categoryRepository.save(Category.builder().name("퓨전").build());
+        store1 = storeRepository.save(Store.builder().name("가게1").address("전주시 어쩌고 어저고").phone("063-231-4444").status(StoreStatus.APPROVED).category(category).build());
+        store2 = storeRepository.save(Store.builder().name("가게2").address("서울시 서초구 어저고").phone("010-1234-1234").status(StoreStatus.APPROVED).category(category).build());
+        store3 = storeRepository.save(Store.builder().name("가게3").address("서울특별시 서초구 신반포로23길 30 반원상가").phone("02-232-2222").category(category).status(StoreStatus.APPROVED).build());
+        store4 = storeRepository.save(Store.builder().name("가게4").address("서울시 서초구 어쩌고").phone("063-231-4444").category(category).status(StoreStatus.APPROVED).build());
 
         Review review1 = reviewRepository.save(Review.builder().content("맛잇어요").score(4.2).createdDate(LocalDateTime.now()).build());
         Review review2 = reviewRepository.save(Review.builder().content("위생이안좋군요").score(4.2).createdDate(LocalDateTime.now()).build());
@@ -51,6 +52,7 @@ public class StoreRepositoryTest extends RepositoryTest{
 
         Review review8 = reviewRepository.save(Review.builder().content("아이들과 오기 좋네요").score(3.2).createdDate(LocalDateTime.now()).build());
         review8.addStore(store4);
+
     }
     @Test
     @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")

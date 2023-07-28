@@ -212,11 +212,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         addressContain(location),
                         storeNameContain(storeName)
                 )
-                .leftJoin(store.reviewList, review)
-                .leftJoin(store.storeImageList, image)
-                .leftJoin(store.likesList, likes)
-                .leftJoin(store.category, QCategory.category)
+                .innerJoin(store.category, QCategory.category)
                 .leftJoin(store.storeKeywordList, storeKeyword)
+                .leftJoin(storeKeyword.keyword, QKeyword.keyword)
+                .leftJoin(store.reviewList, review)
+                .leftJoin(store.likesList, likes)
                 .orderBy(createOrderSpecifiers(pageable))
                 .groupBy(store.storeId)
                 .offset(pageable.getOffset())
@@ -233,6 +233,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                         storeNameContain(storeName)
                 )
                 .groupBy(store.storeId)
+                .leftJoin(store.storeKeywordList, storeKeyword)
                 .fetch().size();
 
         List<StoreResponseWithKeyword> storeResponses = storeQuery.stream().map(store -> {
@@ -282,11 +283,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 switch (order.getProperty()){
                     case "MOST_REVIEWED":
-                        return new OrderSpecifier(direction, store.reviewList.size());
+                        return new OrderSpecifier(direction, review.count());
                     case "TOP_RATED":
                         return new OrderSpecifier(direction, review.score.avg());
                     case "MOST_LIKES_COUNT":
-                        return new OrderSpecifier(direction, store.likesList.size());
+                        return new OrderSpecifier(direction, likes.count());
                     default:
                         throw new SQLException(INVALID_REQUEST_PARAM);
                 }
@@ -318,10 +319,10 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         return Math.round(score * 10.0) / 10.0;
     }
     private BooleanExpression keywordContain(String keyword) {
-        if (!StringUtils.hasText(keyword)) {
+        if (!StringUtils.hasText(keyword) || storeKeyword==null) {
             return Expressions.asBoolean(true).isTrue();
         } else {
-            return store.storeKeywordList.any().keyword.name.eq(keyword);
+            return storeKeyword.keyword.name.eq(keyword);
         }
     }
     private BooleanExpression storeNameContain(String storeName){
@@ -342,7 +343,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         if (!StringUtils.hasText(address)) {
             return Expressions.asBoolean(true).isTrue();
         } else {
-            return store.address.contains(address);
+            return store.address.like(address+ "%");
         }
     }
     private String getUrl(List<Image> imageList){
