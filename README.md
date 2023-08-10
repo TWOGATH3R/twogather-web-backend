@@ -6,30 +6,6 @@
 # 맛집 등록/검색 웹 프로젝트
 - 맛집을 등록하고 키워드를 통해 검색할 수 있습니다<br>
 - 필터링을 통하여 맛집을 추천받을 수 있고, 카테고리별로 맛집을 찾아볼 수 있습니다.
-# 동작
-
-|로그인|검색|
-|:-:|:-:|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/303270ec-f865-4d9a-ab22-b4d44c160e72.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/b574649c-ebb5-4cf6-b282-1a6693ffd6b5.gif>|
-|회원가입|비밀번호찾기|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/8b83a61a-948e-41da-ae39-57d36c018fc9.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/af42a7fc-66c9-4c5a-ae42-2843751c8a03.gif>|
-|아이디 찾기|빈칸|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/1912d42b-26cb-48bc-b1d8-9a5f3acacb6b.gif>||
-|개인회원 마이페이지|가게 주인 마이페이지|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/fd8e5746-6fff-4994-9c00-f09f33c176da.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/b8494fa0-56b8-4a51-a4af-72fec9162156.gif>|
-|관리자 마이페이지|관리자 승인/거부|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/a119195e-d54c-4a2c-a95c-e1073c262eae.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/ceff61cf-70b3-4e6b-ae49-2ad41556e9f7.gif>|
-|가게 등록|가게주인 대댓글 남기기|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/bccee6fc-a390-48e0-b49d-12fb929631c4.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/4fb2ecbc-58a7-43a6-a749-5a0dc36db9b1.gif>|
-|가게 상세 보기|리뷰 달기|
-|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/b3efb2e6-d37b-4f49-8e87-d10e3e1f28a7.gif>|<img src=https://github.com/TWOGATH3R/.github/assets/66842566/a2231219-b886-4fa0-a39b-e3c09f5b2d8f.gif>|
-
-## 프로젝트 배경
-- 가고 싶은 맛집을 수식어를 통해 검색하고 싶을때가 있었습니다. TwoGather을 사용하여 카테고리별로/키워드별로 맛집을 검색하여 추천받을 수 있습니다.
-- 리뷰어의 평균리뷰점수를 확인하는 기능을 넣어 신뢰성있는 리뷰를 제공받을 수 있습니다.
-- 기존에 만들어봤던 프로젝트에서의 부족한점을 보완하여 개발하고 싶었습니다.
-- 부끄럽지만, 이전 프로젝트에서는 서버쪽에서의 validation 확인의 필요성이나 로깅의 필요성, test의 중요성에 대해 잘 알지 못했습니다
-- TwoGather 프로젝트를 진행하면서 validation의 적절한 적용, 로그를 작성하고, 로그분석을 통한 시스템 장애 대응, 좋은 test코드에 대해 생각해보고, test 자동화를 하는 부분에 신경써가며 작업하려고합니다
 
 ## 프로젝트 목표
 1. **유연한 설계와 확장성 높은 코드로 유지보수성 높이기**
@@ -50,12 +26,52 @@
 5. **동시성 문제**
     - 동시성 문제는 예측할 수 없는 동작, 데이터 불일치 또는 시스템 오류로 이어질 수 있으므로 확인하는 것이 중요합니다.
     - 동시성 문제에 대해 고민해보고 이러한 문제가 생길 수 있는지 여부를 검토해봅니다
+      
+## 기술이슈와 해결방법
+- 자세한 내용은 [위키](https://github.com/TWOGATH3R/twogather-web-backend/wiki)에 나와있습니다.
 
-   
-## 로컬에서 작동시키는 법
-- 프로젝트 실행과 빌드를 위해선 /src/main/resources, /src/test/resources하위에 application.properties 파일이 존재해야합니다
-- 현재는 프로파일관리로 배포시엔 "prod"라는 설정을 활성화 시키거나 개발시엔 "dev"라는 설정을 활성화시키면서 개발을 하고 있습니다
-- 그렇기에 로컬에서 실행시키려면 application.properties파일내용안에(없다면 만들어야합니다) 프로젝트 내에 존재하는 다른 xxx.properties파일에서 작성된 요구하는 값에 대해 copy하여 빈 부분에 대해서 채워주셔야합니다
+**1. 동시성 문제**
+   - 동일한 하나의 데이터에 2 이상의 스레드에서 데이터를 동시에 제어할 때 나타는 문제로,
+   - 하나의 스레드가 데이터를 수정 중일때, 다른 스레드에서 수정 전의 데이터를 조회해 로직을 처리함으로써 데이터의 정합성이 깨지는 문제를 말합니다.
+   - 자바는 멀티스레드를 지원하기 때문에 이런 문제에 대해 생각을 해보는 과정이 필요하다고 생각했습니다
+   - 현재 프로젝트에서는 다음로직에 대해 동시성 문제가 생길 수 있습니다.
+   ```
+    1. 가게 이름 중복에 대한 유효성 검사
+    2. 가게 업데이트
+   ```
+   - 트랜잭션A가 가게 업데이트를 수행하는데 트랜잭션 B가 똑같은 이름으로 가게 유효성 검사를 수행하면 유효성 검사를 통과하게 되면서 데이터의 정합성이 깨질 수 있습니다
+   - 하지만 락을 거는 방법보다 간단한 방법인 디비에 제약조건을 걸어서 해결하는 방식으로 문제를 해결하였습니다.
+   - [문서](https://github.com/TWOGATH3R/twogather-web-backend/wiki/%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C)
+     
+**2. 스레드 로컬을 사용해서 Exception이 Throw됐을 때만 로그 출력하기**
+   - 필터에서 모든 경우에 대해 로그를 출력할 수도 있지만 주로 문제상황을 해결하기 위해 로그를 확인했었기 때문에 문제 상황에 대한 로그만 추출하고 싶었습니다.
+   - 이때, http request는 입력스트림을 사용해서 데이터를 읽습니다. 한번읽으면 다시 읽을 수가 없죠.
+   - Exception이 Throw됐을때 다시 한번 데이터를 읽어서 로그를 출력하기 위해 스레드 로컬을 사용하였습니다
+   - 스레드 로컬이란, 스레드 당 로컬변수를 할당할 수 있게 도와주는 클래스이빈다.
+   - 각 요청의 정보를 스레드 로컬에 저장하고 만약 Exception이 Throw되는 경우 저장하고 있던 정보를 로그로 출력하도록 문제를 해결하였습니다.
+   - [문서](https://github.com/TWOGATH3R/twogather-web-backend/wiki/%EB%A1%9C%EA%B7%B8-%EB%B6%84%EC%84%9D)
+
+      
+**3. 인수테스트에서 테스트 격리하기**
+   - 인수테스트를 할땐 보통 랜덤포트를 쓰게 됩니다. 이 경우 서버측과 클라이언트 측이 분리됩니다
+   - 결국 HTTP 경계를 넘어 요청을 처리하는 서버 측 코드로 트랜잭션이 확장되지 않습니다.
+   - 무언가가 처리된 부분은 서버측 스레드이기때문에 그쪽이 롤백되어야 데이터가 롤백되어 테스트 격리를 달성할 수 있습니다.
+   - 그런데 롤백이 http클라이언트쪽에만 처리가 되니 제대로 롤백이 되지 않는 문제가 생깁니다.
+   - 문제 해결을 위해 롤백대신 실제 sql을 날려서 데이터베이스를 비워주는 클래스를 작성하였습니다
+   - [문서](https://github.com/TWOGATH3R/twogather-web-backend/wiki/%EC%9D%B8%EC%88%98%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%97%90%EC%84%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B2%A9%EB%A6%AC%ED%95%98%EA%B8%B0)
+
+**4. 테스트 커버리지**
+   - 다양한 상황을 대비하기 위해 테스트 코드를 작성하고 커버리지를 확인하는 도구를 활용하여 커버리지를 측정하였습니다
+   - **테스트 커버리지 81%**
+   - [문서](https://github.com/TWOGATH3R/twogather-web-backend/wiki/Jacoco-%EB%8F%84%EC%9E%85%ED%95%98%EC%97%AC-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BB%A4%EB%B2%84%EB%A6%AC%EC%A7%80-%EC%B8%A1%EC%A0%95)
+  
+**5. 쿼리 튜닝**
+   - 가장 많이 사용될 것으로 예상되는 쿼리를 선정하고 그 쿼리에 대해 튜닝 작업을 진행하였습니다.
+   - 필요없는 조인을 제거하고 인덱스를 효과적으로 도입하여 **8배** 정도 빨라짐을 확인하였습니다
+   - [문서](https://github.com/TWOGATH3R/twogather-web-backend/wiki/%EC%B5%9C%EC%A0%81%ED%99%94)
+
+
+
 
 ## CI / CD
 ![image](https://github.com/TWOGATH3R/twogather-web-backend/assets/66842566/d96d47be-3da6-48df-9b2b-4260815f4f16)
@@ -65,11 +81,6 @@
 
 ## ERD
 ![image](https://github.com/TWOGATH3R/twogather-web-backend/assets/66842566/20874d74-f976-40af-9b27-1472106ba7f5)
-
-
-## 한계점
-- 인덱스를 활용한 쿼리 튜닝
-- 성능 테스트
 
 ## 팀원
 | Backend 🌟 | Backend 🌟 | 
