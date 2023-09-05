@@ -52,9 +52,8 @@ public class RedisConfig {
     }*/
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(hostName, port);
-        return new JedisConnectionFactory(config);
+    RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(hostName, port);
     }
     @Bean
     RedisTemplate<String, Object> redisTemplate() {

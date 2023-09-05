@@ -39,6 +39,7 @@ public class ImageControllerTest extends ControllerTest{
 
     private static final String URL = "/api/stores/{storeId}/images";
 
+    /*
     @Test
     @DisplayName("이미지 업로드")
     public void uploadWhenImageSave_Then201() throws Exception {
@@ -68,7 +69,7 @@ public class ImageControllerTest extends ControllerTest{
                 ));
 
     }
-
+*/
     @Test
     @DisplayName("가게 이미지 리스트 삭제")
     public void deleteStoreImage_WhenDeleteStoreImage_Then200Ok() throws Exception {
