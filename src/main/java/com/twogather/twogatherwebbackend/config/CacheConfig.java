@@ -26,23 +26,12 @@ public class CacheConfig {
     @Value("${spring.redis.cache.port}")
     private int port;
 
-    // Redis 연결 팩토리 Bean을 정의. 이 Bean은 레디스 서버와의 연결을 관리합니다.
-    @Bean(name = "redisCacheConnectionFactory")
-    RedisConnectionFactory redisCacheConnectionFactory() {
-        // 단독 구성을 위한 Redis 구성 클래스를 만듭니다.
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(hostName);
-        redisStandaloneConfiguration.setPort(port);
-        // 레디스 연결을 위해 Lettuce 사용. Lettuce는 자바에서 레디스 클라이언트로 사용되는 라이브러리입니다.
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
-        return lettuceConnectionFactory;
-    }
 
     // Redis 캐시 매니저를 설정하는 Bean 정의. 이 매니저는 레디스를 사용하여 캐싱 작업을 처리합니다.
     @Bean
     public RedisCacheManager cacheManager(
             // 위에서 정의한 레디스 연결 팩토리를 주입
-            @Qualifier("redisCacheConnectionFactory") RedisConnectionFactory connectionFactory) {
+            RedisConnectionFactory connectionFactory) {
 
         // 레디스 캐시 설정을 정의. 기본적으로 객체는 GenericJackson2JsonRedisSerializer 를 사용하여 직렬화됩니다.
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
