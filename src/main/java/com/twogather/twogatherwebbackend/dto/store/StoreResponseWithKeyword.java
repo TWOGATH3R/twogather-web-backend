@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.twogather.twogatherwebbackend.domain.QStore.store;
+
 @Getter
 @NoArgsConstructor
 public class StoreResponseWithKeyword {
@@ -16,12 +18,19 @@ public class StoreResponseWithKeyword {
     private Double avgScore;
     private List<String> keywordList = new ArrayList<>();
     private String storeImageUrl;
-    private Integer likeCount;
-
+    private Long likeCount;
 
     public StoreResponseWithKeyword(Long storeId, String name, String address, Double score,
+                                    Long likeCount){
+        this.storeId = storeId;
+        this.storeName = name;
+        this.address = address;
+        this.avgScore = score;
+        this.likeCount = likeCount;
+    }
+    public StoreResponseWithKeyword(Long storeId, String name, String address, Double score,
                                     List<String> keywordList, String storeImageUrl,
-                                    Integer likeCount){
+                                    Long likeCount){
         this.storeId = storeId;
         this.storeName = name;
         this.address = address;
@@ -30,5 +39,12 @@ public class StoreResponseWithKeyword {
         this.avgScore = score;
         this.likeCount = likeCount;
 
+    }
+
+    public void setKeywordList(List<String> keywordList) {
+        this.keywordList = keywordList;
+    }
+    public void setStoreImageUrl(String imageUrl){
+        this.storeImageUrl = imageUrl;
     }
 }

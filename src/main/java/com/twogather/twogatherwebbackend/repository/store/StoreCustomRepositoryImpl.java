@@ -48,7 +48,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
     @Override
     public Optional<StoreDefaultResponse> findDefaultActiveStoreInfo(Long storeId){
-         StoreDefaultResponse results =
+        StoreDefaultResponse results =
                 jpaQueryFactory
                         .select(
                                 Projections.constructor(
@@ -102,25 +102,25 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
         List<TopStoreResponse> results =
                 jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                TopStoreResponse.class,
-                                store.storeId,
-                                store.name,
-                                MathExpressions.round(review.score.avg(), 1),
-                                store.address,
-                                image.url,
-                                store.likesList.size()
-                        ))
-                .from(store)
+                        .select(
+                                Projections.constructor(
+                                        TopStoreResponse.class,
+                                        store.storeId,
+                                        store.name,
+                                        MathExpressions.round(review.score.avg(), 1),
+                                        store.address,
+                                        image.url,
+                                        store.likesList.size()
+                                ))
+                        .from(store)
                         .leftJoin(store.likesList, likes)
                         .leftJoin(store.reviewList, review)
                         .leftJoin(store.storeImageList, image)
-                .where(store.status.eq(StoreStatus.APPROVED))
-                .groupBy(store.storeId)
-                .orderBy(createOrderSpecifiersWithTopN(order, orderBy))
-                .limit(n)
-                .fetch();
+                        .where(store.status.eq(StoreStatus.APPROVED))
+                        .groupBy(store.storeId)
+                        .orderBy(createOrderSpecifiersWithTopN(order, orderBy))
+                        .limit(n)
+                        .fetch();
 
         return results;
     }
@@ -255,7 +255,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                             ? ""
                             : store.getStoreImageList().get(0).getUrl();
 
-                    return new StoreResponseWithKeyword(storeId, name, address, score, keywordList, storeImageUrl, store.getLikesList().size());
+                    return new StoreResponseWithKeyword(storeId, name, address, score, keywordList, storeImageUrl, (long)store.getLikesList().size());
                 })
                 .collect(Collectors.toList());
 
