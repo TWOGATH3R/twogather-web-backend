@@ -22,7 +22,6 @@ import com.twogather.twogatherwebbackend.dto.review.ReviewSaveUpdateRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -43,7 +42,7 @@ public class TestConstants {
     public static final String STORE_NAME = "김가네 닭갈비";
     public static final String STORE_ADDRESS = "전주시 평화동 어쩌고 222-2";
     public static final String STORE_PHONE = "063-231-2222";
-    public static final Store APPROVED_STORE = new Store(1l, null,null,null,null,null, null,null,null,"이름", "주소","010-1234-1234", StoreStatus.APPROVED,"",LocalDateTime.now(), "0000000000", "홍길동", LocalDate.now());
+    public static final Store APPROVED_STORE = Store.builder().storeId(1L).name("이름").address("주소").phone("010-1234-1234").status(StoreStatus.APPROVED).businessStartDate(LocalDate.now()).businessName("홍길동").businessNumber("0000000000").build();
     // Business Hour Constants
     public static final String START_TIME_STRING = "11:30";
     public static final String END_TIME_STRING = "20:00";
@@ -205,7 +204,7 @@ public class TestConstants {
             new CategoryResponse(1l, "양식");
 
     public static final StoreResponseWithKeyword STORES_RESPONSE =
-            new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3", 4.2, KEYWORD_LIST, "imageurl1", 12);
+            new StoreResponseWithKeyword(1l, "가게이름", "전주시 평화동 산동 2길 1-3", 4.2, KEYWORD_LIST, "imageurl1", 12l);
     public static final ArrayList STORES_RESPONSE_LIST =
             new ArrayList<StoreResponseWithKeyword>(){{
                 add(STORES_RESPONSE);
@@ -456,12 +455,6 @@ public class TestConstants {
     }
 
     //mock file
-
-    // Image Constants
-    public static final MockMultipartFile IMAGE_REQUEST_PART =
-            new MockMultipartFile("storeImageList", "image1.jpg", "image/jpeg", "test data".getBytes());
-    public static final MockMultipartFile IMAGE_REQUEST_PART2 =
-            new MockMultipartFile("storeImageList", "imageS2.jpg", "image/jpeg", "test data".getBytes());
 
     //store reject reason
     public static final RejectReason STORE_REJECT_REASON = new RejectReason("입력 사항 불충족");

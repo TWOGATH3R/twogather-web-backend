@@ -218,7 +218,7 @@ public class StoreControllerTest extends ControllerTest{
                 4.5,
                 new ArrayList<>(){{add("맛있는"); add("분위기좋은");}},
                 "https://example.com/store_image1.jpg",
-                12
+                12L
         );
         StoreResponseWithKeyword storeResponse2 = new StoreResponseWithKeyword(
                 2L,
@@ -227,7 +227,7 @@ public class StoreControllerTest extends ControllerTest{
                 3.5,
                 new ArrayList<>(){{add("청결한"); add("분위기좋은");}},
                 "https://example.com/store_image2.jpg",
-                1
+                1l
         );
         List<StoreResponseWithKeyword> list = new ArrayList<>(){{
             add(storeResponse1);

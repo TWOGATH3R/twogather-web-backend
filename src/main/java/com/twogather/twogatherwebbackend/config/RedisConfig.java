@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
@@ -39,6 +40,7 @@ public class RedisConfig {
     @Value("${spring.redis.session.port}")
     private int port;
 
+    /*
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
 
@@ -47,8 +49,13 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPort(port);
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
         return lettuceConnectionFactory;
-    }
+    }*/
 
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(hostName, port);
+        return new JedisConnectionFactory(config);
+    }
     @Bean
     RedisTemplate<String, Object> redisTemplate() {
 
