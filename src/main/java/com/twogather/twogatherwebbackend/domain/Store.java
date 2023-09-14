@@ -174,8 +174,5 @@ public class Store {
         this.reviewCount = reviewCount;
         this.avgReviewRating = Math.round(avgReviewRating * 10) / 10.0;
     }
-    public void increaseVersion(){
-        version++;
-    }
 
 }
