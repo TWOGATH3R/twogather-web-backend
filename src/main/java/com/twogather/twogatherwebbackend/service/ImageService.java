@@ -82,6 +82,8 @@ public class ImageService {
     private List<Image> toImageEntityList(List<String> urlList, Store store){
         List<Image> imageList = new ArrayList<>();
         for (String url: urlList){
+            Image image = new Image(store, url);
+            store.addImage(image);
             imageList.add(new Image(store, url));
         }
         return imageList;
