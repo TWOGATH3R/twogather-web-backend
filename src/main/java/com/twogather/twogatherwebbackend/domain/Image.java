@@ -28,4 +28,12 @@ public class Image {
         this.store.addImage(this);
         this.url = url;
     }
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    private void onUpdate() {
+        if (store != null) {
+            store.increaseVersion(); // this will cause version to update
+        }
+    }
 }
