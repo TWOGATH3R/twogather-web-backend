@@ -8,8 +8,10 @@ import com.twogather.twogatherwebbackend.exception.KeywordException;
 import com.twogather.twogatherwebbackend.exception.MemberException;
 import com.twogather.twogatherwebbackend.exception.StoreException;
 import com.twogather.twogatherwebbackend.repository.CategoryRepository;
+import com.twogather.twogatherwebbackend.repository.LikeRepository;
 import com.twogather.twogatherwebbackend.repository.MemberRepository;
 import com.twogather.twogatherwebbackend.repository.StoreOwnerRepository;
+import com.twogather.twogatherwebbackend.repository.review.ReviewRepository;
 import com.twogather.twogatherwebbackend.repository.store.StoreRepository;
 import com.twogather.twogatherwebbackend.util.CacheNames;
 import com.twogather.twogatherwebbackend.util.SecurityUtils;
@@ -22,7 +24,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.CategoryException.CategoryErrorCode.NO_SUCH_CATEGORY;
 import static com.twogather.twogatherwebbackend.exception.KeywordException.KeywordErrorCode.MAXIMUM_KEYWORD_LIMIT;
@@ -39,6 +44,8 @@ public class StoreService {
     private final StoreOwnerRepository storeOwnerRepository;
     private final BizRegNumberValidator validator;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository reviewRepository;
+    private final LikeRepository likeRepository;
 
     @Value("${keyword.max.size}")
     private Integer keywordMaxSize;
@@ -60,6 +67,26 @@ public class StoreService {
                 ()->new StoreException(NO_SUCH_STORE)
         );
         store.reject(rejectReason.getReason());
+    }
+    public void setAllStoreDetail(){
+        //모든 store의 like수, 리뷰 수, 리뷰 평점을 계산해서 집어 넣는다
+        List<Store> storeList = storeRepository.findAll();
+        List<Long> storeIdList = storeList.stream()
+                .map(Store::getStoreId)
+                .collect(Collectors.toList());
+
+        Map<Long, Long> likesCountMap = likeRepository.countLikesByStoreIds(storeIdList);
+        Map<Long, Long> reviewsCountMap = reviewRepository.countReviewsByStoreIds(storeIdList);
+        Map<Long, Double> averageReviewScoreMap = reviewRepository.averageScoresByStoreIds(storeIdList);
+
+        for (Store store : storeList) {
+            Long storeId = store.getStoreId();
+            Long likeCount = likesCountMap.getOrDefault(storeId, 0L);
+            Long reviewCount = reviewsCountMap.getOrDefault(storeId, 0L);
+            Double avgReviewScore = averageReviewScoreMap.getOrDefault(storeId, 0.0);
+
+            store.setDetail(likeCount, reviewCount, avgReviewScore);
+        }
     }
     public StoreSaveUpdateResponse getStoreDetail(final Long storeId){
         return storeRepository.findStoreDetail(storeId).orElseThrow(()->new StoreException(NO_SUCH_STORE));

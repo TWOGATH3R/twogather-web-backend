@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.FileException.FileErrorCode.FILE_CONVERTER_ERROR;
 
@@ -62,23 +63,25 @@ public class S3Uploader implements StorageUploader {
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
     @Override
-    public List<String> uploadList(String directory, List<MultipartFile> list){
-        ArrayList<String> urlList = new ArrayList<>();
-        for (MultipartFile file: list){
-            String url = upload(directory, file);
-            urlList.add(url);
-        }
-        return urlList;
+    public void deleteList(List<String> urlList) {
+        urlList.forEach(this::delete);
     }
+
     @Override
-    public List<String> uploadList(List<MultipartFile> list){
-        ArrayList<String> urlList = new ArrayList<>();
-        for (MultipartFile file: list){
-            String url = upload(directory, file);
-            urlList.add(url);
-        }
-        return urlList;
+    public List<String> uploadList(String directory, List<MultipartFile> list) {
+        return list.stream()
+                .map(file -> upload(directory, file))
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> uploadList(List<MultipartFile> list) {
+        return list.stream()
+                .map(file -> upload(directory, file))
+                .collect(Collectors.toList());
+    }
+
+
     @Override
     public String upload(String directory, MultipartFile multipartFile){
         File uploadFile = null;

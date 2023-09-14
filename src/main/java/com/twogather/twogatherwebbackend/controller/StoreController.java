@@ -85,6 +85,12 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(new Response(data));
     }
 
+    @PostMapping("/stores/detail")
+    public ResponseEntity<Response> setStoreDetail() {
+        storeService.setAllStoreDetail();
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
     @GetMapping("/stores/search")
     public ResponseEntity<Response> getStoreInfos(Pageable pageable,

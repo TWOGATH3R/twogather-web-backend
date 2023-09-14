@@ -18,6 +18,7 @@ import java.util.List;
 @SuperBuilder
 public class StoreOwner extends Member {
     @OneToMany(mappedBy = "owner")
+    @Builder.Default
     private List<Store> storeList = new ArrayList<>();
 
 

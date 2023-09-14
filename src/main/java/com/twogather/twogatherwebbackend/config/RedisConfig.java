@@ -40,7 +40,7 @@ public class RedisConfig {
     @Value("${spring.redis.session.port}")
     private int port;
 
-    /*
+
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
 
@@ -49,12 +49,12 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPort(port);
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
         return lettuceConnectionFactory;
-    }*/
-
+    }
+    /*
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(hostName, port);
-    }
+    }*/
     @Bean
     RedisTemplate<String, Object> redisTemplate() {
 

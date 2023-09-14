@@ -10,6 +10,7 @@ public interface StorageUploader {
     String upload(String directory, File image);
     List<String> uploadList(String directory, List<MultipartFile> list);
     List<String> uploadList(List<MultipartFile> list);
+    void deleteList(List<String> urlList);
     void delete(String imageUrl);
     boolean doesObjectExist(String url);
 }
