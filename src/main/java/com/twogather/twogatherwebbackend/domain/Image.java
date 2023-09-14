@@ -31,9 +31,9 @@ public class Image {
     @PrePersist
     @PreUpdate
     @PreRemove
-    private void onUpdate() {
+    public void onUpdate() {
         if (store != null) {
-            store.increaseVersion(); // this will cause version to update
+            store.increaseVersion();
         }
     }
 }

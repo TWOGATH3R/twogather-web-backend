@@ -38,12 +38,12 @@ public class StoreServiceTest {
     @Autowired
     ImageRepository imageRepository;
 
-    /*
+/*
     @Test
     public void 동시_100_요청() throws InterruptedException, IOException {
         storeRepository.save(Store.builder().name("store1").build());
 
-        int threadCount = 100;
+        int threadCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
 
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -69,6 +69,7 @@ public class StoreServiceTest {
         Integer size = imageRepository.findByStoreId(1L).size();
 
         System.out.println(size);
+        Assertions.assertTrue(size > 0);
         Assertions.assertTrue(size < 12);
 
     }
@@ -92,5 +93,5 @@ public class StoreServiceTest {
         result.add(multipartFile);
         return result;
     }
-    */
+*/
 }

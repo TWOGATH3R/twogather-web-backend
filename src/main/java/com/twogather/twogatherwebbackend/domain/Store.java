@@ -124,6 +124,7 @@ public class Store {
         if(storeImageList==null){
             storeImageList = new ArrayList<>();
         }
+        increaseVersion();
         storeImageList.add(image);
     }
     public void addReview(Review review){
