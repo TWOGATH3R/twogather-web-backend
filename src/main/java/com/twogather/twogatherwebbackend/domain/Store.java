@@ -77,8 +77,6 @@ public class Store {
     @Version
     private Long version;
 
-
-
     public Store(StoreOwner owner, String name, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate){
         this.name=name;
         this.address=address;
@@ -169,6 +167,9 @@ public class Store {
         this.likeCount = likeCount;
         this.reviewCount = reviewCount;
         this.avgReviewRating = Math.round(avgReviewRating * 10) / 10.0;
+    }
+    public void increaseVersion(){
+        version++;
     }
 
 }
