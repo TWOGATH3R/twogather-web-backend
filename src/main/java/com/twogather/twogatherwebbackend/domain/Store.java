@@ -74,6 +74,9 @@ public class Store {
     private String businessNumber;
     private String businessName;
     private LocalDate businessStartDate;
+    @Version
+    private Long version;
+
 
 
     public Store(StoreOwner owner, String name, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate){
@@ -161,6 +164,11 @@ public class Store {
         if(this.status.equals(StoreStatus.APPROVED)) throw new StoreException(ALREADY_APPROVED_STORE);
         this.requestDate = LocalDateTime.now();
         this.status = StoreStatus.PENDING;
+    }
+    public void setDetail(Long likeCount,Long reviewCount ,Double avgReviewRating){
+        this.likeCount = likeCount;
+        this.reviewCount = reviewCount;
+        this.avgReviewRating = Math.round(avgReviewRating * 10) / 10.0;
     }
 
 }

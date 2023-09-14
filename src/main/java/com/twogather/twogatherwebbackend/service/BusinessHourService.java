@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.exception.BusinessHourException.BusinessHourErrorCode.*;
 import static com.twogather.twogatherwebbackend.exception.StoreException.StoreErrorCode.NO_SUCH_STORE;
@@ -70,6 +71,7 @@ public class BusinessHourService {
         return businessHour;
     }
 
+    //동시성 문제가 일어날수도있으니 디비 unique제약조건
     private Set<DayOfWeek> checkDuplicateDays(List<BusinessHourSaveUpdateInfo> requestList) {
         Set<DayOfWeek> uniqueDays = new HashSet<>();
         for (BusinessHourSaveUpdateInfo request : requestList) {
@@ -94,7 +96,6 @@ public class BusinessHourService {
             BusinessHour businessHour = saveRequestToEntity(request, store);
             entityList.add(businessHour);
         }
-
         return entityList;
     }
 
@@ -105,11 +106,7 @@ public class BusinessHourService {
     }
 
     private List<BusinessHourResponse> toBusinessHourResponseList(List<BusinessHour> businessHourList) {
-        List<BusinessHourResponse> responseList = new ArrayList<>();
-        for (BusinessHour businessHour : businessHourList) {
-            responseList.add(toBusinessHourResponse(businessHour));
-        }
-        return responseList;
+        return businessHourList.stream().map(this::toBusinessHourResponse).collect(Collectors.toList());
     }
 
     private BusinessHourResponse toBusinessHourResponse(BusinessHour businessHour) {

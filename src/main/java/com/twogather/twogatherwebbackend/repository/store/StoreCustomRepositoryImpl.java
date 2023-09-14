@@ -99,6 +99,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
     @Override
     public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
+
         List<TopStoreResponse> results =
                 jpaQueryFactory
                         .select(
@@ -106,14 +107,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                         TopStoreResponse.class,
                                         store.storeId,
                                         store.name,
-                                        MathExpressions.round(review.score.avg(), 1),
+                                        store.avgReviewRating,
                                         store.address,
                                         image.url,
-                                        store.likesList.size()
+                                        store.likeCount
                                 ))
                         .from(store)
-                        .leftJoin(store.likesList, likes)
-                        .leftJoin(store.reviewList, review)
                         .leftJoin(store.storeImageList, image)
                         .where(store.status.eq(StoreStatus.APPROVED))
                         .groupBy(store.storeId)
@@ -288,17 +287,20 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
         // Image URL 맵 생성
         List<Tuple> imageUrls = jpaQueryFactory
-                .select(image.store.storeId, image.url)
+                .select(store.storeId, image.url)
                 .from(image)
-                .where(image.store.storeId.in(storeIds))
-                .groupBy(image.store.storeId)
+                .innerJoin(image.store, store)
+                .where(store.storeId.in(storeIds))
+                .groupBy(store.storeId, image.url)
                 .fetch();
 
         Map<Long, String> storeIdToImageUrl = imageUrls.stream()
                 .collect(Collectors.toMap(
-                        tuple -> tuple.get(image.store.storeId),
-                        tuple -> tuple.get(image.url)
+                        tuple -> tuple.get(0, Long.class),
+                        tuple -> tuple.get(1, String.class),
+                        (url1, url2) -> url1  // 중복 키가 발생할 때 첫 번째 URL을 선택
                 ));
+
 
         // Keyword Names 맵 생성
         List<Tuple> keywordData = jpaQueryFactory
@@ -319,8 +321,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         }
 
         for (StoreResponseWithKeyword response : storeQuery) {
-            response.setStoreImageUrl(storeIdToImageUrl.get(response.getStoreId()));
-            response.setKeywordList(storeIdToKeywordNames.get(response.getStoreId()));
+            String imageUrl = storeIdToImageUrl.get(response.getStoreId());
+            response.setStoreImageUrl(imageUrl != null ? imageUrl : "");
+
+            List<String> keywordList = storeIdToKeywordNames.get(response.getStoreId());
+            response.setKeywordList(keywordList != null ? keywordList : Collections.emptyList());
+
         }
 
         return new PageImpl<>(storeQuery, pageable, count);

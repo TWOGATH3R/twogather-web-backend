@@ -6,7 +6,8 @@ public class ImageException  extends ClientException {
     public enum ImageErrorCode {
         NO_SUCH_IMAGE("해당 사진을 찾을 수 없습니다"),
         NOT_IMAGE("이미지 파일이 아닙니다"),
-        MAXIMUM_IMAGE_SIZE("이미지 최대등록개수를 초과하였습니다");
+        MAXIMUM_IMAGE_SIZE("이미지 최대등록개수를 초과하였습니다"),
+        UPLOAD_FAILURE("이미지 저장에 실패하였습니다");
         private final String message;
         private final HttpStatus status;
 

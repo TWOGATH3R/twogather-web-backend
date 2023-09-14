@@ -25,6 +25,8 @@ public class StoreResponseWithKeyword {
         this.storeId = storeId;
         this.storeName = name;
         this.address = address;
+        storeImageUrl = "";
+        keywordList = new ArrayList<>();
         this.avgScore = score;
         this.likeCount = likeCount;
     }
