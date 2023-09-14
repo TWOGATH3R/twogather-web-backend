@@ -76,6 +76,8 @@ public class Store {
     private LocalDate businessStartDate;
     @Version
     private Long version;
+    @Builder.Default
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 
     public Store(StoreOwner owner, String name, String address, String phone, String businessName, String businessNumber, LocalDate businessStartDate){
         this.name=name;
@@ -124,7 +126,7 @@ public class Store {
         if(storeImageList==null){
             storeImageList = new ArrayList<>();
         }
-        increaseVersion();
+        lastUpdated = LocalDateTime.now();
         storeImageList.add(image);
     }
     public void addReview(Review review){
@@ -138,6 +140,9 @@ public class Store {
             likesList = new ArrayList<>();
         }
         likesList.add(likes);
+    }
+    public void updated(){
+        this.lastUpdated = LocalDateTime.now();
     }
     public void addMenu(Menu menu){
         if(menuList==null){

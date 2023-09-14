@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,7 +34,7 @@ public class Image {
     @PreRemove
     public void onUpdate() {
         if (store != null) {
-            store.increaseVersion();
+            store.updated();
         }
     }
 }
