@@ -281,52 +281,42 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                     .fetch().size();
         }
 
-        List<Long> storeIds = storeQuery.stream()
-                .map(StoreResponseWithKeyword::getStoreId)
-                .collect(Collectors.toList());
 
-        // Image URL 맵 생성
-        List<Tuple> imageUrls = jpaQueryFactory
-                .select(store.storeId, image.url)
-                .from(image)
-                .innerJoin(image.store, store)
+        List<Long> storeIds = storeQuery.stream().map(StoreResponseWithKeyword::getStoreId).collect(Collectors.toList());
+
+        // Image URL 및 Keyword 한 번에 가져오기
+        List<Tuple> combinedData = jpaQueryFactory
+                .select(store.storeId, image.url, QKeyword.keyword.name)
+                .from(store)
+                .leftJoin(store.storeImageList, image)
+                .leftJoin(store.storeKeywordList, storeKeyword)
+                .leftJoin(storeKeyword.keyword, QKeyword.keyword)
                 .where(store.storeId.in(storeIds))
-                .groupBy(store.storeId, image.url)
                 .fetch();
 
-        Map<Long, String> storeIdToImageUrl = imageUrls.stream()
-                .collect(Collectors.toMap(
-                        tuple -> tuple.get(0, Long.class),
-                        tuple -> tuple.get(1, String.class),
-                        (url1, url2) -> url1  // 중복 키가 발생할 때 첫 번째 URL을 선택
-                ));
-
-
-        // Keyword Names 맵 생성
-        List<Tuple> keywordData = jpaQueryFactory
-                .select(storeKeyword.store.storeId, QKeyword.keyword.name)
-                .from(storeKeyword)
-                .innerJoin(storeKeyword.keyword, QKeyword.keyword)
-                .where(storeKeyword.store.storeId.in(storeIds))
-                .fetch();
-
+        // 결과를 맵에 저장
+        Map<Long, String> storeIdToImageUrl = new HashMap<>();
         Map<Long, List<String>> storeIdToKeywordNames = new HashMap<>();
-        for (Tuple tuple : keywordData) {
-            Long storeId = tuple.get(storeKeyword.store.storeId);
-            storeIdToKeywordNames.putIfAbsent(storeId, new ArrayList<>());
+        for (Tuple tuple : combinedData) {
+            Long storeId = tuple.get(store.storeId);
+            String imageUrl = tuple.get(image.url);
+            String keywordName = tuple.get(QKeyword.keyword.name);
 
-            if (storeIdToKeywordNames.get(storeId).size() < 3) {
-                storeIdToKeywordNames.get(storeId).add(tuple.get(QKeyword.keyword.name));
+            if (imageUrl != null) {
+                storeIdToImageUrl.put(storeId, imageUrl);
+            }
+
+            if (keywordName != null) {
+                storeIdToKeywordNames.computeIfAbsent(storeId, k -> new ArrayList<>()).add(keywordName);
             }
         }
 
         for (StoreResponseWithKeyword response : storeQuery) {
-            String imageUrl = storeIdToImageUrl.get(response.getStoreId());
-            response.setStoreImageUrl(imageUrl != null ? imageUrl : "");
+            String imageUrl = storeIdToImageUrl.getOrDefault(response.getStoreId(), "");
+            response.setStoreImageUrl(imageUrl);
 
-            List<String> keywordList = storeIdToKeywordNames.get(response.getStoreId());
-            response.setKeywordList(keywordList != null ? keywordList : Collections.emptyList());
-
+            List<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptyList());
+            response.setKeywordList(keywordList);
         }
 
         return new PageImpl<>(storeQuery, pageable, count);
