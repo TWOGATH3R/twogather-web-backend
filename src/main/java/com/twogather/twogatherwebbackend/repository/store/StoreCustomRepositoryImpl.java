@@ -294,30 +294,29 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .where(store.storeId.in(storeIds))
                 .fetch();
 
-        // 결과를 맵에 저장
         Map<Long, String> storeIdToImageUrl = new HashMap<>();
-        Map<Long, List<String>> storeIdToKeywordNames = new HashMap<>();
+        Map<Long, Set<String>> storeIdToKeywordNames = new HashMap<>();
+
         for (Tuple tuple : combinedData) {
             Long storeId = tuple.get(store.storeId);
             String imageUrl = tuple.get(image.url);
             String keywordName = tuple.get(QKeyword.keyword.name);
 
-            if (imageUrl != null) {
-                storeIdToImageUrl.put(storeId, imageUrl);
-            }
+            storeIdToImageUrl.putIfAbsent(storeId, imageUrl);
 
             if (keywordName != null) {
-                storeIdToKeywordNames.computeIfAbsent(storeId, k -> new ArrayList<>()).add(keywordName);
+                storeIdToKeywordNames.computeIfAbsent(storeId, k -> new HashSet<>()).add(keywordName);
             }
         }
 
         for (StoreResponseWithKeyword response : storeQuery) {
-            String imageUrl = storeIdToImageUrl.getOrDefault(response.getStoreId(), "");
-            response.setStoreImageUrl(imageUrl);
+            String storedImageUrl = storeIdToImageUrl.getOrDefault(response.getStoreId(), "");
+            response.setStoreImageUrl(storedImageUrl);
 
-            List<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptyList());
-            response.setKeywordList(keywordList);
+            Set<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptySet());
+            response.setKeywordList(new ArrayList<>(keywordList));
         }
+
 
         return new PageImpl<>(storeQuery, pageable, count);
     }
