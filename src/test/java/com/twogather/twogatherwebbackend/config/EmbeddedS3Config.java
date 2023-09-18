@@ -30,8 +30,8 @@ public class EmbeddedS3Config {
     @Bean
     public S3Mock s3Mock() {
         s3Mock = new S3Mock.Builder()
-                .withPort(port) // 해당 포트에 프로세스가 생성된다.
-                .withInMemoryBackend() // 인메모리에서 활성화.
+                .withPort(port)
+                .withInMemoryBackend()
                 .build();
         s3Mock.start();
         return s3Mock;
