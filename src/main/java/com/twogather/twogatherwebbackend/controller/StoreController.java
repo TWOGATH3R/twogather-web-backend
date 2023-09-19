@@ -97,9 +97,10 @@ public class StoreController {
                                                   @RequestParam(value = "category", required = false) String categoryName,
                                                   @RequestParam(value = "search", required = false) String keyword,
                                                   @RequestParam(value = "storeName", required = false) String storeName,
-                                                  @RequestParam(value = "location", required = false) String location) {
+                                                  @RequestParam(value = "location", required = false) String location,
+                                                  @RequestParam(value = "useSearchBtn")  Boolean useSearchBtn) {
 
-        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location, storeName);
+        Page<StoreResponseWithKeyword> data = storeService.getStores(pageable, categoryName, keyword, location, storeName, useSearchBtn);
         return ResponseEntity.status(HttpStatus.OK).body(new PagedResponse(data));
     }
 
