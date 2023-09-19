@@ -201,22 +201,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
     @Override
     public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location, String storeName) {
-        List<StoreResponseWithKeyword> storeQuery = null;
+        List<Store> storeQuery = null;
         int count=0;
         if(!keyword.isBlank()){
             storeQuery = jpaQueryFactory
-                    .select(
-                            Projections.constructor(
-                                    StoreResponseWithKeyword.class,
-                                    store.storeId,
-                                    store.name,
-                                    store.address,
-                                    store.avgReviewRating,
-                                    //keywordlist
-                                    //image.url,
-                                    store.likeCount
-                            ))
-                    .from(store)
+                    .selectFrom(store)
                     .where(store.status.eq(StoreStatus.APPROVED))
                     .where(
                             categoryEq(category),
@@ -246,16 +235,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                     .fetch().size();
         }else{
             storeQuery = jpaQueryFactory
-                    .select(
-                            Projections.constructor(
-                                    StoreResponseWithKeyword.class,
-                                    store.storeId,
-                                    store.name,
-                                    store.address,
-                                    store.avgReviewRating,
-                                    store.likeCount
-                            ))
-                    .from(store)
+                    .selectFrom(store)
                     .where(store.status.eq(StoreStatus.APPROVED))
                     .where(
                             categoryEq(category),
@@ -281,44 +261,26 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                     .fetch().size();
         }
 
+        List<StoreResponseWithKeyword> list = new ArrayList<>();
+        for (Store store : storeQuery) {
+            list.add(StoreResponseWithKeyword
+                    .builder()
+                    .storeName(store.getName())
+                    .storeId(store.getStoreId())
+                    .avgScore(store.getAvgReviewRating())
+                    .address(store.getAddress())
+                    .storeImageUrl(store.getStoreImageList().isEmpty()? "" : store.getStoreImageList().get(0).getUrl())
+                    .likeCount(store.getLikeCount())
+                    .keywordList(store.getStoreKeywordList().isEmpty()? new ArrayList<>() : store.getStoreKeywordList().stream()
+                            .map(StoreKeyword::getKeyword)
+                            .map(Keyword::getName)
+                            .collect(Collectors.toList()))
+                    .build());
 
-        List<Long> storeIds = storeQuery.stream().map(StoreResponseWithKeyword::getStoreId).collect(Collectors.toList());
-
-        // Image URL 및 Keyword 한 번에 가져오기
-        List<Tuple> combinedData = jpaQueryFactory
-                .select(store.storeId, image.url, QKeyword.keyword.name)
-                .from(store)
-                .leftJoin(store.storeImageList, image)
-                .leftJoin(store.storeKeywordList, storeKeyword)
-                .leftJoin(storeKeyword.keyword, QKeyword.keyword)
-                .where(store.storeId.in(storeIds))
-                .fetch();
-
-        Map<Long, String> storeIdToImageUrl = new HashMap<>();
-        Map<Long, Set<String>> storeIdToKeywordNames = new HashMap<>();
-
-        for (Tuple tuple : combinedData) {
-            Long storeId = tuple.get(store.storeId);
-            String imageUrl = tuple.get(image.url);
-            String keywordName = tuple.get(QKeyword.keyword.name);
-
-            storeIdToImageUrl.putIfAbsent(storeId, imageUrl);
-
-            if (keywordName != null) {
-                storeIdToKeywordNames.computeIfAbsent(storeId, k -> new HashSet<>()).add(keywordName);
-            }
-        }
-
-        for (StoreResponseWithKeyword response : storeQuery) {
-            String storedImageUrl = storeIdToImageUrl.getOrDefault(response.getStoreId(), "");
-            response.setStoreImageUrl(storedImageUrl);
-
-            Set<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptySet());
-            response.setKeywordList(new ArrayList<>(keywordList));
         }
 
 
-        return new PageImpl<>(storeQuery, pageable, count);
+        return new PageImpl<>(list, pageable, count);
     }
     private OrderSpecifier<?> createOrderSpecifiersWithTopN(String order, String orderBy) {
         Order direction = orderBy.equals("asc") ? Order.ASC : Order.DESC;

@@ -1,6 +1,7 @@
 package com.twogather.twogatherwebbackend.dto.store;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import static com.twogather.twogatherwebbackend.domain.QStore.store;
 
 @Getter
 @NoArgsConstructor
+@Builder
 public class StoreResponseWithKeyword {
     private Long storeId;
     private String storeName;
