@@ -292,12 +292,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 .from(store)
                 .leftJoin(store.storeImageList, image)
                 .leftJoin(store.storeKeywordList, storeKeyword)
-                .leftJoin(storeKeyword.keyword, QKeyword.keyword)
+                .innerJoin(storeKeyword.keyword, QKeyword.keyword)
                 .where(store.storeId.in(storeIds))
                 .fetch();
 
-        Map<Long, String> storeIdToImageUrl = new HashMap<>();
-        Map<Long, Set<String>> storeIdToKeywordNames = new HashMap<>();
+        Map<Long, String> storeIdToImageUrl = new HashMap<>(storeIds.size());
+        Map<Long, Set<String>> storeIdToKeywordNames = new HashMap<>(storeIds.size());
 
         for (Tuple tuple : combinedData) {
             Long storeId = tuple.get(store.storeId);
@@ -317,6 +317,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
             Set<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptySet());
             response.setKeywordList(new ArrayList<>(keywordList));
+            list.add(response);
         }
 
         return new PageImpl<>(list, pageable, count);
