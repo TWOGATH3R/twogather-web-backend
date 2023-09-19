@@ -129,7 +129,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String category = store1.getCategory().getName();
         setDetail();
         // when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, keyword, location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, keyword, location, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -172,8 +172,8 @@ public class StoreRepositoryTest extends RepositoryTest{
 
         // when
         setDetail();
-        Page<StoreResponseWithKeyword> topStores1 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
-        Page<StoreResponseWithKeyword> topStores2 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
+        Page<StoreResponseWithKeyword> topStores1 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1", false);
+        Page<StoreResponseWithKeyword> topStores2 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1", false);
 
         // Then
         assertThat(topStores2.getSize()==1);
@@ -219,7 +219,7 @@ public class StoreRepositoryTest extends RepositoryTest{
 
         // when
         setDetail();
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, emptyKeyword, location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, emptyKeyword, location, "", false);
 
         // Then - return category2
         assertThat(topStores.getContent().stream()
@@ -260,7 +260,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String category = category1.getName();
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,emptyLocation, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,emptyLocation, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -301,7 +301,7 @@ public class StoreRepositoryTest extends RepositoryTest{
 
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -333,7 +333,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String storeName = store1.getName();
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,location, storeName);
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,location, storeName, false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -360,7 +360,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String emptyCategory = "";
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then -
         assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store1.getName());
@@ -386,7 +386,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String emptyCategory = "";
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then -
         assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store4.getName());
@@ -407,7 +407,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         String emptyCategory = "";
         setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"", false);
 
         // Then
         for (int i = 1; i < topStores.getContent().size(); i++) {
@@ -431,7 +431,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         setDetail();
 
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"", false);
 
         // Then
         for (int i = 1; i < topStores.getContent().size(); i++) {

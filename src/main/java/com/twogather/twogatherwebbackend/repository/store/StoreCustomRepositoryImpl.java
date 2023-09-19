@@ -7,8 +7,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.common.FixedPageRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.SQLException;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -200,9 +203,14 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     }
 
     @Override
-    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location, String storeName) {
+    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable,
+                                                                String category,
+                                                                String keyword,
+                                                                String location,
+                                                                String storeName,
+                                                                Boolean useSearchBtn) {
         List<StoreResponseWithKeyword> storeQuery = null;
-        int count=0;
+        JPAQuery<Long> count;
         if(!keyword.isBlank()){
             storeQuery = jpaQueryFactory
                     .select(
@@ -232,7 +240,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                     .limit(pageable.getPageSize())
                     .fetch();
             count = jpaQueryFactory
-                    .select(store.storeId)
+                    .select(store.count())
                     .from(storeKeyword)
                     .where(store.status.eq(StoreStatus.APPROVED))
                     .where(
@@ -242,8 +250,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                             storeNameContain(storeName)
                     )
                     .innerJoin(storeKeyword.store, store)
-                    .innerJoin(storeKeyword.keyword, QKeyword.keyword)
-                    .fetch().size();
+                    .innerJoin(storeKeyword.keyword, QKeyword.keyword);
         }else{
             storeQuery = jpaQueryFactory
                     .select(
@@ -271,7 +278,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                     .fetch();
 
             count = jpaQueryFactory
-                    .select(store.storeId)
+                    .select(store.count())
                     .from(store)
                     .where(store.status.eq(StoreStatus.APPROVED))
                     .where(
@@ -279,8 +286,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                             keywordContain(keyword),
                             addressContain(location),
                             storeNameContain(storeName)
-                    )
-                    .fetch().size();
+                    );
         }
 
         List<StoreResponseWithKeyword> list = new ArrayList<>();
@@ -320,7 +326,13 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
             list.add(response);
         }
 
-        return new PageImpl<>(list, pageable, count);
+        if(useSearchBtn) {
+            int fixedPageCount = 10 * pageable.getPageSize();
+            return new PageImpl<>(list, pageable, fixedPageCount);
+        }
+        long totalCount = Optional.ofNullable(count.fetchOne()).orElse(0L);
+        Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
+        return new PageImpl<>(list, pageRequest, totalCount);
     }
     private OrderSpecifier<?> createOrderSpecifiersWithTopN(String order, String orderBy) {
         Order direction = orderBy.equals("asc") ? Order.ASC : Order.DESC;
