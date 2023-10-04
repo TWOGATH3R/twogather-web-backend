@@ -28,27 +28,17 @@ public class RedisConfig {
     private int port;
 
 
+
+
+
     @Bean
-    public RedisCacheManager cacheManager(
-            // 위에서 정의한 레디스 연결 팩토리를 주입
-            RedisConnectionFactory connectionFactory) {
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://" + hostName + ":" + port);
 
-        // 레디스 캐시 설정을 정의. 기본적으로 객체는 GenericJackson2JsonRedisSerializer 를 사용하여 직렬화됩니다.
-        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+        return Redisson.create(config);
 
-        // 캐시 이름에 따른 캐시 구성을 저장하는 맵을 만듭니다.
-        Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>();
-        // "TOP_STORE"라는 캐시에 대한 만료 시간을 1시간으로 설정
-        redisCacheConfigMap.put(CacheNames.TOP_STORE, defaultConfig.entryTtl(Duration.ofHours(1)));
-        // "xxx"라는 캐시에 대한 만료 시간을 5초로 설정
-        //redisCacheConfigMap.put(CacheNames.xxx, defaultConfig.entryTtl(Duration.ofSeconds(5L)));
-
-        // 주어진 구성을 사용하여 레디스 캐시 매니저를 만듭니다.
-        RedisCacheManager redisCacheManager = RedisCacheManager.builder(connectionFactory)
-                .withInitialCacheConfigurations(redisCacheConfigMap)
-                .build();
-
-        return redisCacheManager;
     }
+
 }
