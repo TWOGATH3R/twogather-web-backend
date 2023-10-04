@@ -32,29 +32,21 @@ public class CacheConfig {
     @Value("${spring.redis.cache.port}")
     private int port;
 
-    @Bean
-    RedisConnectionFactory redisConnectionFactory() {
 
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(hostName);
-        redisStandaloneConfiguration.setPort(port);
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
-        return lettuceConnectionFactory;
+    @Bean
+    public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redissonClient) {
+        return new RedissonConnectionFactory(redissonClient);
     }
-    /*
-    @Bean
-    RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(hostName, port);
-    }*/
-    @Bean
-    RedisTemplate<String, Object> redisTemplate() {
 
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+    @Bean
+    public CacheManager cacheManager(RedissonConnectionFactory redissonConnectionFactory) {
+        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+        cacheConfigurations.put("demo_org_cache",
+                RedisCacheConfiguration.defaultCacheConfig()
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())));
 
-        return redisTemplate;
+
+        return RedisCacheManager.builder(redissonConnectionFactory).cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
+                .withInitialCacheConfigurations(cacheConfigurations).build();
     }
 }

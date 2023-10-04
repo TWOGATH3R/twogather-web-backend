@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twogather.twogatherwebbackend.domain.QStore.store;
 
 @Getter
 @NoArgsConstructor
