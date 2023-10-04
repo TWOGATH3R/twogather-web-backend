@@ -15,9 +15,9 @@ public class TopStoreResponse implements Serializable {
     private String address;
     private Double avgScore;
     private String storeImageUrl;
-    private Integer likeCount;
+    private Long likeCount;
     public TopStoreResponse(Long storeId, String name, Double avgScore,
-                            String address, String storeImageUrl, Integer likeCount){
+                            String address, String storeImageUrl, long likeCount){
         this.storeId = storeId;
         this.storeName = name;
         this.address = address;

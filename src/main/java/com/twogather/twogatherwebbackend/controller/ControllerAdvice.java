@@ -24,6 +24,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.HashMap;
@@ -40,6 +41,12 @@ public class ControllerAdvice {
         logError(request,ex);
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(ex.getStatus()).body(errorResponse);
+    }
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockException(HttpServletRequest request, OptimisticLockException ex) {
+        logError(request, ex);
+        ErrorResponse errorResponse = new ErrorResponse("데이터는 이미 다른 요청에 의해 처리되었습니다. 다시 요청해주세요");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
     public ResponseEntity<?> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {

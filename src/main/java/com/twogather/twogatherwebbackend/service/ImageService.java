@@ -44,7 +44,13 @@ public class ImageService {
 
         List<String> uploadedFileUrlList = s3Uploader.uploadList(fileList);
         List<Image> imageList = toImageEntityList(uploadedFileUrlList, store);
-        List<Image> savedImageList = imageRepository.saveAll(imageList);
+        List<Image> savedImageList;
+        try {
+            savedImageList = imageRepository.saveAll(imageList);
+        } catch (Exception e) {
+            s3Uploader.deleteList(uploadedFileUrlList);
+            throw new ImageException(UPLOAD_FAILURE);
+        }
         List<ImageResponse> responseList = toImageResponseList(savedImageList);
         return responseList;
     }
@@ -76,6 +82,8 @@ public class ImageService {
     private List<Image> toImageEntityList(List<String> urlList, Store store){
         List<Image> imageList = new ArrayList<>();
         for (String url: urlList){
+            Image image = new Image(store, url);
+            store.addImage(image);
             imageList.add(new Image(store, url));
         }
         return imageList;

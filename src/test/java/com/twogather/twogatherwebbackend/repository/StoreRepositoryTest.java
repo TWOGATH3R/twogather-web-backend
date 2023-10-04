@@ -17,6 +17,8 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.util.TestConstants.CONSUMER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,6 +59,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @Test
     @DisplayName("평균리뷰점수/내림차순으로 잘 정렬이 되는지 확인")
     void whenFindTopNByScore_ShouldReturnTopNStoresByScore() {
+        setDetail();
         // When
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.TOP_RATED.name(), "desc");
         // Then
@@ -69,6 +72,7 @@ public class StoreRepositoryTest extends RepositoryTest{
     @Test
     @DisplayName("리뷰개수/내림차순으로 결과가 잘 정렬되는지확인")
     void whenFindTopNByReviewCount_ShouldNotReturnStore4() {
+        setDetail();
         // When
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_REVIEWED.name(), "desc");
         // Then
@@ -85,7 +89,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         //given
         Consumer consumer1 = consumerRepository.save(new Consumer("user1","dasd1@naver.com,",passwordEncoder.encode("sadad@123"), "name1", AuthenticationType.CONSUMER, true));
         likeRepository.save(new Likes(store1, consumer1));
-
+        setDetail();
         // When
 
         List<TopStoreResponse> topStores = storeRepository.findTopNByType(3, StoreSearchType.MOST_LIKES_COUNT.name(), "desc");
@@ -123,9 +127,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String keyword = keyword1.getName();
         String location = "전주시";
         String category = store1.getCategory().getName();
-
+        setDetail();
         // when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, keyword, location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, keyword, location, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -167,8 +171,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String category = store1.getCategory().getName();
 
         // when
-        Page<StoreResponseWithKeyword> topStores1 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
-        Page<StoreResponseWithKeyword> topStores2 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1");
+        setDetail();
+        Page<StoreResponseWithKeyword> topStores1 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1", false);
+        Page<StoreResponseWithKeyword> topStores2 = storeRepository.findStoresByCondition(pageable, category, keyword, location, "1", false);
 
         // Then
         assertThat(topStores2.getSize()==1);
@@ -213,7 +218,8 @@ public class StoreRepositoryTest extends RepositoryTest{
         String category = category2.getName();
 
         // when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, emptyKeyword, location, "");
+        setDetail();
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category, emptyKeyword, location, "", false);
 
         // Then - return category2
         assertThat(topStores.getContent().stream()
@@ -252,9 +258,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String keyword = keyword3.getName();
         String emptyLocation = "";
         String category = category1.getName();
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,emptyLocation, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,emptyLocation, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -293,9 +299,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String location = "전주시";
         String emptyCategory = "";
 
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -325,10 +331,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String location = "전주시";
         String category = category1.getName();
         String storeName = store1.getName();
-
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,location, storeName);
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, category,keyword,location, storeName, false);
 
         // Then
         assertThat(topStores).isNotEmpty();
@@ -353,9 +358,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String keyword = "";
         String location = "";
         String emptyCategory = "";
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then -
         assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store1.getName());
@@ -379,9 +384,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String keyword = "";
         String location = "";
         String emptyCategory = "";
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,keyword,location, "", false);
 
         // Then -
         assertThat(topStores.getContent().get(0).getStoreName()).isEqualTo(store4.getName());
@@ -400,9 +405,9 @@ public class StoreRepositoryTest extends RepositoryTest{
         String emptyKeyword = "";
         String emptyLocation = "";
         String emptyCategory = "";
-
+        setDetail();
         //when
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"");
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"", false);
 
         // Then
         for (int i = 1; i < topStores.getContent().size(); i++) {
@@ -423,9 +428,10 @@ public class StoreRepositoryTest extends RepositoryTest{
         String emptyKeyword = "";
         String emptyLocation = "";
         String emptyCategory = "";
+        setDetail();
 
-
-        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"");
+        //when
+        Page<StoreResponseWithKeyword> topStores = storeRepository.findStoresByCondition(pageable, emptyCategory,emptyKeyword,emptyLocation,"", false);
 
         // Then
         for (int i = 1; i < topStores.getContent().size(); i++) {
@@ -445,6 +451,7 @@ public class StoreRepositoryTest extends RepositoryTest{
         createLike(member);
         createImage();
         createKeyword();
+        setDetail();
 
 
         Page<MyLikeStoreResponse> myLikeStore = storeRepository.findMyLikeStore(member.getMemberId(), pageable);
@@ -475,15 +482,16 @@ public class StoreRepositoryTest extends RepositoryTest{
     @DisplayName("가게 정보 불러올때 요구한 모든 필드에 값이 들어있어야한다")
     public void whenFindDefaultActiveStoreInfo_ThenSuccess(){
         //given
-        //when
         Member member = createLiker();
         createLike(member);
         createImage();
         createKeyword();
         Category category1 = categoryRepository.save(new Category("양식"));
         store1.setCategory(category1);
-        //then
+        setDetail();
+        //when
         StoreDefaultResponse response = storeRepository.findDefaultActiveStoreInfo(store1.getStoreId()).get();
+        //then
         Assertions.assertEquals(response.getLikeCount(),1);
         Assertions.assertEquals(response.getStoreName(),store1.getName());
         Assertions.assertEquals(response.getAddress(),store1.getAddress());
@@ -514,5 +522,25 @@ public class StoreRepositoryTest extends RepositoryTest{
         storeKeywordRepository.save(new StoreKeyword(store2, keyword2));
         storeKeywordRepository.save(new StoreKeyword(store3, keyword3));
         storeKeywordRepository.save(new StoreKeyword(store1, keyword4));
+    }
+    private void setDetail(){
+            //모든 store의 like수, 리뷰 수, 리뷰 평점을 계산해서 집어 넣는다
+            List<Store> storeList = storeRepository.findAll();
+            List<Long> storeIdList = storeList.stream()
+                    .map(Store::getStoreId)
+                    .collect(Collectors.toList());
+
+            Map<Long, Long> likesCountMap = likeRepository.countLikesByStoreIds(storeIdList);
+            Map<Long, Long> reviewsCountMap = reviewRepository.countReviewsByStoreIds(storeIdList);
+            Map<Long, Double> averageReviewScoreMap = reviewRepository.averageScoresByStoreIds(storeIdList);
+
+            for (Store store : storeList) {
+                Long storeId = store.getStoreId();
+                Long likeCount = likesCountMap.getOrDefault(storeId, 0L);
+                Long reviewCount = reviewsCountMap.getOrDefault(storeId, 0L);
+                Double avgReviewScore = averageReviewScoreMap.getOrDefault(storeId, 0.0);
+
+                store.setDetail(likeCount, reviewCount, avgReviewScore);
+            }
     }
 }

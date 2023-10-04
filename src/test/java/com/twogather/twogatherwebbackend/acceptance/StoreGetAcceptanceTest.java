@@ -103,6 +103,8 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         reviewRepository.save(review7);
         reviewRepository.save(review8);
 
+       setDetail();
+
     }
 
     @Test
@@ -111,12 +113,14 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         //given
         settingKeywordCategoryImage();
 
+
         //when
         given().param("category", CATEGORY_NAME_1)
                 .param("search", KEYWORD_NAME_1)
                 .param("location", "전주시")
                 .param("page", "0")
                 .param("size", "2")
+                .param("useSearchBtn", false)
                 .param("sort", StoreSearchType.MOST_REVIEWED.name()+",desc")
                 .get("/api/stores/search")
                 .then()
@@ -142,6 +146,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .param("location", "")
                 .param("page", "0")
                 .param("size", "2")
+                .param("useSearchBtn", false)
                 .param("sort", StoreSearchType.MOST_REVIEWED.name()+",desc")
                 .get("/api/stores/search")
                 .then()
@@ -168,7 +173,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Response.class);
-
+        setDetail();
         // Then
         List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
@@ -191,7 +196,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Response.class);
-
+        setDetail();
         // Then
         List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
@@ -244,8 +249,8 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         StoreSearchType type = StoreSearchType.MOST_LIKES_COUNT;
         int count = 4;
         addLike();
+        setDetail();
         // When
-
         Response result = given().contentType(ContentType.JSON)
                 .get("/api/stores/top/{type}/{count}", type, count)
                 .then()
@@ -254,6 +259,7 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
 
 
         // Then
+        List<Store> list = storeRepository.findAll();
         List<TopStoreResponse> response = convert(result, new TypeReference<List<TopStoreResponse>>() {});
 
         assertThat(response.get(0).getStoreName()).isEqualTo(store4.getName());
@@ -407,6 +413,11 @@ public class StoreGetAcceptanceTest extends AcceptanceTest{
         Image image3 = imageRepository.save(new Image(store2,"url3"));
 
 
+    }
+    private void setDetail(){
+        given().post("/api/stores/detail")
+                .then()
+                .statusCode(HttpStatus.OK.value());
     }
 
 }

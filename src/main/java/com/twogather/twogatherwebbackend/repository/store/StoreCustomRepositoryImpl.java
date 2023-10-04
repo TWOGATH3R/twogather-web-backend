@@ -1,13 +1,16 @@
 package com.twogather.twogatherwebbackend.repository.store;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twogather.twogatherwebbackend.domain.*;
+import com.twogather.twogatherwebbackend.dto.common.FixedPageRequest;
 import com.twogather.twogatherwebbackend.dto.store.*;
 import com.twogather.twogatherwebbackend.exception.SQLException;
 import com.twogather.twogatherwebbackend.repository.StoreKeywordRepository;
@@ -15,12 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.twogather.twogatherwebbackend.domain.QCategory.category;
@@ -100,6 +102,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
 
     @Override
     public List<TopStoreResponse> findTopNByType(int n, String order, String orderBy) {
+
         List<TopStoreResponse> results =
                 jpaQueryFactory
                         .select(
@@ -107,14 +110,12 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                                         TopStoreResponse.class,
                                         store.storeId,
                                         store.name,
-                                        MathExpressions.round(review.score.avg(), 1),
+                                        store.avgReviewRating,
                                         store.address,
                                         image.url,
-                                        store.likesList.size()
+                                        store.likeCount
                                 ))
                         .from(store)
-                        .leftJoin(store.likesList, likes)
-                        .leftJoin(store.reviewList, review)
                         .leftJoin(store.storeImageList, image)
                         .where(store.status.eq(StoreStatus.APPROVED))
                         .groupBy(store.storeId)
@@ -191,7 +192,7 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
         List<MyLikeStoreResponse> response = createMyLikeStoreResponse(storeQuery);
 
         int count = jpaQueryFactory
-                .select(store)
+                .select(store.storeId)
                 .from(likes)
                 .join(likes.store, store)
                 .join(likes.member, member)
@@ -202,76 +203,147 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
     }
 
     @Override
-    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable, String category, String keyword, String location, String storeName) {
-        List<Store> storeQuery = jpaQueryFactory
-                .selectFrom(store)
-                .where(store.status.eq(StoreStatus.APPROVED))
-                .where(
-                        categoryEq(category),
-                        keywordContain(keyword),
-                        addressContain(location),
-                        storeNameContain(storeName)
-                )
-                .innerJoin(store.category, QCategory.category)
+    public Page<StoreResponseWithKeyword> findStoresByCondition(Pageable pageable,
+                                                                String category,
+                                                                String keyword,
+                                                                String location,
+                                                                String storeName,
+                                                                Boolean useSearchBtn) {
+        List<StoreResponseWithKeyword> storeQuery = null;
+        JPAQuery<Long> count;
+        if(!keyword.isBlank()){
+            storeQuery = jpaQueryFactory
+                    .select(
+                            Projections.constructor(
+                                    StoreResponseWithKeyword.class,
+                                    store.storeId,
+                                    store.name,
+                                    store.address,
+                                    store.avgReviewRating,
+                                    //keywordlist
+                                    //image.url,
+                                    store.likeCount
+                            ))
+                    .from(store)
+                    .where(store.status.eq(StoreStatus.APPROVED))
+                    .where(
+                            categoryEq(category),
+                            keywordContain(keyword),
+                            addressContain(location),
+                            storeNameContain(storeName)
+                    )
+                    .innerJoin(store.category, QCategory.category)
+                    .leftJoin(store.storeKeywordList, storeKeyword)
+                    .leftJoin(storeKeyword.keyword, QKeyword.keyword)
+                    .orderBy(createOrderSpecifiers(pageable))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+            count = jpaQueryFactory
+                    .select(store.count())
+                    .from(storeKeyword)
+                    .where(store.status.eq(StoreStatus.APPROVED))
+                    .where(
+                            categoryEq(category),
+                            keywordContain(keyword),
+                            addressContain(location),
+                            storeNameContain(storeName)
+                    )
+                    .innerJoin(storeKeyword.store, store)
+                    .innerJoin(storeKeyword.keyword, QKeyword.keyword);
+        }else{
+            storeQuery = jpaQueryFactory
+                    .select(
+                            Projections.constructor(
+                                    StoreResponseWithKeyword.class,
+                                    store.storeId,
+                                    store.name,
+                                    store.address,
+                                    store.avgReviewRating,
+                                    //keywordlist
+                                    //image.url,
+                                    store.likeCount
+                            ))
+                    .from(store)
+                    .where(store.status.eq(StoreStatus.APPROVED))
+                    .where(
+                            categoryEq(category),
+                            addressContain(location),
+                            storeNameContain(storeName)
+                    )
+                    .innerJoin(store.category, QCategory.category)
+                    .orderBy(createOrderSpecifiers(pageable))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            count = jpaQueryFactory
+                    .select(store.count())
+                    .from(store)
+                    .where(store.status.eq(StoreStatus.APPROVED))
+                    .where(
+                            categoryEq(category),
+                            keywordContain(keyword),
+                            addressContain(location),
+                            storeNameContain(storeName)
+                    );
+        }
+
+        List<StoreResponseWithKeyword> list = new ArrayList<>();
+        List<Long> storeIds = storeQuery.stream().map(StoreResponseWithKeyword::getStoreId).collect(Collectors.toList());
+
+        // Image URL 및 Keyword 한 번에 가져오기
+        List<Tuple> combinedData = jpaQueryFactory
+                .select(store.storeId, image.url, QKeyword.keyword.name)
+                .from(store)
+                .leftJoin(store.storeImageList, image)
                 .leftJoin(store.storeKeywordList, storeKeyword)
-                .leftJoin(storeKeyword.keyword, QKeyword.keyword)
-                .leftJoin(store.reviewList, review)
-                .leftJoin(store.likesList, likes)
-                .orderBy(createOrderSpecifiers(pageable))
-                .groupBy(store.storeId)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .innerJoin(storeKeyword.keyword, QKeyword.keyword)
+                .where(store.storeId.in(storeIds))
                 .fetch();
 
-        int count = jpaQueryFactory
-                .selectFrom(store)
-                .where(store.status.eq(StoreStatus.APPROVED))
-                .where(
-                        categoryEq(category),
-                        keywordContain(keyword),
-                        addressContain(location),
-                        storeNameContain(storeName)
-                )
-                .groupBy(store.storeId)
-                .leftJoin(store.storeKeywordList, storeKeyword)
-                .fetch().size();
+        Map<Long, String> storeIdToImageUrl = new HashMap<>(storeIds.size());
+        Map<Long, Set<String>> storeIdToKeywordNames = new HashMap<>(storeIds.size());
 
-        List<StoreResponseWithKeyword> storeResponses = storeQuery.stream().map(store -> {
-                    Long storeId = store.getStoreId();
-                    String name = store.getName();
-                    String address = store.getAddress();
-                    List<String> keywordList = store.getStoreKeywordList().stream()
-                            .map(storeKeyword -> storeKeyword.getKeyword().getName())
-                            .collect(Collectors.toList());
+        for (Tuple tuple : combinedData) {
+            Long storeId = tuple.get(store.storeId);
+            String imageUrl = tuple.get(image.url);
+            String keywordName = tuple.get(QKeyword.keyword.name);
 
-                    Double score = store.getReviewList().stream()
-                            .mapToDouble(Review::getScore)
-                            .average()
-                            .orElse(0.0);
+            storeIdToImageUrl.putIfAbsent(storeId, imageUrl);
 
-                    score = roundToTwoDecimal(score);
+            if (keywordName != null) {
+                storeIdToKeywordNames.computeIfAbsent(storeId, k -> new HashSet<>()).add(keywordName);
+            }
+        }
 
-                    String storeImageUrl = store.getStoreImageList().isEmpty() || store.getStoreImageList().get(0).getUrl() == null
-                            ? ""
-                            : store.getStoreImageList().get(0).getUrl();
+        for (StoreResponseWithKeyword response : storeQuery) {
+            String storedImageUrl = storeIdToImageUrl.getOrDefault(response.getStoreId(), "");
+            response.setStoreImageUrl(storedImageUrl);
 
-                    return new StoreResponseWithKeyword(storeId, name, address, score, keywordList, storeImageUrl, (long)store.getLikesList().size());
-                })
-                .collect(Collectors.toList());
+            Set<String> keywordList = storeIdToKeywordNames.getOrDefault(response.getStoreId(), Collections.emptySet());
+            response.setKeywordList(new ArrayList<>(keywordList));
+            list.add(response);
+        }
 
-
-        return new PageImpl<>(storeResponses, pageable, count);
+        if(useSearchBtn) {
+            int fixedPageCount = 10 * pageable.getPageSize();
+            return new PageImpl<>(list, pageable, fixedPageCount);
+        }
+        long totalCount = Optional.ofNullable(count.fetchOne()).orElse(0L);
+        Pageable pageRequest = new FixedPageRequest(pageable, totalCount);
+        return new PageImpl<>(list, pageRequest, totalCount);
     }
     private OrderSpecifier<?> createOrderSpecifiersWithTopN(String order, String orderBy) {
         Order direction = orderBy.equals("asc") ? Order.ASC : Order.DESC;
 
         switch (order){
             case "MOST_REVIEWED":
-                return new OrderSpecifier(direction, store.reviewList.size());
+                return new OrderSpecifier(direction, store.reviewCount);
             case "TOP_RATED":
-                return new OrderSpecifier(direction, review.score.avg());
+                return new OrderSpecifier(direction, store.avgReviewRating);
             case "MOST_LIKES_COUNT":
-                return new OrderSpecifier(direction, store.likesList.size());
+                return new OrderSpecifier(direction, store.likeCount);
             default:
                 throw new SQLException(INVALID_REQUEST_PARAM);
         }
@@ -283,11 +355,11 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository{
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 switch (order.getProperty()){
                     case "MOST_REVIEWED":
-                        return new OrderSpecifier(direction, review.count());
+                        return new OrderSpecifier(direction, store.reviewCount);
                     case "TOP_RATED":
-                        return new OrderSpecifier(direction, review.score.avg());
+                        return new OrderSpecifier(direction, store.avgReviewRating);
                     case "MOST_LIKES_COUNT":
-                        return new OrderSpecifier(direction, likes.count());
+                        return new OrderSpecifier(direction, store.likeCount);
                     default:
                         throw new SQLException(INVALID_REQUEST_PARAM);
                 }

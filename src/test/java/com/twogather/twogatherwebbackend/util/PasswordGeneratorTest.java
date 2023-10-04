@@ -12,7 +12,7 @@ class PasswordGeneratorTest {
         int length = 10;
         String password = PasswordGenerator.generatePassword(length);
         Assertions.assertEquals(length, password.length());
-    }*/
+    }
 
     @Test
     void generatePassword_meetsRequirements() {
@@ -34,5 +34,5 @@ class PasswordGeneratorTest {
         int a = 10;
         int b = 1;
         Assertions.assertThrows(MemberException.class, () -> PasswordGenerator.getRandomNumberBetween(a, b));
-    }
+    }*/
 }

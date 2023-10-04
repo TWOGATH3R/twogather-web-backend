@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,5 +28,13 @@ public class Image {
         this.store = store;
         this.store.addImage(this);
         this.url = url;
+    }
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    public void onUpdate() {
+        if (store != null) {
+            store.updated();
+        }
     }
 }
