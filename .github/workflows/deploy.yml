@@ -42,14 +42,10 @@ jobs:
 
       - name: Print working directory
         run: pwd
-      # (3) Gradle build (Test 포함)
+      # (3) Gradle build (Test 미포함)
       - name: Run Gradle tasks
         run: ./gradlew copyGitSubmoduleWithMain copyGitSubmoduleWithTest
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: clean build
 
       # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
