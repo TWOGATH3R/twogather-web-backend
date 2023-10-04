@@ -91,6 +91,8 @@ dependencies {
 	compile ('org.springframework.boot:spring-boot-starter-data-redis') {
 		exclude group: 'io.lettuce', module: 'lettuce-core'
 	}
+	implementation 'org.redisson:redisson-spring-data-23:3.16.4'
+
 
 }
 

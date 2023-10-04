@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopStoreResponse{
+public class TopStoreResponse implements Serializable {
     private Long storeId;
     private String storeName;
     private String address;

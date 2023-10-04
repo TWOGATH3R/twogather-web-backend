@@ -187,7 +187,7 @@ public class StoreService {
     }
     private void validateDuplicateName(String storeName, String requestStoreName){
         if(!storeName.equals(requestStoreName) && storeRepository.existsByName(requestStoreName)){
-             throw new StoreException(DUPLICATE_NAME);
+            throw new StoreException(DUPLICATE_NAME);
         }
     }
     private void validationBizRegNumber(final StoreSaveUpdateRequest request){
